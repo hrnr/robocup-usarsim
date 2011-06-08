@@ -1,0 +1,114 @@
+class BotMaster extends Inventory
+	config(USAR);
+
+var class<BotServer>	BotServerClass;
+var class<ComServer>	ComServerClass;
+var class<ComServerInterface>	ComServerInterfaceClass;
+
+var BotServer 	    	theBotServer;
+var ComServer			theComServer;
+var ComServerInterface	theComServerInterface;
+
+var BotDeathMatch       theGameInfo;
+var string              theGameInfoClass;
+var int                 theGameTimeLimit;
+
+var BotConnection       waitConnections[64];
+
+replication 
+{
+	// Sends waitConnections list to server
+	if (Role < ROLE_Authority)
+		waitConnections;
+
+	// Send game information to clients
+	if (Role == ROLE_Authority)
+		theGameInfoClass, theGameTimeLimit;
+}
+
+function SetGameInfo(BotDeathMatch gi)
+{
+	theGameInfo = gi;
+	theGameInfoClass = string(gi.Class);
+	theGameTimeLimit = gi.TimeLimit;
+}
+
+simulated
+function int GetTimeLimit()
+{
+	return theGameTimeLimit;
+}
+
+simulated
+function string GetGameInfoClass()
+{
+	return theGameInfoClass;
+}
+
+reliable client
+function Initialize()
+{
+	// Start the TCP services
+    theBotServer = spawn(BotServerClass, self);
+	theComServer = spawn(ComServerClass, self);
+	theComServerInterface = spawn(ComServerInterfaceClass, self);
+}
+
+simulated
+function AddBotController(BotConnection botCon, string botName, int teamNum, vector startLocation, rotator startRotation, string className)
+{
+	local int i;
+	
+	// Find first open slot in array
+	for (i = 0; i < ArrayCount(waitConnections); i++) {
+		if (waitConnections[i] == none) {
+			// Assign caller BotConnection to open slot and replicate AddBot function on server
+			waitConnections[i] = botCon;
+			AddBotController_internal(i, botName, teamNum, startLocation, startRotation, className);
+			return;
+		}
+	}
+	
+	LogInternal("Too many unbound robots: failed to create "$className$ " " $botName);
+}
+
+function DeleteBotController(BotController botCon )
+{
+	DeleteBotController_internal(botCon);
+}
+
+reliable server
+protected function DeleteBotController_internal( BotController theBot )
+{
+	theGameInfo.DeleteBotController( theBot );
+}
+
+reliable server
+protected function AddBotController_internal(int botConID, string botName, int teamNum, vector startLocation, rotator startRotation, string className)
+{
+	local BotController theBot;
+	
+	theBot = theGameInfo.AddBotController(Owner, botName, teamNum, startLocation, startRotation, className);
+	theBot.SetConnection(self, botConID);
+
+	LogInternal("Created robot: "$className$ " " $theBot);
+}
+
+simulated 
+function BotConnection getConnection(int botConnectionID)
+{
+	local BotConnection botCon;
+
+	botCon = waitConnections[botConnectionID];
+	waitConnections[botConnectionID] = none;
+
+	return botCon;
+}
+
+defaultproperties
+{
+	BotServerClass=USARBotAPI.BotServer
+    ComServerClass=USARBotAPI.ComServer
+    ComServerInterfaceClass=USARBotAPI.ComServerInterface
+}
+
