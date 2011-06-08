@@ -15,7 +15,8 @@ Notes:
 
 Installation instructions:
 1. Download and Install UDK February-2011 (http://www.udk.com/)
-2. Checkout this repository on top of the udk installation.
+2. Checkout this repository
+3. Copy the entire repository on top of the udk installation. This should include the .git file.
  
 Running:
 1. Execute everything.bat (might require Administrative privileges to run correctly)
