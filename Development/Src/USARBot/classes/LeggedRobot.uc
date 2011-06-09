@@ -1,14 +1,3 @@
-/*****************************************************************************
-  DISCLAIMER:
-  This software was produced by the National Institute of Standards
-  and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.  Recipients of this software
-  assume all responsibility associated with its operation, modification,
-  maintenance, and subsequent redistribution.
-
-  See NIST Administration Manual 4.09.07 b and Appendix I. 
-*****************************************************************************/
-
 /*
  * Base class for USAR legged robots.
  */
@@ -16,10 +5,10 @@ class LeggedRobot extends USARVehicle config(USAR) abstract;
 
 var vector SafedPosition;
 var rotator SafedRotation;
+var float MaxJointAngularSpeed; // In radians
 var bool DebugCOM;
 var bool DebugNotifyJointErrors;
 var String DebugNotifySpecificJointError;
-var array<BasicHinge> CollisionIgnoreConstraints;
 
 simulated function PostBeginPlay()
 {
@@ -76,22 +65,22 @@ simulated function PostBeginPlay()
 		{
 			Joints[i].Constraint.ConstraintSetup.Swing2LimitAngle = HalfAngle;
 			r.Pitch = Joints[i].trueZero;
-			Joints[i].Constraint.ConstraintSetup.bSwingLimited = false;
-			Joints[i].Constraint.ConstraintSetup.bTwistLimited = false;
+			Joints[i].Constraint.ConstraintSetup.bSwingLimited = true;
+			Joints[i].Constraint.ConstraintSetup.bTwistLimited = Joints[i].IsOneDof;
 		}
 		else if (Joints[i].jointType == JOINTTYPE_Yaw)
 		{
 			Joints[i].Constraint.ConstraintSetup.Swing1LimitAngle = HalfAngle;
 			r.Yaw = Joints[i].trueZero;
-			Joints[i].Constraint.ConstraintSetup.bSwingLimited = false;
-			Joints[i].Constraint.ConstraintSetup.bTwistLimited = false;		
+			Joints[i].Constraint.ConstraintSetup.bSwingLimited = true;
+			Joints[i].Constraint.ConstraintSetup.bTwistLimited = Joints[i].IsOneDof;		
 		}
 		else if (Joints[i].jointType == JOINTTYPE_Roll)
 		{
 			Joints[i].Constraint.ConstraintSetup.TwistLimitAngle = HalfAngle;
 			r.Roll = Joints[i].trueZero;
-			Joints[i].Constraint.ConstraintSetup.bSwingLimited = false;
-			Joints[i].Constraint.ConstraintSetup.bTwistLimited = false;
+			Joints[i].Constraint.ConstraintSetup.bSwingLimited = Joints[i].IsOneDof;
+			Joints[i].Constraint.ConstraintSetup.bTwistLimited = true;
 		}
 		else if (Joints[i].jointType == JOINTTYPE_Fixed)
 		{
@@ -142,7 +131,6 @@ simulated function PostBeginPlay()
 		}
 		else
 		{
-			//Joints[i].Constraint.ConstraintInstance.SetAngularPositionDrive(true, true);
 			Joints[i].Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
 		}
 	}
@@ -178,8 +166,8 @@ simulated function SetCenterOfMass(PhysicalItem Part1, Vector com)
 }
 
 // TempRotatePart and RestoreRotatePart are used to deal with the problem that the constraint 
-// angle limits are specified symmetrical. The part is temporary rotated so the high and low limits become
-// symmetrical if there were not already when initializing the constraint.
+// angle limits are specified symmetrical. The part is temporary rotated so the high and low 
+// limits become symmetrical. 
 simulated function TempRotatePart(Joint Joint1, Actor Part1, Rotator r)
 {
 	local Vector pos, jointpos, OffsetInUU;
@@ -220,28 +208,40 @@ simulated function RobotPart CreateDummyActor(Vector loc, Rotator r)
 simulated function SetJointAngle(string JointName, int UUAngle)
 {
 	local int i;
-	local Rotator r;
 
-	for (i = 0; i < Joints.Length; i++)
-		if (String(Joints[i].Name) == JointName)
+	for (i=0;i<Joints.length;i++)
+	{
+		if( String(Joints[i].Name) == JointName )
 		{
-			Joints[i].CurAngularTarget = UUAngle + Joints[i].trueZero;
-			r = rot(0,0,0);
-			if (Joints[i].jointType == JOINTTYPE_Pitch)
-			{
-				r.Pitch = Joints[i].CurAngularTarget;
-			}
-			else if (Joints[i].jointType == JOINTTYPE_Yaw)
-			{
-				r.Yaw = Joints[i].CurAngularTarget;
-			}
-			else if (Joints[i].jointType == JOINTTYPE_Roll)
-			{
-				r.Roll = Joints[i].CurAngularTarget;
-			}
-			SetAngularTarget(Joints[i].Constraint, r);
+			Joints[i].DesiredAngularTarget = UUAngle + Joints[i].TrueZero;
+
 			break;
 		}
+	}
+}
+
+simulated function SetJointAngularTarget( Joint joint, int UUAngle )
+{
+	local Rotator r;
+
+	r = rot(0,0,0);
+	if( joint.jointType == JOINTTYPE_Pitch )
+	{
+		r.Pitch = joint.CurAngularTarget;
+	}
+	else if( joint.jointType == JOINTTYPE_Yaw )
+	{
+		r.Yaw = joint.CurAngularTarget;
+	}
+	else if( joint.jointType == JOINTTYPE_Roll )
+	{
+		r.Roll = joint.CurAngularTarget;
+	}
+	else
+	{
+	}
+
+	SetAngularTarget(joint.Constraint, r);
 }
 
 // Set stiffness of a joint
@@ -454,11 +454,36 @@ simulated function ClientTimer()
 	MessageSendDelegate(status);
 }
 
+function Tick(float DeltaTime)
+{
+	local int i;
+	local int TurnRate;
+
+	super.Tick( DeltaTime );
+
+	// Turn X radian per second
+	TurnRate = MaxJointAngularSpeed * DeltaTime * 10430.3783505;
+
+	// Update joints to their desired angular position
+	for (i=0;i<Joints.length;i++)
+	{
+		if( Joints[i].CurAngularTarget != Joints[i].DesiredAngularTarget )
+		{
+			if( abs(Joints[i].DesiredAngularTarget - Joints[i].CurAngularTarget) < TurnRate )
+				Joints[i].CurAngularTarget = Joints[i].DesiredAngularTarget;
+			else if( Joints[i].DesiredAngularTarget < Joints[i].CurAngularTarget )
+				Joints[i].CurAngularTarget -= TurnRate;
+			else
+				Joints[i].CurAngularTarget += TurnRate;
+			SetJointAngularTarget( Joints[i], Joints[i].CurAngularTarget );
+		}
+	}
+}
+
 // Get a part by name.
 function PhysicalItem GetPart(name PartName)
 {
 	local int i;
-	local PhysicalItem pitem;
 	
 	for (i = 0; i < ComponentList.Length; i++)
 		if (ComponentList[i].Name == PartName)
@@ -546,9 +571,23 @@ defaultproperties
 	DebugNotifyJointErrors=false;
 	DebugNotifySpecificJointError="";
 
+	MaxJointAngularSpeed = 3.0;
+
 	// Don't need physics, this actor only acts as an controller
 	// However we do want to derive from the usarvehicle for the messages
 	Physics=PHYS_None
+
+	// Collision should really be disabled.
+	// The robot class more acts like a controller
+	// Leaving collision on causes problems when spawning parts
+	// (due the default collision cylinder of the Pawn class)
+	BlockRigidBody=false
+	bBlockActors=false
+	bCollideActors=false
+	bCollideWorld=false
+	bPathColliding=false
+	bProjTarget=false
+	bCollideWhenPlacing=false
 
 	bStatic=false
 	bNoDelete=false

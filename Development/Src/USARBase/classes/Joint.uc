@@ -66,6 +66,7 @@ var float Stiffness;
 var int TrueZero;
 var BasicHinge Constraint;
 var int CurAngularTarget;
+var int DesiredAngularTarget;
 var float CurAngle;
 var ESide side;
 

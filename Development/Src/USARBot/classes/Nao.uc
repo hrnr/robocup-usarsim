@@ -1,5 +1,18 @@
 class Nao extends LeggedRobot config(USAR);
 
+simulated function SetJointAngle( string JointName, int UUAngle )
+{
+	// Ignore RHipYawPitch
+	if( JointName == "RHipYawPitch" )
+		return;
+
+	super.SetJointAngle( JointName, UUAngle );
+
+	// LHipYawPitch also controls RHipYawPitch (physically one motor, see Nao documentation)
+	if( JointName == "LHipYawPitch" )
+		super.SetJointAngle( "RHipYawPitch", UUAngle );
+}
+
 defaultproperties
 {
 	// Create BodyItem part
@@ -41,7 +54,6 @@ defaultproperties
 		RotateAxis=(x=0,y=-90,z=180)
 	End Object
 	Joints.Add(HeadYaw)
-
 
 	// Create left and right arm parts
 	Begin Object Class=PhysicalItem Name=LUpperArm
@@ -192,9 +204,23 @@ defaultproperties
 	Joints.Add(RElbowRoll)
 
 	// Create leg parts
+	Begin Object Class=PhysicalItem Name=LHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=-0.055,Z=-0.08)
+		Mass=123.09
+	End Object
+	ComponentList.Add(LHip)
+
+	Begin Object Class=PhysicalItem Name=RHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=0.055,Z=-0.08)
+		Mass=123.09
+	End Object
+	ComponentList.Add(RHip)
+
 	Begin Object Class=PhysicalItem Name=LThigh
-		RelativeTo=BodyItem
-		Mesh=StaticMesh'Nao.naolthigh'
+		RelativeTo = BodyItem
+		Mesh = StaticMesh'Nao.naolthigh'
 		Offset=(x=-0.01,Y=-0.055,Z=-0.155)
 		//Offset=(x=-0.020,Y=-0.055,Z=-0.155)
 		Mass=394.21
@@ -231,9 +257,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=-0.09)
 		//Mass=161.75
-		//Mass=1500.0
-		Mass=2500.0
-		//Mass=10000.0
+		Mass=1500.0
 	End Object
 	ComponentList.Add(LFoot)
 
@@ -241,17 +265,41 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=-0.09)
-		//Mass=161.75
-		//Mass=1500.0
-		Mass=2500.0
-		//Mass=10000.0
+		//Mass = 161.75
+		Mass=1500.0
 	End Object
 	ComponentList.Add(RFoot)
 
 	// Create hip joint
+	Begin Object Class=Joint Name=LHipYawPitch
+		IsOneDof=true
+		Parent=LHip
+		Child=BodyItem
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=-0.055,z=-0.1)
+		LimitLow=-65.62
+		LimitHigh=42.44
+		RotateAxis=(x=0,y=0,z=135)
+	End Object
+	Joints.Add(LHipYawPitch)
+
+	Begin Object Class=Joint Name=RHipYawPitch
+		IsOneDof=true
+		Parent=RHip
+		Child=BodyItem
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0.055,z=-0.1)
+		LimitLow=-65.62
+		LimitHigh=42.44
+		RotateAxis=(x=0,y=0,z=-135)
+	End Object
+	Joints.Add(RHipYawPitch)
+
 	Begin Object Class=Joint Name=LHipPitch
 		Parent=LThigh
-		Child=BodyItem
+		Child=LHip
 		jointType=JOINTTYPE_Pitch
 		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=-0.055,z=-0.115)
@@ -263,7 +311,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=LHipRoll
 		Parent=LThigh
-		Child=BodyItem
+		Child=LHip
 		jointType=JOINTTYPE_Roll
 		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
@@ -276,7 +324,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=RHipPitch
 		Parent=RThigh
-		Child=BodyItem
+		Child=RHip
 		jointType=JOINTTYPE_Pitch
 		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0.055,z=-0.115)
@@ -288,7 +336,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=RHipRoll
 		Parent=RThigh
-		Child=BodyItem
+		Child=RHip
 		jointType=JOINTTYPE_Roll
 		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
