@@ -74,6 +74,7 @@ event InitReceived(ParsedMessage parsedMessage)
 
 	startName = parsedMessage.GetArgVal("Start");
 	if (startName != "")
+	{
 		foreach AllActors(class 'PlayerStart', P)
 			if (string(P.Tag) == startName)
 			{
@@ -81,6 +82,7 @@ event InitReceived(ParsedMessage parsedMessage)
 				newRotation = P.Rotation;
 				break;
 			}
+	}
 	else
 	{
 		/*

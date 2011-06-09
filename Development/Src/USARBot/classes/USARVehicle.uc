@@ -378,15 +378,15 @@ simulated function SetupPart(PhysicalItem part)
 			part.PartActor = CreateDummyActor(SpawnLocation, Rotation + r);
 		else
 		{
-			LogInternal("Location is " $ class'UnitsConverter'.static.VectorString(Location) $
-				"; OffsetInUU is " $class'UnitsConverter'.static.VectorString(OffsetInUU));
-			LogInternal("Spawned '" $ String(part.Name) $ "' at " $ class'UnitsConverter'.static.VectorString(SpawnLocation));
 			part.PartActor = Spawn(class'RobotPart', self, '', SpawnLocation, Rotation + r);
 			part.PartActor.StaticMeshComponent.SetStaticMesh(part.Mesh);
 			part.PartActor.SetPhysicalCollisionProperties();
 		}
 		SetMass(part, part.Mass);
 	}
+	else
+		LogInternal("SetupPart: '" $ String(part.Name) $ "' already has an actor: " $
+			String(part.PartActor.Name));
 }
 
 // Check battery; if alive, call client timer functions
@@ -396,6 +396,7 @@ simulated function Timer()
 		super.Timer();
 }
 
+// Creates an empty robot actor.
 simulated function RobotPart CreateDummyActor(Vector loc, Rotator r)
 {
 	local RobotPart dummy;
