@@ -134,7 +134,6 @@ function bool isTouch()
 	local vector startVec;
 	local int i, j, s;
 	local vector tempSensorLoc;
-	local int redColorComponent, greenColorComponent, blueColorComponent;
 	local vector lineStart;
 
 	if (!pointsInit)

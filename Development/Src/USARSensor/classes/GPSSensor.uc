@@ -393,33 +393,33 @@ function GPSCoordinate FixGPSCoordinate(GPSCoordinate toFix, bool fixLatitude)
 function String GPSString(GPSCoordinate toConvert)
 {
 	local String outstring;
-	local String Position;
+	local String pos;
 
 	// Here, we deal with the latitude component
 
 	// Find out if we are in the North or South hemisphere
 	if ((toConvert.LatitudeDegree < 0) || (toConvert.LatitudeDegree == 0 &&
 			toConvert.LatitudeMinute < 0))
-		Position = "S";
+		pos = "S";
 	else
-		Position = "N";
+		pos = "N";
 
 	outstring = "{Latitude " $ int(abs(toConvert.LatitudeDegree)) $ "," $
 		class'UnitsConverter'.static.FloatString(abs(toConvert.LatitudeMinute), 4) $ "," $
-		Position $ "} ";
+		pos $ "} ";
 	
 	// Here, we deal with the longitude component
 
 	// Find out if we are in the East or West hemisphere
 	if ((toConvert.LongitudeDegree < 0) || (toConvert.LongitudeDegree == 0 &&
 			toConvert.LongitudeMinute < 0))
-		Position = "W";
+		pos = "W";
 	else
-		Position = "E";
+		pos = "E";
 	
 	outstring = outstring $ "{Longitude " $ int(abs(toConvert.LongitudeDegree)) $ "," $
 		class'UnitsConverter'.static.FloatString(abs(toConvert.LongitudeMinute), 4) $ "," $
-		Position $ "} ";
+		pos $ "} ";
 
 	return outstring;
 }

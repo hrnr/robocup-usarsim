@@ -37,17 +37,17 @@ class IRSensor extends RangeSensor config (USAR);
 simulated function float GetRange()
 {
     local vector HitLocation, HitNormal;
-	local vector curLoc, direction;
+	local vector curLoc, dir;
     local float range;
 	local TraceHitInfo mtl;
 	
 	range = 0;
 	curLoc = Location;
-	direction = vector(Rotation);
+	dir = vector(Rotation);
 	
 	while (range < MaxRange)
 	{
-		if (Trace(HitLocation, HitNormal, curLoc + MaxRange * direction, curLoc, true, , mtl) == None)
+		if (Trace(HitLocation, HitNormal, curLoc + MaxRange * dir, curLoc, true, , mtl) == None)
 		{
 			range = MaxRange;
 			break;
@@ -62,7 +62,7 @@ simulated function float GetRange()
 		if (InStr(String(mtl.Material), "Trans") == -1)	 // The IR hitted a non-transparent material.
 			break;
 		else
-			curLoc += FMax(VSize(HitLocation - curLoc), MinRange) * direction;
+			curLoc += FMax(VSize(HitLocation - curLoc), MinRange) * dir;
 
 	}
 	

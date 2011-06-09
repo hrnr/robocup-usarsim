@@ -46,17 +46,17 @@ class IR2Sensor extends RangeSensor config (USAR);
 simulated function float GetRange()
 {
     local vector HitLocation, HitNormal;
-    local vector curLoc, direction;
+    local vector curLoc, dir;
     local float range;
 	local TraceHitInfo mtl;
 
 	range = 0;	
 	curLoc = Location;
-	direction = vector(Rotation);
+	dir = vector(Rotation);
 	
 	while (range < MaxRange)
     {
-		if (Trace(HitLocation, HitNormal, curLoc + MaxRange * direction, curLoc, true, , mtl) == None)
+		if (Trace(HitLocation, HitNormal, curLoc + MaxRange * dir, curLoc, true, , mtl) == None)
 		{
 			range = MaxRange;
 			break;
@@ -68,7 +68,7 @@ simulated function float GetRange()
 			break;
 		else
 		{
-			curLoc = HitLocation + MinRange	* direction;
+			curLoc = HitLocation + MinRange	* dir;
 			range = VSize(curLoc - Location);
 		}
 	}

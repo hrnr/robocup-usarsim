@@ -123,7 +123,7 @@ simulated function float normalAngle(float ang)
 
 function String Set(String opcode, String args)
 {
-	local int i, j;
+	local int i;
 	if (Caps(opcode) == "RESET")
 	{
 		for (i = 0; i < Wheels.Length; i++)
