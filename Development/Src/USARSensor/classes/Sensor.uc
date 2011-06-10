@@ -12,7 +12,7 @@
 /*
  * Sensor - parents all sensors on the robot
  */
-class Sensor extends Item abstract;
+class Sensor extends Item config(USAR) abstract;
 
 // Whether the sensor is invisible
 var config bool HiddenSensor;
@@ -29,8 +29,6 @@ var float Sigma;
 // type are treated as a group
 var config bool bUseGroup; 
 var config bool bWithTimeStamp;
-// Battery of USARVehicle to which the sensor is connected (name for compatibility)
-var Battery battery;
 
 // Called when sensor is attached to a vehicle
 simulated function AttachItem()
@@ -38,17 +36,34 @@ simulated function AttachItem()
 	MessageSendDelegate = Platform.ReceiveMessageFromSensor;
 }
 
-// Called by the vehicle timer function
-simulated function Timer()
+// Sends out sensor data per tick
+simulated function ClientTimer()
 {
-	super.Timer();
-	
-	// Continue if battery remains alive
-	if (IsClient && IsOwner && (battery==None || !battery.isDead()))
-		ClientTimer();
+	MessageSendDelegate(GetHead() @ GetData());
 }
 
-simulated function ClientTimer();
+// Gets the sensor data
+function String GetData()
+{
+}
+
+// Gets the geometry data
+function String GetGeoData()
+{
+	local String outstring;
+	
+	// Name and location
+	outstring = "{Name " $ ItemName $ " Location " $
+		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
+	
+	// Direction
+	outstring = outstring $ " Orientation " $
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+	
+	// Mount point
+	outstring = outstring $ " Mount " $ ItemMount $ "}";
+	return outstring;
+}
 
 // Gets the header of the sensor data
 simulated function String GetHead()
@@ -65,33 +80,20 @@ simulated function String GetHead()
 	return outstring;
 }
 
-// Gets the geometry data
-simulated function String GetGeoData()
+// Called by the vehicle timer function
+simulated function Timer()
 {
-	local String outstring;
+	super.Timer();
 	
-	// Name and location
-	outstring = "{Name " $ ItemName $ " Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Base.Location);
-	
-	// Orientation
-	outstring @= " Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Base.Rotation);
-	
-	// Mounting type
-	outstring @= " Mount " $ ItemMount $ "}";
-	return outstring;
-}
-
-// Connects sensor to the battery of a USARVehicle
-simulated function ConnectToBattery(Battery VehicleBattery)
-{
-	battery = VehicleBattery;
+	// Continue if battery remains alive
+	if (IsClient && IsOwner && Platform.GetBatteryLife() > 0)
+		ClientTimer();
 }
 
 defaultproperties
 {
-	ItemType="Sensor";
-	Mean=0.0;
-	Sigma=0.05;
+	ItemType="Sensor"
+	Mean=0.0
+	Sigma=0.05
+	Physics=PHYS_None
 }

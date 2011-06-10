@@ -61,10 +61,10 @@ simulated function ConvertParam()
 	Log10Inv = 1.0 / Loge(10);
 }
 
-simulated function ClientTimer()
+function String GetData()
 {	
 	// A string that contains the output of this function
-	local string AcousticData;
+	local String AcousticData;
 
 	// A float that holds the formulated distance to calculate sound drop-off and time delay
 	local float distance;
@@ -82,8 +82,6 @@ simulated function ClientTimer()
 	// A unit vector representing the direction to the sound from the sensor
 	// relative to its current rotation
 	local vector relDirection;
-	
-	super.ClientTimer();
 
 	// Sets AcousticData to hold normal sensor information
 	AcousticData = "{Name " $ self $ "}";
@@ -162,10 +160,7 @@ simulated function ClientTimer()
 			arrayCnt--;
 		}
 	}
-	
-	// Used to test this function
-	// LogInternal(AcousticData);
-	MessageSendDelegate(getHead() @ AcousticData);
+	return AcousticData;
 }
 
 // Is called by other AcousticActors to pass the sound information of the sound they just made
@@ -190,8 +185,7 @@ function String Set(String opcode, String args)
 
 defaultproperties
 {
-	bHardAttach=true;
-	ItemType="Acoustic";
-	OutputCurve=(Points=((InVal=0,OutVal=0),(InVal=1000,OutVal=1000)));
-	drawscale=10;
+	ItemType="Acoustic"
+	OutputCurve=(Points=((InVal=0,OutVal=0),(InVal=1000,OutVal=1000)))
+	DrawScale=10
 }

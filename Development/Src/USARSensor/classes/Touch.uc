@@ -79,13 +79,7 @@ function String GetData()
 	return "{Name " $ ItemName $ " Touch " $ isTouch() $ "}";
 }
 
-simulated function ClientTimer()
-{
-	super.ClientTimer();
-	MessageSendDelegate(getHead() @ GetData());
-}
-
-simulated function String GetConfData()
+function String GetConfData()
 {
 	local String outstring;
 	outstring = super.GetConfData();
@@ -95,8 +89,8 @@ simulated function String GetConfData()
 
 defaultproperties
 {
-  bDebug=false;
-  ItemType="Touch";
-  DrawScale3D=(X=0.1);
-  DrawScale=0.4762;
+	bDebug=false
+	ItemType="Touch"
+	DrawScale3D=(X=0.1)
+	DrawScale=0.4762
 }

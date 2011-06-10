@@ -176,10 +176,10 @@ function string getPosAll()
 		outstring@="{Name "$UsarGame.botList[i].PlayerReplicationInfo.PlayerName;
 		outstring@="Location "$class'UnitsConverter'.static.Str_LengthVectorFromUU(UsarGame.botList[i].Pawn.Location);
 		vehicle=USARVehicle(UsarGame.botList[i].Pawn);
-		if (vehicle.VehicleBattery.isDead())
-			outstring@="BatteryEmpty True}";
-		else
+		if (vehicle.GetBatteryLife() > 0)
 			outstring@="BatteryEmpty False}";
+		else
+			outstring@="BatteryEmpty True}";
 	}
 	return outstring;
 }

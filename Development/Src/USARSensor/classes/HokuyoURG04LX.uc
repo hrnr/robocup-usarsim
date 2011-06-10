@@ -12,7 +12,7 @@
 class HokuyoURG04LX extends RangeScanner config (USAR);
 
 // Behavior inside smoke
-simulated function float GetRangeRecursive(Actor PrevHitActor, vector StartLocation,
+function float GetRangeRecursive(Actor PrevHitActor, vector StartLocation,
 	float maxRangeRemaining, float curRange, float penetrationPower, out vector FinalHitLocation)
 {
     local vector HitLocation, HitNormal, TempHitLocation, TempHitNormal;
@@ -119,7 +119,7 @@ simulated function float GetRangeRecursive(Actor PrevHitActor, vector StartLocat
 //   The Trace method traces a line to point of first collision.
 //   Takes actor calling trace collision properties into account.
 //   Returns first hit actor, level if hit level, or none if hit nothing
-simulated function float GetRange()
+function float GetRange()
 {
 	local float range;
     local vector HitLocation;
@@ -162,7 +162,7 @@ defaultproperties
 	bCollideWorld=true
 	DrawScale=1
 
-	Begin Object Class=StaticMeshComponent Name=SKMesh01
+	Begin Object Class=StaticMeshComponent Name=StMesh01
 		StaticMesh=StaticMesh'SICKSensor.lms200.Sensor'
 		CollideActors=true
 		BlockActors=false
@@ -172,7 +172,6 @@ defaultproperties
 	End Object
 
 	CollisionType=COLLIDE_BlockAll
-
-	Components(1)=SKMesh01
-	CollisionComponent=SKMesh01
+	Components(1)=StMesh01
+	CollisionComponent=StMesh01
 }

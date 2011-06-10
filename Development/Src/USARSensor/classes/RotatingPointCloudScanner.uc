@@ -15,8 +15,8 @@ var config int numberOfBeams;
 var config float HFieldOfView;
 var config float VFieldOfView;
 var config float MaxRange;
-var config float SpinRate;
-var config float ScanRate;
+var config float spinRate;
+var config float scanRate;
 var RangeSensorArray rsa;
 var class<RangeSensor> RangeSensorClass;
 var String PclData;
@@ -85,17 +85,16 @@ simulated event Destroyed()
 	rsa.Destroy();
 }
 
-simulated function ClientTimer()
+function String GetData()
 {
 	local String data;
 	data = PclData;
 	PclData = "";
-	if (data != "")
-		MessageSendDelegate(getHead() $ "{Name " $ ItemName $ "}" $ "{" $ data $ "}");
+	return "{Name " $ ItemName $ "}" $ "{" $ data $ "}";
 }
 
 defaultproperties
 {
 	ItemType="PCL"
-	rangeSensorClass=class'USARSensor.SonarSensor';
+	rangeSensorClass=class'USARSensor.SonarSensor'
 }

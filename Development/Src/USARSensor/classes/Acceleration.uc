@@ -25,31 +25,29 @@ class Acceleration extends Sensor config (USAR);
 var vector lastVelocity;
 var float lastTime;
 
-simulated function ClientTimer()
+// Returns sensor data
+function String GetData()
 {
-	local String data;
 	local vector curVelocity, accel;
 	local float curTime;
 	
-	super.ClientTimer();
-	
-	curVelocity = Platform.Body.PartActor.Velocity;
-	curTime = WorldInfo.TimeSeconds; // obtain elapsed seconds
-	if (curTime != lastTime) // prevent "DivisionByZero" error! 
+	curVelocity = Velocity;
+	curTime = WorldInfo.TimeSeconds;
+	if (curTime != lastTime)
 	{
-		accel = (curVelocity - lastVelocity) / (curTime - lastTime); // acc = dv / dt
-		accel = accel << Platform.Body.PartActor.Rotation; // transform from world space to local space
+		// Transform from world space to local space. Acceleration = dv/dt
+		accel = (curVelocity - lastVelocity) / (curTime - lastTime);
+		accel = accel << Rotation;
 	}
 	else
-		accel = vect(0.00, 0.00, 0.00); // Compensate for "Division By Zero"   		
+		accel = vect(0.00, 0.00, 0.00);
 	
+	// Save last parameters and return data
 	lastVelocity = curVelocity;
 	lastTime = curTime;
-	
 	accel = class'UnitsConverter'.static.VelocityVectorFromUU(accel);
-	data = "{Name " $ ItemName $ "} {Acceleration " $ class'UnitsConverter'.static.VectorString(accel) $ "}";
-	
-	MessageSendDelegate(getHead()@data);
+	return "{Name " $ ItemName $ "} {Acceleration " $
+		class'UnitsConverter'.static.VectorString(accel) $ "}";
 }
 
 defaultproperties

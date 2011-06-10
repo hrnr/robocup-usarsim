@@ -9,8 +9,13 @@
   See NIST Administration Manual 4.09.07 b and Appendix I. 
 *****************************************************************************/
 
+/*
+ * Joint - holds non-instance information about a robot joint
+ * Runtime data goes in a JointItem instead
+ */
 class Joint extends Object config(USAR);
 
+// The type of rotation this joint can complete
 enum EJointType
 {
 	JOINTTYPE_Pitch, // Swing2
@@ -20,13 +25,15 @@ enum EJointType
 	JOINTTYPE_Fixed,
 };
 
+// The side of the robot this joint is on (useful in many cases for symmetrical robots)
 enum ESide
 {
-	SIDE_LEFT,
-	SIDE_RIGHT,
-	SIDE_NONE,
+	SIDE_Left,
+	SIDE_Right,
+	SIDE_None
 };
 
+// Type of measurement used on the joint
 enum EMeasureType
 {
 	EMEASURE_Pitch,
@@ -41,37 +48,31 @@ enum EMeasureType
 	EMEASURE_Roll_RemoveYaw
 };
 
-var EMeasureType MeasureType;
-var EJointType JointType;
+// Specification variables
+var vector Angle;
+var Part Child;
 var bool IsOneDof;
-var PhysicalItem Parent;
-var PhysicalItem Child;
-var PhysicalItem RelativeTo;
-var vector Offset; // In meters
-var vector Angle;  // In degrees
-var float MaxForce;
+var EJointType JointType;
 var float LimitHigh;
 var float LimitLow;
+// Default value only (updated value in JointItems)
+var float MaxForce;
+var EMeasureType MeasureType;
+var vector Offset;
+var Part Parent;
+var Part RelativeTo;
+// Overrides the default calculated axis
+var vector RotateAxis;
+var ESide Side;
 
 // The default way of measuring or applying the angles might not match with the defined
-// joint of the robot. Use these variables to inverse them.
+// joint of the robot; use these variables to invert them
 var bool InverseMeasure;
 var bool InverseMeasureAngle;
 
-// These options override the default calculated axis
-var vector RotateAxis;
-
-// Instance data
-var float Stiffness;
-var int TrueZero;
-var BasicHinge Constraint;
-var int CurAngularTarget;
-var float CurAngle;
-var ESide side;
-
 defaultproperties
 {
-	MaxForce=50000;
-	side=SIDE_NONE;
-	RotateAxis=(X=0, Y=0, Z=0);
+	MaxForce=50000.0
+	side=SIDE_None
+	RotateAxis=(X=0,Y=0,Z=0)
 }

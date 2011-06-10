@@ -34,7 +34,7 @@
 
 class IRSensor extends RangeSensor config (USAR);
 
-simulated function float GetRange()
+function float GetRange()
 {
     local vector HitLocation, HitNormal;
 	local vector curLoc, dir;
@@ -53,35 +53,30 @@ simulated function float GetRange()
 			break;
 		}
 		else 
-		{
             range = VSize(HitLocation - Location);
-			//range = class'UnitsConverter'.static.LengthFromUU(range);
-		}
 		
-		//LogInternal("Tracing: "@string(mtl.Material));
-		if (InStr(String(mtl.Material), "Trans") == -1)	 // The IR hitted a non-transparent material.
+		if (InStr(String(mtl.Material), "Trans") == -1)	// The IR hitted a non-transparent material.
 			break;
 		else
 			curLoc += FMax(VSize(HitLocation - curLoc), MinRange) * dir;
-
 	}
-	
 	range = range > MaxRange ? MaxRange : range;
 	range = range < MinRange ? MinRange : range;
 	
 	// Convert to standard unit
 	range = class'UnitsConverter'.static.LengthFromUU(range);
-	
 	return range;
 }
 
+// To avoid sending back extra messages, do not call super.ClientTimer()
 simulated function ClientTimer()
 {
     local String rangeData;
 	local float range;
 	
 	range = GetRange();
-    rangeData = "{Name " $ ItemName $ " Range " $ class'UnitsConverter'.static.FloatString(range) $ "}";
+    rangeData = "{Name " $ ItemName $ " Range " $
+		class'UnitsConverter'.static.FloatString(range) $ "}";
 	if (bSendRange)
 		RangeSendDelegate(self, range);
 	else
@@ -93,7 +88,7 @@ delegate RangeSendDelegate(Actor a, float range)
 	LogInternal("No range send delegate has been set");
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String confData;
 	confData = super.GetConfData();

@@ -24,18 +24,15 @@ simulated function ConvertParam()
     ScanFov = class'UnitsConverter'.static.AngleToUU(ScanFov);
 }
 
-simulated function ClientTimer()
+function String GetData()
 {
 	local String rangeData;
 	local int i;
 	local float range;
 	local rotator turn;
 
-	super.ClientTimer();
-
 	time = WorldInfo.TimeSeconds;
-
-    //from right to left
+    // from right to left
 	for (i = ScanFov / 2; i >= -ScanFov / 2; i -= Resolution)
 	{
 		if (bYaw)
@@ -49,13 +46,12 @@ simulated function ClientTimer()
 		else
 			rangeData = rangeData $ "," $ class'UnitsConverter'.static.FloatString(range, 2);
 	}
-	rangeData = "{Name " $ ItemName $ "} {Resolution " $
+	return "{Name " $ ItemName $ "} {Resolution " $
 		class'UnitsConverter'.static.Str_AngleFromUU(Resolution) $ "} {FOV " $
 		class'UnitsConverter'.static.Str_AngleFromUU(ScanFov) $ "} {Range " $ rangeData $ "}";
-	MessageSendDelegate(getHead() @ rangeData);
 }
 
-simulated function String Set(String opcode, String args)
+function String Set(String opcode, String args)
 {
 	if (Caps(opcode) == "SCAN")
 	{
@@ -65,7 +61,7 @@ simulated function String Set(String opcode, String args)
 	return "Failed";
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();

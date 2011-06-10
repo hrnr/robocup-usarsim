@@ -1,138 +1,136 @@
-class Nao extends LeggedRobot config(USAR);
+class Nao extends LeggedVehicle config(USAR);
 
 defaultproperties
 {
 	// Create BodyItem part
-	Begin Object Class=PhysicalItem Name=BodyItem
+	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.naobody'
-		Mass= 1039.48
+		Mass=1.039
 	End Object
 	Body=BodyItem
-	ComponentList.Add(BodyItem)
+	PartList.Add(BodyItem)
 
 	// Head + Joint
-	Begin Object Class=PhysicalItem Name=Head
+	Begin Object Class=Part Name=Head
 		Mesh=StaticMesh'Nao.naohead'
-		Offset=(x=0,y=0,z=0.155)
-		Mass= 520.65
+		Offset=(x=0,y=0,z=-0.155)
+		Mass=0.521
 	End Object
-	ComponentList.Add(Head)
+	PartList.Add(Head)
 
 	Begin Object Class=Joint Name=HeadPitch
 		Parent=Head
 		Child=BodyItem
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Pitch_RemoveYaw
-		Offset=(x=0,y=0,z=0.09)
-		LimitLow=-38.5
-		LimitHigh=29.5
-		RotateAxis=(x=0,y=-90,z=180)
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Pitch_RemoveYaw
+		Offset=(x=0,y=0,z=-0.09)
+		LimitLow=-.672 // -38.5
+		LimitHigh=.515 // 29.5
+		RotateAxis=(x=3.14,y=0,z=-1.57)
 	End Object
 	Joints.Add(HeadPitch)
 
 	Begin Object Class=Joint Name=HeadYaw
 		Parent=Head
 		Child=BodyItem
-		jointType=JOINTTYPE_Yaw
-		measureType=EMEASURE_Yaw
-		Offset=(x=0,y=0,z=0.09)
-		LimitLow=-119.5
-		LimitHigh=119.5
-		RotateAxis=(x=0,y=-90,z=180)
+		JointType=JointType_Yaw
+		MeasureType=EMEASURE_Yaw
+		Offset=(x=0,y=0,z=-0.09)
+		LimitLow=-2.086 // -119.5
+		LimitHigh=2.086 // 119.5
+		RotateAxis=(x=3.14,y=0,z=-1.57)
 	End Object
 	Joints.Add(HeadYaw)
 
-
-	// Create left and right arm parts
-	Begin Object Class=PhysicalItem Name=LUpperArm
+	// Left and right arm parts
+	Begin Object Class=Part Name=LUpperArm
 		Mesh=StaticMesh'Nao.naolupperarm'
-		Offset=(x=0.02,y=-0.108,z=0.075)
-		Mass=123.09
+		Offset=(x=0.02,y=-0.108,z=-0.075)
+		Mass=0.123
 	End Object
-	ComponentList.Add(LUpperArm)
+	PartList.Add(LUpperArm)
 
-	Begin Object Class=PhysicalItem Name=RUpperArm
+	Begin Object Class=Part Name=RUpperArm
 		Mesh=StaticMesh'Nao.naorupperarm'
-		Offset=(x=0.02,y=0.108,z=0.075)
-		Mass=123.09
+		Offset=(x=0.02,y=0.108,z=-0.075)
+		Mass=0.123
 	End Object
-	ComponentList.Add(RUpperArm)
+	PartList.Add(RUpperArm)
 
-	Begin Object Class=PhysicalItem Name=LElbow
+	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.09,y=-0.108,z=0.075)
-		Mass=123.09
+		Offset=(x=0.09,y=-0.108,z=-0.075)
+		Mass=0.123
 	End Object
-	ComponentList.Add(LElbow)
+	PartList.Add(LElbow)
 
-	Begin Object Class=PhysicalItem Name=RElbow
+	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.09,y=0.108,z=0.075)
-		Mass=123.09
+		Offset=(x=0.09,y=0.108,z=-0.075)
+		Mass=0.123
 	End Object
-	ComponentList.Add(RElbow)
+	PartList.Add(RElbow)
 
-	Begin Object Class=PhysicalItem Name=LLowerArm
+	Begin Object Class=Part Name=LLowerArm
 		Mesh=StaticMesh'Nao.naollowerarm'
-		Offset=(x=0.14,y=-0.098,z=0.084)
-		Mass=200
+		Offset=(x=0.14,y=-0.098,z=-0.084)
+		Mass=0.200
 	End Object
-	ComponentList.Add(LLowerArm)
+	PartList.Add(LLowerArm)
 
-	Begin Object Class=PhysicalItem Name=RLowerArm
+	Begin Object Class=Part Name=RLowerArm
 		Mesh=StaticMesh'Nao.naorlowerarm'
-		Offset=(x=0.14,y=0.098,z=0.084)
-		Mass=200
+		Offset=(x=0.14,y=0.098,z=-0.084)
+		Mass=0.200
 	End Object
-	ComponentList.Add(RLowerArm)
+	PartList.Add(RLowerArm)
 
 	// Create shoulder
 	Begin Object Class=Joint Name=LShoulderRoll
 		Parent=LUpperArm
 		Child=BodyItem
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Yaw_RemovePitch
-		Offset=(x=0,y=-0.098,z=0.075)
-		LimitLow=0.5
-		LimitHigh=94.5
-		RotateAxis=(x=90,y=-180,z=0) 
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Yaw_RemovePitch
+		Offset=(x=0,y=-0.098,z=-0.075)
+		LimitLow=.0087 // 0.5
+		LimitHigh=1.649 // 94.5
+		RotateAxis=(x=0,y=1.57,z=-3.14)
 	End Object
 	Joints.Add(LShoulderRoll)
-
 	
 	Begin Object Class=Joint Name=LShoulderPitch
 		Parent=LUpperArm
 		Child=BodyItem
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=0,y=-0.098,z=0.075) 
-		LimitLow=-119.5
-		LimitHigh=119.5
-		RotateAxis=(x=90,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=0,y=-0.098,z=-0.075) 
+		LimitLow=-2.086 // -199.5
+		LimitHigh=2.086 // 119.5
+		RotateAxis=(x=0,y=1.57,z=-3.14)
 	End Object
 	Joints.Add(LShoulderPitch)
 
 	Begin Object Class=Joint Name=RShoulderRoll
 		Parent=RUpperArm
 		Child=BodyItem
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Yaw_RemovePitch
-		Offset=(x=0,y=0.098,z=0.075)
-		LimitLow=-94.5
-		LimitHigh=-0.5
-		RotateAxis=(x=90,y=-180,z=0)
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Yaw_RemovePitch
+		Offset=(x=0,y=0.098,z=-0.075)
+		LimitLow=-1.649 // -94.5
+		LimitHigh=-.0087 // -0.5
+		RotateAxis=(x=0,y=1.57,z=-3.14)
 	End Object
 	Joints.Add(RShoulderRoll)
 
 	Begin Object Class=Joint Name=RShoulderPitch
 		Parent=RUpperArm
 		Child=BodyItem
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=0,y=0.098,z=0.075) 
-		LimitLow=-119.5
-		LimitHigh=119.5
-		RotateAxis=(x=90,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=0,y=0.098,z=-0.075) 
+		LimitLow=-2.086 // -119.5
+		LimitHigh=2.086 // 119.5
+		RotateAxis=(x=0,y=1.57,z=-3.14)
 	End Object
 	Joints.Add(RShoulderPitch)
 
@@ -141,13 +139,13 @@ defaultproperties
 		Parent=LUpperArm
 		Child=LElBow
 		IsOneDof=true;
-		jointType=JOINTTYPE_Yaw
-		measureType=EMEASURE_Roll
+		JointType=JointType_Yaw
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=0.09,y=-0.098,z=0.084)
-		LimitLow=-119.5
-		LimitHigh=119.5
-		RotateAxis=(x=-90,y=-90,z=90)
+		Offset=(x=0.09,y=-0.098,z=-0.084)
+		LimitLow=-2.086 // -119.5
+		LimitHigh=2.086 // 119.5
+		RotateAxis=(x=1.57,y=-1.57,z=-1.57)
 	End Object
 	Joints.Add(LElbowYaw)
 
@@ -155,12 +153,12 @@ defaultproperties
 		Parent=LElBow
 		Child=LLowerArm
 		IsOneDof=true;
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Yaw_RemoveRoll
-		Offset=(x=0.09,y=-0.098,z=0.084)
-		LimitLow=-89.5
-		LimitHigh=-0.5
-		RotateAxis=(x=-90,y=-90,z=-90)
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Yaw_RemoveRoll
+		Offset=(x=0.09,y=-0.098,z=-0.084)
+		LimitLow=-1.56 // -89.5
+		LimitHigh=-.0087 // -0.5
+		RotateAxis=(x=-1.57,y=-1.57,z=-1.57)
 	End Object
 	Joints.Add(LElbowRoll)
 
@@ -168,13 +166,13 @@ defaultproperties
 		Parent=RUpperArm
 		Child=RElbow
 		IsOneDof=true;
-		jointType=JOINTTYPE_Yaw
-		measureType=EMEASURE_Roll
+		JointType=JointType_Yaw
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=0.09,y=0.098,z=0.084)
-		LimitLow=-119.5
-		LimitHigh=119.5
-		RotateAxis=(x=-90,y=-90,z=90)
+		Offset=(x=0.09,y=0.098,z=-0.084)
+		LimitLow=-2.086 // -119.5
+		LimitHigh=2.086 // 119.5
+		RotateAxis=(x=1.57,y=-1.57,z=-1.57)
 	End Object
 	Joints.Add(RElbowYaw)
 
@@ -182,120 +180,112 @@ defaultproperties
 		Parent=RElbow
 		Child=RLowerArm
 		IsOneDof=true;
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Yaw_RemoveRoll
-		Offset=(x=0.09,y=0.098,z=0.084)
-		LimitLow=0.5
-		LimitHigh=89.5
-		RotateAxis=(x=-90,y=-90,z=-90)
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Yaw_RemoveRoll
+		Offset=(x=0.09,y=0.098,z=-0.084)
+		LimitLow=-.0087 // -0.5
+		LimitHigh=1.56 // 89.5
+		RotateAxis=(x=-1.57,y=-1.57,z=-1.57)
 	End Object
 	Joints.Add(RElbowRoll)
 
 	// Create leg parts
-	Begin Object Class=PhysicalItem Name=LThigh
+	Begin Object Class=Part Name=LThigh
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
-		Offset=(x=-0.01,Y=-0.055,Z=-0.155)
-		//Offset=(x=-0.020,Y=-0.055,Z=-0.155)
-		Mass=394.21
+		Offset=(x=-0.01,Y=-0.055,Z=0.155)
+		Mass=0.394
 	End Object
-	ComponentList.Add(LThigh)
+	PartList.Add(LThigh)
 
-	Begin Object Class=PhysicalItem Name=RThigh
+	Begin Object Class=Part Name=RThigh
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naorthigh'
-		Offset=(x=-0.01,y=0.055,z=-0.155)
-		//Offset=(x=-0.020,y=0.055,z=-0.155)
-		Mass=394.21
+		Offset=(x=-0.01,y=0.055,z=0.155)
+		Mass=0.394
 	End Object
-	ComponentList.Add(RThigh)
+	PartList.Add(RThigh)
 
-	Begin Object Class=PhysicalItem Name=LShank
+	Begin Object Class=Part Name=LShank
 		RelativeTo=LThigh
 		Mesh=StaticMesh'Nao.naolshank'
-		Offset=(x=0.005,y=0,z=-0.125)
-		Mass=291.59
+		Offset=(x=0.005,y=0,z=0.125)
+		Mass=0.292
 	End Object
-	ComponentList.Add(LShank)
+	PartList.Add(LShank)
 
-	Begin Object Class=PhysicalItem Name=RShank
+	Begin Object Class=Part Name=RShank
 		RelativeTo=RThigh
 		Mesh=StaticMesh'Nao.naorshank'
-		Offset=(x=0.005,y=0,z=-0.125)
-		Mass=291.59
+		Offset=(x=0.005,y=0,z=0.125)
+		Mass=0.292
 	End Object
-	ComponentList.Add(RShank)
+	PartList.Add(RShank)
 
-	Begin Object Class=PhysicalItem Name=LFoot
+	Begin Object Class=Part Name=LFoot
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
-		Offset=(x=0.02,y=0,z=-0.09)
-		//Mass=161.75
-		//Mass=1500.0
-		Mass=2500.0
-		//Mass=10000.0
+		Offset=(x=0.02,y=0,z=0.09)
+		Mass=2.5
 	End Object
-	ComponentList.Add(LFoot)
+	PartList.Add(LFoot)
 
-	Begin Object Class=PhysicalItem Name=RFoot
+	Begin Object Class=Part Name=RFoot
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
-		Offset=(x=0.02,y=0,z=-0.09)
-		//Mass=161.75
-		//Mass=1500.0
-		Mass=2500.0
-		//Mass=10000.0
+		Offset=(x=0.02,y=0,z=0.09)
+		Mass=2.5
 	End Object
-	ComponentList.Add(RFoot)
+	PartList.Add(RFoot)
 
 	// Create hip joint
 	Begin Object Class=Joint Name=LHipPitch
 		Parent=LThigh
 		Child=BodyItem
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=-0.055,z=-0.115)
-		LimitLow=-101.54
-		LimitHigh=27.82
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=-0.055,z=0.115)
+		LimitLow=-1.772 // -101.54
+		LimitHigh=.4855 // 27.82
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(LHipPitch)
 
 	Begin Object Class=Joint Name=LHipRoll
 		Parent=LThigh
 		Child=BodyItem
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Roll
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=-0.01,y=-0.055,z=-0.115)   
-		LimitLow=-42.30
-		LimitHigh=23.76
-		RotateAxis=(x=180,y=-180,z=0)
+		Offset=(x=-0.01,y=-0.055,z=0.115)   
+		LimitLow=-.738 // -42.30
+		LimitHigh=.4147 // 23.76
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(LHipRoll)
 
 	Begin Object Class=Joint Name=RHipPitch
 		Parent=RThigh
 		Child=BodyItem
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=0.055,z=-0.115)
-		LimitLow=-101.54
-		LimitHigh=27.82
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0.055,z=0.115)
+		LimitLow=-1.772 // -101.54
+		LimitHigh=.4855 // 27.82
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(RHipPitch)
 
 	Begin Object Class=Joint Name=RHipRoll
 		Parent=RThigh
 		Child=BodyItem
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Roll
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=-0.01,y=0.055,z=-0.115)
-		LimitLow=-42.30
-		LimitHigh=23.76
-		RotateAxis=(x=180,y=-180,z=0)
+		Offset=(x=-0.01,y=0.055,z=0.115)
+		LimitLow=-.7382 // -42.30
+		LimitHigh=.4147 // 23.76
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(RHipRoll)
 
@@ -305,12 +295,12 @@ defaultproperties
 		IsOneDof=true;
 		Parent=LShank
 		Child=LThigh
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=0,z=0.045)
-		LimitLow=-5.90
-		LimitHigh=121.47
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0,z=-0.045)
+		LimitLow=-.1029 // -5.90
+		LimitHigh=2.120 // 121.47
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(LKneePitch)
 
@@ -319,12 +309,12 @@ defaultproperties
 		IsOneDof=true;
 		Parent=RShank
 		Child=RThigh
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=0,z=0.045)
-		LimitLow=-5.90
-		LimitHigh=121.47
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0,z=-0.045)
+		LimitLow=-.1029 // -5.90
+		LimitHigh=2.120 // 121.47
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(RKneePitch)
 
@@ -333,12 +323,12 @@ defaultproperties
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=0,z=-0.055)
-		LimitLow=-67.96
-		LimitHigh=53.40
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-1.185 // -67.96
+		LimitHigh=.9844 // 53.40
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(LAnklePitch)
 
@@ -346,13 +336,13 @@ defaultproperties
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Roll
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=-0.01,y=0,z=-0.055)
-		LimitLow=-44.06
-		LimitHigh=22.79
-		RotateAxis=(x=180,y=-180,z=0)
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-.7689 // -44.06
+		LimitHigh=.3978 // 22.79
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(LAnkleRoll)
 
@@ -360,12 +350,12 @@ defaultproperties
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
-		jointType=JOINTTYPE_Pitch
-		measureType=EMEASURE_Pitch
-		Offset=(x=-0.01,y=0,z=-0.055)
-		LimitLow=-67.96
-		LimitHigh=53.40
-		RotateAxis=(x=180,y=-180,z=0)
+		JointType=JointType_Pitch
+		MeasureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-1.1861 // -67.96
+		LimitHigh=.9320 // 53.40
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(RAnklePitch)
 
@@ -373,13 +363,13 @@ defaultproperties
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
-		jointType=JOINTTYPE_Roll
-		measureType=EMEASURE_Roll
+		JointType=JointType_Roll
+		MeasureType=EMEASURE_Roll
 		InverseMeasureAngle=true
-		Offset=(x=-0.01,y=0,z=-0.055)
-		LimitLow=-22.27
-		LimitHigh=45.03
-		RotateAxis=(x=180,y=-180,z=0)
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-.3887 // -22.27
+		LimitHigh=.7859 // 45.03
+		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
 	Joints.Add(RAnkleRoll)
 }

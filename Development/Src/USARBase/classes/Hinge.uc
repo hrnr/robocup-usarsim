@@ -9,19 +9,23 @@
   See NIST Administration Manual 4.09.07 b and Appendix I. 
 *****************************************************************************/
 
-/*
- * Parents all static mesh physics objects added to the world.
- */
-class RobotPart extends KActor;
+class Hinge extends RB_HingeActor; 
 
 defaultproperties
 {
-	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'Nao.Dummy'
-	End Object
-
-	bWakeOnLevelStart=true;
-
-	bStatic=false
 	bNoDelete=false
+	bStatic=false
+	bDisableCollision=true
+
+	Begin Object Class=RB_ConstraintSetup Name=HingeSetup
+		bSwingLimited=true
+		bTwistLimited=false
+
+		LinearBreakThreshold=10000000000.0
+		AngularBreakThreshold=10000000000.0
+	End Object
+	ConstraintSetup=HingeSetup
+	Begin Object Name=MyConstraintInstance
+		bAngularSlerpDrive=true
+	End Object
 }

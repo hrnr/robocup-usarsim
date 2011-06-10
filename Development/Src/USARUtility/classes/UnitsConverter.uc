@@ -35,18 +35,21 @@ var config float C_AngleToURot;
 // Decibels <-> UU
 var config float C_DecibelsToUU;
 
+// Kilograms <-> UU
+var config float C_MassToUU;
+
 // Right hand or left hand coordinate system
 var config bool RightHand;
 
 // Precision of numbers when converting to string by default
-var config byte NumberPrecision;
+var config int NumberPrecision;
 
 // Converts a floating point value to a string with the specified precision
 static final function String FloatString(float Value, optional int Precision)
 {
 	local int IntPart;
 	local float FloatPart;
-	local string IntString, FloatString;
+	local String IntString, FloatString;
 
 	// Set number precision
 	if (Precision == 0)
@@ -142,6 +145,18 @@ static final function String Str_LengthVectorFromUU(vector vec, optional int Pre
 // String version of VelocityVectorFromUU
 static final function String Str_VelocityVectorFromUU(vector vec, optional int Precision) {
 	return VectorString(VelocityVectorFromUU(vec), Precision);
+}
+
+// Converts mass from UU to SI (g)
+static final function float MassFromUU(float uu)
+{
+	return uu / default.C_MassToUU;
+}
+
+// Converts mass from SI (g) to UU
+static final function float MassToUU(float g)
+{
+	return g * default.C_MassToUU;
 }
 
 // Converts length from UU to SI (m)
@@ -365,6 +380,30 @@ static final function rotator AngleVectorToUU(vector rpy)
 	return rot;
 }
 
+// Converts a vector to a rotator with NO unit conversion
+static final function rotator AngleVectorToRotator(vector rpy)
+{
+	local rotator rot;
+
+	rot.roll = rpy.x;
+	rot.pitch = rpy.y;
+	rot.yaw = rpy.z;
+
+	return rot;
+}
+
+// Converts a vector to a rotator with NO unit conversion
+static final function vector AngleRotatorToVector(rotator rot)
+{
+	local vector rpy;
+
+	rpy.x = rot.roll;
+	rpy.y = rot.pitch;
+	rpy.z = rot.yaw;
+
+	return rpy;
+}
+
 // Normalizes angle in radians between [0, 2pi], where positive rotation is clockwise. Works on any value.
 static final function float normRad_ZeroTo2PI(float rads)
 {
@@ -400,20 +439,6 @@ static final function float getC_AngleToDegree()
 	return default.C_AngleToDegree;
 }
 
-defaultproperties {
-	// 1 m=250 uu , 1 uu=4 mm
-	C_MeterToUU=250;
-
-	// pi rads=32,768 uu
-	C_AngleToDegree=57.2957795131;
-	C_AngleToURot=10430.3783505;
-	
-	// 1 dB=0.01115385 uu, 1 uu=89.65517 dB
-	// Based on the Volume Multiplier for a gunshot 
-	// and a known gun dB of about 170 from 1 m away
-	C_DecibelsToUU=0.008539412;
-	
-	RightHand=true;
-	
-	NumberPrecision=4;
+defaultproperties
+{
 }

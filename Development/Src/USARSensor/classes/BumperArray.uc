@@ -48,7 +48,7 @@ var() String testmsg;
 simulated function ConvertParam()
 {
 	super.ConvertParam(); // first convert parent object
-	uuRadius= class'UnitsConverter'.static.LengthToUU(Diameter) / 2;
+	uuRadius = class'UnitsConverter'.static.LengthToUU(Diameter) / 2;
 	nCircles = int(uuRadius / ScanStep)+1;
 	CircleStep = 2 * pi / PointsPerCircle;
 	TouchRange = class'UnitsConverter'.static.LengthToUU(TouchRange);
@@ -188,12 +188,7 @@ function String GetData()
 	return "{Name " $ ItemName $ " Touch " $ isTouch() $ "}";
 }
 
-simulated function ClientTimer()
-{
-	MessageSendDelegate(GetHead() @ GetData());
-}
-
-simulated function String GetConfData()
+function String GetConfData()
 {
 	local String outstring;
 	outstring = super.GetConfData();
@@ -209,8 +204,8 @@ simulated function String GetConfData()
 
 defaultproperties
 {
-	bDebug=true;
-	ItemType="TouchArray";
-	DrawScale3D=(X=0.1);
-	DrawScale=0.4762;
+	bDebug=true
+	ItemType="TouchArray"
+	DrawScale3D=(X=0.1)
+	DrawScale=0.4762
 }

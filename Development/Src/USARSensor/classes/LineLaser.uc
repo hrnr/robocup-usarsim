@@ -191,7 +191,8 @@ function array<vector> calculateSquareCorners(vector locationVector, vector norm
 	return squareCorners; 
 }
 
-simulated function Timer()
+// Scans for line laser hits.
+function ScanLaser()
 {
 	local vector HitLocation, dummyHitLocation, HitNormal, dummyHitNormal;
 	local vector sensorLocation;
@@ -207,8 +208,9 @@ simulated function Timer()
 	rotationQuaternion = QuatFromRotator(currentRotation);
 
 	// Ground truth data
-	sensorData = "{Location "$class'UnitsConverter'.static.Str_LengthVectorFromUU(sensorLocation, 4)$"} {Orientation "$class'UnitsConverter'.static.Str_AngleVectorFromUU(currentRotation, 4)$"}";
-	sensorData = sensorData$" {Points ";
+	sensorData = "{Location " $ class'UnitsConverter'.static.Str_LengthVectorFromUU(sensorLocation,
+		4) $ "} {Orientation " $ class'UnitsConverter'.static.Str_AngleVectorFromUU(currentRotation, 4) $ "}";
+	sensorData = sensorData $ " {Points ";
 	currentLineStartPoint.X = 0;
 	currentLineStartPoint.Y = 0;
 	currentLineStartPoint.Z = 0;
@@ -338,28 +340,30 @@ simulated function Timer()
 	sensorData = sensorData $ "}";
 }
 
-// Timing of GetData depends on "msgTimer" of the Robot
+// Orders up a scan; returns data if it succeeded
 function String GetData()
 {
-	if (ScanInterval == 0.0)
-		timer();
 	if (sensorData == "")
-		return "";
-
+	{
+		ScanLaser();
+		// Failed?
+		if (sensorData == "")
+			return "";
+	}
 	return "{Name " $ ItemName $ "} " $ sensorData;
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
-  local String outstring;
-  outstring = super.GetConfData();
-  outstring @= "{FOV " $ class'UnitsConverter'.static.FloatString(FOV) $ "}";
-  outstring @= "{Resolution " $ Resolution $ "}";
-  return outstring;
+	local String outstring;
+	outstring = super.GetConfData();
+	outstring @= "{FOV " $ class'UnitsConverter'.static.FloatString(FOV) $ "}";
+	outstring @= "{Resolution " $ Resolution $ "}";
+	return outstring;
 }
 
 defaultproperties
 {
 	ItemType="LineLaser"
-	drawscale=0.4762
+	DrawScale=0.4762
 }

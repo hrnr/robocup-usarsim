@@ -49,25 +49,10 @@ var config int NumberOfJoints;
 // TODO replace with static meshes
 var SkeletalMeshComponent SkelMeshComp;
 
-simulated function PostBeginPlay()
+// Send mission package status
+simulated function ClientTimer()
 {
-	super.PostBeginPlay();
-	CollectBoneInfo();
-}
-
-// Returns an array of the last-set positions of the joints on this mission package
-function array<float> getCommandPos()
-{
-	local array<float> Commands;
-	local int i;
-	
-	// Collect from array
-	Commands.Length = Joints.Length;
-	for (i = 0; i < Joints.Length; i++)
-	{
-		Commands[i] = Joints[i].MotorCmd;
-	}
-	return Commands;
+	MessageSendDelegate(GetHead() @ GetData());
 }
 
 // Initializes the bone information and controllers in the joint status array
@@ -88,7 +73,8 @@ function CollectBoneInfo()
 			BoneCount = NumberOfJoints + 1;
 		
 		// Find controllers
-		for (i = 1; i < BoneCount; i++) {
+		for (i = 1; i < BoneCount; i++)
+		{
 			Joints[i].BoneControl = SkelControlSingleBone(SkelMeshComp.FindSkelControl(
 				name("Joint" $ i $ "Control")));
 			Joints[i].BoneName=BoneNames[i];
@@ -102,29 +88,59 @@ function CollectBoneInfo()
 	}
 }
 
-// Scales a length vector to the draw scale
-simulated function vector scaleLengthVector(vector vin)
+// Returns an array of the last-set positions of the joints on this mission package
+function array<float> GetCommandPos()
 {
-	return vin * DrawScale;
+	local array<float> commands;
+	local int i;
+	
+	// Collect from array
+	commands.Length = Joints.Length;
+	for (i = 0; i < Joints.Length; i++)
+	{
+		commands[i] = Joints[i].MotorCmd;
+	}
+	return commands;
 }
 
-// Call ClientTimer on each scan interval
-simulated function Timer()
-{
-	super.Timer();
-	ClientTimer();
+// Gets configuration data from the mission package
+function String GetConfData() {
+	local int i;
+	local JointSpec joint1;
+	local String outStr;
+	local String jointType;
+	outStr = "{Name " $ ItemName $ "} ";
+	
+	for (i = 1; i < BoneCount; i++) {
+		joint1 = JointSpecs[i];
+		// Determine joint type
+		if (Joints[i].BoneControl.bApplyTranslation) 
+			jointType = "Prismatic";
+		else 
+			jointType = "Revolute";
+		// Create configuration string
+		outStr = outStr $ "{Link " $ i $ "} {JointType " $ jointType $
+			"} {MaxRotationSpeed " $ joint1.MaxSpeed $ "} {MaxTorque " $ 
+			joint1.MaxTorque $ "} {MinRange " $ joint1.MinLimit $ "} {MaxRange " $
+			joint1.MaxLimit $ "} ";
+	}
+	// FIXME -- add an effector on the end
+	if (false)
+		outStr = outStr $ "\r\nCONF {Type Effector} {Name " $ ItemName $
+			"} {Opcode Grip} {MaxVal 1} {MinVal 0}";
+	LogInternal(outStr);
+	return outStr;
 }
 
-// Send mission package status
-simulated function ClientTimer()
+// Gets data from this mission package (joint locations)
+function String GetData()
 {
 	local String missionPackageData;
 	local int i;
 	local float value;
 	local float torque;
-
-	missionPackageData = "MISSTA {Time " $ WorldInfo.TimeSeconds $ "} {Name " $ ItemName $ "} ";
-
+	
+	// TODO convert to static meshes
 	for (i = 1; i < BoneCount; i++) 
 	{
 		if (Joints[i].BoneControl.bApplyTranslation)
@@ -133,19 +149,90 @@ simulated function ClientTimer()
 			value = class'UnitsConverter'.static.AngleFromUU(Joints[i].RelativePos);
 		Joints[i].ActualPos = value;
 	}
-	
 	getRotation();
-	
+	missionPackageData = "";
 	for (i = 1; i < BoneCount; i++) 
 	{
 		torque = 0;		/* FIXME - how do we get this? */
 		value = Joints[i].ActualPos;
+		if (missionPackageData != "")
+			missionPackageData = missionPackageData $ " ";
 		missionPackageData = missionPackageData $ "{Link " $ i $ "} {Value " $ value $
 			"} {Torque " $ torque $ "}";
 	}
+	return missionPackageData;
+}
+
+// Gets geometry data from the mission package
+function String GetGeoData()
+{
+	local array<name> boneNames;
+	local String outStr;
+	local int i;
+	local int parentLink;
+	local vector rawBoneLocation;
+	local vector adjustedBoneLocation;
+	local rotator rawBoneRotator;
+	local vector adjustedBoneRotation;
 	
-	// Don't include the SEN header from getHead() -- this message provides its own header
-	MessageSendDelegate(missionPackageData); 
+	outStr = "{Name " $ ItemName $ "}";
+	foreach ComponentList (class 'SkeletalMeshComponent', SkelMeshComp) {
+		SkelMeshComp.GetBoneNames(boneNames);
+		LogInternal("Number of bones: " $ BoneCount);
+
+		/*
+		 * Note the the first bone is the non-moving base, and should be ignored;
+		 * we index from 1 accordingly.
+		 */
+		for (i = 1; i < BoneCount; i++) {
+			outStr = outStr $ " {Link " $ i $ "} {ParentLink ";
+			if (string(SkelMeshComp.GetParentBone(boneNames[i])) == "None")
+				parentLink = -1;
+			else {
+				parentLink = int(Mid(SkelMeshComp.GetParentBone(boneNames[i]), 5));
+				/* the parent link indexes are one more than we want them labeled,
+				so subtract one accordingly */
+				parentLink = parentLink - 1;
+			}
+			outStr = outStr $ parentLink $ "}";
+			
+			/*
+			 * We need to use relative bone locations, since we are reporting
+			 * links with respect to the base, and since we're using relative
+			 * locations we need to scale by the DrawScale.
+			 */
+			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 1);
+			adjustedBoneLocation = scaleLengthVector(
+				class'UnitsConverter'.static.LengthVectorFromUU(rawBoneLocation));
+			outStr = outStr $ " {Location " $ adjustedBoneLocation $ "}";
+			rawBoneRotator = QuatToRotator(SkelMeshComp.GetBoneQuaternion(boneNames[i], 1));
+			adjustedBoneRotation = class'UnitsConverter'.static.AngleVectorFromUU(rawBoneRotator);
+			outStr = outStr $ " {Orientation " $ adjustedBoneRotation $ "}";
+			
+			LogInternal(boneNames[i] $ " parent: " $ SkelMeshComp.GetParentBone(boneNames[i]));
+			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 0);
+			LogInternal("Raw World: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
+			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 1);
+			LogInternal("Raw Local: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
+			rawBoneRotator = QuatToRotator(SkelMeshComp.GetBoneQuaternion(boneNames[i], 0));
+			LogInternal("Raw Rotation: " $ class'UnitsConverter'.static.RotatorString(rawBoneRotator));
+			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_X); 
+			LogInternal("X-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
+			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_Y); 
+			LogInternal("Y-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
+			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_Z); 
+			LogInternal("Z-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
+		}
+		break;
+	}
+	LogInternal(outStr);
+	return outStr;
+}
+
+// Gets header information for this mission package
+simulated function String GetHead()
+{
+	return "MISSTA {Time " $ WorldInfo.TimeSeconds $ "} {Name " $ ItemName $ "}";
 }
 
 // Keeps the joint value in bounds
@@ -162,38 +249,33 @@ function float NormalizeValue(float targetValue, int Link)
 	return newValue;
 }
 
-// FIXME - merge in changes from UT3 svn526 to handle Fanuc arms
-reliable server function setThisRotation(int Link, float Value, int Order)
+// Using the Joints[] array and the member ActualPos, user can implement gearing equations
+simulated function getRotation()
 {
-	local SkelControlSingleBone BoneControl;
-	local array<float> motorCmdOld;
-	local int out_DeltaViewAxis, i;
-		
-	// Check that 'Link' is within range
-	if (Link >= 0 && Link < BoneCount) {
-		motorCmdOld.Length = BoneCount;
-		// Copy old values
-		for (i = 0; i < BoneCount; i++)
-			motorCmdOld[i] = Joints[i].MotorCmd;
-		
-		BoneControl = Joints[Link].BoneControl;
-		BoneControl.ClampRotAxis(BoneControl.BoneRotation.Yaw, out_DeltaViewAxis,
-			-32768, 32767);
-		
-		if (Order == 0)
-		{
-			// User control update
-			updateRotation(Link, Value);
-			for (i = 1; i < BoneCount; i++)
-				// Set rotation per joint if different
-				if (motorCmdOld[i] != Joints[i].MotorCmd)
-					setRotationDo(i, Joints[i].MotorCmd);
-		}
-	}
+}
+
+simulated function PostBeginPlay()
+{
+	super.PostBeginPlay();
+	CollectBoneInfo();
+}
+
+reliable server function runSequence(int Sequence)
+{
+}
+
+// Scales a length vector to the draw scale
+simulated function vector ScaleLengthVector(vector vin)
+{
+	return vin * DrawScale;
+}
+
+reliable server function setGripperToBox(int Gripper)
+{
 }
 
 // This was the old code in setThisRotation, segregated to allow better user control
-simulated function setRotationDo(int Link, float Value)
+simulated function SetRotationDo(int Link, float Value)
 {
 	local ArmJoint joint1;
 	local int newRotation;
@@ -215,27 +297,42 @@ simulated function setRotationDo(int Link, float Value)
 		// Reserved for message containing speed (right now fixed)
 		newRotation = class'UnitsConverter'.static.LengthToUU(theValue);
 	}
-	
 	// Step size based on simulation update rate
 	step = newSpeed * DT;
 	if (newRotation < joint1.RelativePos)
 		step = -step;
-	
 	// Update
 	joint1.FinalPos = newRotation;
 	joint1.Step = step;
 	joint1.Update = true;
 }
 
-simulated function updateRotation(int Link, float Value)
+// Changes the position of the given link to a new value
+reliable server function SetThisRotation(int Link, float Value, int Order)
 {
-	// User should update the rotation here
-	Joints[Link].MotorCmd = Value;
-}
-
-simulated function getRotation()
-{
-	// User should update the rotation here using ActualPos
+	local SkelControlSingleBone BoneControl;
+	local array<float> motorCmdOld;
+	local int out_DeltaViewAxis, i;
+		
+	// Check that 'Link' is within range
+	if (Link >= 0 && Link < BoneCount) {
+		motorCmdOld.Length = BoneCount;
+		// Copy old values
+		for (i = 0; i < BoneCount; i++)
+			motorCmdOld[i] = Joints[i].MotorCmd;
+		BoneControl = Joints[Link].BoneControl;
+		BoneControl.ClampRotAxis(BoneControl.BoneRotation.Yaw, out_DeltaViewAxis,
+			-32768, 32767);
+		if (Order == 0)
+		{
+			// User control update
+			updateRotation(Link, Value);
+			for (i = 1; i < BoneCount; i++)
+				// Set rotation per joint if different
+				if (motorCmdOld[i] != Joints[i].MotorCmd)
+					SetRotationDo(i, Joints[i].MotorCmd);
+		}
+	}
 }
 
 // Called each tick to move the package to its new location
@@ -280,7 +377,6 @@ function Tick(float DeltaTime)
 				else if (BoneControl.bApplyTranslation)
 					BoneControl.BoneTranslation.Z = pos;
 			}
-			
 			// Update coordinates
 			Joints[i].RelativePos = pos;
 		}
@@ -288,112 +384,17 @@ function Tick(float DeltaTime)
 	super.Tick(DT);
 }
 
-// Gets configuration data from the mission package
-simulated function String GetConfData() {
-	local int i;
-	local JointSpec joint1;
-	local String outStr;
-	local String jointType;
-	outStr = "{Name " $ ItemName $ "} ";
-	
-	for (i = 1; i < BoneCount; i++) {
-		joint1 = JointSpecs[i];
-		
-		// Determine joint type
-		if (Joints[i].BoneControl.bApplyTranslation) 
-			jointType = "Prismatic";
-		else 
-			jointType = "Revolute";
-		
-		// Create configuration string
-		outStr = outStr $ "{Link " $ i $ "} {JointType " $ jointType $
-			"} {MaxRotationSpeed " $ joint1.MaxSpeed $ "} {MaxTorque " $ 
-			joint1.MaxTorque $ "} {MinRange " $ joint1.MinLimit $ "} {MaxRange " $
-			joint1.MaxLimit $ "} ";
-	}
-	
-	// FIXME -- add an effector on the end
-	if (false)
-		outStr = outStr $ "\r\nCONF {Type Effector} {Name " $ ItemName $
-			"} {Opcode Grip} {MaxVal 1} {MinVal 0}";
-	
-	LogInternal(outStr);
-	return outStr;
-}
-
-// Gets geometry data from the mission package
-simulated function String GetGeoData() {
-	local array<name> boneNames;
-	local String outStr;
-	local int i;
-	local int parentLink;
-	local vector rawBoneLocation;
-	local vector adjustedBoneLocation;
-	local rotator rawBoneRotator;
-	local vector adjustedBoneRotation;
-	
-	outStr = "{Name " $ ItemName $ "}";
-	
-	foreach ComponentList (class 'SkeletalMeshComponent', SkelMeshComp) {
-		SkelMeshComp.GetBoneNames(boneNames);
-		LogInternal("Number of bones: " $ BoneCount);
-
-		/*
-			Note the the first bone is the non-moving base, and should be ignored;
-			we index from 1 accordingly.
-		*/
-		for (i = 1; i < BoneCount; i++) {
-			outStr = outStr $ " {Link " $ i $ "} {ParentLink ";
-			if (string(SkelMeshComp.GetParentBone(boneNames[i])) == "None")
-				parentLink = -1;
-			else {
-				parentLink = int(Mid(SkelMeshComp.GetParentBone(boneNames[i]), 5));
-				/* the parent link indexes are one more than we want them labeled,
-				so subtract one accordingly */
-				parentLink = parentLink - 1;
-			}
-			outStr = outStr $ parentLink $ "}";
-			
-			/*
-			 * We need to use relative bone locations, since we are reporting
-			 * links with respect to the base, and since we're using relative
-			 * locations we need to scale by the DrawScale.
-			 */
-			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 1);
-			adjustedBoneLocation = scaleLengthVector(
-				class'UnitsConverter'.static.LengthVectorFromUU(rawBoneLocation));
-			outStr = outStr $ " {Location " $ adjustedBoneLocation $ "}";
-			rawBoneRotator = QuatToRotator(SkelMeshComp.GetBoneQuaternion(boneNames[i], 1));
-			adjustedBoneRotation = class'UnitsConverter'.static.AngleVectorFromUU(rawBoneRotator);
-			outStr = outStr $ " {Orientation " $ adjustedBoneRotation $ "}";
-			
-			LogInternal(boneNames[i] $ " parent: " $ SkelMeshComp.GetParentBone(boneNames[i]));
-			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 0);
-			LogInternal("Raw World: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
-			rawBoneLocation = SkelMeshComp.GetBoneLocation(boneNames[i], 1);
-			LogInternal("Raw Local: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
-			rawBoneRotator = QuatToRotator(SkelMeshComp.GetBoneQuaternion(boneNames[i], 0));
-			LogInternal("Raw Rotation: " $ class'UnitsConverter'.static.RotatorString(rawBoneRotator));
-			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_X); 
-			LogInternal("X-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
-			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_Y); 
-			LogInternal("Y-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
-			rawBoneLocation = SkelMeshComp.GetBoneAxis(boneNames[i], AXIS_Z); 
-			LogInternal("Z-Axis: " $ class'UnitsConverter'.static.VectorString(rawBoneLocation));
-		}
-		break;
-	}
-	
-	LogInternal(outStr);
-	return outStr;
-}
-
-reliable server function setGripperToBox(int Gripper)
+// Call ClientTimer on each scan interval
+simulated function Timer()
 {
+	if (Platform.GetBatteryLife() > 0)
+		ClientTimer();
 }
 
-reliable server function runSequence(int Sequence)
+// Using the Joints[] array and the member MotorCmd, user can implement gearing equations
+simulated function updateRotation(int Link, float Value)
 {
+	Joints[Link].MotorCmd = Value;
 }
 
 defaultproperties

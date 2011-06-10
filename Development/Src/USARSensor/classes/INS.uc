@@ -33,7 +33,6 @@ class INS extends Sensor config (USAR);
 var config bool Drifting;
 var config float Precision;
 
-var string insData;  // Data string
 var Vector rotEst;   // Sensor data, estimated Orientation
 var Vector xyzEst;   // Sensor data, estimated Location
 var Vector rotPrev;  // Previous ground truth Orientation
@@ -46,7 +45,6 @@ var float MeanZ;
 var float MeanRotX;
 var float MeanRotY;
 var float MeanRotZ;
-
 var float driftX;
 var float driftY;
 var float driftZ;
@@ -60,20 +58,15 @@ simulated function PreBeginPlay()
 	utils = new class'Utilities';
 }
 
-simulated function PostBeginPlay()
-{
-	super.PostBeginPlay();
-	insData = "";
-}
-
 simulated function AttachItem()
 {
-	rotEst = class'UnitsConverter'.static.DeprecatedRotatorFromUU(base.Rotation);
+	super.AttachItem();
+	rotEst = class'UnitsConverter'.static.DeprecatedRotatorFromUU(Rotation);
 	// Normalize orientation between [0,2PI]
 	rotEst.x = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.x);
 	rotEst.y = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.y);
 	rotEst.z = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.z);
-	xyzEst=class'UnitsConverter'.static.LengthVectorFromUU(base.Location);
+	xyzEst = class'UnitsConverter'.static.LengthVectorFromUU(Location);
 	rotPrev = rotEst;
 	xyzPrev = xyzEst;
 	go = false;
@@ -87,12 +80,12 @@ simulated function AttachItem()
 	
 	if (Drifting)
 	{
-		MeanRotX = (FRand()-0.5) / (Precision*Precision);
-		MeanRotY = (FRand()-0.5) / (Precision*Precision);
-		MeanRotZ = (FRand()-0.5) / (Precision*Precision);
-		MeanX = (FRand()-0.5) / Precision;
-		MeanY = (FRand()-0.5) / Precision;
-		MeanZ = (FRand()-0.5) / Precision;
+		MeanRotX = (FRand() - 0.5) / (Precision * Precision);
+		MeanRotY = (FRand() - 0.5) / (Precision * Precision);
+		MeanRotZ = (FRand() - 0.5) / (Precision * Precision);
+		MeanX = (FRand() - 0.5) / Precision;
+		MeanY = (FRand() - 0.5) / Precision;
+		MeanZ = (FRand() - 0.5) / Precision;
 	}
 	else
 	{
@@ -105,7 +98,7 @@ simulated function AttachItem()
 	}
 }
 
-simulated function ClientTimer()
+function String GetData()
 {
 	local vector rotTrue;
 	local vector xyzTrue;
@@ -114,8 +107,8 @@ simulated function ClientTimer()
 	local vector deltaLoc;
 
 	// Get rate of change from ground truth
-	xyzTrue = class'UnitsConverter'.static.LengthVectorFromUU(base.Location);
-	rotTrue = class'UnitsConverter'.static.DeprecatedRotatorFromUU(base.Rotation);
+	xyzTrue = class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location);
+	rotTrue = class'UnitsConverter'.static.DeprecatedRotatorFromUU(Platform.CenterItem.Rotation);
 
 	// Calculate rate of change for time step
 	rotRate.x = class'UnitsConverter'.static.diffAngle(rotTrue.x, rotPrev.x);
@@ -124,23 +117,23 @@ simulated function ClientTimer()
 	if (go)
 	{
 		// Add gaussian noise and update orientation estimate
-		rotEst.x += rotRate.x + (rotRate.x * utils.gaussRand(MeanRotX,Sigma));
-		rotEst.y += rotRate.y + (rotRate.y * utils.gaussRand(MeanRotY,Sigma));
-		rotEst.z += rotRate.z + (rotRate.z * utils.gaussRand(MeanRotZ,Sigma));
+		rotEst.x += rotRate.x + (rotRate.x * utils.gaussRand(MeanRotX, Sigma));
+		rotEst.y += rotRate.y + (rotRate.y * utils.gaussRand(MeanRotY, Sigma));
+		rotEst.z += rotRate.z + (rotRate.z * utils.gaussRand(MeanRotZ, Sigma));
 		// Normalize orientation between [0,2PI]
 		rotEst.x = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.x);
 		rotEst.y = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.y);
 		rotEst.z = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.z);
 
-		deltaLoc.x = xyzTrue.x-xyzPrev.x;
-		deltaLoc.y = xyzTrue.y-xyzPrev.y;
-		deltaLoc.z = xyzTrue.z-xyzPrev.z;  
+		deltaLoc.x = xyzTrue.x - xyzPrev.x;
+		deltaLoc.y = xyzTrue.y - xyzPrev.y;
+		deltaLoc.z = xyzTrue.z - xyzPrev.z;  
 		dist = sqrt(  (deltaLoc.x * deltaLoc.x) +
 				   (deltaLoc.y * deltaLoc.y) +
 				   (deltaLoc.z * deltaLoc.z) );
-		xyzEst.x +=  deltaLoc.x + dist*utils.gaussRand(MeanX,Sigma);
-		xyzEst.y +=  deltaLoc.y + dist*utils.gaussRand(MeanY,Sigma);
-		xyzEst.z +=  deltaLoc.z + dist*utils.gaussRand(MeanZ,Sigma);
+		xyzEst.x +=  deltaLoc.x + dist*utils.gaussRand(MeanX, Sigma);
+		xyzEst.y +=  deltaLoc.y + dist*utils.gaussRand(MeanY, Sigma);
+		xyzEst.z +=  deltaLoc.z + dist*utils.gaussRand(MeanZ, Sigma);
 	}
 	else
 	{
@@ -148,13 +141,9 @@ simulated function ClientTimer()
 		if (rotRate.x == 0 && rotRate.y == 0 && rotRate.z == 0)
 			go = true;
 	}
-	
 	rotPrev = rotTrue;
 	xyzPrev = xyzTrue;
-	
-	insData = "{Location " $ xyzEst $ "} {Orientation " $ rotEst $ "}";
-
-	MessageSendDelegate(getHead() @ ("{Name " $ ItemName $ "} " $ insData));
+	return "{Name " $ ItemName $ "} {Location " $ xyzEst $ "} {Orientation " $ rotEst $ "}";
 }
 
 function String Set(String opcode, String args)
@@ -193,14 +182,13 @@ function String Set(String opcode, String args)
 	return rVal;
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
 	local String outstring;
 	outstring = super.GetConfData();
 	outstring = outstring @ "{ScanInterval " $ ScanInterval $ "}";
 	return outstring;
 }
-
 
 defaultproperties
 {
@@ -213,7 +201,7 @@ defaultproperties
 	bCollideWorld=false
 	DrawScale=0.9524
 
-	Begin Object Class=StaticMeshComponent Name=SKMesh01
+	Begin Object Class=StaticMeshComponent Name=StKMesh01
 		StaticMesh=StaticMesh'INSIMUSensor.Sensor'
 		CollideActors=false
 		BlockActors=false
@@ -222,6 +210,6 @@ defaultproperties
 		BlockNonZeroExtent=false
 	End Object
 
-	Components(1)=SKMesh01
-	CollisionComponent=SKMesh01
+	Components(1)=StMesh01
+	CollisionComponent=StMesh01
 }

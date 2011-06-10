@@ -46,13 +46,13 @@ defaultproperties
 	SceneCapture=SceneCapture2DComponent0
 	Components(0)=SceneCapture2DComponent0
 
-	Begin Object Class=StaticMeshComponent Name=SKMesh01
+	Begin Object Class=StaticMeshComponent Name=StMesh01
 		StaticMesh=StaticMesh'P3AT.StaticMeshDeco.P3ATDeco_BatteryPack'
 		// For new camera model: StaticMesh=StaticMesh'Camera.Mesh.Camera'
 		BlockActors=false
 	End Object
 
 	CollisionType=COLLIDE_BlockAll
-	Components(1)=SKMesh01
-	CollisionComponent=SKMesh01
+	Components(1)=StMesh01
+	CollisionComponent=StMesh01
 }

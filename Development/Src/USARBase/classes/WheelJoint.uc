@@ -9,17 +9,16 @@
   See NIST Administration Manual 4.09.07 b and Appendix I. 
 *****************************************************************************/
 
-class LeggedHinge extends BasicHinge config(USAR);
+/*
+ * Wheel - Describes a wheel on the robot.
+ */
+class WheelJoint extends Joint config(USAR);
+
+var bool bIsDriven;
+var bool bIsSteered;
 
 defaultproperties
 {
-	Begin Object Class=RB_ConstraintSetup Name=HingeSetup
-		bSwingLimited=true;
-		bTwistLimited=true;
-
-		LinearBreakThreshold=10000000000.0
-		AngularBreakThreshold=10000000000.0
-	End Object
-	
-	ConstraintSetup=HingeSetup
+	bIsDriven=true
+	bIsSteered=false
 }

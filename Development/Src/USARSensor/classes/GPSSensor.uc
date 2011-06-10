@@ -131,6 +131,7 @@ simulated function AttachItem()
 		if (ZeroZeroLocation.LongitudeDegree < 0 && ZeroZeroLocation.LongitudeMinute > 0)
 			ZeroZeroLocation.LongitudeMinute = -ZeroZeroLocation.LongitudeMinute;
 	}
+	super.AttachItem();
 }
 
 function String GetGPS()
@@ -150,7 +151,7 @@ function String GetGPS()
 		class'UnitsConverter'.static.LengthFromUU(Location.X) / ScaleLatMinute;
 	NewLocation.LongitudeDegree = ZeroZeroLocation.LongitudeDegree;
 	NewLocation.LongitudeMinute = ZeroZeroLocation.LongitudeMinute +
-		class'UnitsConverter'.static.LengthFromUU(base.Location.Y) / ScaleLonMinute;
+		class'UnitsConverter'.static.LengthFromUU(Location.Y) / ScaleLonMinute;
 	NewLocation = FixGPSCoordinates(NewLocation);
 	
 	// Convert latitude and longitude to degrees only
@@ -219,7 +220,7 @@ function String GetGPS()
 		Noise(satelliteSeen.Length)) / ScaleLatMinute;
 	NewLocation.LongitudeDegree = ZeroZeroLocation.LongitudeDegree;
 	NewLocation.LongitudeMinute = ZeroZeroLocation.LongitudeMinute +
-		(class'UnitsConverter'.static.LengthFromUU(base.Location.Y) +
+		(class'UnitsConverter'.static.LengthFromUU(Location.Y) +
 		Noise(satelliteSeen.Length)) / ScaleLonMinute;
 	NewLocation = FixGPSCoordinates(NewLocation);
 
@@ -474,20 +475,19 @@ function String GetData()
 	local String gpsData;
 	local String outstring;
 
-	gpsData = "";
 	gpsData = GetGPS();
 	if (gpsData == "")
 		return "";
 	if (numSatellites < 4)
-		outstring = "{Name " $ ItemName $ "} " $ "{Fix 0} {Satellites " $ numSatellites $ "}";
+		outstring = "{Name " $ ItemName $ "} {Fix 0} {Satellites " $ numSatellites $ "}";
 	else
 		outstring = "{Name " $ ItemName $ "} " $ gpsData $ "{Fix 1} {Satellites " $ numSatellites $ "}";
 	return outstring;
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
-	local string outstring;
+	local String outstring;
 	outstring = super.GetConfData();
 	outstring @= "{ScanInterval " $ ScanInterval $ "}";
 	return outstring;

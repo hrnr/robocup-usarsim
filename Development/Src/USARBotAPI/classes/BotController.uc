@@ -1,111 +1,86 @@
-class BotController extends UDKBot //Eric Changed: originaly it was just Bot but UT3 calls it UTBot 
-	config(USAR);
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
 
-//var config bool bDebug; //Now included in Actor
+  See NIST Administration Manual 4.09.07 b and Appendix I. 
+*****************************************************************************/
+
+class BotController extends UDKBot config(USAR);
+
 var config bool bSilentGamebot;
-
-//The socket to the agent
-// var BotConnection myConnection; // Replaced in MCD
-
-// Begin MCD
-//The necessary variables to define the socket to the agent
 var BotConnection theBotConnection;
 var repnotify BotMaster theBotMaster;
 var repnotify int theBotConnectionID;
-// End MCD
-
 var class<Pawn> PawnClass;
-//var Pawn Actor;
-
 var config float DeltaTime;
 
-// Begin MCD
 replication
 {
 	if (bNetOwner && bNetDirty && Role == ROLE_Authority) 
 		theBotMaster, theBotConnectionID;
 }
 
-simulated
-event ReplicatedEvent(name VarName)
+simulated event ReplicatedEvent(name VarName)
 {
-	LogInternal( "BotController:ReplicatedEvent");
-	if (theBotConnectionID >= 0 && theBotConnection == none && theBotMaster != none)
+	if (bDebug)
+		LogInternal("BotController:ReplicatedEvent");
+	if (theBotConnectionID >= 0 && theBotConnection == None && theBotMaster != None)
 		FindConnection();
 }
 
-simulated
-function SetConnection(BotMaster bm, int botConID)
+simulated function SetConnection(BotMaster bm, int botConID)
 {
-	LogInternal( "BotController:SetConnection");
+	if (bDebug)
+		LogInternal("BotController: SetConnection");
 	theBotMaster = bm;
 	theBotConnectionID = botConID;
-
-	if (theBotConnection == none)	
+	if (theBotConnection == None)	
 		FindConnection();
 }
 
-simulated 
-function FindConnection() 
+simulated function FindConnection() 
 {
-	LogInternal( "BotController:FindConnection");
+	if (bDebug)
+		LogInternal("BotController: FindConnection");
 	theBotConnection = theBotMaster.getConnection(theBotConnectionID);
 
-	if (theBotConnection != none) {
+	if (theBotConnection != None)
 		theBotConnection.SetController(self);
-	} else {
-		LogInternal("Unable to find matching BotConnection.");
-	}
+	else
+		LogInternal("BotController: Unable to find matching BotConnection.");
 }
 
-reliable client
-function SendKilled(String Killer, String damageType)
+reliable client function SendKilled(String Killer, String damageType)
 {
-	LogInternal( "BotController:SendKilled");
-	theBotConnection.SendLine("DIE {Killer "$Killer$"} {DamageType "$damageType$"}");
+	if (bDebug)
+		LogInternal("BotController: SendKilled");
+	theBotConnection.SendLine("DIE {Killer " $ Killer $ "} {DamageType " $ damageType $ "}");
 }
-// End MCD
 
-// Begin MCD
-reliable server
-function RemoteDestroy()
+reliable server function RemoteDestroy()
 {
-	LogInternal( "BotController:RemoteDestroy");
+	if (bDebug)
+		LogInternal("BotController: RemoteDestroy");
 	Destroy();
 }
 
-simulated
-event Destroyed()
+simulated event Destroyed()
 {
-	LogInternal( "BotController:simulated Destroyed");
-
-	if(Pawn != None)
+	if (bDebug)
+		LogInternal("BotController: Destroyed");
+	if (Pawn != None)
 		Pawn.Destroy();
-    
-    Super.Destroyed();
+    super.Destroyed();
 }
-// End MCD
-
-/* Replaced by MCD version
-function Destroyed()
-{
-	LogInternal( "BotController:Destroyed");
-    if(Pawn != None) {
-	Pawn.Destroy();
-    }
-    Super.Destroyed();
-}
-*/
 
 defaultproperties
 {
     bDebug=False
-    //DeltaTime=0.100000 // Moved to config file
-    //bSilentGamebot=True // Moved to config file
-
-	// Begin MCD
 	theBotConnectionID=-1
 	RemoteRole=ROLE_SimulatedProxy
 	bOnlyRelevantToOwner=true
-	// End MCD
 }

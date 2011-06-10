@@ -21,22 +21,17 @@
 class GroundTruth extends Sensor config (USAR);
 
 // Returns data from the ground truth sensor
-simulated function ClientTimer()
-{ 
-	local String grdTruthData;
+function String GetData()
+{
 	local vector rotTrue;
-	 
-	super.ClientTimer();
 	
-	rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(base.Rotation);
-	grdTruthData = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(base.Location) $ "} {Orientation " $
-		rotTrue $ "}";
-	
-	MessageSendDelegate(getHead() @ grdTruthData);
+	rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Platform.CenterItem.Rotation);
+	return "{Name " $ ItemName $ "} {Location " $
+		class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location) $
+		"} {Orientation " $ rotTrue $ "}";
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();

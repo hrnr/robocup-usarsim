@@ -43,7 +43,7 @@
 
 class IR2Sensor extends RangeSensor config (USAR);
 
-simulated function float GetRange()
+function float GetRange()
 {
     local vector HitLocation, HitNormal;
     local vector curLoc, dir;
@@ -62,7 +62,7 @@ simulated function float GetRange()
 			break;
 		}
 		else
-            range = VSize(HitLocation-Location);
+            range = VSize(HitLocation - Location);
 		
 		if (InStr(String(mtl.Material), "Trans") == -1) // The IR hitted a non-transparent material.
 			break;
@@ -72,7 +72,6 @@ simulated function float GetRange()
 			range = VSize(curLoc - Location);
 		}
 	}
-	
 	range = range > MaxRange ? MaxRange : range;
 	range = range < MinRange ? MinRange : range;
 
@@ -81,6 +80,7 @@ simulated function float GetRange()
 	return range;
 }
 
+// To avoid sending back extra messages, do not call super.ClientTimer()
 simulated function ClientTimer()
 {
     local String rangeData;
@@ -100,7 +100,7 @@ delegate RangeSendDelegate(Actor a, float range)
 	LogInternal("No range send delegate has been set");
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String confData;
 	confData = super.GetConfData();

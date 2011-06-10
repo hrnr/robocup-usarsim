@@ -27,19 +27,17 @@ var config int numberOfCones;
 // define how many traces per cone should be send
 var config int tracesPerCone;
 
-
-// convert all variables of this object read from the UTUSAR.ini from SI to UU units
 simulated function ConvertParam()
 {
-	super.ConvertParam(); 
-	// convert beamAngle which is given in rad
+	super.ConvertParam();
+	
+	// Convert beamAngle which is given in rad
 	beamAngle = class'UnitsConverter'.static.AngleToUU(beamAngle);
 }
 
-// ClientTimer() is called every ScanInterval seconds (SetTimer() in 
-// parent RangeSensor)
-// The idea is to send out Traces along the surface of cones of different size.
-simulated function ClientTimer()
+// GetData() is called every ScanInterval seconds (by the ClientTimer method in Sensor)
+// The idea is to send out Traces along the surface of cones of different size
+function String GetData()
 {
 	local vector HitLocation, HitNormal, rotatedSensorDirection;
 	local float currentRange;
@@ -48,7 +46,6 @@ simulated function ClientTimer()
 	local rotator sensorDirection;
 	local quat QuatRotationAxis;
 	local float angleOfIncidence;
-	local String rangeData;
 
 	// 180 degrees are 2^15 (32768) unreal angle units
 	// NOTE: The numberOfCones and tracesPerCone have a massive impact on
@@ -57,7 +54,6 @@ simulated function ClientTimer()
 	// installed on the robot.
 	// But if there are lets say 8 (P2AT) 60 traces still lead to a very 
 	// low performance (at least with ut2004 on linux).
-
 	sensorDirection = Rotation;
 
 	// send one Trace straight ahead
@@ -70,12 +66,10 @@ simulated function ClientTimer()
 	for (i = 1; i <= numberOfCones; i++)
 	{
 		sensorDirection.Pitch += int(beamAngle / 2 / numberOfCones);
-		
 		for (j = 0; j < tracesPerCone; j++)
 		{
 			QuatRotationAxis = QuatFromAxisAndAngle(vector(Rotation), 2 * Pi / tracesPerCone * j);
 			rotatedSensorDirection = QuatRotateVector(QuatRotationAxis, vector(sensorDirection));
-
 			if (Trace(HitLocation, HitNormal, Location + MaxRange * rotatedSensorDirection,
 				Location, true) != None)
 			{
@@ -88,18 +82,16 @@ simulated function ClientTimer()
 			}
 		}
 	}
-
 	if (currentRange > MaxRange) currentRange = MaxRange;
 	if (currentRange < MinRange) currentRange = MinRange;
 
 	// convert UU to SI units for output
 	currentRange = class'UnitsConverter'.static.LengthFromUU(currentRange);
-	rangeData = "{Name " $ ItemName $ "} {Range " $
+	return "{Name " $ ItemName $ "} {Range " $
 		class'UnitsConverter'.static.FloatString(currentRange) $ "}";
-	MessageSendDelegate(getHead() @ rangeData);
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
 	local String outstring;
 	outstring = super.GetConfData();

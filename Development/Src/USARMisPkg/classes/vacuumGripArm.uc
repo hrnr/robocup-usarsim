@@ -24,15 +24,14 @@ var EPhysics originalPhysics;
 var EPhysics platformPhysics;
 var int vacuumBreak; // 0 - platform will be blocked by collisions, 1 - vacuum will break due to collisions.
 
-// convert all variables of this object read from the UTUSAR.ini from SI to UU units
 simulated function ConvertParam()
 {
-	super.ConvertParam(); // first convert parent object
+	super.ConvertParam();
 	suctionLength = -class'UnitsConverter'.static.LengthToUU(suctionLength);
 	lastBoneOffset = -class'UnitsConverter'.static.LengthToUU(lastBoneOffset) * DrawScale;
 }
 
-simulated function postBeginPlay()
+simulated function PostBeginPlay()
 {
 	local array<name> boneNames;
 	
@@ -92,8 +91,8 @@ function gripObject(Actor _object)
 	// Compute vehiclePoseInGripped
 	boxTransformInv = class'PoseMath'.static.PoseInvert(boxTransform);
 	// Overloaded use of boxTransform to represent vehicle pose
-	boxTransform.tran = Platform.Body.PartActor.Location;
-	boxTransform.rot = QuatFromRotator(Platform.Body.PartActor.Rotation);
+	boxTransform.tran = Platform.CenterItem.Location;
+	boxTransform.rot = QuatFromRotator(Platform.CenterItem.Rotation);
 	vehiclePoseInGripped = class'PoseMath'.static.PosePoseMult(boxTransformInv, boxTransform);
 }
 
@@ -116,8 +115,8 @@ simulated function Tick(float DT2)
 	if (dirty == 1)
 	{
 		dirty = 0;
-		Platform.Body.PartActor.ForceUpdateComponents();	
-		Platform.Body.PartActor.SetPhysics(platformPhysics);
+		Platform.CenterItem.ForceUpdateComponents();	
+		Platform.CenterItem.SetPhysics(platformPhysics);
 	}
 	else if (dirty > 1)
 		dirty--;
@@ -160,13 +159,13 @@ simulated function Tick(float DT2)
 				else
 				{
 					// Restore physics
-					platformPhysics = Platform.Body.PartActor.Physics;
+					platformPhysics = Platform.CenterItem.Physics;
 					tempMatrix.tran = grippedObject.Location;
 					tempMatrix.rot = QuatFromRotator(grippedObject.Rotation);
 					tempMatrix = class'PoseMath'.static.PosePoseMult(tempMatrix, vehiclePoseInGripped);
-					Platform.Body.PartActor.SetPhysics(PHYS_None);
-					Platform.Body.PartActor.SetLocation(tempMatrix.tran);
-					Platform.Body.PartActor.SetRotation(QuatToRotator(tempMatrix.rot));
+					Platform.CenterItem.SetPhysics(PHYS_None);
+					Platform.CenterItem.SetLocation(tempMatrix.tran);
+					Platform.CenterItem.SetRotation(QuatToRotator(tempMatrix.rot));
 					dirty = 2;
 				}
 			}

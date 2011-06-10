@@ -42,28 +42,30 @@ function getPoint(Actor a, float range)
 	
 	forward.x = 1;
 	range = class 'UnitsConverter'.static.LengthToUU(range);
-	pt = ((forward*range) >> a.Rotation) + a.Location; //global position of pt
+	pt = ((forward * range) >> a.Rotation) + a.Location; //global position of pt
 	pt = (pt - Location) << Rotation; // in sensor coordinates
 	pt = class'UnitsConverter'.static.LengthVectorFromUU(pt); // in meters
 	if (bSendPoints)
-		PointSendDelegate(self,pt);
+		PointSendDelegate(self, pt);
 	else
 	{
 		if (PclData == "")
-			PclData = "" $ pt;
+			PclData = class'UnitsConverter'.static.VectorString(pt);
 		else
-			PclData = PclData $ pt;
+			PclData = PclData $ " " $ class'UnitsConverter'.static.VectorString(pt);
 	}
 }
 
+// Don't call parent to avoid sending excess data if bSendRange is true
 simulated function ClientTimer()
 {
 	local String data;
-	if (!bSendPoints)
+	
+	if (!bSendPoints && pclData != "")
 	{
 		data = pclData;
 		pclData = "";
-		MessageSendDelegate(getHead() $ "{Name " $ItemName $ "}" $ "{" $ data $ "}");
+		MessageSendDelegate(getHead() $ "{Name " $ ItemName $ "}" $ "{" $ data $ "}");
 	}
 }
 
@@ -71,8 +73,8 @@ simulated event Destroyed()
 {
 	local int i;
 	super.Destroyed();
-	for (i = 0; i < sensors.Length; i++)
-		sensors[i].Destroy();
+	for (i = 0; i < Sensors.Length; i++)
+		Sensors[i].Destroy();
 }
 
 defaultproperties

@@ -10,19 +10,18 @@
 *****************************************************************************/
 
 /*
- * Parents all static mesh based objects on a robot.
+ * Parents all static mesh physics objects added to the world.
  */
-class PhysicalItem extends Object config(USAR);
+class PhysicalItem extends Item;
 
-var vector Direction;
-var bool IsDummy;
-var float Mass;
-var StaticMesh Mesh;
-var vector Offset;
-var RobotPart PartActor;
-var PhysicalItem RelativeTo;
+// The part which instantiated this item
+var Part Spec;
 
 defaultproperties
 {
-	Mass=100.0
+	Begin Object Name=StaticMeshComponent0
+		StaticMesh=StaticMesh'Nao.Dummy'
+	End Object
+
+	bWakeOnLevelStart=true
 }

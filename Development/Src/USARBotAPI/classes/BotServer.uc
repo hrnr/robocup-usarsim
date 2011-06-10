@@ -1,99 +1,76 @@
-class BotServer extends TcpLink
-	config(USAR);
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
 
-// Begin MCD
+  See NIST Administration Manual 4.09.07 b and Appendix I. 
+*****************************************************************************/
+
+class BotServer extends TcpLink config(USAR);
+
 var BotMaster Parent;
-// End MCD
-
 var config int ListenPort;
 var config int MaxConnections;
-
-var string gameClass;
+var String gameClass;
 var bool bBound;
 var int ConnectionCount;
 
-// Begin MCD
 function PreBeginPlay()
 {
-	Super.PreBeginPlay();
-	
+	super.PreBeginPlay();
+
 	Parent = BotMaster(Owner);
-
-	BindPort( ListenPort );
+	BindPort(ListenPort);
 	Listen();
-
 	if (bDebug)
-		LogInternal("BotServer: Bound to port "$ListenPort);	
-}
-// End MCD
-
-//should never happen - accepted connections should be forwarded to a botconnection
-event ReceivedText( string Text )
-{
-    if(bDebug)
-    	LogInternal("ReceivedTest in Server - "$Text);
+		LogInternal("BotServer: Bound to port " $ ListenPort);	
 }
 
-/* Replaced by MCD version
-function PreBeginPlay()
+event ReceivedText(String Text)
 {
-	Super.PreBeginPlay();
-    
-    if(!bBound)
-    {
-		BindPort( ListenPort );
-        
-		if(bDebug)
-    		LogInternal("BotServer bound to port "$ListenPort);
-        
-		Listen();
-        bBound = true;
-    }
-}*/
+    if (bDebug)
+    	LogInternal("BotServer: Received text " $ Text);
+}
 
-//should never happen - accepted connections should be forwarded to a botconnection
 event Accepted()
 {
-    if(bDebug)
-    	LogInternal("Accepted connection in BotServer");
+    if (bDebug)
+    	LogInternal("BotServer: Accepted connection");
 }
 
-//called everytime a new botconnection is spawned
-event GainedChild( Actor C )
+// Called every time a new BotConnection is spawned
+event GainedChild(Actor C)
 {
-	Super.GainedChild(C);
+	super.GainedChild(C);
 	ConnectionCount++;
-
-	LogInternal( "BotServer:GainedChild called" );
-    //BotConnection(C).Parent = self;
-	// if too many connections, close down listen.
-	if(MaxConnections > 0 && ConnectionCount > MaxConnections && LinkState == STATE_Listening)
+	
+	LogInternal("BotServer: Connection established");
+	// If too many connections, close down listen
+	if (MaxConnections > 0 && ConnectionCount > MaxConnections && LinkState == STATE_Listening)
 	{
-		if(bDebug)
-    		LogInternal("BotServer: Too many connections - closing down Listen.");
+		LogInternal("BotServer: Too many connections - stopping listener");
 		Close();
 	}
 }
 
 event LostChild( Actor C )
 {
-	Super.LostChild(C);
+	super.LostChild(C);
 	ConnectionCount--;
 
-	LogInternal( "BotServer:LostChild called" );
-
+	LogInternal("BotServer: Connection closed");
 	// if closed due to too many connections, start listening again.
-	if(ConnectionCount <= MaxConnections && LinkState != STATE_Listening)
+	if (ConnectionCount <= MaxConnections && LinkState != STATE_Listening)
 	{
-		if(bDebug)
-    		LogInternal("BotServer: Listening again - connections have been closed.");
+		LogInternal("BotServer: Resuming listening");
 		Listen();
 	}
 }
 
 defaultproperties
 {
-    // ListenPort=3000 // Moved to config file
-     //MaxConnections=64 // Moved to config file
-     AcceptClass=Class'USARBotAPI.BotConnection'
+	AcceptClass=Class'USARBotAPI.BotConnection'
 }

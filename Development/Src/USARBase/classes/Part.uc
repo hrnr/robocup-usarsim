@@ -9,25 +9,25 @@
   See NIST Administration Manual 4.09.07 b and Appendix I. 
 *****************************************************************************/
 
-class BasicHinge extends RB_HingeActor; 
+/*
+ * Parents all static mesh based objects on a robot.
+ */
+class Part extends Object config(USAR);
+
+// The direction the part points towards.
+var vector Direction;
+// Whether the part is a "dummy" part. Dummy parts get a special mesh on construction.
+var bool IsDummy;
+// The part's mass in kilograms.
+var float Mass;
+// The static mesh used for rendering.
+var StaticMesh Mesh;
+// The location of the object relative to its "RelativeTo" parent.
+var vector Offset;
+// The object from which this part's offset is relative.
+var Part RelativeTo;
 
 defaultproperties
 {
-	bNoDelete=false;
-	bStatic=false;
-	bDisableCollision=true;
-
-	Begin Object Class=RB_ConstraintSetup Name=HingeSetup
-		bSwingLimited=true;
-		bTwistLimited=false;
-
-		LinearBreakThreshold=10000000000.0
-		AngularBreakThreshold=10000000000.0
-	End Object
-	
-	ConstraintSetup=HingeSetup
-	
-	Begin Object Name=MyConstraintInstance
-		bAngularSlerpDrive=false;
-	End Object
+	Mass=0.0
 }

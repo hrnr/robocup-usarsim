@@ -15,8 +15,6 @@ var config bool IsOpen;
 
 simulated function ClientTimer()
 { 
-	super.ClientTimer();
-	
 	if (IsOpen)
 		MessageSendDelegate(getHead() @ "{Open}");
 	else
@@ -26,7 +24,6 @@ simulated function ClientTimer()
 defaultproperties
 {
 	ItemType="Gripper";
-	
 	DrawScale=1;
 	
 	Begin Object Class=StaticMeshComponent Name=StMesh01

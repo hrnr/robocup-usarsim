@@ -17,8 +17,8 @@
   */
 class Odometry extends Sensor config (USAR);
 
-var int LFTire; // left front tire
-var int RFTire; // right rear tire
+var JointItem lFTire; // left front tire
+var JointItem rFTire; // right rear tire
 var float oldLeft; // old report on left position
 var float oldRight; // old report on right position
 var float oldTime; // time of last cycle
@@ -31,108 +31,122 @@ var float yPos;  // y position of vehicle
 replication
 {
 	if (bNetOwner && bNetDirty && ROLE == ROLE_Authority)
-		wheelRadius, LFTire, RFTire;
+		wheelRadius, lFTire, rFTire;
 }
 
 simulated function AttachItem()
 {
+	super.AttachItem();
 	FindTires();
 }
 
-simulated function FindTires()
+function FindTires()
 {
-	local BasicWheel wheel;
 	local int i;
-	LFTire = -1;
-	RFTire = -1;
+	local JointItem ji;
 	
+	LFTire = None;
+	RFTire = None;
 	if (!Platform.IsA('SkidSteeredVehicle'))
 	{
-		LogInternal("Odometer: Not attached to a SkidSteeredVehicle!");
+		LogInternal("Odometer: Not attached to a SkidSteeredVehicle");
 		SetTimer(0, false);
 		return;
 	}
 	
-	for (i = 0; i < Platform.Joints.Length; i++)
-		if (Platform.Joints[i].isA('BasicWheel')) {
-			wheel = BasicWheel(Platform.Joints[i]);
-			if (wheel.Side == SIDE_Left) {
-				// Left side?
-				if (lFTire == -1)
-					lFTire = i;
-				else if (wheel.Offset.X > Platform.Joints[lFTire].Offset.X)
-					lFTire = i;
-			} else if (wheel.Side == SIDE_Right) {
-				// Right side!
-				if (rFTire == -1)
-					rFTire = i;
-				else if (wheel.Offset.X > Platform.Joints[rFTire].Offset.X)
-					rFTire = i;
+	// Search for wheels and find the LF and RR tires
+	for (i = 0; i < Platform.Parts.Length; i++)
+		if (Platform.Parts[i].IsJoint())
+		{
+			ji = JointItem(Platform.Parts[i]);
+			if (ji.JointIsA('WheelJoint'))
+			{
+				if (ji.Spec.Side == SIDE_Left)
+				{
+					// Left side?
+					if (lFTire == None)
+						lFTire = ji;
+					else if (ji.Spec.Offset.X > lFTire.Spec.Offset.X)
+						lFTire = ji;
+				}
+				else if (ji.Spec.Side == SIDE_Right)
+				{
+					// Right side!
+					if (rFTire == None)
+						rFTire = ji;
+					else if (ji.Spec.Offset.X > rFTire.Spec.Offset.X)
+						rFTire = ji;
+				}
 			}
 		}
 	
-	oldLeft = Platform.Joints[LFTire].CurAngle;
-	oldRight = Platform.Joints[RFTire].CurAngle;
-	oldTime = WorldInfo.TimeSeconds;
-	wheelRadius = Platform.GetProperty("WheelRadius");
-	lDist = Platform.Joints[RFTire].Offset.Y * 2;
-	lDist = class'UnitsConverter'.static.LengthFromUU(lDist);
-	wheelRadius = class'UnitsConverter'.static.LengthFromUU(wheelRadius);
+	if (lFTire == None || rFTire == None)
+	{
+		LogInternal("Odometry: Could not find wheels!");
+		SetTimer(0, false);
+	}
+	else
+	{
+		oldLeft = lFTire.CurAngle;
+		oldRight = rFTire.CurAngle;
+		oldTime = WorldInfo.TimeSeconds;
+		wheelRadius = Platform.GetProperty("WheelRadius");
+	}
+	
+	// FIXME Not properly computed
+	lDist = rFTire.Spec.Offset.Y * 2;
 }
 
-simulated function ClientTimer()
+function String GetData()
 {
-	local String odometryData;
 	local float diff;
 	local float rollsOver;
 	local float leftSpin, rightSpin; // will contain the spin speed of the wheels in rad/sec
 	local float newTime;
 	local float timeDiff;
 	local float xVel, yVel, thetaVel;
-	 
-	super.ClientTimer();
 	
 	newTime = WorldInfo.TimeSeconds;
 	timeDiff = newTime - oldTime;
+	if (timeDiff < 0.000001 || lFTire == None || rFTire == None)
+		return "";
 	
-	if (timeDiff < 0.000001)
-		return;
-		
+	// Odometry on LF tire
 	oldTime = newTime;
-	
-	diff = Platform.Joints[LFTire].CurAngle - oldLeft;
+	diff = LFTire.CurAngle - oldLeft;
 	if (diff < -180)
 		rollsOver = 1;
 	else if (diff > 180)
 		rollsOver = -1;
 	else
 		rollsOver = 0;
-	oldLeft = Platform.Joints[LFTire].CurAngle;
+	oldLeft = LFTire.CurAngle;
 	leftSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
-
-	diff = Platform.Joints[RFTire].CurAngle - oldRight;
+	
+	// Odometry on RF tire
+	diff = RFTire.CurAngle - oldRight;
 	if (diff < -180)
 		rollsOver = 1;
 	else if (diff > 180)
 		rollsOver = -1;
 	else
 		rollsOver = 0;
-	oldRight = Platform.Joints[RFTire].CurAngle;
+	oldRight = RFTire.CurAngle;
 	rightSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
 	
+	// Compute changes in pose
 	xVel = cos(theta) * (wheelRadius * (rightSpin + leftSpin) / 2);
 	yVel = sin(theta) * (wheelRadius * (rightSpin + leftSpin) / 2);
 	thetaVel = wheelRadius * (leftSpin - rightSpin) / lDist;
-	
 	xPos += xVel * timeDiff;
 	yPos += yVel * timeDiff;
 	theta += thetaVel * timeDiff;
 	
-	odometryData = "{Name " $ ItemName $ "} {Pose " $ xPos $ "," $ yPos $ "," $ theta $ "}";
-	MessageSendDelegate(getHead() @ odometryData);
+	// Send the odometry data
+	return "{Name " $ ItemName $ "} {Pose " $ xPos $ "," $ yPos $ "," $ theta $ "}";
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();

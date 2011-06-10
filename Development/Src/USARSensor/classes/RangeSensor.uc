@@ -22,11 +22,11 @@ simulated function ConvertParam()
 	MinRange = class'UnitsConverter'.static.LengthToUU(MinRange);
 }
 
-//   Retreives the range data using trace and reports this range in UU or meters depending on presence of converter
-//   The Trace method traces a line to point of first collision.
-//   Takes actor calling trace collision properties into account.
-//   Returns first hit actor, level if hit level, or none if hit nothing
-simulated function float GetRange()
+// Retreives the range data using trace and reports this range in UU or meters depending on presence of converter
+//  The Trace method traces a line to point of first collision.
+//  Takes actor calling trace collision properties into account.
+//  Returns first hit actor, level if hit level, or none if hit nothing
+function float GetRange()
 {
     local vector HitLocation,HitNormal;
     local float range;
@@ -41,17 +41,18 @@ simulated function float GetRange()
 	return range;
 }
 
+// Don't call parent to avoid sending excess data if bSendRange is true
 simulated function ClientTimer()
 {
-    local String rangeData;
 	local float range;
+	
 	curRot = Rotation;
 	range = getRange();
-    rangeData = "{Name " $ ItemName $ " Range " $ class'UnitsConverter'.static.FloatString(range) $ "}";
 	if (bSendRange)
 		RangeSendDelegate(self, range);
 	else
-		MessageSendDelegate(getHead() @ rangeData);
+		MessageSendDelegate(getHead() @ "{Name " $ ItemName $ " Range " $
+			class'UnitsConverter'.static.FloatString(range) $ "}");
 }
 
 delegate RangeSendDelegate(Actor a, float range)
@@ -59,7 +60,7 @@ delegate RangeSendDelegate(Actor a, float range)
 	LogInternal("No range send delegate has been set");
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();

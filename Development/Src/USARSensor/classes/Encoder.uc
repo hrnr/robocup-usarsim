@@ -31,7 +31,7 @@ struct EncodedWheel
 	var float Old;
 	var int Spin;
 	var int Tick;
-	var BasicWheel Wheel;
+	var JointItem Wheel;
 };
 
 var float oldTime;
@@ -53,74 +53,72 @@ simulated function ConvertParam()
 
 simulated function FindTires()
 {
-	local BasicWheel wheel;
+	local JointItem ji;
 	local int i;
 	local int index;
 	
 	if (!Platform.IsA('SkidSteeredVehicle'))
 	{
-		LogInternal("Encoder: Not attached to a SkidSteeredVehicle!");
+		LogInternal("Encoder: Not attached to a SkidSteeredVehicle");
 		SetTimer(0, false);
 		return;
 	}
 	
 	index = 0;
-	for(i = 0; i < Platform.Joints.Length; i++)
-		if (Platform.Joints[i].isA('BasicWheel'))
+	for(i = 0; i < Platform.Parts.Length; i++)
+		if (Platform.Parts[i].isJoint())
 		{
-			wheel = BasicWheel(Platform.Joints[i]);
-			Wheels[index].Wheel = wheel;
-			Wheels[index].Old = wheel.CurAngle;
-			Wheels[index].Spin = 0;
-			Wheels[index].Tick = 0;
-			index++;
+			ji = JointItem(Platform.Parts[i]);
+			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
+			{
+				Wheels[index].Wheel = ji;
+				Wheels[index].Old = ji.CurAngle;
+				Wheels[index].Spin = 0;
+				Wheels[index].Tick = 0;
+				index++;
+			}
 		}
 	oldTime = WorldInfo.TimeSeconds;
 }
 
+// Updates the encoder tick positions
 simulated function ClientTimer()
 {
-	local int totalSpin; // will contain the spin speed of the wheels in rad/sec
-	local String encData;
+	local int totalSpin;
 	local float diff;
 	local int i;
 	local float newTime;
 	local float timeDiff;
 	
-	super.ClientTimer();
 	newTime = WorldInfo.TimeSeconds;
 	timeDiff = newTime - oldTime;	
 	if (timeDiff < 0.000001)
 		return;
-		
 	oldTime = newTime;
 	for (i = 0; i < Wheels.Length; i++)
 	{
 		diff = Wheels[i].Wheel.CurAngle - Wheels[i].Old;
 		
+		// Convert back to UU for tick reasons?
 		Wheels[i].Old = Wheels[i].Wheel.CurAngle;
-		Wheels[i].Spin += int((degToRad * diff) * 32768 / PI);
-		
+		Wheels[i].Spin += int(diff * 32768 / PI);
 		totalSpin = (1 + RandRange(-Noise, Noise)) * Wheels[i].Spin;
-		Wheels[i].Tick = int(normalAngle(totalSpin) / uuResolution);
-		
-		// Here I will look for the wheel number used in ItemName
-		if (InStr(ItemName, "W" $ i) > 0)
-		{
-			encData = "{Name " $ ItemName $ "} {Tick " $ Wheels[i].Tick $ "}";
-			MessageSendDelegate(getHead() @ encData);
-		}
+		Wheels[i].Tick = int(NormalAngle(totalSpin) / uuResolution);
 	}
+	// Fire parent method to send the message
+	super.ClientTimer();
 }
 
 // Normalizes angles from -65536 to 65536
-simulated function float normalAngle(float ang)
+simulated function float NormalAngle(float ang)
 {
+	ang = ang % 65536;
 	if (ang > 65536) ang -= 65536;
 	if (ang < -65536) ang += 65536;
 	return ang;
 }
 
+// Allows encoder to be reset
 function String Set(String opcode, String args)
 {
 	local int i;
@@ -136,17 +134,25 @@ function String Set(String opcode, String args)
 	return "Failed";
 }
 
-function String GetData()
+// Retrieves encoder data
+simulated function String GetData()
 {
 	local int i;
+	local String outstring;
 	
+	outstring = "";
 	for (i = 0; i < Wheels.Length; i++)
-		// Look for the wheel number in ItemName, ItemName should contain a W and # of wheel to report
+		// Look for the wheel number in ItemName, should contain a W and # of wheel(s) to report
 		if (InStr(ItemName, "W" $ i) > 0)
-			return "{Name " $ ItemName $ "} {Tick " $ Wheels[i].Tick $ "}";
+		{
+			if (outstring != "")
+				outstring = outstring $ " ";
+			outstring = outstring $ "{Name W" $ i $ "} {Tick " $ Wheels[i].Tick $ "}";
+		}
+	return outstring;
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();

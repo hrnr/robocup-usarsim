@@ -14,70 +14,70 @@ class CasterSkidRobot extends SkidSteeredVehicle config(USAR);
 defaultproperties
 {
 	// Create body part
-	Begin Object Class=PhysicalItem Name=BodyItem
+	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Basic.BasicBody'
-		Mass=1000
+		Mass=1.0
 	End Object
 	Body=BodyItem
-	ComponentList.Add(BodyItem)
+	PartList.Add(BodyItem)
 
 	// Caster
-	Begin Object Class=PhysicalItem Name=CasterWheel
+	Begin Object Class=Part Name=CasterWheel
 		Mesh=StaticMesh'Basic.CasterWheel'
-		Offset=(x=.384, y=0,z=-.136)
+		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
-		Mass=100
+		Mass=0.07
 	End Object
-	ComponentList.Add(CasterWheel)
+	PartList.Add(CasterWheel)
 
 	// Back Right Wheel
-	Begin Object Class=PhysicalItem Name=BRWheel
+	Begin Object Class=Part Name=BRWheel
 		Mesh=StaticMesh'Basic.BasicWheel'
-		Offset=(x=-.3,y=.576,z=-.064)
+		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		Mass=100
+		Mass=0.1
 	End Object
-	ComponentList.Add(BRWheel)
+	PartList.Add(BRWheel)
 
 	// Back Left Wheel
-	Begin Object Class=PhysicalItem Name=BLWheel
+	Begin Object Class=Part Name=BLWheel
 		Mesh=StaticMesh'Basic.BasicWheel'
-		Offset=(x=-.3,y=-.576,z=-.064)
+		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		Mass=100
+		Mass=0.1
 	End Object
-	ComponentList.Add(BLWheel)
+	PartList.Add(BLWheel)
 
-	Begin Object Class=BasicWheel Name=BRWheelRoll
+	Begin Object Class=WheelJoint Name=BRWheelRoll
 		Parent=BodyItem
 		Child=BRWheel
-		jointType=JOINTTYPE_Roll
-		side=SIDE_RIGHT;
-		Offset=(x=-.3,y=.576,z=-.064)
+		JointType=JOINTTYPE_Roll
+		Side=SIDE_RIGHT
+		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(x=0,y=90,z=0)
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BRWheelRoll)
 
-	Begin Object Class=BasicWheel Name=BLWheelRoll
+	Begin Object Class=WheelJoint Name=BLWheelRoll
 		Parent=BodyItem
 		Child=BLWheel
-		jointType=JOINTTYPE_Roll
-		side=SIDE_LEFT;
-		Offset=(x=-.3,y=-.576,z=-.064)
+		JointType=JOINTTYPE_Roll
+		Side=SIDE_LEFT
+		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(x=0,y=90,z=0)
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BLWheelRoll)
 
-	Begin Object Class=BasicWheel Name=CasterWheelJoint
+	Begin Object Class=WheelJoint Name=CasterWheelJoint
 		Parent=BodyItem
 		Child=CasterWheel
-		jointType=JOINTTYPE_FREE
-		side=SIDE_NONE
-		Offset=(x=.384, y=0,z=-.136)
+		JointType=JOINTTYPE_FREE
+		Side=SIDE_NONE
+		bIsDriven=false
+		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
-		RotateAxis=(x=0,y=90,z=0)
 	End Object
 	Joints.Add(CasterWheelJoint)
 }

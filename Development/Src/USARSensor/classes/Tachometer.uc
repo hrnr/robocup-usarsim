@@ -20,10 +20,9 @@ class Tachometer extends Sensor config (USAR);
 
 struct TachWheel
 {
-	var BasicWheel Wheel;
+	var JointItem Wheel;
 	var float OldPosition;
 };
-
 var array<TachWheel> Wheels;
 var float OldTime;
 
@@ -35,30 +34,34 @@ simulated function AttachItem()
 
 simulated function FindTires()
 {
-	local BasicWheel wheel;
+	local JointItem ji;
 	local int i;
 	local int index;
 	
 	if (!Platform.IsA('SkidSteeredVehicle'))
 	{
-		LogInternal("Tachometer: Not attached to a SkidSteeredVehicle!");
+		LogInternal("Tachometer: Not attached to a SkidSteeredVehicle");
 		SetTimer(0, false);
 		return;
 	}
 	
 	index = 0;
-	for(i = 0; i < Platform.Joints.Length; i++)
-		if (Platform.Joints[i].isA('BasicWheel'))
+	for(i = 0; i < Platform.Parts.Length; i++)
+		if (Platform.Parts[i].isJoint())
 		{
-			wheel = BasicWheel(Platform.Joints[i]);
-			Wheels[index].Wheel = wheel;
-			Wheels[index].OldPosition = wheel.CurAngle;
-			index++;
+			ji = JointItem(Platform.Parts[i]);
+			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
+			{
+				Wheels[index].Wheel = ji;
+				Wheels[index].OldPosition = ji.CurAngle;
+				index++;
+			}
 		}
 	oldTime = WorldInfo.TimeSeconds;
 }
 
-simulated function ClientTimer()
+// Returns data from the tachometer
+function String GetData()
 {
 	local String tachometerData;
 	local int i;
@@ -71,32 +74,30 @@ simulated function ClientTimer()
 	local String posString;
 	local float positionOut;
 	
-	super.ClientTimer();
 	newTime = WorldInfo.TimeSeconds;
 	timeDiff = newTime - oldTime;
 	oldTime = newTime;
 	tachometerData = "{Name " $ ItemName $ "} {Vel ";
 	posString = "{Pos ";
-	
 	for (i = 0; i < Wheels.Length; i++)
 	{
 		diff = Wheels[i].Wheel.CurAngle - Wheels[i].OldPosition;
-		if (diff < -180)
+		if (diff < -PI)
 			rollsOver = 1;
-		else if (diff > 180)
+		else if (diff > PI)
 			rollsOver = -1;
 		else
 			rollsOver = 0;
 		oldPos = Wheels[i].Wheel.CurAngle;
 		Wheels[i].OldPosition = oldPos;
 		if (oldPos <= 0)
-			positionOut = (oldPos + 360) * degToRad;
-		else if (oldPos >= 360)
-			positionOut = (oldPos - 360) * degToRad;
+			positionOut = oldPos + 2 * PI;
+		else if (oldPos >= 2 * PI)
+			positionOut = oldPos - 2 * PI;
 		else
 			positionOut = oldPos * degToRad;
 			
-		myVelocity = degToRad * (rollsOver * 360. + diff) / timeDiff;
+		myVelocity = degToRad * (rollsOver * 2 * PI + diff) / timeDiff;
 		if (i == 0)
 		{
 			posString = posString $ positionOut;
@@ -108,11 +109,10 @@ simulated function ClientTimer()
 			tachometerData = tachometerData $ "," $ myVelocity;
 		}
 	}
-	tachometerData = tachometerData $ "} " $ posString $ "}";
-	MessageSendDelegate(getHead() @ tachometerData);
+	return tachometerData $ "} " $ posString $ "}";
 }
 
-simulated function String GetConfData()
+function String GetConfData()
 {
     local String outstring;
 	outstring = super.GetConfData();
@@ -142,6 +142,6 @@ defaultproperties
 	End Object
 
 	CollisionType=COLLIDE_BlockAll
-	Components(1)=StMesh01  //Necessary for the skeletal mesh to actually become part of the SICK class
-	CollisionComponent=StMesh01 //Not sure if necessary, haven't tested yet.
+	Components(1)=StMesh01
+	CollisionComponent=StMesh01
 }

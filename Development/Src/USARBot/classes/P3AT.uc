@@ -14,266 +14,275 @@ class P3AT extends SkidSteeredVehicle config(USAR);
 defaultproperties
 {
 	// Create body part
-	Begin Object Class=PhysicalItem Name=ChassisMiddle
+	Begin Object Class=Part Name=ChassisMiddle
 		Mesh=StaticMesh'P3AT.ChassisMiddle'
-		Mass=1000
-		Offset=(x=.048,y=-.004,z=.032)
+		Mass=1.0
+		Offset=(X=.048,Y=-.004,Z=-.032)
 	End Object
 	Body=ChassisMiddle
-	ComponentList.Add(ChassisMiddle)
+	PartList.Add(ChassisMiddle)
 	
 	// Create bottom part
-	Begin Object Class=PhysicalItem Name=ChassisBottom
+	Begin Object Class=Part Name=ChassisBottom
 		Mesh=StaticMesh'P3AT.ChassisBottom'
-		Mass=1000
-		Offset=(x=.012,y=.008,z=-.076)
+		Mass=0.5
+		Offset=(X=.012,Y=.008,Z=.076)
 	End Object
-	ComponentList.Add(ChassisBottom)
+	PartList.Add(ChassisBottom)
 
 	// Front Right Wheel
-	Begin Object Class=PhysicalItem Name=FRWheel
+	Begin Object Class=Part Name=FRWheel
 		Mesh=StaticMesh'P3AT.Wheel'
-		Offset=(x=.126,y=.212,z=-.054)
-		Direction=(X=0,Y=180,Z=0)
-		Mass=100
+		Offset=(X=.126,Y=.212,Z=.054)
+		// 180 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=3.142)
+		Mass=0.1
 	End Object
-	ComponentList.Add(FRWheel)
+	PartList.Add(FRWheel)
 
 	// Front Left Wheel
-	Begin Object Class=PhysicalItem Name=FLWheel
+	Begin Object Class=Part Name=FLWheel
 		Mesh=StaticMesh'P3AT.Wheel'
-		Offset=(x=.126,y=-.212,z=-.054)
-		Mass=100
+		Offset=(X=.126,Y=-.212,Z=.054)
+		Mass=0.1
 	End Object
-	ComponentList.Add(FLWheel)
+	PartList.Add(FLWheel)
 
 	// Back Right Wheel
-	Begin Object Class=PhysicalItem Name=BRWheel
+	Begin Object Class=Part Name=BRWheel
 		Mesh=StaticMesh'P3AT.Wheel'
-		Offset=(x=-.126,y=.212,z=-.054)
-		Direction=(X=0,Y=180,Z=0)
-		Mass=100
+		Offset=(X=-.126,Y=.212,Z=.054)
+		// 180 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=3.142)
+		Mass=0.1
 	End Object
-	ComponentList.Add(BRWheel)
+	PartList.Add(BRWheel)
 
 	// Back Left Wheel
-	Begin Object Class=PhysicalItem Name=BLWheel
+	Begin Object Class=Part Name=BLWheel
 		Mesh=StaticMesh'P3AT.Wheel'
-		Offset=(x=-.126,y=-.212,z=-.054)
-		Mass=100
+		Offset=(X=-.126,Y=-.212,Z=.054)
+		Mass=0.1
 	End Object
-	ComponentList.Add(BLWheel)
+	PartList.Add(BLWheel)
 
 	// Front right right Bumper
-	Begin Object Class=PhysicalItem Name=FRRBumper
+	Begin Object Class=Part Name=FRRBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=.292,y=.22,z=-.092)
-		Direction=(X=0,Y=5.63,Z=0)
-		Mass=20
+		Offset=(X=.292,Y=.22,Z=.092)
+		// 5.63 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=0.098)
+		Mass=0.05
 	End Object
-	ComponentList.Add(FRRBumper)
+	PartList.Add(FRRBumper)
 
 	// Front right Bumper
-	Begin Object Class=PhysicalItem Name=FRBumper
+	Begin Object Class=Part Name=FRBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=.296,y=.112,z=-.092)
-		Mass=20
+		Offset=(X=.296,Y=.112,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(FRBumper)
+	PartList.Add(FRBumper)
 
 	// Front Bumper
-	Begin Object Class=PhysicalItem Name=FBumper
+	Begin Object Class=Part Name=FBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=.296,y=0,z=-.092)
-		Mass=20
+		Offset=(X=.296,Y=0,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(FBumper)
+	PartList.Add(FBumper)
 
 	// Front left Bumper
-	Begin Object Class=PhysicalItem Name=FLBumper
+	Begin Object Class=Part Name=FLBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=.296,y=-.112,z=-.092)
-		Mass=20
+		Offset=(X=.296,Y=-.112,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(FLBumper)
+	PartList.Add(FLBumper)
 
 	// Front left left Bumper
-	Begin Object Class=PhysicalItem Name=FLLBumper
+	Begin Object Class=Part Name=FLLBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=.292,y=-.22,z=-.092)
-		Direction=(X=0,Y=-5.63,Z=0)
-		Mass=20
+		Offset=(X=.292,Y=-.22,Z=.092)
+		// -5.63 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=-0.098)
+		Mass=0.05
 	End Object
-	ComponentList.Add(FLLBumper)
+	PartList.Add(FLLBumper)
 
 	// Back right right Bumper
-	Begin Object Class=PhysicalItem Name=BRRBumper
+	Begin Object Class=Part Name=BRRBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=-.292,y=.22,z=-.092)
-		Direction=(X=0,Y=-5.63,Z=0)
-		Mass=20
+		Offset=(X=-.292,Y=.22,Z=.092)
+		// -5.63 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=-0.098)
+		Mass=0.05
 	End Object
-	ComponentList.Add(BRRBumper)
+	PartList.Add(BRRBumper)
 
 	// back right Bumper
-	Begin Object Class=PhysicalItem Name=BRBumper
+	Begin Object Class=Part Name=BRBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=-.296,y=.112,z=-.092)
-		Mass=20
+		Offset=(X=-.296,Y=.112,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(BRBumper)
+	PartList.Add(BRBumper)
 
 	// back Bumper
-	Begin Object Class=PhysicalItem Name=BBumper
+	Begin Object Class=Part Name=BBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=-.296,y=0,z=-.092)
-		Mass=20
+		Offset=(X=-.296,Y=0,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(BBumper)
+	PartList.Add(BBumper)
 
 	// back left Bumper
-	Begin Object Class=PhysicalItem Name=BLBumper
+	Begin Object Class=Part Name=BLBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=-.296,y=-.112,z=-.092)
-		Mass=20
+		Offset=(X=-.296,Y=-.112,Z=.092)
+		Mass=0.05
 	End Object
-	ComponentList.Add(BLBumper)
+	PartList.Add(BLBumper)
 
 	// back left left Bumper
-	Begin Object Class=PhysicalItem Name=BLLBumper
+	Begin Object Class=Part Name=BLLBumper
 		Mesh=StaticMesh'P3AT.Bumper'
-		Offset=(x=-.292,y=-.22,z=-.092)
-		Direction=(X=0,Y=5.63,Z=0)
-		Mass=20
+		Offset=(X=-.292,Y=-.22,Z=.092)
+		// 5.63 degree rotation about Z axis
+		Direction=(X=0,Y=0,Z=0.098)
+		Mass=0.05
 	End Object
-	ComponentList.Add(BLLBumper)
+	PartList.Add(BLLBumper)
 
-	Begin Object Class=BasicWheel Name=FRWheelRoll
+	Begin Object Class=WheelJoint Name=FRWheelRoll
 		Parent=ChassisMiddle
 		Child=FRWheel
 		JointType=JOINTTYPE_Roll
-		Side=SIDE_RIGHT
-		Offset=(x=.126,y=.212,z=-.054)
-		RotateAxis=(x=0,y=90,z=0)
+		Side=SIDE_Right
+		Offset=(X=.126,Y=.212,Z=.054)
+		// 90 degree rotation about Z axis
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FRWheelRoll)
 
-	Begin Object Class=BasicWheel Name=FLWheelRoll
+	Begin Object Class=WheelJoint Name=FLWheelRoll
 		Parent=ChassisMiddle
 		Child=FLWheel
 		JointType=JOINTTYPE_Roll
-		Side=SIDE_LEFT
-		Offset=(x=.126,y=-.212,z=-.054)
-		RotateAxis=(x=0,y=90,z=0)
+		Side=SIDE_Left
+		Offset=(X=.126,Y=-.212,Z=.054)
+		// 90 degree rotation about Z axis
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FLWheelRoll)
 
-	Begin Object Class=BasicWheel Name=BRWheelRoll
+	Begin Object Class=WheelJoint Name=BRWheelRoll
 		Parent=ChassisMiddle
 		Child=BRWheel
 		JointType=JOINTTYPE_Roll
-		Side=SIDE_RIGHT
-		Offset=(x=-.126,y=.212,z=-.054)
-		RotateAxis=(x=0,y=90,z=0)
+		Side=SIDE_Right
+		Offset=(X=-.126,Y=.212,Z=.054)
+		// 90 degree rotation about Z axis
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BRWheelRoll)
 
-	Begin Object Class=BasicWheel Name=BLWheelRoll
+	Begin Object Class=WheelJoint Name=BLWheelRoll
 		Parent=ChassisMiddle
 		Child=BLWheel
 		JointType=JOINTTYPE_Roll
-		Side=SIDE_LEFT
-		Offset=(x=-.126,y=-.212,z=-.054)
-		RotateAxis=(x=0,y=90,z=0)
+		Side=SIDE_Left
+		Offset=(X=-.126,Y=-.212,Z=.054)
+		// 90 degree rotation about Z axis
+		RotateAxis=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BLWheelRoll)
 
 	Begin Object Class=Joint Name=ChassisFixed
 		Child=ChassisBottom
 		Parent=ChassisMiddle
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.012,y=.008,z=-.076)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.012,Y=.008,Z=.076)
 	End Object
 	Joints.Add(ChassisFixed)
 
 	Begin Object Class=Joint Name=FRRBumperFixed
 		Child=ChassisBottom
 		Parent=FRRBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.292,y=.22,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.292,Y=.22,Z=.092)
 	End Object
 	Joints.Add(FRRBumperFixed)
 
 	Begin Object Class=Joint Name=FRBumperFixed
 		Child=ChassisBottom
 		Parent=FRBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.296,y=.112,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.296,Y=.112,Z=.092)
 	End Object
 	Joints.Add(FRBumperFixed)
 
 	Begin Object Class=Joint Name=FBumperFixed
 		Child=ChassisBottom
 		Parent=FBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.296,y=0,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.296,Y=0,Z=.092)
 	End Object
 	Joints.Add(FBumperFixed)
 
 	Begin Object Class=Joint Name=FLBumperFixed
 		Child=ChassisBottom
 		Parent=FLBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.296,y=-.112,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.296,Y=-.112,Z=.092)
 	End Object
 	Joints.Add(FLBumperFixed)
 
 	Begin Object Class=Joint Name=FLLBumperFixed
 		Child=ChassisBottom
 		Parent=FLLBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=.292,y=-.22,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=.292,Y=-.22,Z=.092)
 	End Object
 	Joints.Add(FLLBumperFixed)
 
 	Begin Object Class=Joint Name=BRRBumperFixed
 		Child=ChassisBottom
 		Parent=BRRBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=-.292,y=.22,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=-.292,Y=.22,Z=.092)
 	End Object
 	Joints.Add(BRRBumperFixed)
 
 	Begin Object Class=Joint Name=BRBumperFixed
 		Child=ChassisBottom
 		Parent=BRBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=-.296,y=.112,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=-.296,Y=.112,Z=.092)
 	End Object
 	Joints.Add(BRBumperFixed)
 
 	Begin Object Class=Joint Name=BBumperFixed
 		Child=ChassisBottom
 		Parent=BBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=-.296,y=0,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=-.296,Y=0,Z=.092)
 	End Object
 	Joints.Add(BBumperFixed)
 
 	Begin Object Class=Joint Name=BLBumperFixed
 		Child=ChassisBottom
 		Parent=BLBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=-.296,y=-.112,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=-.296,Y=-.112,Z=.092)
 	End Object
 	Joints.Add(BLBumperFixed)
 
 	Begin Object Class=Joint Name=BLLBumperFixed
 		Child=ChassisBottom
 		Parent=BLLBumper
-		JointType=JOINTTYPE_FIXED
-		Offset=(x=-.292,y=-.22,z=-.092)
+		JointType=JOINTTYPE_Fixed
+		Offset=(X=-.292,Y=-.22,Z=.092)
 	End Object
 	Joints.Add(BLLBumperFixed)
-
 }

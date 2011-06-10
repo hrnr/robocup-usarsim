@@ -14,18 +14,18 @@
  */
 class Effector extends Item abstract;
 
+// Sets the delegate so messages get sent
 simulated function AttachItem()
 {
 	MessageSendDelegate = Platform.ReceiveMessageFromEffector;
 }
 
+// Fires ClientTimer when necessary
 simulated function Timer()
 {
-	super.Timer();
-	ClientTimer();
+	if (Platform.GetBatteryLife() > 0)
+		ClientTimer();
 }
-
-simulated function ClientTimer();
 
 // Gets the header of the effector data
 simulated function String GetHead()
@@ -34,7 +34,7 @@ simulated function String GetHead()
 }
 
 // Gets the geometry data
-simulated function String GetGeoData()
+function String GetGeoData()
 {
 	local String outstring;
 	

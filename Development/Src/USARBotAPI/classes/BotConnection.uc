@@ -112,7 +112,7 @@ event InitReceived(ParsedMessage parsedMessage)
 event SetController(BotController bc)
 {
 	local USARVehicle usarVehicle;
-
+	
 	if (bDebug)
 		LogInternal("BotConnection:SetController");
 	theBot = bc;
@@ -120,7 +120,8 @@ event SetController(BotController bc)
 	if (theBot != None)
 	{
 		usarVehicle = USARVehicle(theBot.pawn);
-		usarVehicle.MessageSendDelegate = receiveMessage;
+		if (usarVehicle != None)
+			usarVehicle.MessageSendDelegate = receiveMessage;
 	}
 	gotoState('monitoring', 'Running');
 }
@@ -200,9 +201,8 @@ function ProcessAction(ParsedMessage parsedMessage)
 	if (theBot == None) return;
 	usarVehicle = USARVehicle(theBot.Pawn);
 	
-	// Vehicle must have a battery for these messages
-	if (usarVehicle != None && (usarVehicle.VehicleBattery == None ||
-			!usarVehicle.VehicleBattery.isDead()))
+	// Vehicle must have battery life remaining for these messages
+	if (usarVehicle != None && usarVehicle.GetBatteryLife() > 0)
 		switch(Caps(parsedMessage.GetCommandType()))
 		{
 		case "TEST":
@@ -451,7 +451,7 @@ function ProcessSet(ParsedMessage parsedMessage)
 	if (Opcode == "Angle")
 	{
 		if (theBot.Pawn.IsA('LeggedRobot'))
-			LeggedRobot(theBot.Pawn).SetJointAngle(JointName,
+			LeggedVehicle(theBot.Pawn).SetJointAngle(JointName,
 				class'UnitsConverter'.static.AngleToUU(float(parsedMessage.GetArgVal("Params"))));
 		else if (JointName != "AllAngles" && theBot.Pawn.IsA('USARVehicle'))
 			USARVehicle(theBot.Pawn).SetJointAngle(JointName,
@@ -461,11 +461,11 @@ function ProcessSet(ParsedMessage parsedMessage)
 				class'UnitsConverter'.static.AngleToUU(float(parsedMessage.GetArgVal("Params"))));
 	}
 	else if (Opcode == "Stiffness" && theBot.Pawn.IsA('LeggedRobot'))
-		LeggedRobot(theBot.Pawn).SetJointStiffnessByName(Name(JointName),
+		LeggedVehicle(theBot.Pawn).SetJointStiffnessByName(Name(JointName),
 			float(parsedMessage.GetArgVal("Params")));
 	else if (Opcode == "MaxTorque" && theBot.Pawn.IsA('WheeledVehicle'))
 	{
-			// TODO WheeledVehicle(theBot.Pawn).SetMaxTorque(float(parsedMessage.GetArgVal("Params")));
+		WheeledVehicle(theBot.Pawn).SetMaxTorque(float(parsedMessage.GetArgVal("Params")));
 	}
 }
 

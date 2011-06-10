@@ -19,17 +19,19 @@ struct SpecItem {
 	var class<Actor> ItemClass;
 	var class<Actor> VehicleClass;
 	var name Parent;
-	var string ItemName;
+	var String ItemName;
 	var name Platform;
 	var vector Position;
 	var vector Direction;
 	var rotator uuDirection;
 };
 
+// Array storing all configured parts from the INI file
+var config array<SpecItem> AddParts;
 // The body (true parent) of the robot
-var PhysicalItem Body;
-// Components declared in the default properties.
-var array<PhysicalItem> ComponentList;
+var Part Body;
+// The item at the center of the robot
+var PhysicalItem CenterItem;
 // The vehicle dimensions set by each vehicle class
 var vector Dimensions;
 // Headlights on?
@@ -38,55 +40,21 @@ var bool HeadLights;
 var array<Joint> Joints;
 // Timer used for sending out sensor data
 var config float MsgTimer;
-// Array storing all configured parts from the INI file
-var config array<SpecItem> Parts;
+// Components declared in the default properties
+var array<Part> PartList;
 // Array storing all active parts on the robot
-var array<Item> PartsList;
+var array<Item> Parts;
 // The weight of the vehicle assigned in the INI file
 var config float Weight;
 
-// Used by subclasses to send periodic status messages to MessageSendDelegate() to appear on the socket
-simulated function ClientTimer();
+// Called by Timer() while the battery is alive to send back status messages if necessary
+simulated function ClientTimer()
+{
+}
 
-// Convert all variables of this class read from the INI file from SI to UU units
+// Called to convert parameters from SI to UU
 simulated function ConvertParam()
 {
-	local int i;
-	for (i = 0; i < Parts.length; i++)
-	{
-		Parts[i].Position = class'UnitsConverter'.static.LengthVectorToUU(Parts[i].Position);
-		Parts[i].Direction = class'UnitsConverter'.static.DeprecatedRotatorVectorToUU(Parts[i].Direction);
-	}
-}
-
-// Creates a new item of the specified class
-function Item CreateItem(SpecItem Desc, Actor Parent)
-{
-	local vector RotX, RotY, RotZ;
-	local Item theItem;
-	
-	if (Parent == None)
-		theItem = None;
-	else {
-		// Compute parent information
-		GetAxes(Parent.Rotation, RotX, RotY, RotZ);
-		
-		// Create item actor
-		theItem = Item(spawn(Desc.ItemClass, Parent, , Parent.Location + Desc.Position.X *
-			RotX + Desc.Position.Y * RotY + Desc.Position.Z * RotZ));
-		theItem.setHardAttach(true);
-		
-		// Initialize item
-		theItem.init(Desc.ItemName, Parent, Desc.Position, Desc.Direction, self, Desc.Parent);
-		LogInternal("New Item: " $ theItem);
-	}
-	return theItem;
-}
-
-// Creates a part (overriden in USARVehicle to provide proper initialization)
-reliable server function Item CreatePart(int ID)
-{
-	return CreateItem(Parts[ID], Body.PartActor);
 }
 
 // Called when the robot is destroyed
@@ -95,8 +63,14 @@ simulated event Destroyed()
 	local int i;
 	
 	// Remove all parts
-	for (i = 0; i < PartsList.length; i++)
-		PartsList[i].Destroy();
+	for (i = 0; i < Parts.length; i++)
+		Parts[i].Destroy();
+}
+
+// Gets the estimated life remaining in the battery; negative is a dead battery
+simulated function int GetBatteryLife()
+{
+	return 99999;
 }
 
 // Gets configuration data for this item
@@ -111,14 +85,33 @@ function String GetGeoData()
 	return "{Name " $ self.Class $ "}";
 }
 
+// Gets a part's actor representation using its spec name
+simulated function PhysicalItem GetPartByName(name partName)
+{
+	local int i;
+	local PhysicalItem p;
+	
+	// Search for part (slow!)
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].isA('PhysicalItem'))
+		{
+			p = PhysicalItem(Parts[i]);
+			if (Caps(String(p.Spec.Name)) == Caps(String(partName)))
+				return p;
+		}
+	
+	// Not found
+	return None;
+}
+
 // Gets a robot-wide property to fix build-order problems (wheel radius primarily)
-function float getProperty(String key)
+simulated function float GetProperty(String key)
 {
 	return 0.0;
 }
 
 // Callback mechanism which uses a delegate to send messages
-simulated delegate MessageSendDelegate(string msg)
+simulated delegate MessageSendDelegate(String msg)
 {
 	LogInternal("BaseVehicle: no callback registered for MessageSendDelegate: " @ msg);
 }
@@ -133,25 +126,19 @@ simulated function PreBeginPlay()
 // Called after play has begun to create and instantiate all subcomponents
 simulated function PostBeginPlay()
 {
-	local int i;
-	
 	// Start timer
 	super.PostBeginPlay();
 	SetTimer(msgTimer, true);
-	
-	// Create parts from specifications
-	for (i = 0; i < Parts.Length; i++) 
-		PartsList[i] = CreatePart(i);
 }
 
 // Receives messages from the Effectors and forwards to MessageSendDelegate
-simulated function ReceiveMessageFromEffector(string msg)
+simulated function ReceiveMessageFromEffector(String msg)
 {
 	MessageSendDelegate(msg);
 }
 
 // Receives messages from the Sensors and forwards to MessageSendDelegate
-simulated function ReceiveMessageFromSensor(string msg)
+simulated function ReceiveMessageFromSensor(String msg)
 {
 	MessageSendDelegate(msg);
 }
@@ -160,6 +147,7 @@ simulated function ReceiveMessageFromSensor(string msg)
 reliable server function SetHeadLights(bool light)
 {
 	HeadLights = light;
+	LogInternal("BaseVehicle: Set headlights of '" $ String(Name) $ "' to " $ light);
 }
 
 // Called each tick (frame)
@@ -174,15 +162,20 @@ simulated function Timer()
 defaultproperties 
 {
 	// Default properties
-	bConsiderAllStaticMeshComponentsForStreaming=true;
-	HeadLights=false;
+	bConsiderAllStaticMeshComponentsForStreaming=true
+	bNoDelete=false
+	bStatic=false
+	HeadLights=false
 
 	// Collision properties
-	BlockRigidBody=true
-	bBlockActors=true
-	bCollideActors=true
-	bCollideWorld=true
-	bPathColliding=true
-	bProjTarget=true
-	bCollideWhenPlacing=true
+	BlockRigidBody=false
+	bBlockActors=false
+	bCollideActors=false
+	bCollideWorld=false
+	bPathColliding=false
+	bProjTarget=false
+	bCollideWhenPlacing=false
+	
+	// No physics required, this is a controller actor
+	Physics=PHYS_None
 }

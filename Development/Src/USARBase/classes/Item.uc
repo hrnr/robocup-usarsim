@@ -10,26 +10,21 @@
 *****************************************************************************/
 
 /*
- * Base class for all USAR addons, including effectors, sensors, and mission packages.
+ * Item - Base class for all USAR addons, including effectors, sensors, and mission packages.
  */
-class Item extends Actor config(USAR) abstract;
+class Item extends KActor config(USAR) abstract;
 
-// The item position and direction
-var vector Direction;
-var vector Position;
 // The item name
 var repnotify String ItemName;
 // The item type and mount point
 var name ItemMount;
 var String ItemType;
-// Robot on which the item is mounted
-var BaseVehicle Platform;
-// Item's weight set in the configuration
-var config float Weight;
 // True if the item is on a client
 var bool IsClient;
 // True if the item is an owner
 var bool IsOwner;
+// Robot on which the item is mounted
+var BaseVehicle Platform;
 // Interval between calls to ScanInterval()
 var config float ScanInterval;
 
@@ -38,36 +33,14 @@ simulated function AttachItem()
 {
 }
 
-// Convert all variables of this class read from the UTUSAR.ini from SI to UU units
-simulated function ConvertParam()
+// Called by Timer during certain conditions - where processing should be done
+simulated function ClientTimer()
 {
 }
 
-// Initializes this item
-function Init(String iName, Actor parent, vector pos, vector dir, BaseVehicle veh, name mount)
+// Convert all variables of this class read from the UTUSAR.ini from SI to UU units
+simulated function ConvertParam()
 {
-	local rotator rot;
-	
-	// Default mount to HARD
-	if (mount == 'None')
-		ItemMount = 'HARD';
-	else
-		ItemMount = mount;
-	
-	// Initialize variables
-    Platform = veh;
-	SetName(iName);
-	SetBase(parent);
-	rot.Roll = dir.X;
-	rot.Pitch = dir.Y;
-	rot.Yaw = dir.Z;
-	SetRelativeRotation(rot);
-	Position = pos;
-	Direction = dir;
-	
-	// Make object visible
-	SetHidden(false);
-	AttachItem();
 }
 
 // Gets the header of the configuration data
@@ -92,6 +65,30 @@ simulated function String GetGeoHead()
 function String GetGeoData()
 {
 	return "{Name " $ ItemName $ "}";
+}
+
+// Initializes this item
+function Init(String iName, BaseVehicle veh, name mount)
+{
+	// Default mount to HARD
+	if (mount == 'None')
+		ItemMount = 'HARD';
+	else
+		ItemMount = mount;
+	
+	// Initialize variables
+    Platform = veh;
+	SetName(iName);
+	
+	// Make object visible
+	SetHidden(false);
+	AttachItem();
+}
+
+// Convenience function to check whether this Item is actually a joint
+simulated function bool IsJoint()
+{
+	return false;
 }
 
 // Case insensitively checks to see if this item's name matches
@@ -167,12 +164,14 @@ reliable server function SetName(String iName)
 
 defaultproperties
 {
-	bAlwaysRelevant=true;
-	bHardAttach=true;
-	bUpdateSimulatedPosition=true;
-	DrawScale=1.0;
-	IsClient=false;
-	IsOwner=false;
-	ItemType="Item";
-	RemoteRole=ROLE_SimulatedProxy;
+	bAlwaysRelevant=true
+	bHardAttach=true
+	bNoDelete=false
+	bStatic=false
+	bUpdateSimulatedPosition=true
+	DrawScale=1.0
+	IsClient=false
+	IsOwner=false
+	ItemType="Item"
+	RemoteRole=ROLE_SimulatedProxy
 }
