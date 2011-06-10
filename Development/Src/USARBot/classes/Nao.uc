@@ -1,11 +1,12 @@
 class Nao extends LeggedVehicle config(USAR);
 
+
 defaultproperties
 {
 	// Create BodyItem part
 	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.naobody'
-		Mass=1.039
+		Mass=1039.48
 	End Object
 	Body=BodyItem
 	PartList.Add(BodyItem)
@@ -14,15 +15,15 @@ defaultproperties
 	Begin Object Class=Part Name=Head
 		Mesh=StaticMesh'Nao.naohead'
 		Offset=(x=0,y=0,z=-0.155)
-		Mass=0.521
+		Mass=520.65
 	End Object
 	PartList.Add(Head)
 
 	Begin Object Class=Joint Name=HeadPitch
 		Parent=Head
 		Child=BodyItem
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Pitch_RemoveYaw
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Pitch_RemoveYaw
 		Offset=(x=0,y=0,z=-0.09)
 		LimitLow=-.672 // -38.5
 		LimitHigh=.515 // 29.5
@@ -33,8 +34,8 @@ defaultproperties
 	Begin Object Class=Joint Name=HeadYaw
 		Parent=Head
 		Child=BodyItem
-		JointType=JointType_Yaw
-		MeasureType=EMEASURE_Yaw
+		jointType=JOINTTYPE_Yaw
+		measureType=EMEASURE_Yaw
 		Offset=(x=0,y=0,z=-0.09)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
@@ -42,46 +43,46 @@ defaultproperties
 	End Object
 	Joints.Add(HeadYaw)
 
-	// Left and right arm parts
+	// Create left and right arm parts
 	Begin Object Class=Part Name=LUpperArm
 		Mesh=StaticMesh'Nao.naolupperarm'
 		Offset=(x=0.02,y=-0.108,z=-0.075)
-		Mass=0.123
+		Mass=123.09
 	End Object
 	PartList.Add(LUpperArm)
 
 	Begin Object Class=Part Name=RUpperArm
 		Mesh=StaticMesh'Nao.naorupperarm'
 		Offset=(x=0.02,y=0.108,z=-0.075)
-		Mass=0.123
+		Mass=123.09
 	End Object
 	PartList.Add(RUpperArm)
 
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=-0.108,z=-0.075)
-		Mass=0.123
+		Mass=123.09
 	End Object
 	PartList.Add(LElbow)
 
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=0.108,z=-0.075)
-		Mass=0.123
+		Mass=123.09
 	End Object
 	PartList.Add(RElbow)
 
 	Begin Object Class=Part Name=LLowerArm
 		Mesh=StaticMesh'Nao.naollowerarm'
 		Offset=(x=0.14,y=-0.098,z=-0.084)
-		Mass=0.200
+		Mass=200
 	End Object
 	PartList.Add(LLowerArm)
 
 	Begin Object Class=Part Name=RLowerArm
 		Mesh=StaticMesh'Nao.naorlowerarm'
 		Offset=(x=0.14,y=0.098,z=-0.084)
-		Mass=0.200
+		Mass=200
 	End Object
 	PartList.Add(RLowerArm)
 
@@ -89,21 +90,21 @@ defaultproperties
 	Begin Object Class=Joint Name=LShoulderRoll
 		Parent=LUpperArm
 		Child=BodyItem
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Yaw_RemovePitch
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Yaw_RemovePitch
 		Offset=(x=0,y=-0.098,z=-0.075)
 		LimitLow=.0087 // 0.5
 		LimitHigh=1.649 // 94.5
 		RotateAxis=(x=0,y=1.57,z=-3.14)
 	End Object
 	Joints.Add(LShoulderRoll)
-	
+
 	Begin Object Class=Joint Name=LShoulderPitch
 		Parent=LUpperArm
 		Child=BodyItem
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
-		Offset=(x=0,y=-0.098,z=-0.075) 
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
+		Offset=(x=0,y=-0.098,z=-0.075)
 		LimitLow=-2.086 // -199.5
 		LimitHigh=2.086 // 119.5
 		RotateAxis=(x=0,y=1.57,z=-3.14)
@@ -113,8 +114,8 @@ defaultproperties
 	Begin Object Class=Joint Name=RShoulderRoll
 		Parent=RUpperArm
 		Child=BodyItem
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Yaw_RemovePitch
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Yaw_RemovePitch
 		Offset=(x=0,y=0.098,z=-0.075)
 		LimitLow=-1.649 // -94.5
 		LimitHigh=-.0087 // -0.5
@@ -125,8 +126,8 @@ defaultproperties
 	Begin Object Class=Joint Name=RShoulderPitch
 		Parent=RUpperArm
 		Child=BodyItem
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=0,y=0.098,z=-0.075) 
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
@@ -139,8 +140,8 @@ defaultproperties
 		Parent=LUpperArm
 		Child=LElBow
 		IsOneDof=true;
-		JointType=JointType_Yaw
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Yaw
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=0.09,y=-0.098,z=-0.084)
 		LimitLow=-2.086 // -119.5
@@ -153,8 +154,8 @@ defaultproperties
 		Parent=LElBow
 		Child=LLowerArm
 		IsOneDof=true;
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Yaw_RemoveRoll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Yaw_RemoveRoll
 		Offset=(x=0.09,y=-0.098,z=-0.084)
 		LimitLow=-1.56 // -89.5
 		LimitHigh=-.0087 // -0.5
@@ -166,8 +167,8 @@ defaultproperties
 		Parent=RUpperArm
 		Child=RElbow
 		IsOneDof=true;
-		JointType=JointType_Yaw
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Yaw
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=0.09,y=0.098,z=-0.084)
 		LimitLow=-2.086 // -119.5
@@ -180,8 +181,8 @@ defaultproperties
 		Parent=RElbow
 		Child=RLowerArm
 		IsOneDof=true;
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Yaw_RemoveRoll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Yaw_RemoveRoll
 		Offset=(x=0.09,y=0.098,z=-0.084)
 		LimitLow=-.0087 // -0.5
 		LimitHigh=1.56 // 89.5
@@ -194,7 +195,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
 		Offset=(x=-0.01,Y=-0.055,Z=0.155)
-		Mass=0.394
+		Mass=394.21
 	End Object
 	PartList.Add(LThigh)
 
@@ -202,7 +203,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naorthigh'
 		Offset=(x=-0.01,y=0.055,z=0.155)
-		Mass=0.394
+		Mass=394.21
 	End Object
 	PartList.Add(RThigh)
 
@@ -210,7 +211,7 @@ defaultproperties
 		RelativeTo=LThigh
 		Mesh=StaticMesh'Nao.naolshank'
 		Offset=(x=0.005,y=0,z=0.125)
-		Mass=0.292
+		Mass=291.59
 	End Object
 	PartList.Add(LShank)
 
@@ -218,7 +219,7 @@ defaultproperties
 		RelativeTo=RThigh
 		Mesh=StaticMesh'Nao.naorshank'
 		Offset=(x=0.005,y=0,z=0.125)
-		Mass=0.292
+		Mass=291.59
 	End Object
 	PartList.Add(RShank)
 
@@ -226,7 +227,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2.5
+		Mass=2500.0
 	End Object
 	PartList.Add(LFoot)
 
@@ -234,7 +235,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2.5
+		Mass=2500.0
 	End Object
 	PartList.Add(RFoot)
 
@@ -242,8 +243,8 @@ defaultproperties
 	Begin Object Class=Joint Name=LHipPitch
 		Parent=LThigh
 		Child=BodyItem
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=-0.055,z=0.115)
 		LimitLow=-1.772 // -101.54
 		LimitHigh=.4855 // 27.82
@@ -254,8 +255,8 @@ defaultproperties
 	Begin Object Class=Joint Name=LHipRoll
 		Parent=LThigh
 		Child=BodyItem
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=-0.055,z=0.115)   
 		LimitLow=-.738 // -42.30
@@ -267,8 +268,8 @@ defaultproperties
 	Begin Object Class=Joint Name=RHipPitch
 		Parent=RThigh
 		Child=BodyItem
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0.055,z=0.115)
 		LimitLow=-1.772 // -101.54
 		LimitHigh=.4855 // 27.82
@@ -279,8 +280,8 @@ defaultproperties
 	Begin Object Class=Joint Name=RHipRoll
 		Parent=RThigh
 		Child=BodyItem
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0.055,z=0.115)
 		LimitLow=-.7382 // -42.30
@@ -295,8 +296,8 @@ defaultproperties
 		IsOneDof=true;
 		Parent=LShank
 		Child=LThigh
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0,z=-0.045)
 		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
@@ -309,8 +310,8 @@ defaultproperties
 		IsOneDof=true;
 		Parent=RShank
 		Child=RThigh
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0,z=-0.045)
 		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
@@ -323,8 +324,8 @@ defaultproperties
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-1.185 // -67.96
 		LimitHigh=.9844 // 53.40
@@ -336,8 +337,8 @@ defaultproperties
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-.7689 // -44.06
@@ -350,8 +351,8 @@ defaultproperties
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
-		JointType=JointType_Pitch
-		MeasureType=EMEASURE_Pitch
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-1.1861 // -67.96
 		LimitHigh=.9320 // 53.40
@@ -363,8 +364,8 @@ defaultproperties
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
-		JointType=JointType_Roll
-		MeasureType=EMEASURE_Roll
+		jointType=JOINTTYPE_Roll
+		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-.3887 // -22.27

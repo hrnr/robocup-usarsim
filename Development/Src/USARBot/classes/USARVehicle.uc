@@ -599,7 +599,7 @@ reliable server function SetupJoint(Joint jt)
 		ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
 	
 	// Set initial angle
-	SetJointTarget(ji, trueZero);
+	SetJointTarget(ji, 0);
 	Parts.AddItem(ji);
 	if (bDebug)
 		LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
@@ -656,7 +656,7 @@ simulated function TempRotatePart(Joint jt, Actor p, Rotator angle,
 	savedRotation = p.Rotation;
 	
 	// Transform position and direction temporarily
-	jointpos = GetJointOffset(jt);
+	jointpos = OriginalLocation + GetJointOffset(jt);
 	pos = TransformVectorByRotation(angle, p.Location - jointpos);
 	p.SetRotation(p.Rotation + angle);
 	p.SetLocation(pos + jointpos);
