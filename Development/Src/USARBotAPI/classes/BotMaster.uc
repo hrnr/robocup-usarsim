@@ -1,5 +1,18 @@
-class BotMaster extends Inventory
-	config(USAR);
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced in part by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
+
+
+*****************************************************************************/
+
+/*
+ * BotMaster: TCP server for incoming USAR connection requests
+ */
+class BotMaster extends Inventory config(USAR);
 
 var class<BotServer>	BotServerClass;
 var class<ComServer>	ComServerClass;
@@ -58,7 +71,6 @@ simulated function AddBotController(BotConnection botCon, String botName, int te
 	
 	// Find first open slot in array
 	for (i = 0; i < ArrayCount(waitConnections); i++)
-	{
 		if (waitConnections[i] == None)
 		{
 			// Assign caller BotConnection to open slot and replicate AddBot function on server
@@ -66,8 +78,6 @@ simulated function AddBotController(BotConnection botCon, String botName, int te
 			AddBotController_internal(i, botName, teamNum, startLocation, startRotation, className);
 			return;
 		}
-	}
-	
 	LogInternal("Too many unbound robots, failed to create " $ className);
 }
 
@@ -88,8 +98,7 @@ reliable server protected function AddBotController_internal(int botConID, Strin
 	
 	theBot = theGameInfo.AddBotController(Owner, botName, teamNum, startLocation, startRotation, className);
 	theBot.SetConnection(self, botConID);
-
-	LogInternal("Created " $ className $ " assigned to " $ theBot);
+	LogInternal("Created " $ className $ ", assigned to " $ theBot);
 }
 
 simulated function BotConnection getConnection(int botConnectionID)
@@ -98,7 +107,6 @@ simulated function BotConnection getConnection(int botConnectionID)
 
 	botCon = waitConnections[botConnectionID];
 	waitConnections[botConnectionID] = none;
-
 	return botCon;
 }
 

@@ -1,14 +1,17 @@
 /*****************************************************************************
   DISCLAIMER:
-  This software was produced by the National Institute of Standards
+  This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
   not subject to copyright in the United States.  Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 
-  See NIST Administration Manual 4.09.07 b and Appendix I. 
+
 *****************************************************************************/
 
+/*
+ * BotController: Player controller for USAR robots
+ */
 class BotController extends UDKBot config(USAR);
 
 var config bool bSilentGamebot;
@@ -24,14 +27,16 @@ replication
 		theBotMaster, theBotConnectionID;
 }
 
+// Finds the bot connection ID if replicated
 simulated event ReplicatedEvent(name VarName)
 {
 	if (bDebug)
-		LogInternal("BotController:ReplicatedEvent");
+		LogInternal("BotController: ReplicatedEvent");
 	if (theBotConnectionID >= 0 && theBotConnection == None && theBotMaster != None)
 		FindConnection();
 }
 
+// Sets the proper ID of the bot connection and optionally finds it
 simulated function SetConnection(BotMaster bm, int botConID)
 {
 	if (bDebug)
@@ -42,6 +47,7 @@ simulated function SetConnection(BotMaster bm, int botConID)
 		FindConnection();
 }
 
+// Finds the matching BotConnection and assigns this object as the controller
 simulated function FindConnection() 
 {
 	if (bDebug)
@@ -54,6 +60,7 @@ simulated function FindConnection()
 		LogInternal("BotController: Unable to find matching BotConnection.");
 }
 
+// Sends a death message when the robot dies
 reliable client function SendKilled(String Killer, String damageType)
 {
 	if (bDebug)
@@ -61,6 +68,7 @@ reliable client function SendKilled(String Killer, String damageType)
 	theBotConnection.SendLine("DIE {Killer " $ Killer $ "} {DamageType " $ damageType $ "}");
 }
 
+// Clean up robot on server as well
 reliable server function RemoteDestroy()
 {
 	if (bDebug)
@@ -68,6 +76,7 @@ reliable server function RemoteDestroy()
 	Destroy();
 }
 
+// Clean up robot when the controller dies
 simulated event Destroyed()
 {
 	if (bDebug)
@@ -79,7 +88,7 @@ simulated event Destroyed()
 
 defaultproperties
 {
-    bDebug=False
+    bDebug=false
 	theBotConnectionID=-1
 	RemoteRole=ROLE_SimulatedProxy
 	bOnlyRelevantToOwner=true

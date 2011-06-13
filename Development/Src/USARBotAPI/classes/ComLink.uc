@@ -1,107 +1,114 @@
-class ComLink extends TcpLink 
-    config(USAR);
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced in part by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
 
-var string id;
-var string PartMsg;
-var string MsgEnd;
+
+*****************************************************************************/
+
+/*
+ * ComLink: represents communication link between robot and controller
+ */
+class ComLink extends TcpLink config(USAR);
+
+var String id;
+var String PartMsg;
+var String MsgEnd;
 var bool bInit;
 var int RPort;
-
-
-//Variables to process the binary message
+// Variables to process the binary message
 var bool bNewMsg;
 var int mLen;
-var string sLen;
+var String sLen;
 var int mProc;
 var byte Msg[255];
 var int aProc;
-var string Com;
+var String Com;
 var byte C[5];
 
-
-function setUp(string iden)
+function setUp(String iden)
 {
-	if(!bInit)
+	if (!bInit)
 	{
-		id=iden;
-		bInit=true;
-		LinkMode=MODE_Binary;
+		id = iden;
+		bInit = true;
+		LinkMode = MODE_Binary;
 	}
 }
 
-function Connect(string Ip, string sPort)
+function Connect(String ip, String sPort)
 {
-	RPort=int(sPort);
-	if(bDebug)
-		LogInternal("ComLink: Connect is resolving IP address "$Ip);
-	Resolve(Ip);
+	RPort = int(sPort);
+	if (bDebug)
+		LogInternal("ComLink: Resolving IP address " $ ip);
+	Resolve(ip);
 }
 
-event Resolved(IpAddr Addr)
+event Resolved(IpAddr addr)
 {
-	if(bDebug)
+	if (bDebug)
 		LogInternal("ComLink: IP address resolved");
-	Addr.Port=RPort;
+	addr.Port = RPort;
 	BindPort();
-	Open(Addr);
+	Open(addr);
 }
 
 event ResolveFailed()
 {
-  if(bDebug) LogInternal("ComLink: Could not resolve IP address");
+	if (bDebug)
+		LogInternal("ComLink: Could not resolve IP address");
 }
 
 event Opened()
 {
-	if(bDebug)
-		LogInternal("ComLink: "$id$" Connected to "$IpAddrToString(RemoteAddr));
+	if (bDebug)
+		LogInternal("ComLink: " $ id $ " connected to " $ IpAddrToString(RemoteAddr));
 }
 
-function bool Open(IpAddr Addr)
+function bool Open(IpAddr addr)
 {
-	if(bDebug)
-		LogInternal("ComLink: "$id$" Connecting to "$IpAddrToString(Addr));
+	if (bDebug)
+		LogInternal("ComLink: " $ id $ " Connecting to " $ IpAddrToString(addr));
 	return super.Open(Addr);
 }
 
-event ReceivedLine(string Line)
+event ReceivedLine(String line)
 {
-	if(bInit)
-	{
-		ComConnection(Owner).processMessage(Line,0,Msg,id);
-	}
+	if (bInit)
+		ComConnection(Owner).processMessage(line, 0, Msg, id);
 }
 
-event ReceivedText( string Text )
+event ReceivedText(String text)
 {
 	local int i;
-	local string M;
+	local String M;
 	
-	i=0;
-	if(bDebug)
-    	LogInternal("ComLink: Received Text in Server - "$Text);
+	i = 0;
+	if (bDebug)
+    	LogInternal("ComLink: Received " $ text);
 		
-	i=InStr(Text,MsgEnd);
-	if(i==-1)				//Incomplete message
-	{
-		PartMsg$=Text;
-	}
+	i = InStr(text, MsgEnd);
+	if (i < 0)
+		PartMsg $= text;
 	else
 	{
-		M=PartMsg$Left(Text,i+1);
-		PartMsg=Mid(Text,i+1);
+		M = PartMsg $ Left(text, i+1);
+		PartMsg = Mid(text, i+1);
 		ReceivedLine(M);
 	}
 }
 
 //convert the byte array to a string (SEND, CLOSE or ERR)
-function string getCommand(byte B[5])
+function String getCommand(byte B[5])
 {
-	if(B[0]==83 && B[1]==69 && B[2]==78 && B[3]==68 && B[4]==32)
+	if (B[0]==83 && B[1]==69 && B[2]==78 && B[3]==68 && B[4]==32)
 	{
 		return "SEND";
 	}
-	else if(B[0]==67 && B[1]==76 && B[2]==79 && B[3]==83 && B[4]==69)
+	else if (B[0]==67 && B[1]==76 && B[2]==79 && B[3]==83 && B[4]==69)
 	{
 		return "CLOSE";
 	}
@@ -112,214 +119,163 @@ function string getCommand(byte B[5])
 }
 
 //If you receive a binary message
-event ReceivedBinary( int Count, byte B[255] )
+event ReceivedBinary(int Count, byte B[255])
 {
 	local int ctr;
-	local string m;
+	local String m;
 	local bool reachable;
-	ctr=0;
 	
-	
-	
-	if(bDebug)
+	ctr = 0;
+	if (bDebug)
 	{
-		m="";
-		while(ctr<Count)
+		m = "";
+		while (ctr < Count)
 		{
-			m=m$string(B[ctr]);
+			m $= String(B[ctr]);
 			ctr++;
 		}
-		ctr=0;
-		LogInternal("ComLink: Recived "$m);
+		ctr = 0;
+		LogInternal("ComLink: Recieved " $ m);
 	}
 	
-	while(ctr<Count)
+	while (ctr < Count)
 	{
-		//The command part of the message
-		if(mProc<5)
+		// The command part of the message
+		if (mProc < 5)
 		{
-			C[mProc]=B[ctr];
+			C[mProc] = B[ctr];
 			ctr++;
 			mProc++;
 		}
-		//If the command part has just been processed
-		if(mProc==5)
+		// If the command part has just been processed
+		if (mProc == 5)
 		{
-			Com=getCommand(C);
-			if(bDebug) LogInternal("ComLink: command received is "$Com);
+			Com = getCommand(C);
+			if (bDebug)
+				LogInternal("ComLink: command received is " $ Com);
 		}
-		
-		//If the command part has been processed
-		if(mProc>=5)
-		{
-			switch(Com)
+		// If the command part has been processed
+		if (mProc >= 5)
+			switch (Com)
 			{
 				case "SEND": 
-					//Check for connectivity
-					reachable=ComConnection(Owner).checkConnectivity();
-					//Get the size
-					if(mLen<0)
+					// Check for connectivity
+					reachable = ComConnection(Owner).checkConnectivity();
+					if (mLen < 0)
 					{
-						while(ctr<Count)
+						while (ctr < Count)
 						{
-							if(B[ctr]==32) break;
-							sLen=sLen$string(int(B[ctr])-48);
+							if (B[ctr] == 32) break;
+							sLen $= String(int(B[ctr]) - 48);
 							ctr++;
 						}
-						if(ctr<Count)
+						if (ctr < Count)
 						{
-							mLen=int(sLen);
-							if(bDebug) LogInternal("ComLink: Message length is "$sLen$" converted to "$mLen);
-							aProc=0;
+							mLen = int(sLen);
+							if (bDebug)
+								LogInternal("ComLink: Message length is " $ mLen);
+							aProc = 0;
 							ctr++;
 						}
 					}
-					//Get the message
-					if(mLen>=0)
+					// Get the message
+					if (mLen >= 0)
 					{
-						while(aProc<mLen && ctr<Count)
+						while (aProc < mLen && ctr < Count)
 						{
-							Msg[aProc]=B[ctr];
+							Msg[aProc] = B[ctr];
 							ctr++;
 							aProc++;
-							//If the message buffer is full
-							if(aProc==255)
+							// Send message if possible
+							if (aProc == 255)
 							{
-								//Process message
-								if(reachable){
-									if(bDebug) LogInternal("ComLink: message of size "$aProc$" being sent");
-									ComConnection(Owner).processMessage(Com,aProc,Msg,id);
+								// Process message
+								if (reachable)
+								{
+									if (bDebug)
+										LogInternal("ComLink: Sending message of size " $ aProc);
+									ComConnection(Owner).processMessage(Com, aProc, Msg, id);
 								}
-								mLen=mLen-aProc;
-								aProc=0;
+								mLen = mLen - aProc;
+								aProc = 0;
 							}
 						}
-						if(ctr<Count)
+						if (ctr < Count)
 						{
-							if(reachable){
-								if(bDebug) LogInternal("ComLink: message of size "$aProc$" being sent");
-								ComConnection(Owner).processMessage(Com,aProc,Msg,id);
+							// Send message if possible
+							if (reachable)
+							{
+								if (bDebug)
+									LogInternal("ComLink: Sending message of size " $ aProc);
+								ComConnection(Owner).processMessage(Com, aProc, Msg, id);
 							}
 							ctr++;
-							mProc=0;
-							aProc=0;
-							mLen=-1;
-							sLen="";
-							Com="None";
+							mProc = 0;
+							aProc = 0;
+							mLen = -1;
+							sLen = "";
+							Com = "None";
 						}
 					}
-					if(!reachable){
-						if(bDebug) LogInternal("ComLink: Connection being broken due to sig strength");
-						ComConnection(Owner).processMessage("CLOSE",0,Msg,id);
+					// Notify if connection is closed
+					if (!reachable)
+					{
+						if (bDebug)
+							LogInternal("ComLink: Low signal strength, closing connection");
+						ComConnection(Owner).processMessage("CLOSE", 0, Msg, id);
 					}
 					break;
 				case "CLOSE":
-				//Go to the next semicolon
-					while(ctr<Count)
+					// Go to the next semicolon
+					while (B[ctr] != 59 && ctr < Count)
 					{
-						if(B[ctr]==59) break;
 						ctr++;
 						mProc++;
 					}
-					//If this is the semi colon
-					if(ctr<Count)
+					if (ctr < Count)
 					{
-						//Process message
-						ComConnection(Owner).processMessage(Com,0,B,id);
+						// Send last message
+						ComConnection(Owner).processMessage(Com, 0, B, id);
 						ctr++;
-						mProc=0;
-						Com="None";
+						mProc = 0;
+						Com = "None";
 					}
 					break;
 				case "ERR":
-				//Go to the next semicolon
-					while(B[ctr]!=59 && ctr<Count)
+					// Go to the next semicolon
+					while (B[ctr] != 59 && ctr < Count)
 					{
 						ctr++;
 						mProc++;
 					}
-					//If this is the semi colon
-					if(ctr<Count)
+					if (ctr < Count)
 					{
-						//Process message
-						
-						//ComConnection(Owner).processMessage(Com,0,B,id);
+						// Clean up
 						ctr++;
-						mProc=0;
-						Com="None";
+						mProc = 0;
+						Com = "None";
 					}
 					break;
 			}
-		}
-	}	
-		
-		/*
-		//If the command type is SEND the get the message into the byte array
-		if(Com=="SEND" && B[ctr]!=59 && mProc>4)
-		{
-			Msg[aProc]=B[ctr];
-			aProc=aProc+1;
-		}
-		
-		//if the message buffer is full
-		if(Com=="SEND" && aProc==255)
-		{
-			ComConnection(Owner).processMessage(Com,aProc,Msg,id);
-			aProc=0;
-		}
-	
-		mProc=mProc+1;
-		bNewMsg=false;
-		//End of message
-		if(Com!="SEND" && B[ctr]==59)
-		{
-			//Process message
-			if(bInit)
-				ComConnection(Owner).processMessage(Com,0,Msg,id);
-			//Reset counters
-			mLen=0;
-			mProc=0;
-			aProc=0;
-			bNewMsg=true;
-			Com="NONE";
-		}
-		if(Com=="SEND" && B[ctr]==59 && mProc>=mLen)
-		{
-			//Process message
-			if(bInit)
-				ComConnection(Owner).processMessage(Com,aProc,Msg,id);
-			//Reset counters
-			mLen=0;
-			mProc=0;
-			aProc=0;
-			bNewMsg=true;
-			Com="NONE";
-		}
-		ctr=ctr+1;
 	}
-	*/
 }
 
-//Should never be called
-function processMessage(string Message, string sId)
+// Should never be called
+function processMessage(String message, String sId)
 {
 	if (bDebug)
-		LogInternal("ComLink "$sId$" - Incorrect owner");
+		LogInternal("ComLink: Incorrect owner " $ sId);
 }
 
-//Closed on other end
+// Closed on other end
 event Closed()
 {
-	
-	//Process message
-	if(bInit)
+	if (bInit)
 	{
-		if(bDebug)
-		{
-			LogInternal("ComLink: Robot "$id$" closed the connection");
-		}
-		bInit=false;
-		ComConnection(Owner).processMessage("CLOSE",0,Msg,id);
+		if (bDebug)
+			LogInternal("ComLink: Robot " $ id $ " closed the connection");
+		bInit = false;
+		ComConnection(Owner).processMessage("CLOSE", 0, Msg, id);
 	}
 }
 
@@ -332,8 +288,8 @@ defaultproperties
 	bDebug=false
 	RPort=0
 	bNewMsg=true
-	mLen=-1;
-	sLen="";
+	mLen=-1
+	sLen=""
 	mProc=0
 	aProc=0
 	Com=""

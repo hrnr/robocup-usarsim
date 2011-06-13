@@ -1,97 +1,85 @@
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced in part by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
+
+
+*****************************************************************************/
+
+/*
+ * USARTruth: One instance is spawned in BotDeathMatch to bind and handle incoming requests for
+ * true world data.
+ */
 class USARTruth extends TcpLink config(USAR);
 
-// Exactly one instance of this USARTruth class is spawned in
-// BotDeathMatch.uc. The USARTruth class binds once to the port,
-// and each connection is accepted and handled by the USARTruthConnection
-// class.
-
 var config int ListenPort;
-var config bool Debug;
 var config int MaxConnections;
 var int ActiveConnections;
+
+// Starts listening before play begins
 function PreBeginPlay()
 {
-  local int ival;
-  local bool bval;
-
-  Super.PreBeginPlay();
-
-  ival = BindPort(ListenPort);
-  if (Debug) {
-    LogInternal("USARTruth: BindPort got " $ ival);
-  }
-  bval = Listen();
-  if (true == bval) {
-    if (Debug) {
-      LogInternal("USARTruth: Listening on " $ ListenPort);
-    }
-  } else {
-    if (Debug) {
-      LogInternal("USARTruth: Can't Listen");
-    }
-  }
+	super.PreBeginPlay();
+	BindPort(ListenPort);
+	if (Listen())
+	{
+		if (bDebug)
+			LogInternal("USARTruth: Listening on port " $ ListenPort);
+	}
+	else
+	{
+		if (bDebug)
+			LogInternal("USARTruth: Failed to open listener");
+	}
 }
 
-// The Accepted event will be passed to the USARTruthConnection class,
-// per the AcceptClass in the defaultproperties. This lets us have
-// multiple accepted connections.
-
+// Passed from USARTruthConnection per accepted connection
 event Accepted()
 {
-  if (Debug) {
-    LogInternal("USARTruth: Accepted " $ self);
-  }
-}
-event GainedChild(Actor r)
-{
-	ActiveConnections=ActiveConnections+1;
-	
-	if (ActiveConnections==MaxConnections)
-		{
-		if(Debug)
-			LogInternal("USARTruth: Max Connections rechead, closing listener. Active Connections:"$ActiveConnections );
-		Close();
-		}
-}
-event LostChild(Actor r)
-{
-		
-	local bool bval;
-	
-	
-	if (ActiveConnections==MaxConnections)
-		{
-		if(Debug)
-			LogInternal("USARTruth: listening again, Active Connections:"$ActiveConnections );
-		bval =Listen();
-		if (true == bval) {
-			if (Debug) {
-				LogInternal("USARTruth: Listening on " $ ListenPort);
-			}
-		} else {
-			if (Debug) {
-				LogInternal("USARTruth: Can't Listen");
-				}
-	
-				}
-		}
-		ActiveConnections=ActiveConnections-1;
-	
-	
+	if (bDebug)
+		LogInternal("USARTruth: Accepted " $ self);
 }
 
+// Closes off any sockets in excess of the limit
+event GainedChild(Actor r)
+{
+	ActiveConnections++;
+	
+	if (ActiveConnections == MaxConnections)
+	{
+		if (bDebug)
+			LogInternal("USARTruth: Connection limit reached");
+		Close();
+	}
+}
+
+// Clears off old connections and starts listening
+event LostChild(Actor r)
+{
+	if (ActiveConnections >= MaxConnections)
+	{
+		if (bDebug)
+			LogInternal("USARTruth: Connection limit no longer reached");
+		if (!Listen())
+		{
+			if (bDebug)
+				LogInternal("USARTruth: Failed to open listener");
+		}
+	}
+	ActiveConnections--;
+}
+
+// Log when the socket is closed
 event Closed()
 {
-  if (Debug) {
-    LogInternal("USARTruth: Closed " $ self);
-  }
+	if (bDebug)
+		LogInternal("USARTruth: Closed " $ self);
 }
 
 defaultproperties
 {
-  // this sets up USARTruthConnection to handle each Accepted event
-  AcceptClass=Class'USARBotAPI.USARTruthConnection';
-  //MaxConnections=-1; //-1 means unlimited number of connections // Moved to Config file
-  //ListenPort=3989; // Moved to Config file
-  //Debug=true; // Moved to Config file
+	AcceptClass=Class'USARBotAPI.USARTruthConnection';
 }
