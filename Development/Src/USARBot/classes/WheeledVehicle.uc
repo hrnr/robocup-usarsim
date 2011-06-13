@@ -5,8 +5,6 @@
   not subject to copyright in the United States.  Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
-
-
 *****************************************************************************/
 
 /*
@@ -22,7 +20,7 @@ function String GetGeoData()
 {
 	local int i;
 	local JointItem ji, lFTire, rRTire;
-	local vector COMOffset;
+	local vector COMOffset, dimensions;
 	
 	// Initialize to something known
 	lFTire = None; 
@@ -53,16 +51,19 @@ function String GetGeoData()
 				}
 			}
 		}
+	// TODO This still does not work as intended
 	COMOffset = CenterItem.StaticMeshComponent.StaticMesh.BodySetup.COMNudge;
-	
+	// TODO Unsure if this is how dimensions were calculated in UT3
+	// If not, it may have to go in config per robot
+	dimensions.X = lFTire.Spec.Offset.X - rRTire.Spec.Offset.X;
+	dimensions.Y = rRTire.Spec.Offset.Y - lFTire.Spec.Offset.Y;
+	dimensions.Z = 0;
 	return "GEO {Type GroundVehicle} {Name " $ self.Class $ "} {Dimensions " $ 
-		class'UnitsConverter'.static.Str_LengthVectorFromUU(Dimensions) $ "} {COG " $
+		class'UnitsConverter'.static.VectorString(dimensions) $ "} {COG " $
 		class'UnitsConverter'.static.Str_LengthVectorFromUU(COMOffset) $ "} {WheelRadius " $
 		class'UnitsConverter'.static.Str_LengthFromUU(WheelRadius) $ "} {WheelSeparation " $
-		class'UnitsConverter'.static.Str_LengthFromUU(rRTire.Spec.Offset.Y -
-		lFTire.Spec.Offset.Y) $ "} {WheelBase " $
-		class'UnitsConverter'.static.Str_LengthFromUU(lFTire.Spec.Offset.X -
-		rRTire.Spec.Offset.X) $ "}";
+		class'UnitsConverter'.static.FloatString(dimensions.Y) $ "} {WheelBase " $
+		class'UnitsConverter'.static.FloatString(dimensions.X) $ "}";
 }
 
 // Workaround for wheel radius in build-order

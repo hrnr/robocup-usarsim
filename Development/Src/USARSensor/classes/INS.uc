@@ -5,8 +5,6 @@
   not subject to copyright in the United States.	Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
-
-
 *****************************************************************************/
 
 /*
@@ -33,10 +31,10 @@ class INS extends Sensor config (USAR);
 var config bool Drifting;
 var config float Precision;
 
-var Vector rotEst;   // Sensor data, estimated Orientation
-var Vector xyzEst;   // Sensor data, estimated Location
-var Vector rotPrev;  // Previous ground truth Orientation
-var Vector xyzPrev;  // Previous ground truth Location
+var vector rotEst;   // Sensor data, estimated Orientation
+var vector xyzEst;   // Sensor data, estimated Location
+var vector rotPrev;  // Previous ground truth Orientation
+var vector xyzPrev;  // Previous ground truth Location
 var bool go;         // variable set to begin sensor calculation
 var Utilities utils;
 var float MeanX;
@@ -61,7 +59,7 @@ simulated function PreBeginPlay()
 simulated function AttachItem()
 {
 	super.AttachItem();
-	rotEst = class'UnitsConverter'.static.DeprecatedRotatorFromUU(Rotation);
+	rotEst = class'UnitsConverter'.static.AngleVectorFromUU(Rotation);
 	// Normalize orientation between [0,2PI]
 	rotEst.x = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.x);
 	rotEst.y = class'UnitsConverter'.static.normRad_ZeroTo2PI(rotEst.y);
@@ -108,7 +106,7 @@ function String GetData()
 
 	// Get rate of change from ground truth
 	xyzTrue = class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location);
-	rotTrue = class'UnitsConverter'.static.DeprecatedRotatorFromUU(Platform.CenterItem.Rotation);
+	rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Platform.CenterItem.Rotation);
 
 	// Calculate rate of change for time step
 	rotRate.x = class'UnitsConverter'.static.diffAngle(rotTrue.x, rotPrev.x);

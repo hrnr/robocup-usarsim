@@ -5,8 +5,6 @@
   not subject to copyright in the United States.  Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
-
-
 *****************************************************************************/
 
 /*
@@ -66,29 +64,23 @@ event InitReceived(ParsedMessage parsedMessage)
 
 	clientName = parsedMessage.GetArgVal("Name");
 	teamString = parsedMessage.GetArgVal("Team");
-
 	startName = parsedMessage.GetArgVal("Start");
 	if (startName != "")
 	{
 		foreach AllActors(class 'PlayerStart', P)
-			if (string(P.Tag) == startName)
+			if (Caps(String(P.Tag)) == Caps(startName))
 			{
-				newLocation = P.Location; // stays in UU
+				newLocation = P.Location; // Stays in UU
 				newRotation = P.Rotation;
 				break;
 			}
 	}
 	else
 	{
-		/*
-		 * The 'Rotator' class has integer fields 'roll', 'pitch' and 'yaw'.
-		 * We need to take special care to convert these to and from UU
-		 * since any intermediate integer step will be truncated.
-		 */
 		startLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
 		startRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
 		newLocation = class'UnitsConverter'.static.LengthVectorToUU(startLocation);
-		newRotation = class'UnitsConverter'.static.DeprecatedRotatorToUU(startRotation);
+		newRotation = class'UnitsConverter'.static.AngleVectorToUU(startRotation);
 	}
 	className = parsedMessage.GetArgVal("ClassName");
 	if (teamString == "")
@@ -339,7 +331,7 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 				{
 					// Convert to meters
 					myLocation = class'UnitsConverter'.static.LengthVectorFromUU(P.Location);
-					myRotation = class'UnitsConverter'.static.DeprecatedRotatorFromUU(P.Rotation);
+					myRotation = class'UnitsConverter'.static.AngleVectorFromUU(P.Rotation);
 					break;
 				}
 		}
@@ -555,7 +547,7 @@ function ProcessGetStartPoses(ParsedMessage parsedMessage)
 	foreach AllActors(class 'PlayerStart', P)
 	{
 		l = class'UnitsConverter'.static.LengthVectorFromUU(P.Location);
-		vr = class'UnitsConverter'.static.DeprecatedRotatorFromUU(P.Rotation);
+		vr = class'UnitsConverter'.static.AngleVectorFromUU(P.Rotation);
 		if (num > 0)
 			locations = locations $ " " $ P.Tag $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
 				vr.X $ "," $ vr.Y $ "," $vr.Z;

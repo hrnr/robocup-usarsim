@@ -5,8 +5,6 @@
   not subject to copyright in the United States.  Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
-
-
 *****************************************************************************/
 class WCCrate11365 extends WCObject 
 placeable;

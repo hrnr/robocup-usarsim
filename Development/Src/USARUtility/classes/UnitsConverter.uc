@@ -4,9 +4,7 @@
 	and Technology (NIST), an agency of the U.S. government, and by statute is
 	not subject to copyright in the United States.	Recipients of this software
 	assume all responsibility associated with its operation, modification,
-	maintenance, and subsequent redistribution.
-
-	See NIST Administration Manual 4.09.07 b and Appendix I. 
+	maintenance, and subsequent redistribution.	See NIST Administration Manual 4.09.07 b and Appendix I. 
 *****************************************************************************/
 
 /*
@@ -53,26 +51,22 @@ static final function String FloatString(float Value, optional int Precision)
 
 	// Set number precision
 	if (Precision == 0)
-		Precision = Default.NumberPrecision; // 4
+		Precision = default.NumberPrecision; // 4
 	else
 		Precision = Max(Precision, 1);
-
 	// Negative number handling
 	if (Value < 0) {
 		IntString = "-";
 		Value *= -1;
 	}
-
 	// Find integral and fractional parts
 	IntPart = int(Value);
 	FloatPart = Value - IntPart;
 	IntString = IntString $ String(IntPart);
 	FloatString = String(int(FloatPart * (10 ** Precision)));
-	
 	// Prepend zeroes to match
 	while (Len(FloatString) < Precision)
 		FloatString = "0" $ FloatString;
-	
 	return IntString $ "." $ FloatString;
 }
 
@@ -129,12 +123,6 @@ static final function String Str_SoundLevelFromUU(float uu, optional int Precisi
 static final function String Str_SpinSpeedFromUU(int uu, optional int Precision)
 {
 	return FloatString(SpinSpeedFromUU(uu), Precision);
-}
-
-// String version of DeprecatedRotatorFromUU
-static final function String Str_DeprecatedRotatorFromUU(rotator rot, optional int Precision)
-{
-	return VectorString(DeprecatedRotatorFromUU(rot), Precision);
 }
 
 // String version of LengthVectorFromUU
@@ -231,30 +219,6 @@ static final function int SpinSpeedToUU(float rad)
 	return int(rad * default.C_AngleToURot);
 }
 
-// Converts an angle vector to an Unreal rotator
-static final function rotator DeprecatedRotatorToUU(vector vec)
-{
-	local vector v;
-	local rotator rot;
-	v = DeprecatedRotatorVectorToUU(vec);
-	rot.Roll = v.X;
-	rot.Pitch = v.Y;
-	rot.Yaw = v.Z;
-	return rot;
-}
-
-// Converts an Unreal rotator to an angle vector
-static final function vector DeprecatedRotatorFromUU(rotator rot)
-{
-	local vector vec;
-	
-	// Convert components
-	vec.x = rot.Roll / default.C_AngleToURot;
-	vec.y = rot.Pitch / default.C_AngleToURot;
-	vec.z = rot.Yaw / default.C_AngleToURot;
-	return vec;
-}
-
 // Converts an angle vector to an Unreal vector (not a rotator)
 static final function vector DeprecatedRotatorVectorToUU(vector vec)
 {
@@ -285,10 +249,9 @@ static final function vector LengthVectorFromUU(vector vec)
 	local vector res;
 	
 	// Convert components
-	res.X = vec.X / default.C_MeterToUU;
-	res.Y = vec.Y / default.C_MeterToUU;
-	res.Z = vec.Z / default.C_MeterToUU;
-	
+	res.X = LengthFromUU(vec.X);
+	res.Y = LengthFromUU(vec.Y);
+	res.Z = LengthFromUU(vec.Z);
 	// Account for right-hand system
 	if (default.RightHand)
 		res.Z = -res.Z;
@@ -301,10 +264,9 @@ static final function vector LengthVectorToUU(vector vec)
 	local vector res;
 	
 	// Convert components
-	res.X = vec.X * default.C_MeterToUU;
-	res.Y = vec.Y * default.C_MeterToUU;
-	res.Z = vec.Z * default.C_MeterToUU;
-	
+	res.X = LengthToUU(vec.X);
+	res.Y = LengthToUU(vec.Y);
+	res.Z = LengthToUU(vec.Z);
 	// Account for right-hand system
 	if (default.RightHand)
 		res.Z = -res.Z;
@@ -316,10 +278,9 @@ static final function vector VelocityVectorFromUU(vector vec) {
 	local vector res;
 	
 	// Convert components
-	res.X =	vec.X / default.C_MeterToUU;
-	res.Y =	vec.Y / default.C_MeterToUU;
-	res.Z =	vec.Z / default.C_MeterToUU;
-	
+	res.X = LengthFromUU(vec.X);
+	res.Y = LengthFromUU(vec.Y);
+	res.Z = LengthFromUU(vec.Z);
 	// Account for right-hand system
 	if (default.RightHand)
 		res.Z = -res.Z;
@@ -331,10 +292,9 @@ static final function vector VelocityVectorToUU(vector vec) {
 	local vector res;
 	
 	// Convert components
-	res.X =	vec.X * default.C_MeterToUU;
-	res.Y =	vec.Y * default.C_MeterToUU;
-	res.Z =	vec.Z * default.C_MeterToUU;
-	
+	res.X = LengthToUU(vec.X);
+	res.Y = LengthToUU(vec.Y);
+	res.Z = LengthToUU(vec.Z);
 	// Account for right-hand system
 	if (default.RightHand)
 		res.Z = -res.Z;
@@ -346,10 +306,9 @@ static final function vector MeterVectorToUU(vector vec) {
 	local vector res;
 	
 	// Convert components
-	res.X =	vec.X * default.C_MeterToUU;
-	res.Y =	vec.Y * default.C_MeterToUU;
-	res.Z =	vec.Z * default.C_MeterToUU;
-	
+	res.X =	LengthToUU(vec.X);
+	res.Y =	LengthToUU(vec.Y);
+	res.Z =	LengthToUU(vec.Z);
 	// Account for right-hand system
 	if (default.RightHand)
 		res.Z = -res.Z;
@@ -361,10 +320,9 @@ static final function vector AngleVectorFromUU(rotator rot)
 {
 	local vector rpy;
 
-	rpy.x = AngleFromUU(rot.roll);
-	rpy.y = AngleFromUU(rot.pitch);
-	rpy.z = AngleFromUU(rot.yaw);
-
+	rpy.x = AngleFromUU(rot.Roll);
+	rpy.y = AngleFromUU(rot.Pitch);
+	rpy.z = AngleFromUU(rot.Yaw);
 	return rpy;
 }
 
@@ -373,35 +331,10 @@ static final function rotator AngleVectorToUU(vector rpy)
 {
 	local rotator rot;
 
-	rot.roll = AngleToUU(rpy.x);
-	rot.pitch = AngleToUU(rpy.y);
-	rot.yaw = AngleToUU(rpy.z);
-
+	rot.Roll = AngleToUU(rpy.x);
+	rot.Pitch = AngleToUU(rpy.y);
+	rot.Yaw = AngleToUU(rpy.z);
 	return rot;
-}
-
-// Converts a vector to a rotator with NO unit conversion
-static final function rotator AngleVectorToRotator(vector rpy)
-{
-	local rotator rot;
-
-	rot.roll = rpy.x;
-	rot.pitch = rpy.y;
-	rot.yaw = rpy.z;
-
-	return rot;
-}
-
-// Converts a vector to a rotator with NO unit conversion
-static final function vector AngleRotatorToVector(rotator rot)
-{
-	local vector rpy;
-
-	rpy.x = rot.roll;
-	rpy.y = rot.pitch;
-	rpy.z = rot.yaw;
-
-	return rpy;
 }
 
 // Normalizes angle in radians between [0, 2pi], where positive rotation is clockwise. Works on any value.
@@ -409,10 +342,10 @@ static final function float normRad_ZeroTo2PI(float rads)
 {
 	local float nRads;
 
-	// First bound to (-2pi,2pi) and then move negative angles to position
+	// First bound to (-2pi, 2pi) and then move negative angles to position
 	nRads = rads % (2 * pi);
 	if (nRads < 0)
-		nRads += 2 * PI;
+		nRads += 2 * pi;
 	return nRads;
 }
 

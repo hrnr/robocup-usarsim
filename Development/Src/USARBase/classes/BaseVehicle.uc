@@ -5,8 +5,6 @@
   not subject to copyright in the United States.  Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
-
-
 *****************************************************************************/
 
 /*
@@ -32,8 +30,6 @@ var config array<SpecItem> AddParts;
 var Part Body;
 // The item at the center of the robot
 var PhysicalItem CenterItem;
-// The vehicle dimensions set by each vehicle class
-var vector Dimensions;
 // Headlights on?
 var bool HeadLights;
 // Joints connecting the vehicle to its parts
@@ -76,13 +72,13 @@ simulated function int GetBatteryLife()
 // Gets configuration data for this item
 function String GetConfData()
 {
-	return "{Name " $ self.Class $ "}";
+	return "CONF {Name " $ self.Class $ "}";
 }
 
 // Gets geometry data for this item
 function String GetGeoData()
 {
-	return "{Name " $ self.Class $ "}";
+	return "GEO {Name " $ self.Class $ "}";
 }
 
 // Gets a part's actor representation using its spec name
