@@ -23,6 +23,5 @@ Running:
 Known issues:
 1) Lots of warnings!
 2) Can only put in a single robot.
-3)
 
 
