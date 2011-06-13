@@ -455,6 +455,7 @@ reliable server function SetupItem(SpecItem desc)
 	// Creates a new item of the specified class
 	pos = class'UnitsConverter'.static.LengthVectorToUU(desc.Position);
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
+	pos = pos >> OriginalRotation;
 	
 	// Create item actor
 	it = Item(spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
@@ -494,7 +495,7 @@ reliable server function SetupJoint(Joint jt)
 	trueZero = int((-limitHigh - limitLow) / 2.0);
 	// Create instance to store actual joint parameters
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Angle);
-	spawnLocation = GetJointOffset(jt);
+	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
 	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
 		spawnRotation);
 	ji.SetHardAttach(true);
@@ -614,14 +615,15 @@ reliable server function SetupPart(Part part)
 	local rotator spawnRotation;
 	
 	// Determine start location
-	spawnLocation = OriginalLocation + GetPartOffset(part);
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
+	spawnLocation = GetPartOffset(part) >> OriginalRotation;
 	if (part.IsDummy)
-		actor = CreateDummyActor(spawnLocation, OriginalRotation + spawnRotation);
+		actor = CreateDummyActor(OriginalLocation + spawnLocation,
+			OriginalRotation + spawnRotation);
 	else
 	{
-		actor = Spawn(class'PhysicalItem', self, '', spawnLocation, OriginalRotation +
-			spawnRotation);
+		actor = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
+			OriginalRotation + spawnRotation);
 		actor.Spec = part;
 		actor.StaticMeshComponent.SetStaticMesh(part.Mesh);
 		actor.SetPhysicalCollisionProperties();
