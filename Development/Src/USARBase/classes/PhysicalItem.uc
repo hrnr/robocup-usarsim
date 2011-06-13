@@ -18,7 +18,7 @@ var Part Spec;
 defaultproperties
 {
 	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'Nao.Dummy'
+		StaticMesh=None
 	End Object
 
 	bWakeOnLevelStart=true

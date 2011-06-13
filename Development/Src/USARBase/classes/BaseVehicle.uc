@@ -109,7 +109,8 @@ simulated function float GetProperty(String key)
 // Callback mechanism which uses a delegate to send messages
 simulated delegate MessageSendDelegate(String msg)
 {
-	LogInternal("BaseVehicle: no callback registered for MessageSendDelegate: " @ msg);
+	// Double spawning spams the log window after death - testing only
+	// LogInternal("BaseVehicle: no callback registered for MessageSendDelegate: " @ msg);
 }
 
 // Initialize this object

@@ -69,20 +69,8 @@ simulated function int GetBatteryLife()
 		return VehicleBattery.ExpectedLifeTime();
 }
 
-// Gets configuration data from effectors matching the given type and/or name
-simulated function String GetEffectorConfData(String effectorType, String effectorName)
-{
-	return GetGeneralConfData('Effector', effectorType, effectorName);
-}
-
-// Gets geometry data from effectors matching the given type and/or name
-simulated function String GetEffectorGeoData(String effectorType, String effectorName)
-{
-	return GetGeneralGeoData('Effector', effectorType, effectorName);
-}
-
 // Compiles configuration data from items of the given type and name
-function String GetGeneralConfData(name itemClass, String itemType, String itemName)
+function String GetGeneralConfData(String itemType, String itemName)
 {
 	local String outStr;
 	local int i;
@@ -92,23 +80,20 @@ function String GetGeneralConfData(name itemClass, String itemType, String itemN
 	outStr = "";
 	firstIndex = -1;
 	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA(itemClass) && Parts[i].isType(itemType) && (itemName == "" ||
-			Parts[i].isName(itemName)))
+		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
 		{
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetConfData();
 			if (firstIndex < 0)
 				firstIndex = i;
 		}
-	
-	// Add header from first item
 	if (outStr != "")
-		outStr = Parts[firstIndex].GetConfHead() $ outStr;
+		outStr = "CONF {Type " $ itemType $ "}" $ outStr;
 	return outStr;
 }
 
 // Compiles geometry data from items of the given type and name
-function String GetGeneralGeoData(name itemClass, String itemType, String itemName)
+function String GetGeneralGeoData(String itemType, String itemName)
 {
 	local String outStr;
 	local int i;
@@ -118,18 +103,15 @@ function String GetGeneralGeoData(name itemClass, String itemType, String itemNa
 	outStr = "";
 	firstIndex = -1;
 	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA(itemClass) && Parts[i].isType(itemType) && (itemName == "" ||
-			Parts[i].isName(itemName)))
+		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
 		{
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
 			if (firstIndex < 0)
 				firstIndex = i;
 		}
-	
-	// Add header from first item
 	if (outStr != "")
-		outStr = Parts[firstIndex].GetGeoHead() $ outStr;
+		outStr = "GEO {Type " $ itemType $ "}" $ outStr;
 	return outStr;
 }
 
@@ -190,18 +172,6 @@ simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseR
 	
 	GetAxes(MyRotation, X, Y, Z);
 	return OrthoRotation(X << BaseRotation, Y << BaseRotation, Z << BaseRotation);
-}
-
-// Gets configuration data from sensors matching the given type and/or name
-simulated function String GetSensorConfData(String sensorType, String sensorName)
-{
-	return GetGeneralConfData('Sensor', sensorType, sensorName);
-}
-
-// Gets geometry data from sensors matching the given type and/or name
-simulated function String GetSensorGeoData(String sensorType, String sensorName)
-{
-	return GetGeneralGeoData('Sensor', sensorType, sensorName);
 }
 
 // Gets robot status sent out on each tick
@@ -646,17 +616,17 @@ reliable server function SetupPart(Part part)
 // TempRotatePart and RestoreRotatePart are used to deal with the problem that the constraint 
 // angle limits are specified symmetrically. The part is temporary rotated so the high and
 // low limits become symmetrical if there were not already when initializing the constraint
-simulated function TempRotatePart(Joint jt, Actor p, Rotator angle,
+simulated function TempRotatePart(Joint jt, Actor p, rotator angle,
 	out vector savedPosition, out rotator savedRotation)
 {
-	local Vector pos, jointpos;
+	local vector pos, jointpos;
 	
 	// Save old position and location
 	savedPosition = p.Location;
 	savedRotation = p.Rotation;
 	
 	// Transform position and direction temporarily
-	jointpos = OriginalLocation + GetJointOffset(jt);
+	jointpos = OriginalLocation + (GetJointOffset(jt) >> OriginalRotation);
 	pos = TransformVectorByRotation(angle, p.Location - jointpos);
 	p.SetRotation(p.Rotation + angle);
 	p.SetLocation(pos + jointpos);

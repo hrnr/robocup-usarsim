@@ -51,15 +51,15 @@ function String GetGeoData()
 	local String outstring;
 	
 	// Name and location
-	outstring = "{Name " $ ItemName $ " Location " $
+	outstring = "{Name " $ ItemName $ "} {Location " $
 		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
 	
 	// Direction
-	outstring = outstring $ " Orientation " $
+	outstring = outstring $ "} {Orientation " $
 		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
 	
 	// Mount point
-	outstring = outstring $ " Mount " $ ItemMount $ "}";
+	outstring = outstring $ "} {Mount " $ ItemMount $ "}";
 	return outstring;
 }
 

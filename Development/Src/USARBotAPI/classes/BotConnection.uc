@@ -120,7 +120,7 @@ event Closed()
 	if (theBot != None)
 	{
 		Parent.Parent.DeleteBotController(theBot);
-		theBot.RemoteDestroy();
+		theBot.Destroy();
 	}
 	Destroy();
 }
@@ -410,10 +410,8 @@ function ProcessGetGeo(ParsedMessage parsedMessage)
 		SendLine(USARVehicle(theBot.Pawn).GetGeoData());
 	else if (Type == "MisPkg")
 		SendLine(USARVehicle(theBot.Pawn).GetMisPkgGeoData());
-	else if (Type == "Gripper")
-		SendLine(USARVehicle(theBot.Pawn).GetEffectorGeoData(Type, parsedMessage.GetArgVal("Name")));
-	else if (Type == "Sensor")
-		SendLine(USARVehicle(theBot.Pawn).GetSensorGeoData(Type, parsedMessage.GetArgVal("Name")));
+	else
+		SendLine(USARVehicle(theBot.Pawn).GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Gets configuration information from the robot
@@ -426,10 +424,8 @@ function ProcessGetConf(ParsedMessage parsedMessage)
 		SendLine(USARVehicle(theBot.Pawn).GetConfData());
 	else if (Type == "MisPkg")
 		SendLine(USARVehicle(theBot.Pawn).GetMisPkgConfData());
-	else if (Type == "Gripper")
-		SendLine(USARVehicle(theBot.Pawn).GetEffectorConfData(Type, parsedMessage.GetArgVal("Name")));
-	else if (Type == "Sensor")
-		SendLine(USARVehicle(theBot.Pawn).GetSensorConfData(Type, parsedMessage.GetArgVal("Name")));
+	else
+		SendLine(USARVehicle(theBot.Pawn).GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Sets joint angles or other related parameters
@@ -573,12 +569,14 @@ function receiveMessage(String Text)
 // Sends a line of text to the client
 function SendLine(String text, optional bool bNoCRLF)
 {
-	if (bDebug)
-		LogInternal("BotConnection: Sending " $ text);
-	if (bNoCRLF)
-		SendText(text);
-	else
-		SendText(text $ Chr(13) $ Chr(10));
+	if (text != "") {
+		if (bDebug)
+			LogInternal("BotConnection: Sending " $ text);
+		if (bNoCRLF)
+			SendText(text);
+		else
+			SendText(text $ Chr(13) $ Chr(10));
+	}
 }
 
 // TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
