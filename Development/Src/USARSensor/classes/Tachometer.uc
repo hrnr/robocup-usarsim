@@ -12,88 +12,39 @@
  * Author:  Stephen Balakirsky 
  * Brief :  This sensor provides data that would typically be returned by a tachometer sensor.
  */
-class Tachometer extends Sensor config (USAR);
+class Tachometer extends WheelSensor config (USAR);
 
-struct TachWheel
-{
-	var JointItem Wheel;
-	var float OldPosition;
-};
-var array<TachWheel> Wheels;
 var float OldTime;
 
+// Need to initialize OldTime
 simulated function AttachItem()
 {
 	super.AttachItem();
-	FindTires();
-}
-
-simulated function FindTires()
-{
-	local JointItem ji;
-	local int i;
-	local int index;
-	
-	if (!Platform.IsA('SkidSteeredVehicle'))
-	{
-		LogInternal("Tachometer: Not attached to a SkidSteeredVehicle");
-		SetTimer(0, false);
-		return;
-	}
-	
-	index = 0;
-	for(i = 0; i < Platform.Parts.Length; i++)
-		if (Platform.Parts[i].isJoint())
-		{
-			ji = JointItem(Platform.Parts[i]);
-			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
-			{
-				Wheels[index].Wheel = ji;
-				Wheels[index].OldPosition = ji.CurValue;
-				index++;
-			}
-		}
-	oldTime = WorldInfo.TimeSeconds;
+	OldTime = WorldInfo.TimeSeconds;
 }
 
 // Returns data from the tachometer
 function String GetData()
 {
-	local String tachometerData;
+	local String tachometerData, posString;
 	local int i;
-	local float oldPos;
-	local float diff;
-	local float rollsOver;
-	local float myVelocity;
-	local float newTime;
-	local float timeDiff;
-	local String posString;
-	local float positionOut;
+	local float newTime, timeDiff, positionOut, myVelocity;
 	
 	newTime = WorldInfo.TimeSeconds;
-	timeDiff = newTime - oldTime;
-	oldTime = newTime;
+	timeDiff = newTime - OldTime;
+	OldTime = newTime;
+	// Avoid div by zero
+	if (timeDiff < 0.000001 || Wheels.Length < 1)
+		return "{Name " $ ItemName $ "}";
 	tachometerData = "{Name " $ ItemName $ "} {Vel ";
 	posString = "{Pos ";
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		diff = Wheels[i].Wheel.CurValue - Wheels[i].OldPosition;
-		if (diff < -PI)
-			rollsOver = 1;
-		else if (diff > PI)
-			rollsOver = -1;
-		else
-			rollsOver = 0;
-		oldPos = Wheels[i].Wheel.CurValue;
-		Wheels[i].OldPosition = oldPos;
-		if (oldPos <= 0)
-			positionOut = oldPos + 2 * PI;
-		else if (oldPos >= 2 * PI)
-			positionOut = oldPos - 2 * PI;
-		else
-			positionOut = oldPos * degToRad;
-			
-		myVelocity = degToRad * (rollsOver * 2 * PI + diff) / timeDiff;
+		positionOut = Wheels[i].Wheel.CurValue % (2 * PI);
+		if (positionOut <= 0)
+			positionOut += 2 * PI;
+		
+		myVelocity = Wheels[i].Spun / timeDiff;
 		if (i == 0)
 		{
 			posString = posString $ positionOut;

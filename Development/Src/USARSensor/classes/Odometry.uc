@@ -8,11 +8,10 @@
 *****************************************************************************/
 
 /*
-  * Odometry.uc
-  * Odometry Sensor
-  * author:  Stephen Balakirsky 
-  * brief :  This sensor provides data that would typically be returned by an odometry sensor.
-  */
+ * Odometry Sensor
+ * author:  Stephen Balakirsky 
+ * brief :  This sensor provides data that would typically be returned by an odometry sensor.
+ */
 class Odometry extends Sensor config (USAR);
 
 var JointItem lFTire; // left front tire
@@ -99,8 +98,7 @@ function FindTires()
 
 function String GetData()
 {
-	local float diff;
-	local float rollsOver;
+	local float diff, value;
 	local float leftSpin, rightSpin; // will contain the spin speed of the wheels in rad/sec
 	local float newTime;
 	local float timeDiff;
@@ -113,26 +111,16 @@ function String GetData()
 	
 	// Odometry on LF tire
 	oldTime = newTime;
-	diff = LFTire.CurValue - oldLeft;
-	if (diff < -180)
-		rollsOver = 1;
-	else if (diff > 180)
-		rollsOver = -1;
-	else
-		rollsOver = 0;
-	oldLeft = LFTire.CurValue;
-	leftSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
+	value = LFTire.CurValue;
+	diff = value - oldLeft;
+	oldLeft = value;
+	leftSpin = diff / timeDiff;
 	
 	// Odometry on RF tire
-	diff = RFTire.CurValue - oldRight;
-	if (diff < -180)
-		rollsOver = 1;
-	else if (diff > 180)
-		rollsOver = -1;
-	else
-		rollsOver = 0;
-	oldRight = RFTire.CurValue;
-	rightSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
+	value = RFTire.CurValue;
+	diff = value - oldRight;
+	oldRight = value;
+	rightSpin = diff / timeDiff;
 	
 	// Compute changes in pose
 	xVel = cos(theta) * (wheelRadius * (rightSpin + leftSpin) / 2);
@@ -169,7 +157,7 @@ defaultproperties
 	Begin Object Class=StaticMeshComponent Name=StMesh01
 		StaticMesh=StaticMesh'INSIMUSensor.Sensor'
 		CollideActors=false
-		BlockActors=false   //Must be set to false for hard-attach
+		BlockActors=false
 		BlockRigidBody=false
 		BlockZeroExtent=false
 		BlockNonZeroExtent=false

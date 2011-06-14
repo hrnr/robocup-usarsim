@@ -17,12 +17,16 @@ class USARVehicle extends BaseVehicle config(USAR);
 var config bool bUseVolumeOverride;
 // Whether an acoustic sensor is installed
 var bool HasAcoustic;
+// The time when the last status update was sent
+var float LastStatus;
 // Whether this robot is normalized
 var bool Normalized;
 // Location and rotation where the robot started, to fix bug where robot moves after spawning
 // changing locations of subsequent parts
 var vector OriginalLocation;
 var rotator OriginalRotation;
+// A separate, per robot controllable timer which allows status updates at different rates
+var float StatusTimer;
 // Vehicle's installed battery
 var Battery VehicleBattery;
 // Value between 0.0001 (muted) and 1.0 (normal volume) used to change all sound volumes
@@ -37,8 +41,16 @@ simulated function BatteryDied()
 // Sends out status messages per timer if set (parent method is empty)
 simulated function ClientTimer()
 {
-	MessageSendDelegate(GetStatus());
+	local float time;
+	
+	time = WorldInfo.TimeSeconds;
 	UpdateJoints();
+	if (time - LastStatus >= StatusTimer)
+	{
+		// Send robot statuses far less often
+		MessageSendDelegate(GetStatus());
+		LastStatus = time;
+	}
 }
 
 // Notify when this vehicle is removed
@@ -194,6 +206,7 @@ simulated function PostBeginPlay()
 	// Initialize items (sensors etc)
 	for (i = 0; i < AddParts.Length; i++)
 		SetupItem(AddParts[i]);
+	LastStatus = WorldInfo.TimeSeconds;
 }
 
 // Sets all joint targets to the specified value
@@ -365,32 +378,32 @@ reliable server function SetupJoint(Joint jt)
 // Sets up a part's parameters and spawns it into the world (static constrained pieces)
 reliable server function SetupPart(Part part)
 {
-	local PhysicalItem actor;
+	local PhysicalItem it;
 	local vector spawnLocation;
 	local rotator spawnRotation;
 	
 	// Determine start location
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;
-	actor = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
+	it = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
 		OriginalRotation + spawnRotation);
-	actor.Spec = part;
-	actor.StaticMeshComponent.SetStaticMesh(part.Mesh);
-	actor.SetPhysicalCollisionProperties();
-	actor.SetMass(part.Mass);
+	it.Spec = part;
+	it.StaticMeshComponent.SetStaticMesh(part.Mesh);
+	it.SetPhysicalCollisionProperties();
+	it.SetMass(part.Mass);
 	
 	// Initialize center item properly (for sensors and parenting reasons)
 	if (part.Name == Body.Name)
 	{
-		CenterItem = actor;
+		CenterItem = it;
 		if (bDebug)
 			LogInternal("USARVehicle: Found vehicle body " $ String(Body.Name));
 	}
 	
 	// Add item into world
-	Parts.AddItem(actor);
+	Parts.AddItem(it);
 	if (bDebug)
-		LogInternal("USARVehicle: Created part '" $ String(actor.Name) $ "' for spec " $
+		LogInternal("USARVehicle: Created part '" $ String(it.Name) $ "' for spec " $
 			String(part.Name));
 }
 
@@ -426,4 +439,5 @@ defaultproperties
 	HasAcoustic=false
 	Normalized=false
 	Physics=PHYS_None
+	StatusTimer=0.1
 }

@@ -21,7 +21,6 @@ var float LimitLow;
 reliable server function JointItem Init(JointItem ji) {
 	local vector savedLocation, amount;
 	local int trueZero, hi, lo;
-	local float tl;
 	local RB_ConstraintSetup setup;
 	
 	// Parent initialization

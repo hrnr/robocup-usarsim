@@ -6,8 +6,8 @@ Notes:
 1. This version was verified with the UDK February-2011 release! 
 2. Due to the fact that unreal needs a build order, we had to move the base class of USARVehicle, BaseVehicle, 
    into the USARBase folder so there wouldn’t be any problems. 
-3. The verified working example robots are BasicSkidRobot, CasterSkidRobot, and P3AT_static. 
-4. This code based off of http://svn.sandern.com/nao/trunk/UDKUSARSim/
+3. The verified working example robots are BasicSkidRobot, CasterSkidRobot, and P3AT. 
+4. This code partially based off of constraint examples at http://svn.sandern.com/nao/trunk/UDKUSARSim/
 
 ------------------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ Running:
 2. Start usarsim using one of the map bat files located in USARRunMaps
 
 Known issues:
-1) Lots of warnings!
-2) Can only put in a single robot.
-
-
+1) Lots of warnings due to missing objects not yet imported into UDK.
+2) Sensors need validation.
+3) Mission packages still use skeletal meshes instead of static meshes.
+4) Example robots have no materials.

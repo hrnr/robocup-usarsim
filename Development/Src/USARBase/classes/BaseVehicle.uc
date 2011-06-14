@@ -144,11 +144,7 @@ simulated function ReceiveMessageFromSensor(String msg)
 reliable server function SetHeadLights(bool light)
 {
 	HeadLights = light;
-	LogInternal("BaseVehicle: Set headlights of '" $ String(Name) $ "' to " $ light);
 }
-
-// Called each tick (frame)
-function Tick(float DeltaTime);
 
 // Called by the system timer function
 simulated function Timer()

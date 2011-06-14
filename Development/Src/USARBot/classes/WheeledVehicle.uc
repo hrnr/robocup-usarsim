@@ -12,7 +12,7 @@
  */
 class WheeledVehicle extends USARVehicle config(USAR) abstract;
 
-// Wheel radius (must be set in config to mimic old api)
+// Wheel radius (must be set in properties to mimic old api)
 var float WheelRadius;
 
 // Returns geometric configuration data related to this robot
@@ -102,4 +102,5 @@ function SetMaxTorque(float maxTorque)
 
 defaultproperties
 {
+	WheelRadius=0.2
 }
