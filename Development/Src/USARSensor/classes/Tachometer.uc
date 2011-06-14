@@ -49,7 +49,7 @@ simulated function FindTires()
 			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
 			{
 				Wheels[index].Wheel = ji;
-				Wheels[index].OldPosition = ji.CurAngle;
+				Wheels[index].OldPosition = ji.CurValue;
 				index++;
 			}
 		}
@@ -77,14 +77,14 @@ function String GetData()
 	posString = "{Pos ";
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		diff = Wheels[i].Wheel.CurAngle - Wheels[i].OldPosition;
+		diff = Wheels[i].Wheel.CurValue - Wheels[i].OldPosition;
 		if (diff < -PI)
 			rollsOver = 1;
 		else if (diff > PI)
 			rollsOver = -1;
 		else
 			rollsOver = 0;
-		oldPos = Wheels[i].Wheel.CurAngle;
+		oldPos = Wheels[i].Wheel.CurValue;
 		Wheels[i].OldPosition = oldPos;
 		if (oldPos <= 0)
 			positionOut = oldPos + 2 * PI;

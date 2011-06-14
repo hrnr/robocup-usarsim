@@ -70,7 +70,7 @@ simulated function FindTires()
 			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
 			{
 				Wheels[index].Wheel = ji;
-				Wheels[index].Old = ji.CurAngle;
+				Wheels[index].Old = ji.CurValue;
 				Wheels[index].Spin = 0;
 				Wheels[index].Tick = 0;
 				index++;
@@ -95,10 +95,10 @@ simulated function ClientTimer()
 	oldTime = newTime;
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		diff = Wheels[i].Wheel.CurAngle - Wheels[i].Old;
+		diff = Wheels[i].Wheel.CurValue - Wheels[i].Old;
 		
 		// Convert back to UU for tick reasons?
-		Wheels[i].Old = Wheels[i].Wheel.CurAngle;
+		Wheels[i].Old = Wheels[i].Wheel.CurValue;
 		Wheels[i].Spin += int(diff * 32768 / PI);
 		totalSpin = (1 + RandRange(-Noise, Noise)) * Wheels[i].Spin;
 		Wheels[i].Tick = int(NormalAngle(totalSpin) / uuResolution);

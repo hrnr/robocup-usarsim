@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * LeggedVehicle - Base class for USAR legged robots.
+ * LeggedVehicle - Base class for USAR legged robots
  */
 class LeggedVehicle extends USARVehicle config(USAR) abstract;
 
@@ -26,7 +26,7 @@ simulated function String GetStatus()
 		{
 			ji = JointItem(Parts[i]);
 			status = status $ " {" $ ji.GetJointName() $ " " $
-				class'UnitsConverter'.static.Str_AngleFromUU(ji.CurAngle) $ "}";
+				class'UnitsConverter'.static.Str_AngleFromUU(ji.CurValue) $ "}";
 		}
 	status = status $ " {Battery " $ GetBatteryLife() $ "}";
 	return status;

@@ -42,6 +42,7 @@ function FindTires()
 {
 	local int i;
 	local JointItem ji;
+	local WheelJoint jt;
 	
 	LFTire = None;
 	RFTire = None;
@@ -59,20 +60,21 @@ function FindTires()
 			ji = JointItem(Platform.Parts[i]);
 			if (ji.JointIsA('WheelJoint'))
 			{
-				if (ji.Spec.Side == SIDE_Left)
+				jt = WheelJoint(ji.Spec);
+				if (jt.Side == SIDE_Left)
 				{
 					// Left side?
 					if (lFTire == None)
 						lFTire = ji;
-					else if (ji.Spec.Offset.X > lFTire.Spec.Offset.X)
+					else if (jt.Offset.X > lFTire.Spec.Offset.X)
 						lFTire = ji;
 				}
-				else if (ji.Spec.Side == SIDE_Right)
+				else if (jt.Side == SIDE_Right)
 				{
 					// Right side!
 					if (rFTire == None)
 						rFTire = ji;
-					else if (ji.Spec.Offset.X > rFTire.Spec.Offset.X)
+					else if (jt.Offset.X > rFTire.Spec.Offset.X)
 						rFTire = ji;
 				}
 			}
@@ -80,13 +82,13 @@ function FindTires()
 	
 	if (lFTire == None || rFTire == None)
 	{
-		LogInternal("Odometry: Could not find wheels!");
+		LogInternal("Odometry: Could not find wheels");
 		SetTimer(0, false);
 	}
 	else
 	{
-		oldLeft = lFTire.CurAngle;
-		oldRight = rFTire.CurAngle;
+		oldLeft = lFTire.CurValue;
+		oldRight = rFTire.CurValue;
 		oldTime = WorldInfo.TimeSeconds;
 		wheelRadius = Platform.GetProperty("WheelRadius");
 	}
@@ -111,25 +113,25 @@ function String GetData()
 	
 	// Odometry on LF tire
 	oldTime = newTime;
-	diff = LFTire.CurAngle - oldLeft;
+	diff = LFTire.CurValue - oldLeft;
 	if (diff < -180)
 		rollsOver = 1;
 	else if (diff > 180)
 		rollsOver = -1;
 	else
 		rollsOver = 0;
-	oldLeft = LFTire.CurAngle;
+	oldLeft = LFTire.CurValue;
 	leftSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
 	
 	// Odometry on RF tire
-	diff = RFTire.CurAngle - oldRight;
+	diff = RFTire.CurValue - oldRight;
 	if (diff < -180)
 		rollsOver = 1;
 	else if (diff > 180)
 		rollsOver = -1;
 	else
 		rollsOver = 0;
-	oldRight = RFTire.CurAngle;
+	oldRight = RFTire.CurValue;
 	rightSpin = degToRad * (rollsOver * 360. + diff) / timeDiff;
 	
 	// Compute changes in pose

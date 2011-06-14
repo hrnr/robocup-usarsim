@@ -162,6 +162,7 @@ defaultproperties
 	bConsiderAllStaticMeshComponentsForStreaming=true
 	bNoDelete=false
 	bStatic=false
+	bDebug=false
 	HeadLights=false
 
 	// Collision properties

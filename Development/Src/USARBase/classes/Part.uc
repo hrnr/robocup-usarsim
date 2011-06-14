@@ -12,17 +12,15 @@
  */
 class Part extends Object config(USAR);
 
-// The direction the part points towards.
+// The direction the part points towards
 var vector Direction;
-// Whether the part is a "dummy" part. Dummy parts get a special mesh on construction.
-var bool IsDummy;
-// The part's mass in kilograms.
+// The part's mass in kilograms
 var float Mass;
-// The static mesh used for rendering.
+// The static mesh used for rendering
 var StaticMesh Mesh;
-// The location of the object relative to its "RelativeTo" parent.
+// The location of the object relative to its "RelativeTo" parent
 var vector Offset;
-// The object from which this part's offset is relative.
+// The object from which this part's offset is relative
 var Part RelativeTo;
 
 defaultproperties

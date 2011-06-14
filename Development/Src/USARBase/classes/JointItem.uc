@@ -18,9 +18,9 @@ var PhysicalItem Child;
 // The constraint handling this joint
 var Hinge Constraint;
 // The angle this joint is currently pointing
-var float CurAngle;
-// The target where this joint must eventually point
-var int CurAngularTarget;
+var float CurValue;
+// The damping factor of this joint
+var float Damping;
 // The maximum force this joint can exert
 var float MaxForce;
 // The parent item controlled by this joint
@@ -31,11 +31,12 @@ var Joint Spec;
 var float Stiffness;
 // NOTE: Constraint limits are always symmetrical, but joints can be asymmetrical
 // Make the limits symmetrical; map set angles to the actual constraint limits
-var int TrueZero;
+var float TrueZero;
 
 // Clean up the constraints when this joint dies
 simulated event Destroyed()
 {
+	super.Destroyed();
 	Constraint.Destroy();
 }
 
@@ -55,6 +56,39 @@ simulated function bool IsJoint()
 simulated function bool JointIsA(name theType)
 {
 	return Spec.isA(theType);
+}
+
+// Sets the damping of a joint given its index
+function SetDamping(float damp)
+{
+	Damping = damp;
+	Spec.Recalc(self);
+}
+
+// Sets the maximum force of a joint
+function SetMaxForce(float force)
+{
+	MaxForce = force;
+	Spec.Recalc(self);
+}
+
+// Sets the stiffness of a joint
+function SetStiffness(float stiff)
+{
+	Stiffness = stiff;
+	Spec.Recalc(self);
+}
+
+// Moves the joint to the specified target
+simulated function SetTarget(float target)
+{
+	Spec.SetTarget(self, target);
+}
+
+// Moves the joint at the specified velocity
+simulated function SetVelocity(float target)
+{
+	Spec.SetVelocity(self, target);
 }
 
 defaultproperties

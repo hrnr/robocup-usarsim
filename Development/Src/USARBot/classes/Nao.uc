@@ -1,10 +1,42 @@
+/*
+ * Possible example on how to use RevoluteJoints. However, this class needs to be remade to
+ * take the new changes into account.
+ * 
+ * - All joints now revolve around their Z axis. Remove RotateAxis and use Direction to
+ *   transform the joint in the desired direction.
+ * - Use gearing equations instead of measurement types if custom measurements are needed.
+ * - Masses are now in kilograms not grams.
+ * 
+ * TODO Remove this comment once changes are made
+ */
 class Nao extends LeggedVehicle config(USAR);
 
+// Gearing equation example to replace measurement types
+simulated function float JointTransform(JointItem ji, float value)
+{
+	local rotator relRot, rotTemp;
+	local RevoluteJoint jt;
+	
+	jt = RevoluteJoint(ji.Spec);
+	if (jt == None) return value;
+	if (jt.InverseMeasure)
+		relRot = jt.GetRelativeRotation(ji.Parent.Rotation, ji.Child.Rotation);
+	else 
+		relRot = jt.GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
+	if (ji.GetJointName() == 'HeadPitch')
+	{
+		rotTemp = rot(0, 0, 0);
+		rotTemp.Yaw = -relRot.Yaw;
+		relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
+		value = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
+	}
+	return value;
+}
 
 defaultproperties
 {
 	// Create BodyItem part
-	Begin Object Class=Part Name=BodyItem
+/*	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.naobody'
 		Mass=1039.48
 	End Object
@@ -19,7 +51,7 @@ defaultproperties
 	End Object
 	PartList.Add(Head)
 
-	Begin Object Class=Joint Name=HeadPitch
+	Begin Object Class=RevoluteJoint Name=HeadPitch
 		Parent=Head
 		Child=BodyItem
 		jointType=JOINTTYPE_Roll
@@ -31,7 +63,7 @@ defaultproperties
 	End Object
 	Joints.Add(HeadPitch)
 
-	Begin Object Class=Joint Name=HeadYaw
+	Begin Object Class=RevoluteJoint Name=HeadYaw
 		Parent=Head
 		Child=BodyItem
 		jointType=JOINTTYPE_Yaw
@@ -87,7 +119,7 @@ defaultproperties
 	PartList.Add(RLowerArm)
 
 	// Create shoulder
-	Begin Object Class=Joint Name=LShoulderRoll
+	Begin Object Class=RevoluteJoint Name=LShoulderRoll
 		Parent=LUpperArm
 		Child=BodyItem
 		jointType=JOINTTYPE_Roll
@@ -99,7 +131,7 @@ defaultproperties
 	End Object
 	Joints.Add(LShoulderRoll)
 
-	Begin Object Class=Joint Name=LShoulderPitch
+	Begin Object Class=RevoluteJoint Name=LShoulderPitch
 		Parent=LUpperArm
 		Child=BodyItem
 		jointType=JOINTTYPE_Pitch
@@ -111,7 +143,7 @@ defaultproperties
 	End Object
 	Joints.Add(LShoulderPitch)
 
-	Begin Object Class=Joint Name=RShoulderRoll
+	Begin Object Class=RevoluteJoint Name=RShoulderRoll
 		Parent=RUpperArm
 		Child=BodyItem
 		jointType=JOINTTYPE_Roll
@@ -123,7 +155,7 @@ defaultproperties
 	End Object
 	Joints.Add(RShoulderRoll)
 
-	Begin Object Class=Joint Name=RShoulderPitch
+	Begin Object Class=RevoluteJoint Name=RShoulderPitch
 		Parent=RUpperArm
 		Child=BodyItem
 		jointType=JOINTTYPE_Pitch
@@ -136,7 +168,7 @@ defaultproperties
 	Joints.Add(RShoulderPitch)
 
 	// Create elbow
-	Begin Object Class=Joint Name=LElbowYaw
+	Begin Object Class=RevoluteJoint Name=LElbowYaw
 		Parent=LUpperArm
 		Child=LElBow
 		IsOneDof=true;
@@ -150,7 +182,7 @@ defaultproperties
 	End Object
 	Joints.Add(LElbowYaw)
 
-	Begin Object Class=Joint Name=LElbowRoll
+	Begin Object Class=RevoluteJoint Name=LElbowRoll
 		Parent=LElBow
 		Child=LLowerArm
 		IsOneDof=true;
@@ -163,7 +195,7 @@ defaultproperties
 	End Object
 	Joints.Add(LElbowRoll)
 
-	Begin Object Class=Joint Name=RElbowYaw
+	Begin Object Class=RevoluteJoint Name=RElbowYaw
 		Parent=RUpperArm
 		Child=RElbow
 		IsOneDof=true;
@@ -177,7 +209,7 @@ defaultproperties
 	End Object
 	Joints.Add(RElbowYaw)
 
-	Begin Object Class=Joint Name=RElbowRoll
+	Begin Object Class=RevoluteJoint Name=RElbowRoll
 		Parent=RElbow
 		Child=RLowerArm
 		IsOneDof=true;
@@ -254,7 +286,7 @@ defaultproperties
 	PartList.Add(RFoot)
 
 	// Create hip joint
-	Begin Object Class=Joint Name=LHipYawPitch
+	Begin Object Class=RevoluteJoint Name=LHipYawPitch
 		IsOneDof=true
 		Parent=LHip
 		Child=BodyItem
@@ -267,7 +299,7 @@ defaultproperties
 	End Object
 	Joints.Add(LHipYawPitch)
 
-	Begin Object Class=Joint Name=RHipYawPitch
+	Begin Object Class=RevoluteJoint Name=RHipYawPitch
 		IsOneDof=true
 		Parent=RHip
 		Child=BodyItem
@@ -280,7 +312,7 @@ defaultproperties
 	End Object
 	Joints.Add(RHipYawPitch)
 
-	Begin Object Class=Joint Name=LHipPitch
+	Begin Object Class=RevoluteJoint Name=LHipPitch
 		Parent=LThigh
 		Child=LHip
 		jointType=JOINTTYPE_Pitch
@@ -292,7 +324,7 @@ defaultproperties
 	End Object
 	Joints.Add(LHipPitch)
 
-	Begin Object Class=Joint Name=LHipRoll
+	Begin Object Class=RevoluteJoint Name=LHipRoll
 		Parent=LThigh
 		Child=LHip
 		jointType=JOINTTYPE_Roll
@@ -305,7 +337,7 @@ defaultproperties
 	End Object
 	Joints.Add(LHipRoll)
 
-	Begin Object Class=Joint Name=RHipPitch
+	Begin Object Class=RevoluteJoint Name=RHipPitch
 		Parent=RThigh
 		Child=RHip
 		jointType=JOINTTYPE_Pitch
@@ -317,7 +349,7 @@ defaultproperties
 	End Object
 	Joints.Add(RHipPitch)
 
-	Begin Object Class=Joint Name=RHipRoll
+	Begin Object Class=RevoluteJoint Name=RHipRoll
 		Parent=RThigh
 		Child=RHip
 		jointType=JOINTTYPE_Roll
@@ -331,7 +363,7 @@ defaultproperties
 	Joints.Add(RHipRoll)
 
 	// Create knee joint
-	Begin Object Class=Joint Name=LKneePitch
+	Begin Object Class=RevoluteJoint Name=LKneePitch
 		RelativeTo=LShank
 		IsOneDof=true;
 		Parent=LShank
@@ -345,7 +377,7 @@ defaultproperties
 	End Object
 	Joints.Add(LKneePitch)
 
-	Begin Object Class=Joint Name=RKneePitch
+	Begin Object Class=RevoluteJoint Name=RKneePitch
 		RelativeTo=RShank
 		IsOneDof=true;
 		Parent=RShank
@@ -360,7 +392,7 @@ defaultproperties
 	Joints.Add(RKneePitch)
 
 	// Create ankle joint
-	Begin Object Class=Joint Name=LAnklePitch
+	Begin Object Class=RevoluteJoint Name=LAnklePitch
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
@@ -373,7 +405,7 @@ defaultproperties
 	End Object
 	Joints.Add(LAnklePitch)
 
-	Begin Object Class=Joint Name=LAnkleRoll
+	Begin Object Class=RevoluteJoint Name=LAnkleRoll
 		RelativeTo=LShank
 		Parent=LFoot
 		Child=LShank
@@ -387,7 +419,7 @@ defaultproperties
 	End Object
 	Joints.Add(LAnkleRoll)
 
-	Begin Object Class=Joint Name=RAnklePitch
+	Begin Object Class=RevoluteJoint Name=RAnklePitch
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
@@ -400,7 +432,7 @@ defaultproperties
 	End Object
 	Joints.Add(RAnklePitch)
 
-	Begin Object Class=Joint Name=RAnkleRoll
+	Begin Object Class=RevoluteJoint Name=RAnkleRoll
 		RelativeTo=RShank
 		Parent=RFoot
 		Child=RShank
@@ -412,5 +444,5 @@ defaultproperties
 		LimitHigh=.7859 // 45.03
 		RotateAxis=(x=0,y=1.57,z=-1.57)
 	End Object
-	Joints.Add(RAnkleRoll)
+	Joints.Add(RAnkleRoll) */
 }

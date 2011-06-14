@@ -49,31 +49,29 @@ defaultproperties
 	Begin Object Class=WheelJoint Name=BRWheelRoll
 		Parent=BodyItem
 		Child=BRWheel
-		JointType=JOINTTYPE_Roll
-		Side=SIDE_RIGHT
+		Side=SIDE_Right
 		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BLWheelRoll
 		Parent=BodyItem
 		Child=BLWheel
-		JointType=JOINTTYPE_Roll
-		Side=SIDE_LEFT
+		Side=SIDE_Left
 		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BLWheelRoll)
 
 	Begin Object Class=WheelJoint Name=CasterWheelJoint
 		Parent=BodyItem
 		Child=CasterWheel
-		JointType=JOINTTYPE_FREE
-		Side=SIDE_NONE
+		Side=SIDE_None
 		bIsDriven=false
+		bOmni=true
 		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
 	End Object

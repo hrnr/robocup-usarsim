@@ -13,64 +13,90 @@
  */
 class Joint extends Object config(USAR);
 
-// The type of rotation this joint can complete
-enum EJointType
-{
-	JOINTTYPE_Pitch, // Swing2
-	JOINTTYPE_Yaw,   // Swing1
-	JOINTTYPE_Roll,  // Twist
-	JOINTTYPE_Free,  // Swing and Twist
-	JOINTTYPE_Fixed,
-};
-
-// The side of the robot this joint is on (useful in many cases for symmetrical robots)
-enum ESide
-{
-	SIDE_Left,
-	SIDE_Right,
-	SIDE_None
-};
-
-// Type of measurement used on the joint
-enum EMeasureType
-{
-	EMEASURE_Pitch,
-	EMEASURE_Roll,
-	EMEASURE_Yaw,
-	EMEASURE_Axis,
-	
-	EMEASURE_Pitch_RemoveYaw,
-	EMEASURE_Yaw_RemoveRoll,
-	EMEASURE_Yaw_RemovePitch,
-	EMEASURE_Roll_RemovePitch,
-	EMEASURE_Roll_RemoveYaw
-};
-
-// Specification variables
-var vector Angle;
+// The joint's direction; this should override the former RotateAxis functionality
+var vector Direction;
+// The child part (moveable relative to the parent)
 var Part Child;
-var bool IsOneDof;
-var EJointType JointType;
-var float LimitHigh;
-var float LimitLow;
-// Default value only (updated value in JointItems)
+// Default value only (updated value in JointItems) of maximum force (torque)
 var float MaxForce;
-var EMeasureType MeasureType;
+// Part offset from the robot origin, or relative to
 var vector Offset;
+// The parent part (fixed relative to the child)
 var Part Parent;
+// Transforms the joint's location to be relative to this part; cannot be relative to a joint
 var Part RelativeTo;
-// Overrides the default calculated axis
-var vector RotateAxis;
-var ESide Side;
 
-// The default way of measuring or applying the angles might not match with the defined
-// joint of the robot; use these variables to invert them
-var bool InverseMeasure;
-var bool InverseMeasureAngle;
+// Finds the rotation of MyRotation relative to BaseRotation (convenience)
+simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseRotation)
+{
+	local vector X, Y, Z;
+	
+	GetAxes(MyRotation, X, Y, Z);
+	return OrthoRotation(X << BaseRotation, Y << BaseRotation, Z << BaseRotation);
+}
+
+// Configure the JointItem for this joint
+reliable server function JointItem Init(JointItem ji) {
+	ji.Constraint = ji.Spawn(class'Hinge', ji, '', ji.Location, ji.Rotation);
+	ji.CurValue = 0;
+	ji.MaxForce = MaxForce;
+	ji.Spec = self;
+	// Mimic value from earlier iterations of UDKUSAR
+	ji.Damping = 0.25;
+	// Cannot set these in default properties, do it here
+	ji.Constraint.ConstraintSetup.LinearXSetup.LimitSize = 0.0;
+	ji.Constraint.ConstraintSetup.LinearYSetup.LimitSize = 0.0;
+	ji.Constraint.ConstraintSetup.LinearZSetup.LimitSize = 0.0;
+	return ji;
+}
+
+// Set the angular target of a constraint using a rotator (convenience)
+simulated function SetAngularTarget(JointItem ji, rotator rot)
+{
+	local Quat q;
+	q = QuatFromRotator(rot);
+	ji.Constraint.ConstraintInstance.SetAngularPositionTarget(q);
+}
+
+// Set the angular velocity of a constraint using a speed (convenience)
+simulated function SetAngularVelocity(JointItem ji, vector velocity)
+{
+	ji.Constraint.ConstraintInstance.SetAngularVelocityTarget(velocity);
+}
+
+// Set the position target of a constraint using a vector (convenience)
+simulated function SetLinearTarget(JointItem ji, vector vec) 
+{
+	ji.Constraint.ConstraintInstance.SetLinearPositionTarget(vec);
+}
+
+// Set the velocity target of a constraint using a vector (convenience)
+simulated function SetLinearVelocity(JointItem ji, vector vec) 
+{
+	ji.Constraint.ConstraintInstance.SetLinearVelocityTarget(vec);
+}
+
+// Overridden by subclasses to update joint drive parameters
+function Recalc(JointItem ji)
+{
+}
+
+// Overridden by subclasses to move joint to target
+function SetTarget(JointItem ji, float target)
+{
+}
+
+// Overridden by subclasses to move joint at velocity
+function SetVelocity(JointItem ji, float velocity)
+{
+}
+
+// Updates the joint's CurValue to match its physics
+simulated function Update(JointItem ji)
+{
+}
 
 defaultproperties
 {
 	MaxForce=50000.0
-	side=SIDE_None
-	RotateAxis=(X=0,Y=0,Z=0)
 }

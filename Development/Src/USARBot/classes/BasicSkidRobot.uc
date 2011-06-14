@@ -58,44 +58,40 @@ defaultproperties
 	Begin Object Class=WheelJoint Name=FRWheelRoll
 		Parent=BodyItem
 		Child=FRWheel
-		JointType=JointType_Roll
-		Side=Side_RIGHT
+		Side=SIDE_Right
 		Offset=(X=.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=FLWheelRoll
 		Parent=BodyItem
 		Child=FLWheel
-		JointType=JointType_Roll
-		Side=Side_LEFT
+		Side=SIDE_Left
 		Offset=(X=.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FLWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BRWheelRoll
 		Parent=BodyItem
 		Child=BRWheel
-		JointType=JointType_Roll
-		Side=Side_RIGHT
+		Side=SIDE_Right
 		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BLWheelRoll
 		Parent=BodyItem
 		Child=BLWheel
-		JointType=JointType_Roll
-		Side=Side_LEFT
+		Side=SIDE_Left
 		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BLWheelRoll)
 }

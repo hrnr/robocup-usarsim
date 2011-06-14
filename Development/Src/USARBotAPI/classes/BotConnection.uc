@@ -37,10 +37,8 @@ function SendGameInfo()
 	gameInfoClass = Parent.Parent.GetGameInfoClass();
 	levelName = GetURLMap();
 	i = InStr(Caps(levelName), ".LEVELINFO");
-
 	if (i != -1)
 		levelName = Left(levelName, i);
-
 	SendLine("NFO {Gametype " $ gameInfoClass $ "} {Level " $ levelName $ "} {TimeLimit " $
 		timeLimitStr $ "}");
 }
@@ -61,7 +59,6 @@ event InitReceived(ParsedMessage parsedMessage)
 
 	if (bDebug)
 		LogInternal("BotConnection: InitReceived");
-
 	clientName = parsedMessage.GetArgVal("Name");
 	teamString = parsedMessage.GetArgVal("Team");
 	startName = parsedMessage.GetArgVal("Start");
@@ -87,7 +84,6 @@ event InitReceived(ParsedMessage parsedMessage)
 		teamNum = 255;
 	else
 		teamNum = int(teamString);
-	
 	LogInternal("Adding robot at location: " $ newLocation $ ", rotation: " $ newRotation);
 	Parent.Parent.AddBotController(self, clientName, teamNum, newLocation, newRotation, className);
 	gotoState('monitoring', 'WaitingForController');
@@ -188,7 +184,7 @@ function ProcessAction(ParsedMessage parsedMessage)
 	
 	// Vehicle must have battery life remaining for these messages
 	if (usarVehicle != None && usarVehicle.GetBatteryLife() > 0)
-		switch(Caps(parsedMessage.GetCommandType()))
+		switch (Caps(parsedMessage.GetCommandType()))
 		{
 		case "TEST":
 			ProcessTest(parsedMessage);
@@ -261,21 +257,20 @@ function ProcessTurn(ParsedMessage parsedMessage)
 function ProcessDrive(ParsedMessage parsedMessage)
 {
 	local float leftSpeed, rightSpeed;
+	local USARVehicle bot;
 	
+	bot = USARVehicle(theBot.Pawn);
 	// Check if normalized drive command was received
-	if (parsedMessage.GetArgVal("Normalized") != "")
-		USARVehicle(theBot.Pawn).setNormalized(bool(parsedMessage.GetArgVal("Normalized")));
-	else
-		USARVehicle(theBot.Pawn).setNormalized(false);
-	if (theBot.Pawn.IsA('SkidSteeredVehicle'))
+	bot.setNormalized(parsedMessage.GetArgVal("Normalized") == "true");
+	// Check for headlight command
+	bot.setHeadLights(parsedMessage.GetArgVal("Light") == "true");
+	// Inidividual vehicle drives
+	if (bot.IsA('SkidSteeredVehicle'))
 	{
 		leftSpeed = float(parsedMessage.GetArgVal("Left"));
 		rightSpeed = float(parsedMessage.GetArgVal("Right"));
-		SkidSteeredVehicle(theBot.Pawn).SetDriveSpeed(leftSpeed, rightSpeed);
+		SkidSteeredVehicle(bot).SetDriveSpeed(leftSpeed, rightSpeed);
 	}
-	// Check for headlight command
-	if (parsedMessage.GetArgVal("Light") != "")
-		USARVehicle(theBot.Pawn).setHeadLights(bool(parsedMessage.GetArgVal("Light")));
 }
 
 // TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
@@ -287,6 +282,7 @@ function ProcessSetBall(ParsedMessage parsedMessage)
 // Manipulate objects in the world
 function ProcessWorldController(ParsedMessage parsedMessage)
 {
+	local WorldController control;
 	local vector myLocation, myLocation2;
 	local vector myRotation;
 	local vector myScale;
@@ -297,30 +293,31 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 
 	if (bDebug)
 		LogInternal("BotConnection: Received world control message type: " $
-			parsedmessage.GetArgVal("Type"));
+			parsedMessage.GetArgVal("Type"));
 	if (theBot == None || !theBot.Pawn.IsA('WorldController'))
-    {
+	{
 		LogInternal("BotConnection: Bot is not a world controller");
 		return;
 	}
-	// CONTROL {Type RelMove} {Name name} {location x,y,z} {rotation x,y,z}
+	control = WorldController(theBot.Pawn);
+	// CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
 	if (parsedMessage.GetArgVal("Type") == "RelMove")
 	{
 		myName = parsedMessage.GetArgVal("Name");
 		myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
 		myRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
-		WorldController(theBot.pawn).RelMove(myName, myLocation, myRotation);
+		control.RelMove(myName, myLocation, myRotation);
 	}
-	// CONTROL {Type AbsMove} {Name name} {location x,y,z} {rotation x,y,z}
+	// CONTROL {Type AbsMove} {Name name} {Location x,y,z} {Rotation x,y,z}
 	else if (parsedMessage.GetArgVal("Type") == "AbsMove")
 	{
 		myName = parsedMessage.GetArgVal("Name");
 		myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
 		myRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
-		WorldController(theBot.pawn).AbsMove(myName, myLocation, myRotation);
+		control.AbsMove(myName, myLocation, myRotation);
 	}
-	// CONTROL {Type Create} {ClassName class} {Name name} {Memory memory} {location x,y,z}
-	// {rotation x,y,z} {Physics None/Ground/Falling} {Permanent true/false}	
+	// CONTROL {Type Create} {ClassName class} {Name name} {Memory memory} {Location x,y,z}
+	// {Rotation x,y,z} {Physics None/Ground/Falling} {Permanent true/false}	
 	else if (parsedMessage.GetArgVal("Type") == "Create")
 	{
 		startName = parsedMessage.GetArgVal("Start");
@@ -344,21 +341,21 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 		if (myScale == vect(0,0,0))
 			myScale = vect(1,1,1);
 		permanent = (Caps(parsedMessage.GetArgVal("Permanent")) == "TRUE");
-		WorldController(theBot.pawn).Create(parsedMessage.GetArgVal("ClassName"),
-			parsedMessage.GetArgVal("Name"), parsedMessage.getArgVal("Memory"), myLocation,
-			myRotation, myScale, parsedMessage.GetArgVal("Physics"), permanent);
+		control.Create(parsedMessage.GetArgVal("ClassName"), parsedMessage.GetArgVal("Name"),
+			parsedMessage.getArgVal("Memory"), myLocation, myRotation, myScale,
+			parsedMessage.GetArgVal("Physics"), permanent);
 	}
 	// CONTROL {Type Kill} {Name name}
 	else if (parsedMessage.GetArgVal("Type") == "Kill")
-		WorldController(theBot.pawn).Kill(parsedMessage.GetArgVal("Name"));
+		control.Kill(parsedMessage.GetArgVal("Name"));
 	// CONTROL {Type KillAll} {MinPos x, y, z} {MaxPos x, y, z}
 	else if (parsedMessage.GetArgVal("Type") == "KillAll")
 	{
 		if (parsedMessage.GetArgVal("MinPos") == "" || parsedMessage.GetArgVal("MaxPos") == "")
 		{
 			// Destroy all
-			myLocation = vect(0,0,0);
-			myLocation2 = vect(0,0,0);
+			myLocation = vect(0, 0, 0);
+			myLocation2 = vect(0, 0, 0);
 		}
 		else
 		{
@@ -366,15 +363,15 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 			myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("MinPos"));
 			myLocation2 = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("MaxPos"));
 		}
-		WorldController(theBot.pawn).KillAll(myLocation, myLocation2);
+		control.KillAll(myLocation, myLocation2);
 	} 
-	// CONTROL {Type GetSTA}
+	// CONTROL {Type GetSTA} {ClassName type} {Name name}
 	else if (parsedMessage.GetArgVal("Type") == "GetSTA")
-		SendLine(WorldController(theBot.pawn).GetSTA(parsedMessage.GetArgVal("ClassName"),
+		SendLine(control.GetSTA(parsedMessage.GetArgVal("ClassName"),
 			parsedMessage.GetArgVal("Name"))); 
-	// CONTROL {Type Conveyor}
+	// CONTROL {Type Conveyor} {Name name} {Speed speed}
 	else if (parsedMessage.GetArgVal("Type") == "Conveyor")
-		WorldController(theBot.pawn).SetZoneVel(parsedMessage.GetArgVal("Name"),
+		control.SetZoneVel(parsedMessage.GetArgVal("Name"),
 			float(parsedMessage.GetArgVal("Speed")));
 	else
 		LogInternal("BotConnection: Unsupported world controller command " $
@@ -403,54 +400,56 @@ function ProcessEffector(ParsedMessage parsedMessage)
 function ProcessGetGeo(ParsedMessage parsedMessage)
 {
 	local String Type;
+	local USARVehicle bot;
 
 	Type = parsedMessage.GetArgVal("Type");
-
+	bot = USARVehicle(theBot.Pawn);
 	if (Type == "Robot")
-		SendLine(USARVehicle(theBot.Pawn).GetGeoData());
+		SendLine(bot.GetGeoData());
 	else if (Type == "MisPkg")
-		SendLine(USARVehicle(theBot.Pawn).GetMisPkgGeoData());
+		SendLine(bot.GetMisPkgGeoData());
 	else
-		SendLine(USARVehicle(theBot.Pawn).GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
+		SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Gets configuration information from the robot
 function ProcessGetConf(ParsedMessage parsedMessage) 
 {
 	local String Type;
+	local USARVehicle bot;
 
 	Type = parsedMessage.GetArgVal("Type");
+	bot = USARVehicle(theBot.Pawn);
 	if (Type == "Robot")
-		SendLine(USARVehicle(theBot.Pawn).GetConfData());
+		SendLine(bot.GetConfData());
 	else if (Type == "MisPkg")
-		SendLine(USARVehicle(theBot.Pawn).GetMisPkgConfData());
+		SendLine(bot.GetMisPkgConfData());
 	else
-		SendLine(USARVehicle(theBot.Pawn).GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
+		SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Sets joint angles or other related parameters
 function ProcessSet(ParsedMessage parsedMessage)
 {
-    local String jointName, opcode;
+	local String jointName, opcode;
 	local float param;
+	local USARVehicle bot;
 
+	bot = USARVehicle(theBot.Pawn);
 	jointName = parsedMessage.GetArgVal("Name");
 	opcode = parsedMessage.GetArgVal("Opcode");
 	param = float(parsedMessage.GetArgVal("Params"));
-
-	if (opcode == "Angle" && theBot.Pawn.isA('USARVehicle'))
+	if (opcode == "Angle")
 	{
 		if (JointName != "AllAngles")
-			USARVehicle(theBot.Pawn).SetJointAngle(JointName,
-				class'UnitsConverter'.static.AngleToUU(param));
+			bot.SetJointTargetByName(JointName, class'UnitsConverter'.static.AngleToUU(param));
 		else
-			USARVehicle(theBot.Pawn).SetAllJointAngles(
-				class'UnitsConverter'.static.AngleToUU(param));
+			bot.SetAllJointTargets(class'UnitsConverter'.static.AngleToUU(param));
 	}
-	else if (opcode == "Stiffness" && theBot.Pawn.isA('USARVehicle'))
-		LeggedVehicle(theBot.Pawn).SetJointStiffnessByName(Name(JointName), param);
+	else if (opcode == "Stiffness")
+		bot.SetJointStiffnessByName(Name(JointName), param);
 	else if (opcode == "MaxTorque" && theBot.Pawn.IsA('WheeledVehicle'))
-		WheeledVehicle(theBot.Pawn).SetMaxTorque(float(parsedMessage.GetArgVal("Params")));
+		WheeledVehicle(bot).SetMaxTorque(param);
 }
 
 // Manipulates mission packages
@@ -529,7 +528,7 @@ function ProcessTrace(ParsedMessage parsedMessage)
 // TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
 function ProcessPause(ParsedMessage parsedMessage)
 {
-    
+
 }
 
 // Returns a list of valid starting positions for a robot

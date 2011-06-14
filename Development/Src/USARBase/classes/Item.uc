@@ -128,6 +128,24 @@ simulated function PostBeginPlay()
 		SetTimer(ScanInterval, true);
 }
 
+// Adjusts the mass of the specified item to match reality (takes mass in UU)
+function SetMass(float DesiredMass)
+{
+	local float oldScale, oldMass;
+	local RB_BodySetup bs;
+
+	// Change auto calculated mass to the desired mass
+	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
+	bs = StaticMeshComponent.StaticMesh.BodySetup;
+	oldMass = StaticMeshComponent.BodyInstance.GetBodyMass();
+	oldScale = bs.MassScale;
+	if (oldMass > 0.0 && oldScale > 0.0)
+	{
+		bs.MassScale = DesiredMass / (oldMass / oldScale);
+		StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
+	}
+}
+
 replication
 {
 	if (bNetOwner && bNetDirty && Role == ROLE_Authority) 

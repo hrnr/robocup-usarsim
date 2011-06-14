@@ -20,12 +20,12 @@ function String GetGeoData()
 {
 	local int i;
 	local JointItem ji, lFTire, rRTire;
+	local WheelJoint jt;
 	local vector COMOffset, dimensions;
 	
 	// Initialize to something known
 	lFTire = None; 
 	rRTire = None;
-	
 	// Search for wheels and find the LF and RR tires
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isJoint())
@@ -33,20 +33,21 @@ function String GetGeoData()
 			ji = JointItem(Parts[i]);
 			if (ji.JointIsA('WheelJoint'))
 			{
-				if (ji.Spec.Side == SIDE_Left)
+				jt = WheelJoint(ji.Spec);
+				if (jt.Side == SIDE_Left)
 				{
 					// Left side?
 					if (lFTire == None)
 						lFTire = ji;
-					else if (ji.Spec.Offset.X > lFTire.Spec.Offset.X)
+					else if (jt.Offset.X > lFTire.Spec.Offset.X)
 						lFTire = ji;
 				}
-				else if (ji.Spec.Side == SIDE_Right)
+				else if (jt.Side == SIDE_Right)
 				{
 					// Right side!
 					if (rRTire == None)
 						rRTire = ji;
-					else if (ji.Spec.Offset.X < rRTire.Spec.Offset.X)
+					else if (jt.Offset.X < rRTire.Spec.Offset.X)
 						rRTire = ji;
 				}
 			}
@@ -92,7 +93,7 @@ function SetMaxTorque(float maxTorque)
 			ji = JointItem(Parts[i]);
 			// TODO validate that no scalar conversion is needed here
 			if (ji.JointIsA('WheelJoint') && WheelJoint(ji.Spec).bIsDriven)
-				SetJointMaxForce(ji, maxTorque);
+				ji.SetMaxForce(maxTorque);
 		}
 	if (bDebug)
 		LogInternal("WheeledVehicle: Set maximum torque of '" $ String(self.Name) $ "' to " $

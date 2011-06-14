@@ -7,6 +7,9 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
+/*
+ * Hinge - Default properties for hinges used in constraints.
+ */
 class Hinge extends RB_HingeActor; 
 
 defaultproperties
@@ -14,15 +17,20 @@ defaultproperties
 	bNoDelete=false
 	bStatic=false
 	bDisableCollision=true
-
+	
+	// Default: fixed (angularly) hinge
 	Begin Object Class=RB_ConstraintSetup Name=HingeSetup
+		bLinearBreakable=false
+		bAngularBreakable=false
+		bEnableProjection=true
 		bSwingLimited=true
-		bTwistLimited=false
-
-		LinearBreakThreshold=10000000000.0
-		AngularBreakThreshold=10000000000.0
+		bTwistLimited=true
+		Swing1LimitAngle=0.0
+		Swing2LimitAngle=0.0
+		TwistLimitAngle=0.0
 	End Object
 	ConstraintSetup=HingeSetup
+	
 	Begin Object Name=MyConstraintInstance
 		bAngularSlerpDrive=true
 	End Object

@@ -155,131 +155,116 @@ defaultproperties
 	Begin Object Class=WheelJoint Name=FRWheelRoll
 		Parent=ChassisMiddle
 		Child=FRWheel
-		JointType=JOINTTYPE_Roll
 		Side=SIDE_Right
 		Offset=(X=.126,Y=.212,Z=.054)
 		// 90 degree rotation about Z axis
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=FLWheelRoll
 		Parent=ChassisMiddle
 		Child=FLWheel
-		JointType=JOINTTYPE_Roll
 		Side=SIDE_Left
 		Offset=(X=.126,Y=-.212,Z=.054)
 		// 90 degree rotation about Z axis
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(FLWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BRWheelRoll
 		Parent=ChassisMiddle
 		Child=BRWheel
-		JointType=JOINTTYPE_Roll
 		Side=SIDE_Right
 		Offset=(X=-.126,Y=.212,Z=.054)
 		// 90 degree rotation about Z axis
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BLWheelRoll
 		Parent=ChassisMiddle
 		Child=BLWheel
-		JointType=JOINTTYPE_Roll
 		Side=SIDE_Left
 		Offset=(X=-.126,Y=-.212,Z=.054)
 		// 90 degree rotation about Z axis
-		RotateAxis=(X=0,Y=0,Z=1.571)
+		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Joints.Add(BLWheelRoll)
 
-	Begin Object Class=Joint Name=ChassisFixed
+	Begin Object Class=FixedJoint Name=ChassisFixed
 		Child=ChassisBottom
 		Parent=ChassisMiddle
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.012,Y=.008,Z=.076)
 	End Object
 	Joints.Add(ChassisFixed)
 
-	Begin Object Class=Joint Name=FRRBumperFixed
+	Begin Object Class=FixedJoint Name=FRRBumperFixed
 		Child=ChassisBottom
 		Parent=FRRBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.292,Y=.22,Z=.092)
 	End Object
 	Joints.Add(FRRBumperFixed)
 
-	Begin Object Class=Joint Name=FRBumperFixed
+	Begin Object Class=FixedJoint Name=FRBumperFixed
 		Child=ChassisBottom
 		Parent=FRBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.296,Y=.112,Z=.092)
 	End Object
 	Joints.Add(FRBumperFixed)
 
-	Begin Object Class=Joint Name=FBumperFixed
+	Begin Object Class=FixedJoint Name=FBumperFixed
 		Child=ChassisBottom
 		Parent=FBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.296,Y=0,Z=.092)
 	End Object
 	Joints.Add(FBumperFixed)
 
-	Begin Object Class=Joint Name=FLBumperFixed
+	Begin Object Class=FixedJoint Name=FLBumperFixed
 		Child=ChassisBottom
 		Parent=FLBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.296,Y=-.112,Z=.092)
 	End Object
 	Joints.Add(FLBumperFixed)
 
-	Begin Object Class=Joint Name=FLLBumperFixed
+	Begin Object Class=FixedJoint Name=FLLBumperFixed
 		Child=ChassisBottom
 		Parent=FLLBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=.292,Y=-.22,Z=.092)
 	End Object
 	Joints.Add(FLLBumperFixed)
 
-	Begin Object Class=Joint Name=BRRBumperFixed
+	Begin Object Class=FixedJoint Name=BRRBumperFixed
 		Child=ChassisBottom
 		Parent=BRRBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=-.292,Y=.22,Z=.092)
 	End Object
 	Joints.Add(BRRBumperFixed)
 
-	Begin Object Class=Joint Name=BRBumperFixed
+	Begin Object Class=FixedJoint Name=BRBumperFixed
 		Child=ChassisBottom
 		Parent=BRBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=-.296,Y=.112,Z=.092)
 	End Object
 	Joints.Add(BRBumperFixed)
 
-	Begin Object Class=Joint Name=BBumperFixed
+	Begin Object Class=FixedJoint Name=BBumperFixed
 		Child=ChassisBottom
 		Parent=BBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=-.296,Y=0,Z=.092)
 	End Object
 	Joints.Add(BBumperFixed)
 
-	Begin Object Class=Joint Name=BLBumperFixed
+	Begin Object Class=FixedJoint Name=BLBumperFixed
 		Child=ChassisBottom
 		Parent=BLBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=-.296,Y=-.112,Z=.092)
 	End Object
 	Joints.Add(BLBumperFixed)
 
-	Begin Object Class=Joint Name=BLLBumperFixed
+	Begin Object Class=FixedJoint Name=BLLBumperFixed
 		Child=ChassisBottom
 		Parent=BLLBumper
-		JointType=JOINTTYPE_Fixed
 		Offset=(X=-.292,Y=-.22,Z=.092)
 	End Object
 	Joints.Add(BLLBumperFixed)

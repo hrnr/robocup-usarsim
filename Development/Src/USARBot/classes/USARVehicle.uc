@@ -41,17 +41,6 @@ simulated function ClientTimer()
 	UpdateJoints();
 }
 
-// Creates an empty robot actor when isDummy is true on a Part spec
-function PhysicalItem CreateDummyActor(vector loc, rotator r)
-{
-	local PhysicalItem dummy;
-	
-	dummy = Spawn(class'PhysicalItem', self , , loc, r);
-	dummy.SetPhysicalCollisionProperties();
-	dummy.SetCollision(true, false);
-	return dummy;
-}
-
 // Notify when this vehicle is removed
 simulated event Destroyed()
 {
@@ -165,19 +154,16 @@ simulated function vector GetPartOffset(Part pt)
 	return pos;
 }
 
-// Finds the rotation of MyRotation relative to BaseRotation
-simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseRotation)
-{
-	local vector X, Y, Z;
-	
-	GetAxes(MyRotation, X, Y, Z);
-	return OrthoRotation(X << BaseRotation, Y << BaseRotation, Z << BaseRotation);
-}
-
 // Gets robot status sent out on each tick
 simulated function String GetStatus()
 {
-	return "STA ";
+	return "STA";
+}
+
+// Transforms the return value of a joint by some gearing equation
+simulated function float JointTransform(JointItem ji, float value)
+{
+	return value;
 }
 
 // Initializes the robot after play begins
@@ -210,54 +196,18 @@ simulated function PostBeginPlay()
 		SetupItem(AddParts[i]);
 }
 
-// Restores the part's rotation and location to the specified values to deal with symmetry
-// See TempRotatePart
-simulated function RestoreRotatePart(Actor p, vector savedPosition, rotator savedRotation)
-{
-	p.SetRotation(savedRotation);
-	p.SetLocation(savedPosition);
-}
-
-// Sets the damping factor for all joints
-function SetAllJointsDamping(float damping)
-{
-	local int i;
-
-	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].IsJoint())
-			SetJointDamping(JointItem(Parts[i]), damping);
-}
-
-// Sets the maximum force for all joints
-function SetAllJointsMaxForce(float force)
-{
-	local int i;
-
-	for (i = 0; i < Joints.Length; i++)
-		if (Parts[i].IsJoint())
-			SetJointMaxForce(JointItem(Parts[i]), force);
-}
-
-// Sets all joint angles to the specified angle
-function SetAllJointAngles(int UUAngle)
+// Sets all joint targets to the specified value
+function SetAllJointTargets(float target)
 {
 	local int i;
 	
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].IsJoint())
-			SetJointTarget(JointItem(Parts[i]), UUAngle);
+			JointItem(Parts[i]).SetTarget(target);
 }
 
-// Set the angular target of a constraint using a rotator
-function SetAngularTarget(RB_ConstraintActor constraint, Rotator rot)
-{
-	local Quat q;
-	q = QuatFromRotator(rot);
-	constraint.ConstraintInstance.SetAngularPositionTarget(q);
-}
-
-// Updates the specified joint's angle
-function SetJointAngle(String jointName, int UUAngle)
+// Sets the specified joint's target to the specified value
+function SetJointTargetByName(String jointName, float target)
 {
 	local int i;
 	local JointItem ji;
@@ -269,47 +219,29 @@ function SetJointAngle(String jointName, int UUAngle)
 			ji = JointItem(Parts[i]);
 			if (Caps(String(ji.GetJointName())) == Caps(jointName))
 			{
-				SetJointTarget(ji, UUAngle);
+				ji.SetTarget(target);
 				break;
 			}
 		}
 }
 
-// Sets the damping of a joint given its index
-function SetJointDamping(JointItem ji, float damping)
+// Sets the damping of a joint given its name
+function SetJointDampingByName(name jointName, float stiffness)
 {
-	// Recalculate using damping
-	ji.Constraint.ConstraintInstance.SetAngularDriveParams(ji.MaxForce * ji.Stiffness,
-		damping, ji.MaxForce * ji.Stiffness);
-	if (bDebug)
-		LogInternal("USARVehicle: Set damping of '" $ String(ji.GetJointName()) $
-			"' to " $ class'UnitsConverter'.static.FloatString(damping));
-}
-
-// Sets the maximum force of a joint
-function SetJointMaxForce(JointItem ji, float force)
-{
-	ji.MaxForce = force;
+	local int i;
+	local JointItem ji;
 	
-	// Recalculate using force
-	ji.Constraint.ConstraintInstance.SetAngularDriveParams(force * ji.Stiffness,
-		0.25, force * ji.Stiffness);
-	if (bDebug)
-		LogInternal("USARVehicle: Set max force of '" $ String(ji.GetJointName()) $
-			"' to " $ class'UnitsConverter'.static.FloatString(force));
-}
-
-// Sets the stiffness of a joint
-function SetJointStiffness(JointItem ji, float stiffness)
-{
-	ji.Stiffness = stiffness;
-	
-	// Recalculate using stiffness
-	ji.Constraint.ConstraintInstance.SetAngularDriveParams(ji.MaxForce *
-		stiffness, 0.25, ji.MaxForce * stiffness);
-	if (bDebug)
-		LogInternal("USARVehicle: Set stiffness of '" $ String(ji.GetJointName()) $
-			"' to " $ class'UnitsConverter'.static.FloatString(stiffness));
+	// Look for matching joint using proper name (joint name, NOT JointItem name)
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].IsJoint())
+		{
+			ji = JointItem(Parts[i]);
+			if (Caps(String(ji.GetJointName())) == Caps(jointName))
+			{
+				ji.SetDamping(stiffness);
+				break;
+			}
+		}
 }
 
 // Sets the stiffness of a joint given its name
@@ -325,60 +257,10 @@ function SetJointStiffnessByName(name jointName, float stiffness)
 			ji = JointItem(Parts[i]);
 			if (Caps(String(ji.GetJointName())) == Caps(jointName))
 			{
-				SetJointStiffness(ji, stiffness);
+				ji.SetStiffness(stiffness);
 				break;
 			}
 		}
-}
-
-// Updates the joint at the given index
-function SetJointTarget(JointItem ji, int UUAngle)
-{
-	local Joint jt;
-	local rotator angle;
-	local int target;
-	
-	jt = ji.Spec;
-	
-	// Update the values to match new target
-	target = UUAngle + ji.TrueZero;
-	ji.CurAngularTarget = target;
-	angle = rot(0, 0, 0);
-	
-	// Update angle as appropriate to the joint type
-	if (jt.JointType == JOINTTYPE_Pitch)
-		angle.pitch = target;
-	else if (jt.JointType == JOINTTYPE_Yaw)
-		angle.yaw = target;
-	else if (jt.JointType == JOINTTYPE_Roll)
-		angle.roll = target;
-	SetAngularTarget(ji.Constraint, angle);
-	if (bDebug)
-		LogInternal("USARVehicle: Set target of '" $ String(jt.Name) $
-			"' to " $ class'UnitsConverter'.static.AngleFromUU(UUAngle));
-}
-
-// Adjusts the mass of the specified item to match reality (takes mass in UU)
-function SetMass(Item actor, float DesiredMass)
-{
-	local float oldScale, oldMass;
-	local RB_BodySetup bs;
-
-	// Change auto calculated mass to the desired mass
-	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
-	bs = actor.StaticMeshComponent.StaticMesh.BodySetup;
-	oldMass = actor.StaticMeshComponent.BodyInstance.GetBodyMass();
-	oldScale = bs.MassScale;
-	if (oldMass > 0.0 && oldScale > 0.0)
-	{
-		bs.MassScale = DesiredMass / (oldMass / oldScale);
-		actor.StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
-		if (bDebug)
-			LogInternal("USARVehicle: Set mass of '" $ String(actor.Name) $ "' to " $
-				class'UnitsConverter'.static.FloatString(DesiredMass) $ " uu");
-	}
-	else if (bDebug)
-		LogInternal("USARVehicle: " $ String(actor.Name) $ " has zero mass, cannot scale");
 }
 
 // Normalizes or un-normalizes this vehicle
@@ -424,25 +306,20 @@ reliable server function SetupItem(SpecItem desc)
 	pos = class'UnitsConverter'.static.LengthVectorToUU(desc.Position);
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
 	pos = pos >> OriginalRotation;
-	
 	// Create item actor
 	it = Item(spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
 	it.SetHardAttach(true);
 	it.SetBase(CenterItem);
-	
 	// Initialize item
 	it.init(desc.ItemName, self, desc.Parent);
 	if (bDebug)
 		LogInternal("USARVehicle: Created part " $ String(it.Name));
-	
 	// Set up batteries properly (into its variable)
 	if (it.isA('Battery'))
 		VehicleBattery = Battery(it);
-	
 	// Set up audio sensor
 	if (it.IsType("Acoustic"))
 		SetupAudio();
-	
 	// Add item to world
 	Parts.AddItem(it);
 }
@@ -451,26 +328,16 @@ reliable server function SetupItem(SpecItem desc)
 reliable server function SetupJoint(Joint jt)
 {
 	local JointItem ji;
-	local vector spawnLocation, savedLocation;
-	local rotator spawnRotation, savedRotation, angle;
-	local Matrix rotMatrix;
-	local int trueZero, limitHigh, limitLow;
+	local vector spawnLocation;
+	local rotator spawnRotation;
 	
-	// NOTE: Constraint limits are always symmetrical, but joints can be asymmetrical
-	// Make the limits symmetrical; map set angles to the actual constraint limits
-	limitHigh = class'UnitsConverter'.static.AngleToUU(jt.LimitHigh);
-	limitLow = class'UnitsConverter'.static.AngleToUU(jt.LimitLow);
-	trueZero = int((-limitHigh - limitLow) / 2.0);
 	// Create instance to store actual joint parameters
-	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Angle);
+	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Direction);
 	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
 	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
 		spawnRotation);
 	ji.SetHardAttach(true);
 	ji.SetBase(CenterItem);
-	ji.TrueZero = trueZero;
-	ji.Spec = jt;
-	
 	// Find parts for parent and child
 	ji.Parent = GetPartByName(jt.Parent.Name);
 	if (ji.Parent == None)
@@ -484,91 +351,11 @@ reliable server function SetupJoint(Joint jt)
 		LogInternal("USARVehicle: Could not find child for " $ String(jt.Name));
 		return;
 	}
-	
-	// Initialize parameters
-	ji.CurAngularTarget = trueZero;
-	ji.MaxForce = jt.MaxForce;
-	ji.Constraint = Spawn(class'Hinge', self, '', OriginalLocation + spawnLocation,
-		OriginalRotation + spawnRotation);
-	ji.SetHardAttach(true);
-	ji.SetBase(CenterItem);
-	angle = rot(0, 0, 0);
-	
-	// Setup joint limits of movement (depending on the joint type)
-	if (jt.JointType == JOINTTYPE_Pitch)
-	{
-		angle.Pitch = trueZero;
-		ji.Constraint.ConstraintSetup.bSwingLimited = false;
-		ji.Constraint.ConstraintSetup.bTwistLimited = true;
-	}
-	else if (jt.JointType == JOINTTYPE_Yaw)
-	{
-		angle.Yaw = trueZero;
-		ji.Constraint.ConstraintSetup.bSwingLimited = false;
-		ji.Constraint.ConstraintSetup.bTwistLimited = true;
-	}
-	else if (jt.JointType == JOINTTYPE_Roll)
-	{
-		angle.Roll = trueZero;
-		ji.Constraint.ConstraintSetup.bSwingLimited = true;
-		ji.Constraint.ConstraintSetup.bTwistLimited = false;
-	}
-	else if (jt.JointType == JOINTTYPE_Fixed)
-	{
-		ji.Constraint.ConstraintSetup.bSwingLimited = true;
-		ji.Constraint.ConstraintSetup.bTwistLimited = true;
-	}
-	else if (jt.JointType == JOINTTYPE_Free)
-	{
-		ji.Constraint.ConstraintSetup.bSwingLimited = false;
-		ji.Constraint.ConstraintSetup.bTwistLimited = false;
-	}
-	ji.Constraint.ConstraintSetup.LinearXSetup.LimitSize = 0.0;
-	ji.Constraint.ConstraintSetup.LinearYSetup.LimitSize = 0.0;
-	ji.Constraint.ConstraintSetup.LinearZSetup.LimitSize  = 0.0;
-	ji.Constraint.ConstraintSetup.bEnableProjection = true;
-	
-	// Perform fix to handle asymmetrical joints
-	TempRotatePart(ji.Spec, ji.Child, angle, savedLocation, savedRotation);
-	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
-	RestoreRotatePart(ji.Child, savedLocation, savedRotation);
-
-	// Joints can specify a rotation to modify the constraint axis
-	// The constraint will be initialized again with the new axis.
-	rotMatrix = MakeRotationMatrix(class'UnitsConverter'.static.AngleVectorToUU(jt.RotateAxis));
-	ji.Constraint.ConstraintSetup.PriAxis1 = TransformVector(rotMatrix,
-		ji.Constraint.ConstraintSetup.PriAxis1);
-	ji.Constraint.ConstraintSetup.SecAxis1 = TransformVector(rotMatrix,
-		ji.Constraint.ConstraintSetup.SecAxis1);
-	ji.Constraint.ConstraintSetup.PriAxis2 = TransformVector(rotMatrix,
-		ji.Constraint.ConstraintSetup.PriAxis2);
-	ji.Constraint.ConstraintSetup.SecAxis2 = TransformVector(rotMatrix,
-		ji.Constraint.ConstraintSetup.SecAxis2);
+	// Initialize joint
+	jt.Init(ji);
 	ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
 		ji.Child.CollisionComponent, ji.Constraint.ConstraintSetup, 1, self,
 		ji.Parent.CollisionComponent, false);
-	
-	// Enable angular drive and set the initial drive parameters
-	if (jt.JointType == JOINTTYPE_Pitch || jt.JointType == JOINTTYPE_Yaw)
-	{
-		ji.Constraint.ConstraintInstance.SetAngularPositionDrive(true, false);
-		SetJointStiffness(ji, 1.0);
-	}
-	else if (jt.JointType == JOINTTYPE_Roll)
-	{
-		ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, true);
-		SetJointStiffness(ji, 1.0);
-	}
-	else if (jt.JointType == JOINTTYPE_Fixed)
-	{
-		ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
-		SetJointStiffness(ji, 1.0);
-	}
-	else
-		ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
-	
-	// Set initial angle
-	SetJointTarget(ji, 0);
 	Parts.AddItem(ji);
 	if (bDebug)
 		LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
@@ -585,18 +372,12 @@ reliable server function SetupPart(Part part)
 	// Determine start location
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;
-	if (part.IsDummy)
-		actor = CreateDummyActor(OriginalLocation + spawnLocation,
-			OriginalRotation + spawnRotation);
-	else
-	{
-		actor = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
-			OriginalRotation + spawnRotation);
-		actor.Spec = part;
-		actor.StaticMeshComponent.SetStaticMesh(part.Mesh);
-		actor.SetPhysicalCollisionProperties();
-	}
-	SetMass(actor, part.Mass);
+	actor = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
+		OriginalRotation + spawnRotation);
+	actor.Spec = part;
+	actor.StaticMeshComponent.SetStaticMesh(part.Mesh);
+	actor.SetPhysicalCollisionProperties();
+	actor.SetMass(part.Mass);
 	
 	// Initialize center item properly (for sensors and parenting reasons)
 	if (part.Name == Body.Name)
@@ -613,25 +394,6 @@ reliable server function SetupPart(Part part)
 			String(part.Name));
 }
 
-// TempRotatePart and RestoreRotatePart are used to deal with the problem that the constraint 
-// angle limits are specified symmetrically. The part is temporary rotated so the high and
-// low limits become symmetrical if there were not already when initializing the constraint
-simulated function TempRotatePart(Joint jt, Actor p, rotator angle,
-	out vector savedPosition, out rotator savedRotation)
-{
-	local vector pos, jointpos;
-	
-	// Save old position and location
-	savedPosition = p.Location;
-	savedRotation = p.Rotation;
-	
-	// Transform position and direction temporarily
-	jointpos = OriginalLocation + (GetJointOffset(jt) >> OriginalRotation);
-	pos = TransformVectorByRotation(angle, p.Location - jointpos);
-	p.SetRotation(p.Rotation + angle);
-	p.SetLocation(pos + jointpos);
-}
-
 // Check battery; if alive, call client timer functions
 simulated function Timer()
 {
@@ -644,83 +406,15 @@ simulated function UpdateJoints()
 {
 	local int i;
 	local JointItem ji;
-	local PhysicalItem parent, child;
-	local float angle;
-	local rotator relRot, rotTemp;
-	local vector X1, Y1, Z1, X2, Y2, Z2;
 
-	// Iterate through joints and update their positions (CurAngle) to match the UU angles
-	// of the Constraint instance inside them
+	// Iterate through joints and update their positions (CurPos) to match the values
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].IsJoint())
 		{
 			ji = JointItem(Parts[i]);
-			parent = ji.Parent;
-			child = ji.Child;
-			if (parent == None || child == None)
-				continue;
-			if (ji.Spec.InverseMeasure)
-				relRot = GetRelativeRotation(parent.Rotation, child.Rotation);
-			else 
-				relRot = GetRelativeRotation(child.Rotation, parent.Rotation);
-			
-			// Determine measurement type for drive
-			if (ji.Spec.MeasureType == EMEASURE_Pitch)
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
-			else if (ji.Spec.MeasureType == EMEASURE_Yaw)
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
-			else if (ji.Spec.MeasureType == EMEASURE_Roll)
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Roll);
-			else if (ji.Spec.MeasureType == EMEASURE_Pitch_RemoveYaw)
-			{
-				rotTemp = rot(0, 0, 0);
-				rotTemp.Yaw = -relRot.Yaw;
-				relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
-			}
-			else if (ji.Spec.MeasureType == EMEASURE_Yaw_RemovePitch)
-			{
-				rotTemp = rot(0, 0, 0);
-				rotTemp.Pitch = -relRot.Pitch;
-				relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
-			}
-			else if (ji.Spec.MeasureType == EMEASURE_Yaw_RemoveRoll)
-			{
-				rotTemp = rot(0, 0, 0);
-				rotTemp.Roll = -relRot.Roll;
-				relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
-			}
-			else if (ji.Spec.MeasureType == EMEASURE_Roll_RemoveYaw)
-			{
-				rotTemp = rot(0, 0, 0);
-				rotTemp.Yaw = -relRot.Yaw;
-				relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Roll);
-			}
-			else if (ji.Spec.MeasureType == EMEASURE_Roll_RemovePitch)
-			{
-				rotTemp = rot(0, 0, 0);
-				rotTemp.Pitch = -relRot.Pitch;
-				relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-				angle = class'UnitsConverter'.static.AngleFromUU(relRot.Roll);
-			}
-			else if (ji.Spec.MeasureType == EMEASURE_Axis)
-			{
-				GetAxes(parent.Rotation, X1, Y1, Z1);
-				GetAxes(child.Rotation, X2, Y2, Z2);
-				angle = acos(X1 dot X2);
-				// Assume X1 and X1 are within 90 degrees to the left or right
-				// Then we still need to know if the angle is positive or negative
-				if (acos((Normal(X1 cross Z1)) dot X2) < 0.0)
-					angle = -angle;
-			}
-			
-			// Update angle representation
-			if (ji.Spec.InverseMeasureAngle)
-				angle = -angle;
-			ji.CurAngle = angle;
+			if (ji.Parent != None && ji.Child != None)
+				ji.Spec.Update(ji);
+			ji.CurValue = JointTransform(ji, ji.CurValue);
 		}
 }
 
