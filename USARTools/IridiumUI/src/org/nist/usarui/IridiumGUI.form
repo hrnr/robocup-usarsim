@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1">
+  <grid id="27dc6" binding="mainUI" layout-manager="BorderLayout" hgap="0" vgap="2">
+    <constraints>
+      <xy x="20" y="20" width="510" height="351"/>
+    </constraints>
+    <properties/>
+    <border type="empty">
+      <size top="2" left="2" bottom="0" right="2"/>
+    </border>
+    <children>
+      <grid id="e1016" layout-manager="GridBagLayout">
+        <constraints border-constraint="North"/>
+        <properties>
+          <opaque value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="7bb3f" class="javax.swing.JTextField" binding="serverName">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <columns value="16"/>
+              <text value="localhost" noi18n="true"/>
+              <toolTipText value="Server name (and optionally port) to connect"/>
+            </properties>
+          </component>
+          <hspacer id="9ec17">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </hspacer>
+          <component id="f6c48" class="javax.swing.JButton" binding="connectButton">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <actionCommand value="connect"/>
+              <focusable value="false"/>
+              <text value="Co&amp;nnect"/>
+              <toolTipText value="Connects or disconnects from the server."/>
+            </properties>
+          </component>
+          <component id="35c60" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="7bb3f"/>
+              <text value="&amp;Connect To: "/>
+            </properties>
+          </component>
+          <component id="a9ee2" class="javax.swing.JLabel" binding="levelName">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <toolTipText value="Name of the currently loaded world"/>
+            </properties>
+          </component>
+          <component id="f68c9" class="javax.swing.JLabel" binding="elapsedTime">
+            <constraints>
+              <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <toolTipText value="Time in seconds since robot creation."/>
+            </properties>
+          </component>
+          <component id="49876" class="javax.swing.JButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <actionCommand value="options"/>
+              <focusable value="false"/>
+              <text value="&amp;Options..."/>
+              <toolTipText value="Set options for USARSim"/>
+            </properties>
+          </component>
+          <hspacer id="5e0d4">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </hspacer>
+        </children>
+      </grid>
+      <grid id="2edc3" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties>
+          <opaque value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="4c63c" layout-manager="FlowLayout" hgap="15" vgap="2" flow-align="1">
+            <constraints border-constraint="South"/>
+            <properties>
+              <opaque value="false"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="b1998" class="javax.swing.JButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <actionCommand value="clear"/>
+                  <text value="C&amp;lear"/>
+                  <toolTipText value="Clears response text from the window"/>
+                </properties>
+              </component>
+              <component id="cd55a" class="javax.swing.JButton" binding="stopButton">
+                <constraints/>
+                <properties>
+                  <actionCommand value="estop"/>
+                  <enabled value="false"/>
+                  <icon value="images/bad.png"/>
+                  <text value="S&amp;top!"/>
+                  <toolTipText value="Stops robot motion now"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <component id="55020" class="javax.swing.JComboBox" binding="rawCommand">
+            <constraints border-constraint="North"/>
+            <properties>
+              <editable value="true"/>
+              <model>
+                <item value="INIT {ClassName USARBot.P3AT} {Location 0, 0, 0} {Rotation 0, 0, 0}"/>
+                <item value="CLEARLOGS"/>
+                <item value="FLIPBOT"/>
+                <item value="MAKE"/>
+                <item value="MAKECLEAN"/>
+              </model>
+              <toolTipText value="Send a raw command to the server"/>
+              <visible value="false"/>
+            </properties>
+          </component>
+          <grid id="2a811" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <opaque value="false"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <grid id="7c90e" layout-manager="CardLayout" hgap="0" vgap="0">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <opaque value="false"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <grid id="43986" layout-manager="GridBagLayout">
+                    <constraints>
+                      <card name="init"/>
+                    </constraints>
+                    <properties>
+                      <opaque value="false"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="65425" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="16970"/>
+                          <text value="ClassName "/>
+                        </properties>
+                      </component>
+                      <component id="16970" class="javax.swing.JComboBox" binding="initClass">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <editable value="true"/>
+                          <model>
+                            <item value="USARBot."/>
+                            <item value="USARBot.BasicSkidRobot"/>
+                            <item value="USARBot.CasterSkidRobot"/>
+                            <item value="USARBot.Nao"/>
+                            <item value="USARBot.P3AT"/>
+                          </model>
+                          <toolTipText value="Class name of robot to spawn"/>
+                        </properties>
+                      </component>
+                      <component id="a96e7" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="bd684"/>
+                          <text value="Location "/>
+                        </properties>
+                      </component>
+                      <component id="8db42" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="75972"/>
+                          <text value="Rotation "/>
+                        </properties>
+                      </component>
+                      <component id="bd684" class="javax.swing.JComboBox" binding="initLocation">
+                        <constraints>
+                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <editable value="true"/>
+                          <toolTipText value="Coordinates in m or PlayerStart name to spawn robot"/>
+                        </properties>
+                      </component>
+                      <component id="75972" class="javax.swing.JTextField" binding="initRotation">
+                        <constraints>
+                          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="10"/>
+                          <text value="0, 0, 0" noi18n="true"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="ea82d" layout-manager="BorderLayout" hgap="0" vgap="2">
+                    <constraints>
+                      <card name="drive"/>
+                    </constraints>
+                    <properties>
+                      <opaque value="false"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <grid id="1fb27" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
+                        <constraints border-constraint="North"/>
+                        <properties>
+                          <opaque value="false"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <component id="2411f" class="javax.swing.JLabel">
+                            <constraints/>
+                            <properties>
+                              <labelFor value="f398c"/>
+                              <text value="DriveType"/>
+                            </properties>
+                          </component>
+                          <component id="f398c" class="javax.swing.JComboBox" binding="driveType">
+                            <constraints/>
+                            <properties>
+                              <model>
+                                <item value="Skid"/>
+                                <item value="Ackerman"/>
+                                <item value="Aerial"/>
+                              </model>
+                              <toolTipText value="Steering type used by the robot"/>
+                            </properties>
+                          </component>
+                          <component id="f18b3" class="javax.swing.JCheckBox" binding="normalizedCheckBox" default-binding="true">
+                            <constraints/>
+                            <properties>
+                              <focusable value="false"/>
+                              <text value="&amp;Normalized"/>
+                              <toolTipText value="Whether values should be scaled to fit within true limits."/>
+                            </properties>
+                          </component>
+                          <component id="8f5c7" class="javax.swing.JCheckBox" binding="driveHeadlights">
+                            <constraints/>
+                            <properties>
+                              <focusable value="false"/>
+                              <text value="&amp;Headlights"/>
+                              <toolTipText value="Whether the robot headlight should be on."/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="29ebd" binding="driveView" layout-manager="CardLayout" hgap="0" vgap="0">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <opaque value="false"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <grid id="642db" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
+                            <constraints>
+                              <card name="skid"/>
+                            </constraints>
+                            <properties>
+                              <opaque value="false"/>
+                            </properties>
+                            <border type="none"/>
+                            <children>
+                              <component id="a9fa" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="36285"/>
+                                  <text value="Left"/>
+                                </properties>
+                              </component>
+                              <component id="36285" class="javax.swing.JTextField" binding="driveLeft">
+                                <constraints/>
+                                <properties>
+                                  <columns value="5"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Left wheel speed in rads/s"/>
+                                </properties>
+                              </component>
+                              <hspacer id="9329b">
+                                <constraints/>
+                              </hspacer>
+                              <component id="c86cf" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="1e2d1"/>
+                                  <text value="Right"/>
+                                </properties>
+                              </component>
+                              <component id="1e2d1" class="javax.swing.JTextField" binding="driveRight">
+                                <constraints/>
+                                <properties>
+                                  <columns value="5"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Right wheel speed in rads/s"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </grid>
+                          <grid id="79233" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
+                            <constraints>
+                              <card name="ackerman"/>
+                            </constraints>
+                            <properties>
+                              <opaque value="false"/>
+                            </properties>
+                            <border type="none"/>
+                            <children>
+                              <component id="530b9" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="9c896"/>
+                                  <text value="Speed"/>
+                                </properties>
+                              </component>
+                              <component id="9c896" class="javax.swing.JTextField" binding="driveSpeed">
+                                <constraints/>
+                                <properties>
+                                  <columns value="5"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Wheel speed in rads/s"/>
+                                </properties>
+                              </component>
+                              <hspacer id="c8bc8">
+                                <constraints/>
+                              </hspacer>
+                              <component id="76d2" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="aa13b"/>
+                                  <text value="FrontSteer"/>
+                                </properties>
+                              </component>
+                              <component id="aa13b" class="javax.swing.JTextField" binding="driveFront">
+                                <constraints/>
+                                <properties>
+                                  <columns value="5"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Front wheel steer angle in rads"/>
+                                </properties>
+                              </component>
+                              <hspacer id="75eea">
+                                <constraints/>
+                              </hspacer>
+                              <component id="f24c2" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="38e17"/>
+                                  <text value="RearSteer"/>
+                                </properties>
+                              </component>
+                              <component id="38e17" class="javax.swing.JTextField" binding="driveRear">
+                                <constraints/>
+                                <properties>
+                                  <columns value="5"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Rear wheel steer angle in rads"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </grid>
+                          <grid id="1c48a" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
+                            <constraints>
+                              <card name="aerial"/>
+                            </constraints>
+                            <properties>
+                              <opaque value="false"/>
+                            </properties>
+                            <border type="none"/>
+                            <children>
+                              <component id="ef3be" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="a46d7"/>
+                                  <text value="Altitude"/>
+                                </properties>
+                              </component>
+                              <component id="a46d7" class="javax.swing.JTextField" binding="driveAltitude">
+                                <constraints/>
+                                <properties>
+                                  <columns value="4"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Altitude velocity in m/s"/>
+                                </properties>
+                              </component>
+                              <hspacer id="cc5f">
+                                <constraints/>
+                              </hspacer>
+                              <component id="64e63" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="b95b0"/>
+                                  <text value="Linear"/>
+                                </properties>
+                              </component>
+                              <component id="b95b0" class="javax.swing.JTextField" binding="driveLinear">
+                                <constraints/>
+                                <properties>
+                                  <columns value="4"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Linear velocity in m/s"/>
+                                </properties>
+                              </component>
+                              <hspacer id="512f1">
+                                <constraints/>
+                              </hspacer>
+                              <component id="a8cb2" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="7e1df"/>
+                                  <text value="Lateral"/>
+                                </properties>
+                              </component>
+                              <component id="7e1df" class="javax.swing.JTextField" binding="driveLateral">
+                                <constraints/>
+                                <properties>
+                                  <columns value="4"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Lateral velocity in m/s"/>
+                                </properties>
+                              </component>
+                              <hspacer id="d20bb">
+                                <constraints/>
+                              </hspacer>
+                              <component id="9106d" class="javax.swing.JLabel">
+                                <constraints/>
+                                <properties>
+                                  <labelFor value="bec5b"/>
+                                  <text value="Rotational"/>
+                                </properties>
+                              </component>
+                              <component id="bec5b" class="javax.swing.JTextField" binding="driveRotational">
+                                <constraints/>
+                                <properties>
+                                  <columns value="4"/>
+                                  <text value="0.0" noi18n="true"/>
+                                  <toolTipText value="Rotational velocity in rads/s"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </grid>
+                        </children>
+                      </grid>
+                    </children>
+                  </grid>
+                  <grid id="c6638" layout-manager="GridBagLayout">
+                    <constraints>
+                      <card name="set"/>
+                    </constraints>
+                    <properties>
+                      <opaque value="false"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="d759e" class="javax.swing.JTextField" binding="setParams">
+                        <constraints>
+                          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="5"/>
+                          <text value="0.0" noi18n="true"/>
+                          <toolTipText value="Values(s) corresponding with Opcode"/>
+                        </properties>
+                      </component>
+                      <component id="c9648" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="d759e"/>
+                          <text value="Params "/>
+                        </properties>
+                      </component>
+                      <component id="25139" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="79dd3"/>
+                          <text value="Opcode "/>
+                        </properties>
+                      </component>
+                      <component id="79dd3" class="javax.swing.JComboBox" binding="setOpcode">
+                        <constraints>
+                          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <model>
+                            <item value="Angle"/>
+                            <item value="Velocity"/>
+                            <item value="Torque"/>
+                          </model>
+                          <toolTipText value="Type of manipulation to apply"/>
+                        </properties>
+                      </component>
+                      <component id="8bdde" class="javax.swing.JComboBox" binding="setName">
+                        <constraints>
+                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <editable value="true"/>
+                          <toolTipText value="Joint or sensor to move"/>
+                        </properties>
+                      </component>
+                      <component id="e87fa" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="8bdde"/>
+                          <text value="Name "/>
+                          <toolTipText value="Item name to control"/>
+                        </properties>
+                      </component>
+                      <hspacer id="b117">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                      </hspacer>
+                      <component id="1af74" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="f049"/>
+                          <text value="Type "/>
+                        </properties>
+                      </component>
+                      <component id="f049" class="javax.swing.JComboBox" binding="setType">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <model>
+                            <item value="Joint"/>
+                            <item value="Camera"/>
+                          </model>
+                          <toolTipText value="Type of item to control"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="a562e" layout-manager="GridBagLayout">
+                    <constraints>
+                      <card name="mispkg"/>
+                    </constraints>
+                    <properties>
+                      <opaque value="false"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="1ee14" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="46c97"/>
+                          <text value="Name "/>
+                        </properties>
+                      </component>
+                      <component id="46c97" class="javax.swing.JComboBox" binding="misName">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <editable value="true"/>
+                          <toolTipText value="Mission package name to control"/>
+                        </properties>
+                      </component>
+                      <component id="c2b51" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <text value="Link "/>
+                        </properties>
+                      </component>
+                      <component id="ce5d2" class="javax.swing.JTextField" binding="misLink">
+                        <constraints>
+                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="4"/>
+                          <text value="1" noi18n="true"/>
+                          <toolTipText value="Link index to move"/>
+                        </properties>
+                      </component>
+                      <component id="ed19" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="f3a24"/>
+                          <text value="Value "/>
+                        </properties>
+                      </component>
+                      <component id="f3a24" class="javax.swing.JTextField" binding="misValue">
+                        <constraints>
+                          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="5"/>
+                          <text value="0.0" noi18n="true"/>
+                          <toolTipText value="Angle or position to move joint"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="14182" layout-manager="GridBagLayout">
+                    <constraints>
+                      <card name="trace"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="8b15c" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="bb6f5"/>
+                          <text value="Interval "/>
+                        </properties>
+                      </component>
+                      <component id="bb6f5" class="javax.swing.JTextField" binding="traceInterval">
+                        <constraints>
+                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="5"/>
+                          <text value="0.5"/>
+                          <toolTipText value="Number of seconds between traces"/>
+                        </properties>
+                      </component>
+                      <component id="9f5f1" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="4f64d"/>
+                          <text value="Color "/>
+                        </properties>
+                      </component>
+                      <component id="4f64d" class="javax.swing.JComboBox" binding="traceColor">
+                        <constraints>
+                          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <model>
+                            <item value="Red"/>
+                            <item value="Yellow"/>
+                            <item value="Green"/>
+                            <item value="Cyan"/>
+                            <item value="White"/>
+                            <item value="Blue"/>
+                            <item value="Purple"/>
+                          </model>
+                          <toolTipText value="Color of path to trace"/>
+                        </properties>
+                      </component>
+                      <component id="fc851" class="javax.swing.JCheckBox" binding="traceOn">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <focusable value="false"/>
+                          <text value="Enabled"/>
+                          <toolTipText value="Turns tracing on or off"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="eeb44" layout-manager="GridBagLayout">
+                    <constraints>
+                      <card name="geoconf"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="1376b" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="9afba"/>
+                          <text value="Type "/>
+                        </properties>
+                      </component>
+                      <component id="fa412" class="javax.swing.JComboBox" binding="geoType">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <editable value="true"/>
+                          <model>
+                            <item value="Robot"/>
+                            <item value="MisPkg"/>
+                            <item value="Effector"/>
+                          </model>
+                        </properties>
+                      </component>
+                      <component id="a8e71" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <labelFor value="786bb"/>
+                          <text value="Name (opt) "/>
+                        </properties>
+                      </component>
+                      <component id="786bb" class="javax.swing.JTextField" binding="geoName">
+                        <constraints>
+                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <preferred-size width="150" height="-1"/>
+                          </grid>
+                          <gridbag weightx="0.0" weighty="0.0"/>
+                        </constraints>
+                        <properties>
+                          <columns value="16"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+              <grid id="a748b" layout-manager="GridBagLayout">
+                <constraints border-constraint="East"/>
+                <properties>
+                  <opaque value="false"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="f8403" class="javax.swing.JButton" binding="sendButton">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <enabled value="false"/>
+                      <focusable value="false"/>
+                      <text value="&amp;Send"/>
+                      <toolTipText value="Sends the command to USARSim."/>
+                    </properties>
+                  </component>
+                  <component id="45696" class="javax.swing.JButton" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <focusable value="false"/>
+                      <text value="&amp;..." noi18n="true"/>
+                      <toolTipText value="Shows or hides the Advanced Input field"/>
+                    </properties>
+                  </component>
+                  <vspacer id="97e2c">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                  </vspacer>
+                </children>
+              </grid>
+              <grid id="51be3" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="West"/>
+                <properties>
+                  <opaque value="false"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="9afba" class="javax.swing.JComboBox" binding="commandType">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <model>
+                        <item value="INIT"/>
+                        <item value="DRIVE"/>
+                        <item value="SET"/>
+                        <item value="MISPKG"/>
+                        <item value="GETGEO"/>
+                        <item value="GETCONF"/>
+                        <item value="TRACE"/>
+                      </model>
+                      <toolTipText value="Command type to send"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <scrollpane id="1d19f">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="c815b" class="javax.swing.JList" binding="responseList">
+            <constraints/>
+            <properties>
+              <selectionMode value="1"/>
+              <toolTipText value="Response messages from the server"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>
