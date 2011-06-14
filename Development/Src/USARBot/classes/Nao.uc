@@ -191,6 +191,20 @@ defaultproperties
 	Joints.Add(RElbowRoll)
 
 	// Create leg parts
+	Begin Object Class=Part Name=LHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=-0.055,Z=0.08)
+		Mass=123.09
+	End Object
+	PartList.Add(LHip)
+
+	Begin Object Class=Part Name=RHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=0.055,Z=0.08)
+		Mass=123.09
+	End Object
+	PartList.Add(RHip)
+
 	Begin Object Class=Part Name=LThigh
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
@@ -240,9 +254,35 @@ defaultproperties
 	PartList.Add(RFoot)
 
 	// Create hip joint
+	Begin Object Class=Joint Name=LHipYawPitch
+		IsOneDof=true
+		Parent=LHip
+		Child=BodyItem
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=-0.055,z=0.1)
+		LimitLow=-1.1452 // -65.62
+		LimitHigh=0.7407 // 42.44
+		RotateAxis=(x=2.3562,y=0,z=0)
+	End Object
+	Joints.Add(LHipYawPitch)
+
+	Begin Object Class=Joint Name=RHipYawPitch
+		IsOneDof=true
+		Parent=RHip
+		Child=BodyItem
+		jointType=JOINTTYPE_Pitch
+		measureType=EMEASURE_Pitch
+		Offset=(x=-0.01,y=0.055,z=0.1)
+		LimitLow=-1.1452 // -65.62
+		LimitHigh=0.7407 // 42.44
+		RotateAxis=(x=2.3562,y=0,z=0)
+	End Object
+	Joints.Add(RHipYawPitch)
+
 	Begin Object Class=Joint Name=LHipPitch
 		Parent=LThigh
-		Child=BodyItem
+		Child=LHip
 		jointType=JOINTTYPE_Pitch
 		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=-0.055,z=0.115)
@@ -254,7 +294,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=LHipRoll
 		Parent=LThigh
-		Child=BodyItem
+		Child=LHip
 		jointType=JOINTTYPE_Roll
 		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
@@ -267,7 +307,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=RHipPitch
 		Parent=RThigh
-		Child=BodyItem
+		Child=RHip
 		jointType=JOINTTYPE_Pitch
 		measureType=EMEASURE_Pitch
 		Offset=(x=-0.01,y=0.055,z=0.115)
@@ -279,7 +319,7 @@ defaultproperties
 
 	Begin Object Class=Joint Name=RHipRoll
 		Parent=RThigh
-		Child=BodyItem
+		Child=RHip
 		jointType=JOINTTYPE_Roll
 		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
