@@ -2,7 +2,7 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.	Recipients of this software
+  not subject to copyright in the United States. Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
@@ -16,9 +16,9 @@
   *          and distance traveled.
   *
   *          This sensor uses gaussian random number generator to
-  *          add noise to angular velocities.  This sensor uses this
+  *          add noise to angular velocities. This sensor uses this
   *          information to update the sensor's current prediction of
-  *          orientation.    The total distance traveled in one time
+  *          orientation. The total distance traveled in one time
   *          step is computed, again adding gaussian noise, and is
   *          decomposed into distance vectors using polar coordinates.
   *          This is added to estimates of location. All noise is

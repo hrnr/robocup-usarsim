@@ -2,7 +2,7 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.	Recipients of this software
+  not subject to copyright in the United States. Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
@@ -98,7 +98,7 @@ function createTouchLocations()
 	arcAngleEnd = -(arcAngle / 2);
 	if (bDebug)
 		LogInternal("Creating Bumper Array Arc");
-	
+
 	// Create the arc
 	for(i = 0; i < sensorCount; i += 1.0){
 		sensorLocations[i].X = class'UnitsConverter'.static.LengthToUU(arcRadius) *
@@ -107,11 +107,11 @@ function createTouchLocations()
 			sin(arcAngleStart + (i / (sensorCount - 1)) * (arcAngleEnd - arcAngleStart));
 		sensorLocations[i].Z = 0.0;
 		if (bDebug)
-			LogInternal(" Sensor #" $ i $ " has coords BEFORE ROT: " $ sensorLocations[i]);
+			LogInternal("Sensor #" $ i $ " has coords BEFORE ROT: " $ sensorLocations[i]);
 		sensorLocations[i] = vectRotate(sensorLocations[i], r);
 		sensorLocations[i].Z *= -1.0;
 		if (bDebug)
-			LogInternal(" Sensor #" $ i $ " has coords AFTER ROT :" $ sensorLocations[i]);
+			LogInternal("Sensor #" $ i $ " has coords AFTER ROT :" $ sensorLocations[i]);
 	}
 	pointsInit = true;
 }
@@ -126,7 +126,7 @@ simulated event Destroyed()
 function bool isTouch()
 {
 	local vector HitLocation, HitNormal;
-	local actor Bumper;
+	local Actor Bumper;
 	local vector RotX, RotY, RotZ;
 	local rotator curRot;
 	local vector startVec;
@@ -141,7 +141,7 @@ function bool isTouch()
 	GetAxes(Rotation, RotX, RotY, RotZ);
 	if (bDrawLines)
 		FlushPersistentDebugLines();
-	
+
 	for (s = 0; s < sensorCount; s++)
 	{
 		// Code for detecting touch borrowed from touchsensor.u (some modifications have been made for this sensor)
@@ -183,7 +183,7 @@ function bool isTouch()
 
 function String GetData()
 {
-	return "{Name " $ ItemName $ " Touch " $ isTouch() $ "}";
+	return "{Name " $ ItemName $ "} {Touch " $ isTouch() $ "}";
 }
 
 function String GetConfData()

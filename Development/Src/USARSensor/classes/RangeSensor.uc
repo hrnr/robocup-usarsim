@@ -26,8 +26,8 @@ simulated function ConvertParam()
 //  Returns first hit actor, level if hit level, or none if hit nothing
 function float GetRange()
 {
-    local vector HitLocation,HitNormal;
-    local float range;
+	local vector HitLocation,HitNormal;
+	local float range;
   
 	if (Trace(HitLocation, HitNormal, Location + MaxRange * vector(curRot), Location, true) == None)
 		range = class'UnitsConverter'.static.LengthFromUU(MaxRange);
@@ -49,7 +49,7 @@ simulated function ClientTimer()
 	if (bSendRange)
 		RangeSendDelegate(self, range);
 	else
-		MessageSendDelegate(getHead() @ "{Name " $ ItemName $ " Range " $
+		MessageSendDelegate(getHead() @ "{Name " $ ItemName $ "} {Range " $
 			class'UnitsConverter'.static.FloatString(range) $ "}");
 }
 
@@ -60,7 +60,7 @@ delegate RangeSendDelegate(Actor a, float range)
 
 function String GetConfData()
 {
-    local String outstring;
+	local String outstring;
 	outstring = super.GetConfData();
 	outstring @= "{MaxRange " $ class'UnitsConverter'.static.Str_LengthFromUU(MaxRange) $
 		"} {MinRange " $ class'UnitsConverter'.static.Str_LengthFromUU(MinRange) $ "}";

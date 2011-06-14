@@ -18,7 +18,7 @@
 //
 //	Todo:
 //		- Apply the fact that the IR can see through, and though miss glass walls
-//			* halfly done, if it hits a transparent material it returns MaxRange. On these maps it should be an okay simplification, Fully Done
+//			* if it hits a transparent material it returns MaxRange. On these maps it should be an okay simplification
 //
 ///////////////////////////////////////////////////////////////////////////////////////
 //
@@ -34,9 +34,9 @@ class IRSensor extends RangeSensor config (USAR);
 
 function float GetRange()
 {
-    local vector HitLocation, HitNormal;
+	local vector HitLocation, HitNormal;
 	local vector curLoc, dir;
-    local float range;
+	local float range;
 	local TraceHitInfo mtl;
 	
 	range = 0;
@@ -51,7 +51,7 @@ function float GetRange()
 			break;
 		}
 		else 
-            range = VSize(HitLocation - Location);
+			range = VSize(HitLocation - Location);
 		
 		if (InStr(String(mtl.Material), "Trans") == -1)	// The IR hitted a non-transparent material.
 			break;
@@ -69,11 +69,11 @@ function float GetRange()
 // To avoid sending back extra messages, do not call super.ClientTimer()
 simulated function ClientTimer()
 {
-    local String rangeData;
+	local String rangeData;
 	local float range;
 	
 	range = GetRange();
-    rangeData = "{Name " $ ItemName $ " Range " $
+	rangeData = "{Name " $ ItemName $ "} {Range " $
 		class'UnitsConverter'.static.FloatString(range) $ "}";
 	if (bSendRange)
 		RangeSendDelegate(self, range);
@@ -88,7 +88,7 @@ delegate RangeSendDelegate(Actor a, float range)
 
 function String GetConfData()
 {
-    local String confData;
+	local String confData;
 	confData = super.GetConfData();
 	confData @= "{MaxRange " $ class'UnitsConverter'.static.Str_LengthFromUU(MaxRange) $
 		"} {MinRange " $ class'UnitsConverter'.static.Str_LengthFromUU(MinRange) $ "}";

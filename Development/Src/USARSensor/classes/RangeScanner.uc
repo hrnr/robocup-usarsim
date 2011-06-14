@@ -2,7 +2,7 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.	Recipients of this software
+  not subject to copyright in the United States. Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
@@ -19,7 +19,7 @@ simulated function ConvertParam()
 {
 	super.ConvertParam();
 	Resolution = class'UnitsConverter'.static.AngleToUU(Resolution);
-    ScanFov = class'UnitsConverter'.static.AngleToUU(ScanFov);
+	ScanFov = class'UnitsConverter'.static.AngleToUU(ScanFov);
 }
 
 function String GetData()
@@ -30,7 +30,7 @@ function String GetData()
 	local rotator turn;
 
 	time = WorldInfo.TimeSeconds;
-    // from right to left
+	// from right to left
 	for (i = ScanFov / 2; i >= -ScanFov / 2; i -= Resolution)
 	{
 		if (bYaw)
@@ -61,10 +61,10 @@ function String Set(String opcode, String args)
 
 function String GetConfData()
 {
-    local String outstring;
+	local String outstring;
 	outstring = super.GetConfData();
 	outstring @= "{Resolution " $ class'UnitsConverter'.static.Str_AngleFromUU(Resolution) $
-	    "} {Fov " $ class'UnitsConverter'.static.Str_AngleFromUU(ScanFov) $ "}";
+		"} {Fov " $ class'UnitsConverter'.static.Str_AngleFromUU(ScanFov) $ "}";
 	outstring @= "{Panning " $ bYaw $ "} {Tilting " $ bPitch $ "}";
 	return outstring;
 }

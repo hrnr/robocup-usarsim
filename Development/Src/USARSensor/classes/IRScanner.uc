@@ -2,7 +2,7 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.	Recipients of this software
+  not subject to copyright in the United States. Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
@@ -24,9 +24,9 @@ var float time;
 
 simulated function ConvertParam()
 {
-    super.ConvertParam();
-    Resolution = class'UnitsConverter'.static.AngleToUU(Resolution);
-    ScanFov = class'UnitsConverter'.static.AngleToUU(ScanFov);
+	super.ConvertParam();
+	Resolution = class'UnitsConverter'.static.AngleToUU(Resolution);
+	ScanFov = class'UnitsConverter'.static.AngleToUU(ScanFov);
 }
 
 function String GetData()
@@ -70,7 +70,7 @@ function String Set(String opcode, String args)
 
 function String GetConfData()
 {
-    local String confData;
+	local String confData;
 	confData = super.GetConfData();
 	confData @= "{Resolution " $ class'UnitsConverter'.static.FloatString(Resolution) $
 		"} {Fov " $ class'UnitsConverter'.static.FloatString(ScanFov) $ "}";

@@ -2,7 +2,7 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.	Recipients of this software
+  not subject to copyright in the United States. Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
@@ -31,7 +31,7 @@ function String GetData()
 
 function String GetConfData()
 {
-    local String outstring;
+	local String outstring;
 	outstring = super.GetConfData();
 	outstring @= "{ScanInterval " $ ScanInterval $ "}";
 	return outstring;

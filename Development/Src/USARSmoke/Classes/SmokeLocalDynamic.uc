@@ -66,7 +66,7 @@ defaultproperties
     SpawnIntervalMax=0.4;
 
 	Begin Object Class=SpriteComponent Name=Sprite
-		Sprite=Texture2D'EngineResources.S_Emitter'
+		Sprite=Texture2D'EditorResources.S_Emitter'
 		HiddenGame=True
 		AlwaysLoadOnClient=False
 		AlwaysLoadOnServer=False
