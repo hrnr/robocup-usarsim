@@ -29,6 +29,7 @@ function SetJointTargetByName(String jointName, float target)
 // Gearing equation example to replace measurement types
 simulated function float JointTransform(JointItem ji, float value)
 {
+	/*
 	local rotator relRot, rotTemp;
 	local RevoluteJoint jt;
 	
@@ -38,6 +39,7 @@ simulated function float JointTransform(JointItem ji, float value)
 		relRot = jt.GetRelativeRotation(ji.Parent.Rotation, ji.Child.Rotation);
 	else 
 		relRot = jt.GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
+
 	if (ji.GetJointName() == 'HeadPitch')
 	{
 		rotTemp = rot(0, 0, 0);
@@ -45,6 +47,7 @@ simulated function float JointTransform(JointItem ji, float value)
 		relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
 		value = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
 	}
+*/
 	return value;
 }
 
@@ -89,7 +92,7 @@ defaultproperties
 		Offset=(x=0,y=0,z=-0.09)
 		LimitLow=-.672 // -38.5
 		LimitHigh=.515 // 29.5
-		Direction=(x=3.14,y=0,z=-1.57)
+		Direction=(x=-1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(HeadPitch)
 
@@ -128,7 +131,7 @@ defaultproperties
 		Offset=(x=0,y=-0.090,z=-0.075)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
-		Direction=(x=3.14,y=0,z=1.57)
+		Direction=(x=-1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(LShoulderPitch)
 
@@ -139,7 +142,7 @@ defaultproperties
 		//LimitLow=.0087 // 0.5
 		LimitLow=-1.649 // Temp
 		LimitHigh=1.649 // 94.5
-		Direction=(x=0,y=-1.57,z=0)
+		Direction=(x=3.14,y=0,z=1.57)
 	End Object
 	Joints.Add(LShoulderRoll)
 
@@ -149,7 +152,7 @@ defaultproperties
 		Offset=(x=0,y=0.098,z=-0.075) 
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
-		Direction=(x=3.14,y=0,z=1.57)
+		Direction=(x=-1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(RShoulderPitch)
 
@@ -160,7 +163,7 @@ defaultproperties
 		LimitLow=-1.649 // -94.5
 		//LimitHigh=-.0087 // -0.5
 		LimitHigh=1.649 // temp
-		Direction=(x=0,y=-1.57,z=0)
+		Direction=(x=3.14,y=0,z=1.57)
 	End Object
 	Joints.Add(RShoulderRoll)
 
@@ -218,8 +221,6 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RElbowYaw
 		Parent=RUpperArm
 		Child=RElbow
-		jointType=JOINTTYPE_Yaw
-		measureType=EMEASURE_Roll
 		InverseMeasureAngle=true
 		Offset=(x=0.09,y=0.098,z=-0.084)
 		LimitLow=-2.086 // -119.5
@@ -281,7 +282,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=-0.055,Z=0.12)
-		Mass=0.39421
+		Mass=0.1
 	End Object
 	PartList.Add(LHipThigh)
 
@@ -289,7 +290,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,y=0.055,z=0.12)
-		Mass=0.39421
+		Mass=0.1
 	End Object
 	PartList.Add(RHipThigh)
 
@@ -328,7 +329,7 @@ defaultproperties
 		LimitLow=-1.772 // -101.54
 		//LimitHigh=.4855 // 27.82
 		LimitHigh=1.772 // Temp
-		Direction=(x=3.14,y=0,z=1.57)
+		Direction=(x=1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(LHipPitch)
 
@@ -351,9 +352,133 @@ defaultproperties
 		LimitLow=-1.772 // -101.54
 		//LimitHigh=.4855 // 27.82
 		LimitHigh=1.772 // temp
-		Direction=(x=3.14,y=0,z=1.57)
+		Direction=(x=1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(RHipPitch)
+
+	// Knee
+	Begin Object Class=Part Name=LShank
+		RelativeTo=LThigh
+		Mesh=StaticMesh'Nao.naolshank'
+		Offset=(x=0.005,y=0,z=0.125)
+		Mass=0.29159
+	End Object
+	PartList.Add(LShank)
+
+	Begin Object Class=Part Name=RShank
+		RelativeTo=RThigh
+		Mesh=StaticMesh'Nao.naorshank'
+		Offset=(x=0.005,y=0,z=0.125)
+		Mass=0.29159
+	End Object
+	PartList.Add(RShank)
+
+	Begin Object Class=RevoluteJoint Name=LKneePitch
+		RelativeTo=LShank
+		Parent=LThigh
+		Child=LShank
+		Offset=(x=-0.01,y=0,z=-0.045)
+		LimitLow=-2.120 // Temp
+		//LimitLow=-.1029 // -5.90
+		LimitHigh=2.120 // 121.47
+		Direction=(x=1.57,y=0,z=3.14)
+	End Object
+	Joints.Add(LKneePitch)
+
+	Begin Object Class=RevoluteJoint Name=RKneePitch
+		RelativeTo=RShank
+		Parent=RThigh
+		Child=RShank
+		Offset=(x=-0.01,y=0,z=-0.045)
+		LimitLow=-2.120 // Temp
+		//LimitLow=-.1029 // -5.90
+		LimitHigh=2.120 // 121.47
+		Direction=(x=1.57,y=0,z=3.14)
+	End Object
+	Joints.Add(RKneePitch)
+
+	// Feet + ankle joint
+	Begin Object Class=Part Name=LFoot
+		RelativeTo=LShank
+		Mesh=StaticMesh'Nao.naolfoot'
+		Offset=(x=0.02,y=0,z=0.09)
+		Mass=1.5000
+	End Object
+	PartList.Add(LFoot)
+
+	Begin Object Class=Part Name=RFoot
+		RelativeTo=RShank
+		Mesh=StaticMesh'Nao.naorfoot'
+		Offset=(x=0.02,y=0,z=0.09)
+		Mass=1.5000
+	End Object
+	PartList.Add(RFoot)
+
+	Begin Object Class=Part Name=LAnkle
+		RelativeTo=LShank
+		Mesh=StaticMesh'Nao.naohip'
+		Offset=(x=0,Y=0,Z=0.04)
+		Mass=0.1
+	End Object
+	PartList.Add(LAnkle)
+
+	Begin Object Class=Part Name=RAnkle
+		RelativeTo=RShank
+		Mesh=StaticMesh'Nao.naohip'
+		Offset=(x=0,y=0,z=0.04)
+		Mass=0.1
+	End Object
+	PartList.Add(RAnkle)
+	
+	Begin Object Class=RevoluteJoint Name=LAnklePitch
+		RelativeTo=LShank
+		Parent=LShank
+		Child=LAnkle
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-1.185 // -67.96
+		//LimitHigh=.9844 // 53.40
+		LimitHigh=1.185 // Temp
+		Direction=(x=-1.57,y=1.57,z=0)
+	End Object
+	Joints.Add(LAnklePitch)
+
+	Begin Object Class=RevoluteJoint Name=LAnkleRoll
+		RelativeTo=LShank
+		Parent=LAnkle
+		Child=LFoot
+		InverseMeasureAngle=true
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-.7689 // -44.06
+		//LimitHigh=.3978 // 22.79
+		LimitHigh=.7689 // Temp
+		Direction=(x=-1.57,y=1.57,z=0)
+	End Object
+	Joints.Add(LAnkleRoll)
+
+	Begin Object Class=RevoluteJoint Name=RAnklePitch
+		RelativeTo=RShank
+		Parent=RShank
+		Child=RAnkle
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-1.1861 // -67.96
+		//LimitHigh=.9320 // 53.40
+		LimitHigh=1.185 // Temp
+		Direction=(x=-1.57,y=1.57,z=0)
+	End Object
+	Joints.Add(RAnklePitch)
+
+	Begin Object Class=RevoluteJoint Name=RAnkleRoll
+		RelativeTo=RShank
+		Parent=RAnkle
+		Child=RFoot
+		InverseMeasureAngle=true
+		Offset=(x=-0.01,y=0,z=0.055)
+		LimitLow=-.7859 // Temp
+		//LimitLow=-.3887 // -22.27
+		LimitHigh=.7859 // 45.03
+		Direction=(x=-1.57,y=1.57,z=0)
+	End Object
+	Joints.Add(RAnkleRoll)
 
 	// Create BodyItem part
 /*	Begin Object Class=Part Name=BodyItem
