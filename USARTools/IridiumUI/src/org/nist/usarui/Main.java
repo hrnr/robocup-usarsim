@@ -26,8 +26,7 @@ public class Main {
 		}
 		mainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				program.getUI().closeJoystick();
-				program.disconnect();
+				program.getUI().exit();
 			}
 		});
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

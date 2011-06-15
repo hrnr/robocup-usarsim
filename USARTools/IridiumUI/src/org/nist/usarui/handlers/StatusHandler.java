@@ -10,6 +10,11 @@ import org.nist.usarui.*;
  */
 public interface StatusHandler {
 	/**
+	 * The degree sign. Useful for angles in degrees.
+	 */
+	public static final String DEG_SIGN = "\u00b0";
+
+	/**
 	 * Called whenever a message is received.
 	 *
 	 * @param packet the message received

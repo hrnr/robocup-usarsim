@@ -45,6 +45,10 @@ public class IridiumUI {
 	 * Available options for SET when using "Joint" as type.
 	 */
 	public static final String[] OPT_JOINTS = { "Angle", "Velocity", "Torque" };
+	/**
+	 * The distance between the main window and auxiliary windows.
+	 */
+	public static final int PAD = 5;
 
 	private Icon badIcon;
 	private JLabel batteryLife;
@@ -92,6 +96,7 @@ public class IridiumUI {
 	private JComponent typePanel;
 
 	private final float[] axes;
+	private final Map<String, MapView> dialogs;
 	private final Map<String, InfoPanel> infoPanels;
 	private final Iridium state;
 	private Joystick stick;
@@ -103,6 +108,7 @@ public class IridiumUI {
 	 */
 	public IridiumUI(Iridium state) {
 		axes = new float[4];
+		dialogs = new HashMap<String, MapView>(8);
 		infoPanels = new HashMap<String, InfoPanel>(24);
 		this.state = state;
 		stick = null;
@@ -146,9 +152,19 @@ public class IridiumUI {
 		mainUI.validate();
 	}
 	/**
+	 * Closes all dialogs opened by sensor panels.
+	 */
+	private void closeAllDialogs() {
+		synchronized (dialogs) {
+			for (MapView view : dialogs.values())
+				view.close();
+			dialogs.clear();
+		}
+	}
+	/**
 	 * Disconnects and releases the joystick if connected.
 	 */
-	protected void closeJoystick() {
+	private void closeJoystick() {
 		if (stick != null) {
 			stick.removeJoystickListener(listener);
 			stick = null;
@@ -160,6 +176,7 @@ public class IridiumUI {
 	private void connected() {
 		// Clean out old data from past runs
 		clearAllPanels();
+		closeAllDialogs();
 		updateJoints(null);
 		updateMisPkg(null);
 		setConnected(true);
@@ -221,6 +238,14 @@ public class IridiumUI {
 		updateStartPoses(null);
 		updateTime(-1.f);
 		updateBattery(Integer.MAX_VALUE);
+	}
+	/**
+	 * Exits the program cleanly.
+	 */
+	public void exit() {
+		state.disconnect();
+		closeJoystick();
+		closeAllDialogs();
 	}
 	/**
 	 * Feeds a DRIVE command if necessary to the robot if the joystick is connected and moved.
@@ -304,6 +329,7 @@ public class IridiumUI {
 	private StartPose getPlayerStart() {
 		Object item; StartPose pose = null;
 		String text = initLocation.getEditor().getItem().toString();
+		// Look for the pose location or tag, whichever is useful
 		for (int i = 0; i < initLocation.getItemCount(); i++) {
 			item = initLocation.getItemAt(i);
 			pose = null;
@@ -323,6 +349,36 @@ public class IridiumUI {
 	 */
 	public JComponent getRoot() {
 		return mainUI;
+	}
+	/**
+	 * Gets the specified view, opening it if necessary.
+	 *
+	 * @param title the view title
+	 * @return the view
+	 */
+	public MapView getView(final String title) {
+		MapView ret = dialogs.get(title); final Rectangle ss, thisWin;
+		if (ret == null) {
+			ret = new MapView(title, mainUI);
+			synchronized (dialogs) {
+				dialogs.put(title, ret);
+			}
+			final Dimension vs = ret.getSize();
+			// Try to place the view on the screen, first right, then left, then bottom
+			ss = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+			thisWin = Utils.findParent(mainUI).getBounds();
+			if (thisWin.width + thisWin.x + PAD + vs.width < ss.width)
+				ret.setLocation(thisWin.x + thisWin.width + PAD, thisWin.y);
+			else if (thisWin.x - PAD - vs.width > ss.x)
+				ret.setLocation(thisWin.x - PAD - vs.width, thisWin.y);
+			else if (thisWin.y + PAD + vs.height < ss.height)
+				ret.setLocation(thisWin.x, thisWin.y + PAD);
+			else
+				// Else give up
+				ret.setLocationRelativeTo(responseList);
+			ret.setVisible(true);
+		}
+		return ret;
 	}
 	/**
 	 * Grabs the joystick input if possible. Warns the user if their joystick may not work.
@@ -358,6 +414,14 @@ public class IridiumUI {
 				processEvent(cmd);
 			}
 		});
+	}
+	/**
+	 * Gets whether the UI is in degree mode.
+	 *
+	 * @return whether UI values should be degrees, not radians
+	 */
+	public boolean isInDegrees() {
+		return rotDegrees.isSelected();
 	}
 	/**
 	 * Loads the images required to run.

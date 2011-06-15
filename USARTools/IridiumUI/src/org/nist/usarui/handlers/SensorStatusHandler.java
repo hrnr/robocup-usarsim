@@ -23,7 +23,7 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 		return "Sen_";
 	}
 	public boolean statusReceived(USARPacket packet) {
-		boolean keep = false;
+		boolean keep = false, deg = state.getUI().isInDegrees();
 		if (packet.getType().equals("SEN")) {
 			// Update time
 			String tm = packet.getParam("Time"), value, test, type;
@@ -35,10 +35,10 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			type = packet.getParam("Type");
 			if (type == null) type = "Sensor";
 			value = packet.getParam("");
-			if (value != null) value = Utils.asHTML(floatString(value));
+			if (value != null) value = Utils.asHTML(floatString(value, false));
 			// Accelerometer
 			test = packet.getParam("Acceleration");
-			if (test != null) value = Utils.asHTML(floatString(test));
+			if (test != null) value = Utils.asHTML(floatString(test, false));
 			// Bumper
 			test = packet.getParam("Touch");
 			if (test != null) value = touchString(test);
@@ -50,20 +50,21 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			if (test != null) value = getGPSData(packet);
 			// IR2Sensor, IRSensor, RangeSensor, RangeScanner, Sonar, and subclasses
 			test = packet.getParam("Range");
-			if (test != null) value = Utils.asHTML(floatString(test));
+			if (test != null) value = Utils.asHTML(floatString(test, false));
 			// Odometer
 			test = packet.getParam("Pose");
-			if (test != null) value = odoString(test);
+			if (test != null) value = odoString(test, deg);
 			// Tachometer
 			test = packet.getParam("Pos");
 			if (test != null)
-				value = Utils.asHTML("<b>Position</b> " + floatString(test) +
-					", <b>Velocity</b> " + floatString(packet.getParam("Vel")));
+				value = Utils.asHTML("<b>Rotation</b> (" + floatString(test, deg) +
+					"), <b>Velocity</b> (" + floatString(packet.getParam("Vel"), deg) + ")");
 			// GroundTruth, INS
 			test = packet.getParam("Location");
 			if (test != null)
-				value = Utils.asHTML("<b>At</b> (" + color3Vector(test) + "), <b>Facing</b> " +
-					"(" + color3Vector(packet.getParam("Orientation")) + ")");
+				value = Utils.asHTML("<b>At</b> (" + color3Vector(test, false) +
+					"), <b>facing</b> (" + color3Vector(packet.getParam("Orientation"), deg) +
+					")");
 			// Send whatever we got
 			if (value != null)
 				setInformation(type, packet.getParam("Name"), value);
@@ -75,22 +76,27 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 	 * Returns the 3-vector with colors.
 	 *
 	 * @param vec the string value
+	 * @param convert whether radian to degree conversion will be applied
 	 * @return the value reformatted for display
 	 */
-	private static String color3Vector(String vec) {
-		Vec3 vector = Utils.read3Vector(vec);
-		return String.format("<font color=\"#990000\">%.2f</font> <font color=\"#009900\">" +
-			"%.2f</font> <font color=\"#000099\">%.2f</font>", vector.getX(), vector.getY(),
-			vector.getZ());
+	private static String color3Vector(String vec, boolean convert) {
+		Vec3 vector = Utils.read3Vector(vec); String deg = "";
+		vector = vector.radToDeg(convert);
+		if (convert)
+			deg = DEG_SIGN;
+		return String.format("<font color=\"#990000\">%.2f</font>%s <font color=\"#009900\">" +
+			"%.2f</font>%s <font color=\"#000099\">%.2f</font>%s", vector.getX(), deg,
+			vector.getY(), deg, vector.getZ(), deg);
 	}
 	/**
 	 * Converts the floating point value to a sensible screen value.
 	 *
 	 * @param value the string value
+	 * @param convert whether radian to degree conversion will be applied
 	 * @return the value reformatted for display
 	 */
-	private static String floatString(String value) {
-		String out = null, token; int index = 0;
+	private static String floatString(String value, boolean convert) {
+		String out = null, token, deg; int index = 0; float f;
 		if (value != null)
 			try {
 				StringTokenizer str = new StringTokenizer(value, ",");
@@ -98,7 +104,14 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 				// Convert comma delimited to screen (if there is only one value, this works too)
 				while (str.hasMoreTokens() && index < MAX_ENTRIES) {
 					token = str.nextToken().trim();
-					output.append(String.format("%.2f", Float.parseFloat(token)));
+					f = Float.parseFloat(token);
+					// Apply conversion to degrees if necessary
+					if (convert) {
+						f = (float)Math.toDegrees(f);
+						deg = DEG_SIGN;
+					} else
+						deg = "";
+					output.append(String.format("%.2f%s", f, deg));
 					if (str.hasMoreTokens())
 						output.append(", ");
 					index++;
@@ -143,8 +156,8 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 				longMin = Integer.parseInt(str.nextToken().trim());
 				lon = str.nextToken().trim().toUpperCase();
 				// Output
-				value += String.format("%d\u00b0 %d' <i>%s</i>, %d\u00b0 %d' <i>%s</i>",
-					latDeg, latMin, lat, longDeg, longMin, lon);
+				value += String.format("%d%s %d' <i>%s</i>, %d%s %d' <i>%s</i>",
+					latDeg, DEG_SIGN, latMin, lat, longDeg, DEG_SIGN, longMin, lon);
 			} catch (RuntimeException ignore) { }
 		return Utils.asHTML(value);
 	}
@@ -152,12 +165,19 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 	 * Converts the odometer value to a sensible screen value.
 	 *
 	 * @param vec the string value
+	 * @param convert whether radian to degree conversion will be applied
 	 * @return the value reformatted for display
 	 */
-	private static String odoString(String vec) {
-		Vec3 vector = Utils.read3Vector(vec);
-		return Utils.asHTML(String.format("<b>X</b> %.2f, <b>Y</b> %.2f, <b>T</b> %.2f",
-			vector.getX(),vector.getY(), vector.getZ()));
+	private static String odoString(String vec, boolean convert) {
+		Vec3 vector = Utils.read3Vector(vec); String deg = "";
+		if (convert) {
+			// Convert only Z (heading)
+			vector = new Vec3(vector.getX(), vector.getY(),
+				(float)Math.toDegrees(vector.getZ()));
+			deg = DEG_SIGN;
+		}
+		return Utils.asHTML(String.format("<b>X</b> %.2f, <b>Y</b> %.2f, <b>T</b> %.2f%s",
+			vector.getX(),vector.getY(), vector.getZ(), deg));
 	}
 	/**
 	 * Converts the touch sensor value to a sensible screen value.

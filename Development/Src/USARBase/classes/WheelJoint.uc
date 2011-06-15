@@ -43,6 +43,9 @@ reliable server function JointItem Init(JointItem ji)
 	ji.Constraint.ConstraintInstance.SetAngularVelocityDrive(bOmni, true);
 	ji.SetStiffness(1.0);
 	ji.SetVelocity(0.0);
+	// Fix initial-value problem that has some wheels rotated 180 degrees
+	Update(ji);
+	ji.CurValue = 0.0;
 	return ji;
 }
 

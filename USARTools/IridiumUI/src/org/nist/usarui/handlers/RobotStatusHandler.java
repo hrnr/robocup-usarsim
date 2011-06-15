@@ -17,7 +17,7 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 		return "Sta_";
 	}
 	public boolean statusReceived(USARPacket packet) {
-		String type, batt, key;
+		String type, batt, key, deg; float value;
 		boolean keep = true;
 		if (packet.getType().equals("STA")) {
 			// Status messages update battery and maybe joints
@@ -33,9 +33,16 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 				// Joint values update
 				for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
 					key = entry.getKey();
-					if (!key.equalsIgnoreCase("Battery") && !key.equalsIgnoreCase("Type"))
-						// Show value on panel
-						setInformation("Joints", key, entry.getValue());
+					if (!key.equalsIgnoreCase("Battery") && !key.equalsIgnoreCase("Type")) {
+						// Show value on panel, in degrees if needed
+						value = Float.parseFloat(entry.getValue());
+						if (state.getUI().isInDegrees()) {
+							value = (float)Math.toDegrees(value);
+							deg = DEG_SIGN;
+						} else
+							deg = "";
+						setInformation("Joints", key, String.format("%.2f%s", value, deg));
+					}
 				}
 			}
 			keep = false;
