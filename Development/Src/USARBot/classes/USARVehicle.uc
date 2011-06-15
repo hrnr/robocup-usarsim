@@ -366,9 +366,10 @@ reliable server function SetupJoint(Joint jt)
 	}
 	// Initialize joint
 	jt.Init(ji);
-	ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
+	// This is only needed if you want to initialize the constraint with different axis
+	/*ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
 		ji.Child.CollisionComponent, ji.Constraint.ConstraintSetup, 1, self,
-		ji.Parent.CollisionComponent, false);
+		ji.Parent.CollisionComponent, false);*/
 	Parts.AddItem(ji);
 	if (bDebug)
 		LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
