@@ -1,10 +1,9 @@
 /*
- * Possible example on how to use RevoluteJoints. However, this class needs to be remade to
- * take the new changes into account.
+ * Aldebaran Nao robot.
  * 
- * - All joints now revolve around their Z axis. Remove RotateAxis and use Direction to
- *   transform the joint in the desired direction.
- * - Use gearing equations instead of measurement types if custom measurements are needed.
+ * Joint information: 
+ * http://users.aldebaran-robotics.com/docs/site_en/reddoc/hardware/joints-names.html
+ * 
  * - TempRotatePart is bugged right now, joints are temporary symmetrical
  *   Seems it doesn't takes the direction of the constraint into account (thus not 
  *   rotating the part correctly while initializing)
@@ -239,6 +238,122 @@ defaultproperties
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
 	End Object
 	Joints.Add(RElbowRoll)
+
+	// Create HipYawPitch joints
+	Begin Object Class=Part Name=LHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=-0.055,Z=0.08)
+		Mass=0.12309
+	End Object
+	PartList.Add(LHip)
+
+	Begin Object Class=Part Name=RHip
+		Mesh = StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=0.055,Z=0.08)
+		Mass=0.12309
+	End Object
+	PartList.Add(RHip)
+
+	Begin Object Class=RevoluteJoint Name=LHipYawPitch
+		Parent=BodyItem 
+		Child=LHip
+		Offset=(x=-0.01,y=-0.055,z=0.1)
+		LimitLow=-1.1452 // -65.62
+		//LimitHigh=0.7407 // 42.44
+		LimitHigh = 1.1452 // Temp
+		Direction=(x=0,y=2.3562,z=0)
+	End Object
+	Joints.Add(LHipYawPitch)
+
+	Begin Object Class=RevoluteJoint Name=RHipYawPitch
+		Parent=BodyItem 
+		Child=RHip
+		Offset=(x=-0.01,y=0.055,z=0.1)
+		LimitLow=-1.1452 // -65.62
+		//LimitHigh=0.7407 // 42.44
+		LimitHigh = 1.1452 // Temp
+		Direction=(x=0,y=2.3562,z=0)
+	End Object
+	Joints.Add(RHipYawPitch)
+
+	// Thigh + hip joints
+	Begin Object Class=Part Name=LHipThigh
+		RelativeTo=BodyItem
+		Mesh=StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,Y=-0.055,Z=0.12)
+		Mass=0.39421
+	End Object
+	PartList.Add(LHipThigh)
+
+	Begin Object Class=Part Name=RHipThigh
+		RelativeTo=BodyItem
+		Mesh=StaticMesh'Nao.naohip'
+		Offset=(x=-0.01,y=0.055,z=0.12)
+		Mass=0.39421
+	End Object
+	PartList.Add(RHipThigh)
+
+	Begin Object Class=Part Name=LThigh
+		RelativeTo=BodyItem
+		Mesh=StaticMesh'Nao.naolthigh'
+		Offset=(x=-0.01,Y=-0.055,Z=0.155)
+		Mass=0.39421
+	End Object
+	PartList.Add(LThigh)
+
+	Begin Object Class=Part Name=RThigh
+		RelativeTo=BodyItem
+		Mesh=StaticMesh'Nao.naorthigh'
+		Offset=(x=-0.01,y=0.055,z=0.155)
+		Mass=0.39421
+	End Object
+	PartList.Add(RThigh)
+
+	Begin Object Class=RevoluteJoint Name=LHipRoll
+		Parent=LHip
+		Child=LHipThigh
+		InverseMeasureAngle=true
+		Offset=(x=-0.01,y=-0.055,z=0.115)   
+		LimitLow=-.738 // -42.30
+		//LimitHigh=.4147 // 23.76
+		LimitHigh=.738 // Temp
+		Direction=(x=0,y=3.14,z=0)
+	End Object
+	Joints.Add(LHipRoll)
+
+	Begin Object Class=RevoluteJoint Name=LHipPitch
+		Parent=LHipThigh
+		Child=LThigh
+		Offset=(x=-0.01,y=-0.055,z=0.115)
+		LimitLow=-1.772 // -101.54
+		//LimitHigh=.4855 // 27.82
+		LimitHigh=1.772 // Temp
+		Direction=(x=3.14,y=0,z=1.57)
+	End Object
+	Joints.Add(LHipPitch)
+
+	Begin Object Class=RevoluteJoint Name=RHipRoll
+		Parent=Rhip
+		Child=RHipThigh
+		InverseMeasureAngle=true
+		Offset=(x=-0.01,y=0.055,z=0.115)
+		LimitLow=-.7382 // -42.30
+		//LimitHigh=.4147 // 23.76
+		LimitHigh=.7382 // Temp
+		Direction=(x=0,y=3.14,z=0)
+	End Object
+	Joints.Add(RHipRoll)
+
+	Begin Object Class=RevoluteJoint Name=RHipPitch
+		Parent=RHipThigh
+		Child=RThigh
+		Offset=(x=-0.01,y=0.055,z=0.115)
+		LimitLow=-1.772 // -101.54
+		//LimitHigh=.4855 // 27.82
+		LimitHigh=1.772 // temp
+		Direction=(x=3.14,y=0,z=1.57)
+	End Object
+	Joints.Add(RHipPitch)
 
 	// Create BodyItem part
 /*	Begin Object Class=Part Name=BodyItem
