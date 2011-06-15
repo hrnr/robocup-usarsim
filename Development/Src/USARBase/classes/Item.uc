@@ -181,7 +181,7 @@ reliable server function SetName(String iName)
 defaultproperties
 {
 	bAlwaysRelevant=true
-	bHardAttach=true
+	bHardAttach=false
 	bNoDelete=false
 	bStatic=false
 	bUpdateSimulatedPosition=true

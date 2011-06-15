@@ -79,7 +79,7 @@ simulated function UpdateSpin()
 	
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		// Accumulate ticks since last reset
+		// Accumulate rotations since last reset
 		value = Wheels[i].Wheel.CurValue;
 		Wheels[i].Spun += value - Wheels[i].Old;
 		Wheels[i].Old = value;

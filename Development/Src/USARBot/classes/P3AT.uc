@@ -157,8 +157,7 @@ defaultproperties
 		Child=FRWheel
 		Side=SIDE_Right
 		Offset=(X=.126,Y=.212,Z=.054)
-		// 90 degree rotation about Z axis
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(FRWheelRoll)
 
@@ -167,8 +166,7 @@ defaultproperties
 		Child=FLWheel
 		Side=SIDE_Left
 		Offset=(X=.126,Y=-.212,Z=.054)
-		// 90 degree rotation about Z axis
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(FLWheelRoll)
 
@@ -177,8 +175,7 @@ defaultproperties
 		Child=BRWheel
 		Side=SIDE_Right
 		Offset=(X=-.126,Y=.212,Z=.054)
-		// 90 degree rotation about Z axis
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(BRWheelRoll)
 
@@ -187,8 +184,7 @@ defaultproperties
 		Child=BLWheel
 		Side=SIDE_Left
 		Offset=(X=-.126,Y=-.212,Z=.054)
-		// 90 degree rotation about Z axis
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(BLWheelRoll)
 

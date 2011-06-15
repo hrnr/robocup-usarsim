@@ -22,7 +22,6 @@ simulated function addRangeSensor(class<RangeSensor> sensorClass, vector pos, ro
 	local RangeSensor s;
 	pos = pos >> Rotation;
 	s = Spawn(sensorClass, self, , Location + pos);
-	s.setHardAttach(true);
 	s.setBase(self);
 	s.setRelativeRotation(rot);
 	s.maxRange = maxRange;

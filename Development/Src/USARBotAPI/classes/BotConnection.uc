@@ -442,9 +442,9 @@ function ProcessSet(ParsedMessage parsedMessage)
 	if (opcode == "Angle")
 	{
 		if (JointName != "AllAngles")
-			bot.SetJointTargetByName(JointName, class'UnitsConverter'.static.AngleToUU(param));
+			bot.SetJointTargetByName(JointName, param);
 		else
-			bot.SetAllJointTargets(class'UnitsConverter'.static.AngleToUU(param));
+			bot.SetAllJointTargets(param);
 	}
 	else if (opcode == "Stiffness")
 		bot.SetJointStiffnessByName(Name(JointName), param);

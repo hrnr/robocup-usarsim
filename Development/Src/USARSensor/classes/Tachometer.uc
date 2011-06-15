@@ -28,8 +28,9 @@ function String GetData()
 {
 	local String tachometerData, posString;
 	local int i;
-	local float newTime, timeDiff, positionOut, myVelocity;
+	local float newTime, timeDiff, positionOut, myVelocity, value;
 	
+	// Update wheel spins
 	newTime = WorldInfo.TimeSeconds;
 	timeDiff = newTime - OldTime;
 	OldTime = newTime;
@@ -40,11 +41,10 @@ function String GetData()
 	posString = "{Pos ";
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		positionOut = Wheels[i].Wheel.CurValue % (2 * PI);
-		if (positionOut <= 0)
-			positionOut += 2 * PI;
+		value = Wheels[i].Wheel.CurValue;
+		positionOut = value;
 		
-		myVelocity = Wheels[i].Spun / timeDiff;
+		myVelocity = (value - Wheels[i].Old) / timeDiff;
 		if (i == 0)
 		{
 			posString = posString $ positionOut;
@@ -56,6 +56,7 @@ function String GetData()
 			tachometerData = tachometerData $ "," $ myVelocity;
 		}
 	}
+	UpdateSpin();
 	return tachometerData $ "} " $ posString $ "}";
 }
 

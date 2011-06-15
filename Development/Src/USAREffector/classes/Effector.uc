@@ -51,14 +51,14 @@ function String GetGeoData()
 
 defaultproperties
 {
-	ItemType="Effector";
+	ItemType="Effector"
 	
-	BlockRigidBody=false;
-	CollisionType=COLLIDE_BlockAll;
-	bCollideActors=false;
-	bBlockActors=false;
-	bProjTarget=true;
-	bHardAttach=true;
-	bCollideWhenPlacing=false;
-	bCollideWorld=false;
+	BlockRigidBody=false
+	CollisionType=COLLIDE_BlockAll
+	bCollideActors=false
+	bBlockActors=false
+	bProjTarget=true
+	bHardAttach=false
+	bCollideWhenPlacing=false
+	bCollideWorld=false
 }

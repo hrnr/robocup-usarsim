@@ -69,10 +69,26 @@ function SetVelocity(JointItem ji, float target)
 simulated function Update(JointItem ji)
 {
 	local rotator relRot;
+	local float newVal, retVal, diff, cval1, cval2;
 
-	// Simple and fun
+	// Provide full rotation capabilities (beyond the -pi to pi range)
 	relRot = GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
-	ji.CurValue = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
+	relRot = class'Utilities'.static.rTurn(
+		-1 * class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction), relRot);
+	newVal = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
+	// Assume that the rotation was small enough to not make it all the way around (due to the
+	// very high update rate of 50 Hz); then if the angle wrapped around from -pi to pi, then
+	// the abs difference will be huge (-2pi or 2pi) but the difference with the negative angle
+	// added to 2pi will be smaller
+	diff = newVal - ji.OldValue;
+	cval1 = diff - 2 * PI;
+	cval2 = diff + 2 * PI;
+	// Compute which has the least absolute value (3-way minimum), the sign will be right
+	retVal = diff;
+	if (abs(cval1) < abs(retVal)) retVal = cval1;
+	if (abs(cval2) < abs(retVal)) retVal = cval2;
+	ji.CurValue += retVal;
+	ji.OldValue = newVal;
 }
 
 defaultproperties

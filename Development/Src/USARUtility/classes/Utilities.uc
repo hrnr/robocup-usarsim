@@ -121,7 +121,7 @@ static final function String Trim(coerce String S, optional String delim)
 }
 
 // Converts a string like "1.2,45.3,7.8" to a vector
-static final function vector ParseVector(string vstring)
+static final function vector ParseVector(String vstring)
 {
 	local vector v;
 	local int i;
@@ -140,16 +140,16 @@ static final function vector ParseVector(string vstring)
 }
 
 // Converts a string like "1.2,45.3,7.8" to a rotator
-static final function rotator ParseRotator(string vstring)
+static final function rotator ParseRotator(String vstring)
 {
 	return rotator(ParseVector(vstring));
 }
 
 // Generates a turn in object coordinates. Handles gymbal lock issues.
-static function rotator rTurn(rotator rHeading,rotator rTurnAngle)
+static function rotator rTurn(rotator rHeading, rotator rTurnAngle)
 {
-	local vector vForward,vRight,vUpward;
-	local vector vForward2,vRight2,vUpward2;
+	local vector vForward, vRight, vUpward;
+	local vector vForward2, vRight2, vUpward2;
 	local rotator T;
 	local vector V;
 

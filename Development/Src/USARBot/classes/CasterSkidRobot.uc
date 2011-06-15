@@ -52,7 +52,7 @@ defaultproperties
 		Side=SIDE_Right
 		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(BRWheelRoll)
 
@@ -62,7 +62,7 @@ defaultproperties
 		Side=SIDE_Left
 		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		Direction=(X=0,Y=0,Z=1.571)
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(BLWheelRoll)
 
@@ -74,6 +74,7 @@ defaultproperties
 		bOmni=true
 		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
+		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(CasterWheelJoint)
 }

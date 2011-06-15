@@ -39,7 +39,6 @@ simulated function PostBeginPlay()
 	super.postBeginPlay();
 	
 	rsa = Spawn(class'RangeSensorArray', self, , Location);
-	rsa.setHardAttach(true);
 	rsa.setBase(self);
 	rsa.bSendPoints = true;
 	rsa.PointSendDelegate = GetPoint;

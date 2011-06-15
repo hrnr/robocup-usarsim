@@ -8,8 +8,8 @@
 *****************************************************************************/
 
 /*
- * USARVehicle: parent class of all USAR Robots. Descend actual robot classes from the appropriate vehicle
- * type such as WheeledRobot or AirRobot.
+ * USARVehicle: parent class of all USAR Robots. Descend actual robot classes from the
+ * appropriate vehicle type such as WheeledRobot or AirRobot.
  */
 class USARVehicle extends BaseVehicle config(USAR);
 
@@ -320,9 +320,11 @@ reliable server function SetupItem(SpecItem desc)
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
 	pos = pos >> OriginalRotation;
 	// Create item actor
-	it = Item(spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
-	it.SetHardAttach(true);
+	it = Item(Spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
 	it.SetBase(CenterItem);
+	// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot when
+	// rotating many times in place
+	it.SetHardAttach(false);
 	// Initialize item
 	it.init(desc.ItemName, self, desc.Parent);
 	if (bDebug)
@@ -346,10 +348,15 @@ reliable server function SetupJoint(Joint jt)
 	
 	// Create instance to store actual joint parameters
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Direction);
+	// Twist is normally about the X axis. This makes the joints consistent with DH notation
+	// that states that the Z axis (in this case the SAE z axis pointing down) is the axis
+	// of revolution
+	spawnRotation = class'Utilities'.static.rTurn(spawnRotation, rot(16384, 0, 0));
 	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
 	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
 		spawnRotation);
-	ji.SetHardAttach(true);
+	// See note in SetupItem as to why this is false
+	ji.SetHardAttach(false);
 	ji.SetBase(CenterItem);
 	// Find parts for parent and child
 	ji.Parent = GetPartByName(jt.Parent.Name);
@@ -366,10 +373,12 @@ reliable server function SetupJoint(Joint jt)
 	}
 	// Initialize joint
 	jt.Init(ji);
-	// This is only needed if you want to initialize the constraint with different axis
-	/*ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
+	// This line seems to be required to avoid weird bug with initial physics on some robots
+	// Without this line, some robots will spawn in midair and will only start physics when
+	// a joint or drive command is sent
+	ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
 		ji.Child.CollisionComponent, ji.Constraint.ConstraintSetup, 1, self,
-		ji.Parent.CollisionComponent, false);*/
+		ji.Parent.CollisionComponent, false);
 	Parts.AddItem(ji);
 	if (bDebug)
 		LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
@@ -392,7 +401,6 @@ reliable server function SetupPart(Part part)
 	it.StaticMeshComponent.SetStaticMesh(part.Mesh);
 	it.SetPhysicalCollisionProperties();
 	it.SetMass(part.Mass);
-	
 	// Initialize center item properly (for sensors and parenting reasons)
 	if (part.Name == Body.Name)
 	{
@@ -400,7 +408,6 @@ reliable server function SetupPart(Part part)
 		if (bDebug)
 			LogInternal("USARVehicle: Found vehicle body " $ String(Body.Name));
 	}
-	
 	// Add item into world
 	Parts.AddItem(it);
 	if (bDebug)

@@ -27,8 +27,8 @@ var bool InverseMeasureAngle;
 reliable server function JointItem Init(JointItem ji) {
 	local vector savedLocation;
 	local rotator savedRotation, angle;
-	local int trueZero, hi, lo;
-	local float tl;
+	local int trueZero, hi, lo, limit;
+	local float twistLimit;
 	
 	// Parent initialization
 	ji = super.Init(ji);
@@ -38,16 +38,23 @@ reliable server function JointItem Init(JointItem ji) {
 	lo = class'UnitsConverter'.static.AngleToUU(LimitLow);
 	trueZero = int((-hi - lo) / 2.0);
 	ji.TrueZero = trueZero;
-	// Setup joint limits of movement
+	// Setup joint limits of movement (it can't be more than 180 or the joint will crash)
 	// Evidently TwistLimitAngle is in DEGREES!?!?
-	tl = class'UnitsConverter'.static.AngleFromUU(hi + trueZero);
-	ji.Constraint.ConstraintSetup.TwistLimitAngle = class'UnitsConverter'.static.AngleToDeg(tl);
+	twistLimit = class'UnitsConverter'.static.AngleFromUU(hi + trueZero);
+	limit = class'UnitsConverter'.static.AngleToDeg(twistLimit);
+	if (limit > 180) limit = 180;
+	ji.Constraint.ConstraintSetup.TwistLimitAngle = limit;
 	// Perform fix to handle asymmetrical joints
 	angle = rot(0, 0, 0);
-	angle.Pitch = trueZero;
-	TempRotatePart(ji, ji.Child, angle, savedLocation, savedRotation);
+	angle.Yaw = trueZero;
+	angle = class'Utilities'.static.rTurn(angle,
+		class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction));
+	// Only TempRotate if required
+	if (trueZero != 0)
+		TempRotatePart(ji, ji.Child, angle, savedLocation, savedRotation);
 	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
-	RestoreRotatePart(ji.Child, savedLocation, savedRotation);
+	if (trueZero != 0)
+		RestoreRotatePart(ji.Child, savedLocation, savedRotation);
 	// Enable angular drive position and set the initial drive parameters
 	ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, true);
 	ji.SetStiffness(1.0);
@@ -74,14 +81,19 @@ simulated function RestoreRotatePart(Actor p, vector savedPosition, rotator save
 function SetTarget(JointItem ji, float value)
 {
 	local rotator angle;
+	local RevoluteJoint jt;
 	
+	// Perform bounds checking on joint angle
+	jt = RevoluteJoint(ji.Spec);
+	if (value > jt.LimitHigh) value = jt.LimitHigh;
+	if (value < jt.LimitLow) value = jt.LimitLow;
 	// Update the values to match new target
 	angle = rot(0, 0, 0);
-	angle.roll = int(value + ji.TrueZero);
+	angle.roll = int(class'UnitsConverter'.static.AngleToUU(value) + ji.TrueZero);
 	SetAngularTarget(ji, angle);
 }
 
-// TempRotatePart and RestoreRotatePart are used to deal with the problem that the constraint 
+// TempRotatePart and RestoreRotatePart are used to deal with the problem that the constraint
 // angle limits are specified symmetrically. The part is temporary rotated so the high and
 // low limits become symmetrical if there were not already when initializing the constraint
 simulated function TempRotatePart(JointItem ji, Actor p, rotator angle,
@@ -111,7 +123,9 @@ simulated function Update(JointItem ji)
 		relRot = GetRelativeRotation(ji.Parent.Rotation, ji.Child.Rotation);
 	else
 		relRot = GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
-	angle = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
+	relRot = class'Utilities'.static.rTurn(
+		-1 * class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction), relRot);
+	angle = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
 	// Update angle representation
 	if (jt.InverseMeasureAngle)
 		angle = -angle;

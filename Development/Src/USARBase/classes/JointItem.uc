@@ -23,6 +23,8 @@ var float CurValue;
 var float Damping;
 // The maximum force this joint can exert
 var float MaxForce;
+// Used by many joint types when determining rotation amounts
+var float OldValue;
 // The parent item controlled by this joint
 var PhysicalItem Parent;
 // The specifier which declared this joint
