@@ -5,11 +5,24 @@
  * - All joints now revolve around their Z axis. Remove RotateAxis and use Direction to
  *   transform the joint in the desired direction.
  * - Use gearing equations instead of measurement types if custom measurements are needed.
- * - Masses are now in kilograms not grams.
  * 
  * TODO Remove this comment once changes are made
  */
 class Nao extends LeggedVehicle config(USAR);
+
+// Special case for the Nao
+// LHipYawPitch and RHipYawPitch are physically one motor
+// LHipYawPitch also controls RHipYawPitch
+function SetJointTargetByName(String jointName, float target)
+{
+	if( JointName == "RHipYawPitch" )
+		return;
+
+	super.SetJointTargetByName(JointName, target);
+
+	if( JointName == "LHipYawPitch" )
+		super.SetJointTargetByName("RHipYawPitch", target);
+}
 
 // Gearing equation example to replace measurement types
 simulated function float JointTransform(JointItem ji, float value)
@@ -38,7 +51,7 @@ defaultproperties
 	// Create BodyItem part
 /*	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.naobody'
-		Mass=1039.48
+		Mass=1.03948
 	End Object
 	Body=BodyItem
 	PartList.Add(BodyItem)
@@ -47,7 +60,7 @@ defaultproperties
 	Begin Object Class=Part Name=Head
 		Mesh=StaticMesh'Nao.naohead'
 		Offset=(x=0,y=0,z=-0.155)
-		Mass=520.65
+		Mass=0.52065
 	End Object
 	PartList.Add(Head)
 
@@ -79,42 +92,42 @@ defaultproperties
 	Begin Object Class=Part Name=LUpperArm
 		Mesh=StaticMesh'Nao.naolupperarm'
 		Offset=(x=0.02,y=-0.108,z=-0.075)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(LUpperArm)
 
 	Begin Object Class=Part Name=RUpperArm
 		Mesh=StaticMesh'Nao.naorupperarm'
 		Offset=(x=0.02,y=0.108,z=-0.075)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(RUpperArm)
 
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=-0.108,z=-0.075)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(LElbow)
 
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=0.108,z=-0.075)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(RElbow)
 
 	Begin Object Class=Part Name=LLowerArm
 		Mesh=StaticMesh'Nao.naollowerarm'
 		Offset=(x=0.14,y=-0.098,z=-0.084)
-		Mass=200
+		Mass=0.200
 	End Object
 	PartList.Add(LLowerArm)
 
 	Begin Object Class=Part Name=RLowerArm
 		Mesh=StaticMesh'Nao.naorlowerarm'
 		Offset=(x=0.14,y=0.098,z=-0.084)
-		Mass=200
+		Mass=0.200
 	End Object
 	PartList.Add(RLowerArm)
 
@@ -226,14 +239,14 @@ defaultproperties
 	Begin Object Class=Part Name=LHip
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=-0.055,Z=0.08)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(LHip)
 
 	Begin Object Class=Part Name=RHip
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=0.055,Z=0.08)
-		Mass=123.09
+		Mass=0.12309
 	End Object
 	PartList.Add(RHip)
 
@@ -241,7 +254,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
 		Offset=(x=-0.01,Y=-0.055,Z=0.155)
-		Mass=394.21
+		Mass=0.39421
 	End Object
 	PartList.Add(LThigh)
 
@@ -249,7 +262,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naorthigh'
 		Offset=(x=-0.01,y=0.055,z=0.155)
-		Mass=394.21
+		Mass=0.39421
 	End Object
 	PartList.Add(RThigh)
 
@@ -257,7 +270,7 @@ defaultproperties
 		RelativeTo=LThigh
 		Mesh=StaticMesh'Nao.naolshank'
 		Offset=(x=0.005,y=0,z=0.125)
-		Mass=291.59
+		Mass=0.29159
 	End Object
 	PartList.Add(LShank)
 
@@ -265,7 +278,7 @@ defaultproperties
 		RelativeTo=RThigh
 		Mesh=StaticMesh'Nao.naorshank'
 		Offset=(x=0.005,y=0,z=0.125)
-		Mass=291.59
+		Mass=0.29159
 	End Object
 	PartList.Add(RShank)
 
@@ -273,7 +286,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2500.0
+		Mass=1.5000
 	End Object
 	PartList.Add(LFoot)
 
@@ -281,7 +294,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2500.0
+		Mass=1.5000
 	End Object
 	PartList.Add(RFoot)
 

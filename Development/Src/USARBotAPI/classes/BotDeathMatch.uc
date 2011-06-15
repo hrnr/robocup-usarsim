@@ -17,6 +17,7 @@ var int                     NumRemoteBots;
 // This determines whether or not we check and log any time a robot bumps into a victim
 var config bool             bLogVictimRobotCol;
 var config float            PhysicsResolution;
+var config int              PhysicsMaxSubsteps;
 var class<USARTruth> USARTruthClass;
 var USARTruth theUSARTruth;
 
@@ -29,8 +30,8 @@ event PostBeginPlay()
 	super.PostBeginPlay();
 	WorldInfo.PhysicsProperties.PrimaryScene.bFixedTimeStep = true;
 	WorldInfo.PhysicsProperties.PrimaryScene.TimeStep = PhysicsResolution;
-	WorldInfo.MaxPhysicsSubsteps = 100;
-	WorldInfo.PhysicsProperties.PrimaryScene.MaxSubSteps = 100;
+	WorldInfo.MaxPhysicsSubsteps = PhysicsMaxSubsteps;
+	WorldInfo.PhysicsProperties.PrimaryScene.MaxSubSteps = PhysicsMaxSubsteps;
 }
 
 event PostLogin(PlayerController NewPlayer)
