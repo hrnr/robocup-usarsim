@@ -46,9 +46,9 @@ reliable server function JointItem Init(JointItem ji) {
 	ji.Constraint.ConstraintSetup.TwistLimitAngle = limit;
 	// Perform fix to handle asymmetrical joints
 	angle = rot(0, 0, 0);
-	angle.Yaw = trueZero;
-	angle = class'Utilities'.static.rTurn(angle,
-		class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction));
+	angle.yaw = -trueZero;
+	angle = class'Utilities'.static.rTurn(
+		class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction), angle);
 	// Only TempRotate if required
 	if (trueZero != 0)
 		TempRotatePart(ji, ji.Child, angle, savedLocation, savedRotation);

@@ -1176,7 +1176,7 @@ public class IridiumUI {
 		else if (battery <= 0)
 			batteryLife.setText("Battery dead");
 		else
-			batteryLife.setText(String.format("Battery: %d:%2d", battery / 60, battery % 60));
+			batteryLife.setText(String.format("Battery: %d:%02d", battery / 60, battery % 60));
 	}
 	/**
 	 * Updates the names and values of joints on the specified (legged) robot.
