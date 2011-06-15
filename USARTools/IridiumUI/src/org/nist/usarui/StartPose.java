@@ -6,9 +6,9 @@ package org.nist.usarui;
  * @author Stephen Carlson (NIST)
  */
 public class StartPose {
-	private Vec3 location;
-	private Vec3 rotation;
-	private String tag;
+	private final Vec3 location;
+	private final Vec3 rotation;
+	private final String tag;
 
 	/**
 	 * Creates a new starting pose.
@@ -55,9 +55,9 @@ public class StartPose {
 		return tag;
 	}
 	public String toString() {
+		String str = tag;
 		if (isGeneric())
-			return location.toString();
-		else
-			return tag;
+			str = location.toString();
+		return str;
 	}
 }

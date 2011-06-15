@@ -9,7 +9,7 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public class MisPkgStatusHandler implements StatusHandler {
-	private Iridium state;
+	private final Iridium state;
 
 	/**
 	 * Creates a new instance.

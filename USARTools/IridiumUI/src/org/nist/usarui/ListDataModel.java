@@ -9,7 +9,9 @@ import java.util.*;
  * @author Stephen Carlson (NIST)
  */
 public class ListDataModel<T> extends AbstractListModel {
-	private List<T> list;
+	private static final long serialVersionUID = 0L;
+
+	private final List<T> list;
 
 	/**
 	 * Creates a new list data model based on the specified list.

@@ -9,12 +9,10 @@ import java.util.*;
  * Main program for launching the IRIDIUM utility for USAR
  */
 public class Main {
+	@SuppressWarnings( {"Since15"})
 	public static void main(String[] args) {
 		Errors.handleErrors();
 		Utils.setUI();
-		new Main().start();
-	}
-	public void start() {
 		final Iridium program = new Iridium();
 		final Image icon16 = Utils.loadImage("images/icon16.png").getImage();
 		final Image icon32 = Utils.loadImage("images/icon32.png").getImage();

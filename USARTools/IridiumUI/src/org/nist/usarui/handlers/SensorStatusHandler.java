@@ -11,6 +11,11 @@ import java.util.*;
  * @author Stephen Carlson (NIST)
  */
 public class SensorStatusHandler extends AbstractStatusHandler {
+	/**
+	 * The maximum number of entries shown in long data sets before truncation.
+	 */
+	public static final int MAX_ENTRIES = 10;
+
 	public SensorStatusHandler(Iridium state) {
 		super(state);
 	}
@@ -18,6 +23,7 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 		return "Sen_";
 	}
 	public boolean statusReceived(USARPacket packet) {
+		boolean keep = false;
 		if (packet.getType().equals("SEN")) {
 			// Update time
 			String tm = packet.getParam("Time"), value, test, type;
@@ -61,9 +67,9 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			// Send whatever we got
 			if (value != null)
 				setInformation(type, packet.getParam("Name"), value);
-			return value == null && !type.equals("Camera");
+			keep = (value == null && !type.equals("Camera"));
 		}
-		return true;
+		return keep;
 	}
 	/**
 	 * Returns the 3-vector with colors.
@@ -84,20 +90,30 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 	 * @return the value reformatted for display
 	 */
 	private static String floatString(String value) {
-		if (value == null) return null;
-		try {
-			StringTokenizer str = new StringTokenizer(value, ",");
-			StringBuilder output = new StringBuilder(3 * value.length() / 2);
-			// Convert comma delimited to screen (if there is only one value, this works too)
-			while (str.hasMoreTokens()) {
-				output.append(String.format("%.2f", Float.parseFloat(str.nextToken().trim())));
+		String out = null, token; int index = 0;
+		if (value != null)
+			try {
+				StringTokenizer str = new StringTokenizer(value, ",");
+				StringBuilder output = new StringBuilder(3 * value.length() / 2);
+				// Convert comma delimited to screen (if there is only one value, this works too)
+				while (str.hasMoreTokens() && index < MAX_ENTRIES) {
+					token = str.nextToken().trim();
+					output.append(String.format("%.2f", Float.parseFloat(token)));
+					if (str.hasMoreTokens())
+						output.append(", ");
+					index++;
+				}
 				if (str.hasMoreTokens())
-					output.append(", ");
+					output.append("...");
+				out = output.toString();
+			} catch (NumberFormatException e) {
+				// Trim down long data sets to size
+				if (value.length() >= 40)
+					out = value.substring(0, 40);
+				else
+					out = value;
 			}
-			return output.toString();
-		} catch (NumberFormatException e) {
-			return value;
-		}
+		return out;
 	}
 	/**
 	 * Gets the GPS data representation from the packet.

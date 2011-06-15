@@ -6,15 +6,19 @@ import javax.swing.text.*;
 /**
  * A class which automatically selects the contents of a text box when given focus.
  */
-public class SelectOnFocus implements FocusListener {
-	private JTextComponent box;
+public class SelectOnFocus extends FocusAdapter {
+	private final JTextComponent box;
 
+	/**
+	 * Creates a new SelectOnFocus that will use the target component.
+	 *
+	 * @param toSelect the component to select when focused
+	 */
 	public SelectOnFocus(JTextComponent toSelect) {
 		box = toSelect;
 	}
 	public void focusGained(FocusEvent e) {
-		if (!e.isTemporary())
+		if (!e.isTemporary() && e.getSource() == box)
 			box.selectAll();
 	}
-	public void focusLost(FocusEvent e) { }
 }

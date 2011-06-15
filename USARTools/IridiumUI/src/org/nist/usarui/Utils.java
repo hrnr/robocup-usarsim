@@ -3,6 +3,7 @@ package org.nist.usarui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -27,19 +28,23 @@ public final class Utils {
 		}
 	}
 	/**
-	 * Adds a SelectOnFocus listener to the specified object.
+	 * Adds a SelectOnFocus listener to the specified combo box.
 	 *
-	 * @param comp the component to add
+	 * @param box the component to add
 	 */
-	public static void armFocusListener(JComponent comp) {
-		if (comp instanceof JTextField) {
-			JTextField field = (JTextField)comp;
+	public static void armFocusListener(JComboBox box) {
+		JTextField field = getEditorTextField(box);
+		if (field != null)
+			armFocusListener(field);
+	}
+	/**
+	 * Adds a SelectOnFocus listener to the specified text field.
+	 *
+	 * @param field the component to add
+	 */
+	public static void armFocusListener(JTextField field) {
+		if (field != null)
 			field.addFocusListener(new SelectOnFocus(field));
-		} else if (comp instanceof JComboBox) {
-			JTextField field = getEditorTextField((JComboBox)comp);
-			if (field != null)
-				armFocusListener(field);
-		}
 	}
 	/**
 	 * Adds the required tags to the specified string so it is interpreted as HTML.
@@ -77,6 +82,19 @@ public final class Utils {
 		}
 	}
 	/**
+	 * Creates a check box.
+	 *
+	 * @param text the text label to display
+	 * @param tooltip the tool tip text to show
+	 * @return the check box with default options set
+	 */
+	public static JCheckBox createCheckBox(String text, String tooltip) {
+		final JCheckBox box = new JCheckBox(text, false);
+		box.setFocusable(false);
+		box.setToolTipText(tooltip);
+		return box;
+	}
+	/**
 	 * Creates a non-editable combo box with the specified items.
 	 *
 	 * @param tooltip the tool tip to show
@@ -88,6 +106,41 @@ public final class Utils {
 		box.setFocusable(false);
 		box.setToolTipText(tooltip);
 		return box;
+	}
+	/**
+	 * Creates an editable combo box with the specified initial items.
+	 *
+	 * @param tooltip the tool tip to show
+	 * @param items the choices available
+	 * @return the combo box with default options set
+	 */
+	public static JComboBox createEntryBox(String tooltip, final String... items) {
+		final JComboBox box = Utils.createComboBox(tooltip, items);
+		box.setEditable(true);
+		box.setFocusable(true);
+		if (box.getItemCount() > 0)
+			box.setSelectedIndex(0);
+		Utils.armFocusListener(box);
+		box.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				Component editor = box.getEditor().getEditorComponent();
+				if (editor instanceof JTextField && e.getStateChange() == ItemEvent.SELECTED)
+					((JTextField)editor).selectAll();
+			}
+		});
+		return box;
+	}
+	/**
+	 * Creates a label meant to display data.
+	 *
+	 * @param tooltip the display label's tool tip text
+	 * @return the label with default options set
+	 */
+	public static JLabel createInfoLabel(String tooltip) {
+		final JLabel label = new JLabel();
+		label.setToolTipText(tooltip);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		return label;
 	}
 	/**
 	 * Creates a label attached to an input field.
@@ -103,33 +156,52 @@ public final class Utils {
 		return label;
 	}
 	/**
+	 * Creates a component intended to display its contents along one row.
+	 *
+	 * @return a panel which lays out its components linearly left aligned
+	 */
+	public static JComponent createSingleRow() {
+		return new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+	}
+	/**
 	 * Finds the top-level component which contains and paints the specified one.
 	 *
 	 * @param comp the component to investigate
 	 * @return the top-level component which holds this argument, or null if none can be found
 	 */
 	public static Frame findParent(Component comp) {
+		Frame ret = null;
 		if (comp instanceof Frame)
-			return (Frame)comp;
-		// Look for parent frame
-		while (comp.getParent() != null) {
-			comp = comp.getParent();
-			if (comp instanceof Frame)
-				return (Frame)comp;
-		}
-		return null;
+			ret = (Frame)comp;
+		else
+			// Look for parent frame
+			while (ret == null && comp.getParent() != null) {
+				comp = comp.getParent();
+				if (comp instanceof Frame)
+					ret = (Frame)comp;
+			}
+		return ret;
 	}
 	/**
-	 * Gets the editor as a text field of the specified combo box.
+	 * Transfers focus to the first available component.
 	 *
-	 * @param box the combo box (must be editable)
-	 * @return the text editor responsible, or null if invalid
+	 * @param container the component which contains items to focus
+	 * @return whether a component was found to give focus
 	 */
-	public static JTextField getEditorTextField(JComboBox box) {
-		Component editor = ((JComboBox)box).getEditor().getEditorComponent();
-		if (editor instanceof JTextField)
-			return (JTextField)editor;
-		return null;
+	public static boolean focusFirstComponent(Container container) {
+		Component entry; boolean found = false;
+		for (int i = 0; i < container.getComponentCount() && !found; i++) {
+			entry = container.getComponent(i);
+			if (entry instanceof JPanel && entry.isShowing()) {
+				if (focusFirstComponent((Container)entry))
+					found = true;
+			} else if (entry.isFocusable() && entry.isEnabled() && entry.isShowing() &&
+					!(entry instanceof JLabel)) {
+				entry.requestFocusInWindow();
+				found = true;
+			}
+		}
+		return found;
 	}
 	/**
 	 * Checks to see if the two floating-point values are about the same. Intended for use
@@ -139,8 +211,21 @@ public final class Utils {
 	 * @param two the second value
 	 * @return whether the values are within epsilon (0.01) of each other
 	 */
-	public static boolean joystickCompare(float one, float two) {
+	public static boolean isFloatEqual(float one, float two) {
 		return Math.abs(one - two) < 0.01f;
+	}
+	/**
+	 * Gets the editor as a text field of the specified combo box.
+	 *
+	 * @param box the combo box (must be editable)
+	 * @return the text editor responsible, or null if invalid
+	 */
+	public static JTextField getEditorTextField(JComboBox box) {
+		Component editor = box.getEditor().getEditorComponent();
+		JTextField field = null;
+		if (editor instanceof JTextField)
+			field = (JTextField)editor;
+		return field;
 	}
 	/**
 	 * Loads an image from the specified path.
@@ -149,7 +234,7 @@ public final class Utils {
 	 * @return the image as an icon (use getImage() to get as image)
 	 */
 	public static ImageIcon loadImage(String path) {
-		java.net.URL url = Utils.class.getResource("/" + path);
+		URL url = Utils.class.getResource("/" + path);
 		if (url == null)
 			Errors.userError("Missing file " + path);
 		return new ImageIcon(url);

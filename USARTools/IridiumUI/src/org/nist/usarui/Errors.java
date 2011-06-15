@@ -25,6 +25,11 @@ public final class Errors implements UncaughtExceptionHandler {
 	 * Handles errors on all threads.
 	 */
 	public static void handleErrors() {
+		if (GraphicsEnvironment.isHeadless()) {
+			System.out.println("Iridium must be run in a GUI environment.");
+			System.out.println("To communicate with USAR using the terminal, use telnet.");
+			System.exit(1);
+		}
 		Thread.setDefaultUncaughtExceptionHandler(new Errors());
 	}
 	/**
@@ -53,11 +58,6 @@ public final class Errors implements UncaughtExceptionHandler {
 		if (t == null) return;
 		while (t.getCause() != null)
 			t = t.getCause();
-		if (GraphicsEnvironment.isHeadless()) {
-			// If error was caused in command line environment
-			t.printStackTrace();
-			return;
-		}
 		// Clean up after memory/stack errors
 		System.runFinalization();
 		System.gc();
@@ -88,6 +88,7 @@ public final class Errors implements UncaughtExceptionHandler {
 			out.close();
 			JOptionPane.showMessageDialog(null, message, "Error Details",
 				JOptionPane.ERROR_MESSAGE);
+			// If it crashes inside this block, it's probably very, very dire
 		} catch (Throwable e) {
 			t.printStackTrace();
 		}
@@ -116,12 +117,16 @@ public final class Errors implements UncaughtExceptionHandler {
 	 */
 	private static String encode(String text) {
 		String lt;
-		if (text == null) return "No message";
-		// replace each with & character code
-		lt = AND.matcher(text).replaceAll("&amp;");
-		lt = LESS.matcher(lt).replaceAll("&lt;");
-		lt = GREAT.matcher(lt).replaceAll("&gt;");
-		return NL.matcher(lt).replaceAll("<br>");
+		if (text == null)
+			lt = "No message";
+		else {
+			// replace each with & character code
+			lt = AND.matcher(text).replaceAll("&amp;");
+			lt = LESS.matcher(lt).replaceAll("&lt;");
+			lt = GREAT.matcher(lt).replaceAll("&gt;");
+			lt = NL.matcher(lt).replaceAll("<br>");
+		}
+		return lt;
 	}
 
 	public void uncaughtException(Thread t, Throwable e) {

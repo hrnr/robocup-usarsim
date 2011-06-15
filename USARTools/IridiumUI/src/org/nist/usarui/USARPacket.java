@@ -30,13 +30,13 @@ public class USARPacket {
 	 * @param response whether the message was sent from the server (true) or client (false)
 	 */
 	public USARPacket(String message, boolean response) {
-		String[] parts = SPLITTER.split(message); String key; int index, dup;
+		String[] parts = SPLITTER.split(message); String key, part; int index, dup;
 		Map<String, String> values = new LinkedHashMap<String, String>(32);
 		if (message.length() < 0)
 			throw new IllegalArgumentException("USARPacket cannot be made from empty string");
 		type = null;
-		for (String part : parts) {
-			part = part.trim();
+		for (String value : parts) {
+			part = value.trim();
 			if (part.length() > 0) {
 				index = part.indexOf(' ');
 				if (type == null) {
@@ -48,7 +48,7 @@ public class USARPacket {
 					key = part.substring(0, index);
 					// Allow duplicate names to be placed into the map
 					if (values.containsKey(key)) {
-						for (dup = 0; values.containsKey(key + dup); dup++) { }
+						for (dup = 0; values.containsKey(key + "_" + dup); dup++) { }
 						key += "_" + dup;
 					}
 					values.put(key, part.substring(index + 1).trim());

@@ -18,6 +18,7 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 	}
 	public boolean statusReceived(USARPacket packet) {
 		String type, batt, key;
+		boolean keep = true;
 		if (packet.getType().equals("STA")) {
 			// Status messages update battery and maybe joints
 			type = packet.getParam("Type");
@@ -37,8 +38,8 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 						setInformation("Joints", key, entry.getValue());
 				}
 			}
-			return false;
+			keep = false;
 		}
-		return true;
+		return keep;
 	}
 }

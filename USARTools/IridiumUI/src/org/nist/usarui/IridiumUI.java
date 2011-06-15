@@ -15,6 +15,13 @@ import java.util.*;
  * @author Stephen Carlson (NIST)
  */
 public class IridiumUI {
+	/**
+	 * Insets applied to fields.
+	 */
+	public static final Insets FIELD_INSETS = new Insets(1, 0, 1, 0);
+	/**
+	 * The border displayed around sensor information panels.
+	 */
 	public static final Border INFO_BORDER = BorderFactory.createCompoundBorder(
 		BorderFactory.createEtchedBorder(),
 		BorderFactory.createEmptyBorder(0, 2, 0, 2));
@@ -23,25 +30,21 @@ public class IridiumUI {
 	 */
 	public static final Color INFO_TITLE = new Color(0, 0, 127);
 	/**
-	 * Insets applied to fields.
-	 */
-	public static final Insets FIELD_INSETS = new Insets(1, 0, 1, 0);
-	/**
 	 * Insets applied to field labels.
 	 */
 	public static final Insets NO_INSETS = new Insets(0, 0, 0, 0);
 	/**
-	 * Available options for SET when using "Joint" as type.
+	 * Available options for SET when using "Camera" as type.
 	 */
-	public static final String[] OPT_JOINTS = { "Angle", "Velocity", "Torque" };
+	public static final String[] OPT_CAMERA = { "FOV" };
 	/**
 	 * Available options for SET when using "Gripper" as type.
 	 */
 	public static final String[] OPT_GRIPPER = { "Open", "Close" };
 	/**
-	 * Available options for SET when using "Camera" as type.
+	 * Available options for SET when using "Joint" as type.
 	 */
-	public static final String[] OPT_CAMERA = { "FOV" };
+	public static final String[] OPT_JOINTS = { "Angle", "Velocity", "Torque" };
 
 	private Icon badIcon;
 	private JLabel batteryLife;
@@ -88,9 +91,9 @@ public class IridiumUI {
 	private JComponent topInfo;
 	private JComponent typePanel;
 
-	private float[] axes;
-	private Map<String, InfoPanel> infoPanels;
-	private Iridium state;
+	private final float[] axes;
+	private final Map<String, InfoPanel> infoPanels;
+	private final Iridium state;
 	private Joystick stick;
 
 	/**
@@ -152,6 +155,19 @@ public class IridiumUI {
 		}
 	}
 	/**
+	 * Initializes the user interface when the program connects.
+	 */
+	private void connected() {
+		// Clean out old data from past runs
+		clearAllPanels();
+		updateJoints(null);
+		updateMisPkg(null);
+		setConnected(true);
+		// Startup info that would be nice to populate boxes
+		sendInternalMessage("GETSTARTPOSES");
+		sendInternalMessage("GETCONF {Type MisPkg}");
+	}
+	/**
 	 * Creates a button.
 	 *
 	 * @param text the text label to display
@@ -168,42 +184,6 @@ public class IridiumUI {
 		return button;
 	}
 	/**
-	 * Creates a check box.
-	 *
-	 * @param text the text label to display
-	 * @param tooltip the tool tip text to show
-	 * @return the check box with default options set
-	 */
-	protected JCheckBox createCheckBox(String text, String tooltip) {
-		final JCheckBox box = new JCheckBox(text, false);
-		box.setFocusable(false);
-		box.setToolTipText(tooltip);
-		return box;
-	}
-	/**
-	 * Creates an editable combo box with the specified initial items.
-	 *
-	 * @param tooltip the tool tip to show
-	 * @param items the choices available
-	 * @return the combo box with default options set
-	 */
-	protected JComboBox createEntryBox(String tooltip, final String... items) {
-		final JComboBox box = Utils.createComboBox(tooltip, items);
-		box.setEditable(true);
-		box.setFocusable(true);
-		if (box.getItemCount() > 0)
-			box.setSelectedIndex(0);
-		Utils.armFocusListener(box);
-		box.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				Component editor = box.getEditor().getEditorComponent();
-				if (editor instanceof JTextField && e.getStateChange() == ItemEvent.SELECTED)
-					((JTextField)editor).selectAll();
-			}
-		});
-		return box;
-	}
-	/**
 	 * Creates a default floating point entry field.
 	 *
 	 * @param tooltip the tool tip to show
@@ -213,25 +193,6 @@ public class IridiumUI {
 		final JTextField field = createTextField("0.0", 5, tooltip);
 		field.setDocument(new RestrictInputDocument("-0123456789.Ee", "0.0"));
 		return field;
-	}
-	/**
-	 * Creates a default integer entry field.
-	 *
-	 * @param tooltip the tool tip to show
-	 * @return the field with default options set
-	 */
-	protected JTextField createIntTextField(String tooltip) {
-		final JTextField field = createTextField("1", 4, tooltip);
-		field.setDocument(new RestrictInputDocument("0123456789", "1"));
-		return field;
-	}
-	/**
-	 * Creates a component intended to display its contents along one row.
-	 *
-	 * @return a panel which lays out its components linearly left aligned
-	 */
-	protected JComponent createSingleRow() {
-		return new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
 	}
 	/**
 	 * Creates a default text entry field.
@@ -249,57 +210,17 @@ public class IridiumUI {
 		Utils.armFocusListener(field);
 		return field;
 	}
-		/**
-	 * Transfers focus to the first available component.
-	 *
-	 * @param container the component which contains items to focus
-	 * @return whether a component was found to give focus
-	 */
-	protected boolean focusFirstComponent(Container container) {
-		Component entry;
-		for (int i = 0; i < container.getComponentCount(); i++) {
-			entry = container.getComponent(i);
-			if (entry instanceof JPanel && entry.isShowing()) {
-				if (focusFirstComponent((Container)entry))
-					return true;
-			} else if (entry.isFocusable() && entry.isEnabled() && entry.isShowing() &&
-					!(entry instanceof JLabel)) {
-				entry.requestFocusInWindow();
-				return true;
-			}
-		}
-		return false;
-	}
 	/**
-	 * Returns the parameter string associated with GETGEO/GETCONF requests from the panel UI.
-	 *
-	 * @return the common aspect of the
+	 * Cleans up the status when the program disconnects.
 	 */
-	private String getGeoconfParameters() {
-		String params = "{Type " + geoType.getSelectedItem() + "}", name = geoName.getText();
-		if (name != null && name.length() > 0)
-			params += " {Name " + name.trim() + "}";
-		return params;
-	}
-	/**
-	 * Gets the specified information panel, creating it if necessary.
-	 *
-	 * @param group the panel name
-	 * @param name the name of the individual entry in the panel
-	 * @param label the panel's label (used only if creation required)
-	 * @return the appropriate panel
-	 */
-	public InfoPanel getInfoPanel(String group, String name, String label) {
-		InfoPanel panel = infoPanels.get(group);
-		if (panel == null) {
-			// Create new panel and add to list
-			panel = new InfoPanel(label, name);
-			topInfo.add(panel.getPanel());
-			topInfo.add(Box.createVerticalStrut(1));
-			mainUI.validate();
-			infoPanels.put(group, panel);
-		}
-		return panel;
+	private void disconnected() {
+		setConnected(false);
+		updateJoints(null);
+		updateLevel(null);
+		updateMisPkg(null);
+		updateStartPoses(null);
+		updateTime(-1.f);
+		updateBattery(Integer.MAX_VALUE);
 	}
 	/**
 	 * Feeds a DRIVE command if necessary to the robot if the joystick is connected and moved.
@@ -326,8 +247,8 @@ public class IridiumUI {
 				z = stick.getY();
 				y = r = 0.f;
 			}
-			if (!Utils.joystickCompare(x, axes[0]) || !Utils.joystickCompare(y, axes[1]) ||
-				!Utils.joystickCompare(z, axes[2]) || !Utils.joystickCompare(r, axes[3])) {
+			if (!Utils.isFloatEqual(x, axes[0]) || !Utils.isFloatEqual(y, axes[1]) ||
+				!Utils.isFloatEqual(z, axes[2]) || !Utils.isFloatEqual(r, axes[3])) {
 				// Send message; if error, treat like any other
 				if (state.isConnected())
 					try {
@@ -342,6 +263,66 @@ public class IridiumUI {
 				axes[3] = r;
 			}
 		}
+	}
+	/**
+	 * Returns the parameter string associated with GETGEO/GETCONF requests from the panel UI.
+	 *
+	 * @return the common aspect of the
+	 */
+	private String getGeoconfParameters() {
+		String params = "{Type " + geoType.getEditor().getItem() + "}",
+			name = geoName.getText();
+		if (name != null && name.length() > 0)
+			params += " {Name " + name.trim() + "}";
+		return params;
+	}
+	/**
+	 * Gets the specified information panel, creating it if necessary.
+	 *
+	 * @param group the panel name
+	 * @param name the name of the individual entry in the panel
+	 * @param label the panel's label (used only if creation required)
+	 * @return the appropriate panel
+	 */
+	public InfoPanel getInfoPanel(String group, String name, String label) {
+		InfoPanel panel = infoPanels.get(group);
+		if (panel == null) {
+			// Create new panel and add to list
+			panel = new InfoPanel(label, name);
+			topInfo.add(panel.getPanel());
+			topInfo.add(Box.createVerticalStrut(1));
+			mainUI.validate();
+			infoPanels.put(group, panel);
+		}
+		return panel;
+	}
+	/**
+	 * Gets the selected starting pose for the robot (INIT panel), or null if customized.
+	 *
+	 * @return the robot's starting pose
+	 */
+	private StartPose getPlayerStart() {
+		Object item; StartPose pose = null;
+		String text = initLocation.getEditor().getItem().toString();
+		for (int i = 0; i < initLocation.getItemCount(); i++) {
+			item = initLocation.getItemAt(i);
+			pose = null;
+			if (item instanceof StartPose) {
+				pose = (StartPose)initLocation.getItemAt(i);
+				if (pose.toString().equalsIgnoreCase(text))
+					// Matched!
+					break;
+			}
+		}
+		return pose;
+	}
+	/**
+	 * Gets the component which can be displayed in a top level container.
+	 *
+	 * @return the parent UI component
+	 */
+	public JComponent getRoot() {
+		return mainUI;
 	}
 	/**
 	 * Grabs the joystick input if possible. Warns the user if their joystick may not work.
@@ -360,40 +341,10 @@ public class IridiumUI {
 			axes[0] = axes[1] = axes[2] = axes[3] = 0.f;
 		} catch (IOException e) {
 			stick = null;
-		} catch (Error e) {
+		} catch (UnsatisfiedLinkError e) {
 			// Library load error
 			stick = null;
-			// Avoid sticking the JRE
-			if (e instanceof ThreadDeath)
-				throw e;
 		}
-	}
-	/**
-	 * Gets the component which can be displayed in a top level container.
-	 *
-	 * @return the parent UI component
-	 */
-	public JComponent getRoot() {
-		return mainUI;
-	}
-	/**
-	 * Gets the selected starting pose for the robot (INIT panel), or null if customized.
-	 *
-	 * @return the robot's starting pose
-	 */
-	private StartPose getPlayerStart() {
-		Object item; StartPose pose;
-		String text = initLocation.getEditor().getItem().toString();
-		for (int i = 0; i < initLocation.getItemCount(); i++) {
-			item = initLocation.getItemAt(i);
-			if (item instanceof StartPose) {
-				pose = (StartPose)initLocation.getItemAt(i);
-				if (pose.toString().equalsIgnoreCase(text))
-					// Matched!
-					return pose;
-			}
-		}
-		return null;
 	}
 	/**
 	 * Fires the specified event to occur on the event thread after all pending events have
@@ -441,16 +392,10 @@ public class IridiumUI {
 	 */
 	private void processEvent(String cmd) {
 		boolean status;
-		if (cmd.equals("swap")) {
-			status = !rawCommand.isVisible();
-			// Show/Hide Advanced
-			rawCommand.setVisible(status);
-			swapButton.setSelected(status);
-			typePanel.setVisible(!status);
-			commandType.setVisible(!status);
-			if (status)
-				rawCommand.requestFocusInWindow();
-		} else if (cmd.equals("send") && state.isConnected()) {
+		if (cmd.equals("swap"))
+			// Show/hide Advanced Input
+			showRawCommand(!rawCommand.isVisible());
+		else if (cmd.equals("send") && state.isConnected()) {
 			// Send message
 			if (swapButton.isSelected())
 				sendMessage((String)rawCommand.getEditor().getItem());
@@ -458,7 +403,7 @@ public class IridiumUI {
 				sendWSIWYG();
 		} else if (cmd.equals("freeze")) {
 			// Freeze/Unfreeze
-			status = !state.isFrozen();
+			status = state.isUnfrozen();
 			state.setFrozen(status);
 			if (status)
 				freezeButton.setText("Unfreeze");
@@ -470,37 +415,25 @@ public class IridiumUI {
 			if (cmd.equals("getgeo") || cmd.equals("getconf"))
 				cmd = "geoconf";
 			((CardLayout)typePanel.getLayout()).show(typePanel, cmd);
-			focusFirstComponent(typePanel);
+			Utils.focusFirstComponent(typePanel);
 		} else if (cmd.equals("drive")) {
 			// Change drive type
 			cmd = driveType.getSelectedItem().toString();
 			((CardLayout)driveView.getLayout()).show(driveView, cmd.toLowerCase());
-			focusFirstComponent(driveView);
+			Utils.focusFirstComponent(driveView);
 		} else if (cmd.equals("connect")) {
 			// Connect/disconnect
 			if (state.isConnected())
 				state.disconnect();
 			else
 				state.connect(serverName.getText());
-		} else if (cmd.equals("connected")) {
+		} else if (cmd.equals("connected"))
 			// Connect explicitly
-			clearAllPanels();
-			updateJoints(null);
-			updateMisPkg(null);
-			setConnected(true);
-			// Startup info that would be nice to populate boxes
-			sendInternalMessage("GETSTARTPOSES");
-			sendInternalMessage("GETCONF {Type MisPkg}");
-		} else if (cmd.equals("disconnect")) {
+			connected();
+		else if (cmd.equals("disconnect"))
 			// Disconnect explicitly
-			setConnected(false);
-			updateJoints(null);
-			updateLevel(null);
-			updateMisPkg(null);
-			updateStartPoses(null);
-			updateTime(-1.f);
-			updateBattery(Integer.MAX_VALUE);
-		} else if (cmd.equals("clear")) {
+			disconnected();
+		else if (cmd.equals("clear")) {
 			// Clear log
 			state.clearLog();
 			((ListDataModel)responseList.getModel()).fireCleared();
@@ -511,30 +444,6 @@ public class IridiumUI {
 		else if (cmd.equals("feed"))
 			// Joystick
 			feedJoystickToRobot();
-	}
-	/**
-	 * Sends an INIT command with the appropriate values.
-	 */
-	private void sendCmdInit() {
-		String botClass = initClass.getEditor().getItem().toString(), etc = null;
-		StartPose pose = getPlayerStart(); Vec3 rot, loc;
-		if (botClass.endsWith("."))
-			Utils.showWarning(mainUI, "Enter a valid class name for robot to spawn.");
-		else if (pose == null || pose.isGeneric())
-			try {
-				// Read location and rotation from custom input
-				rot = Utils.read3Vector(initRotation.getText());
-				loc = Utils.read3Vector(initLocation.getEditor().getItem().toString());
-				rot = rot.degToRad(rotDegrees.isSelected());
-				etc = "{Location " + loc.toPrecisionString() + "} {Rotation " +
-					rot.toPrecisionString() + "}";
-			} catch (RuntimeException e) {
-				Utils.showWarning(mainUI, "Enter valid 3-vectors for rotation and location.");
-			}
-		else
-			etc = "{Start " + pose.getTag() + "}";
-		if (etc != null)
-			sendMessage("INIT {ClassName " + botClass + "} " + etc);
 	}
 	/**
 	 * Sends a DRIVE command with the appropriate values.
@@ -602,6 +511,30 @@ public class IridiumUI {
 		}
 	}
 	/**
+	 * Sends an INIT command with the appropriate values.
+	 */
+	private void sendCmdInit() {
+		String botClass = initClass.getEditor().getItem().toString(), etc = null;
+		StartPose pose = getPlayerStart(); Vec3 rot, loc;
+		if (botClass.endsWith("."))
+			Utils.showWarning(mainUI, "Enter a valid class name for robot to spawn.");
+		else if (pose == null || pose.isGeneric())
+			try {
+				// Read location and rotation from custom input
+				rot = Utils.read3Vector(initRotation.getText());
+				loc = Utils.read3Vector(initLocation.getEditor().getItem().toString());
+				rot = rot.degToRad(rotDegrees.isSelected());
+				etc = "{Location " + loc.toPrecisionString() + "} {Rotation " +
+					rot.toPrecisionString() + "}";
+			} catch (RuntimeException e) {
+				Utils.showWarning(mainUI, "Enter valid 3-vectors for rotation and location.");
+			}
+		else
+			etc = "{Start " + pose.getTag() + "}";
+		if (etc != null)
+			sendMessage("INIT {ClassName " + botClass + "} " + etc);
+	}
+	/**
 	 * Sends a MIS command with the appropriate values.
 	 */
 	private void sendCmdMis() {
@@ -612,12 +545,11 @@ public class IridiumUI {
 			// Convert if needed
 			if (rotDegrees.isSelected())
 				value = (float)Math.toRadians(value);
+			sendMessage("MISPKG {Name " + misName.getEditor().getItem() + "} {Link " + link +
+				String.format("} {Order 0} {Value %.4f}", value));
 		} catch (NumberFormatException e) {
 			Utils.showWarning(mainUI, "Enter valid link and target for mission package.");
-			return;
 		}
-		sendMessage("MISPKG {Name " + misName.getEditor().getItem() + "} {Link " + link +
-			String.format("} {Order 0} {Value %.4f}", value));
 	}
 	/**
 	 * Sends a SET command with the appropriate values.
@@ -629,13 +561,12 @@ public class IridiumUI {
 			// Convert if needed
 			if (rotDegrees.isSelected() && setOpcode.getSelectedIndex() == 0)
 				params = (float)Math.toRadians(params);
+			sendMessage("SET {Type " + setType.getSelectedItem() + "} {Name " +
+				setName.getEditor().getItem() + "} {Opcode " + setOpcode.getSelectedItem() +
+				String.format("} {Params %.4f}", params));
 		} catch (NumberFormatException e) {
 			Utils.showWarning(mainUI, "Enter a valid numeric value for parameters.");
-			return;
 		}
-		sendMessage("SET {Type " + setType.getSelectedItem() + "} {Name " +
-			setName.getEditor().getItem() + "} {Opcode " + setOpcode.getSelectedItem() +
-			String.format("} {Params %.4f}", params));
 	}
 	/**
 	 * Sends a message to USAR. It will not appear on the screen or history.
@@ -644,15 +575,16 @@ public class IridiumUI {
 	 * @return whether the operation succeeded
 	 */
 	private boolean sendInternalMessage(String message) {
+		boolean done = false;
 		if (state.isConnected())
 			try {
 				// Send to socket
 				state.sendMessage(message);
-				return true;
+				done = true;
 			} catch (IOException e) {
 				state.disconnect();
 			}
-		return true;
+		return done;
 	}
 	/**
 	 * Sends a message to USAR.
@@ -746,7 +678,7 @@ public class IridiumUI {
 		stopButton.setMnemonic('t');
 		buttonPanel.add(stopButton);
 		// Combo Box: Advanced Commands
-		rawCommand = createEntryBox("Send a raw command to the server");
+		rawCommand = Utils.createEntryBox("Send a raw command to the server");
 		addToComboBox(rawCommand, "RawCommand");
 		rawCommand.setSelectedItem("");
 		Utils.armActionListener(rawCommand, listener, "send");
@@ -788,54 +720,11 @@ public class IridiumUI {
 		commandPanel.add(commandType, BorderLayout.NORTH);
 	}
 	/**
-	 * Initializes the UI for "DRIVE" options.
+	 * Initializes the UI for the "DRIVE" Ackerman option.
 	 */
-	private void setupDriveUI() {
-		// Layout: Drive Options
-		final JComponent drivePanel = new JPanel(new BorderLayout(0, 2));
-		typePanel.add(drivePanel, "drive");
-		final JComponent driveMaster = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
-		drivePanel.add(driveMaster, BorderLayout.NORTH);
-		// Combo Box: Steering Type
-		driveType = Utils.createComboBox("Steering type used by the robot", "Skid", "Ackerman",
-			"Aerial");
-		driveType.setActionCommand("drive");
-		driveType.addActionListener(listener);
-		// Label: DriveType
-		driveMaster.add(Utils.createFieldLabel("DriveType", driveType));
-		driveMaster.add(driveType);
-		// Spacer: 5px
-		driveMaster.add(Box.createHorizontalStrut(5));
-		// Check Box: Normalized
-		driveNormalized = createCheckBox("Normalized",
-			"Allow values to be input from -100 to 100 and scaled");
-		driveMaster.add(driveNormalized);
-		// Spacer: 5px
-		driveMaster.add(Box.createHorizontalStrut(5));
-		// Check Box: Headlights
-		driveHeadlights = createCheckBox("Headlights",
-			"Turns the robot headlight on or off");
-		driveMaster.add(driveHeadlights);
-		// Layout: Drive Views
-		driveView = new JPanel(new CardLayout(0, 0));
-		drivePanel.add(driveView, BorderLayout.CENTER);
-		// Layout: Drive Options Skid
-		final JComponent driveSkid = createSingleRow();
-		driveView.add(driveSkid, "skid");
-		// Text Box: Left Wheel Speed
-		driveLeft = createFloatTextField("Left wheel speed in rads/s");
-		// Label: Left
-		driveSkid.add(Utils.createFieldLabel("Left", driveLeft));
-		driveSkid.add(driveLeft);
-		// Spacer: 5px
-		driveSkid.add(Box.createHorizontalStrut(5));
-		// Text Box: Right Wheel Speed
-		driveRight = createFloatTextField("Right wheel speed in rads/s");
-		// Label: Right
-		driveSkid.add(Utils.createFieldLabel("Right", driveRight));
-		driveSkid.add(driveRight);
+	private void setupDriveAckermanUI() {
 		// Layout: Drive Options Ackerman
-		final JComponent driveAckerman = createSingleRow();
+		final JComponent driveAckerman = Utils.createSingleRow();
 		driveView.add(driveAckerman, "ackerman");
 		// Text Field: Wheel Speed
 		driveSpeed = createFloatTextField("Wheel speed in rads/s");
@@ -856,8 +745,13 @@ public class IridiumUI {
 		// Label: RearSteer
 		driveAckerman.add(Utils.createFieldLabel("RearSteer", driveRear));
 		driveAckerman.add(driveRear);
+	}
+	/**
+	 * Initializes the UI for the "DRIVE" Aerial option.
+	 */
+	private void setupDriveAerialUI() {
 		// Layout: Drive Options Aerial
-		final JComponent driveAerial = createSingleRow();
+		final JComponent driveAerial = Utils.createSingleRow();
 		driveView.add(driveAerial, "aerial");
 		// Text Field: Altitude Velocity
 		driveAltitude = createFloatTextField("Altitude velocity in m/s");
@@ -889,6 +783,62 @@ public class IridiumUI {
 		driveAerial.add(driveRotational);
 	}
 	/**
+	 * Initializes the UI for the "DRIVE" Skid option.
+	 */
+	private void setupDriveSkidUI() {
+		// Layout: Drive Options Skid
+		final JComponent driveSkid = Utils.createSingleRow();
+		driveView.add(driveSkid, "skid");
+		// Text Box: Left Wheel Speed
+		driveLeft = createFloatTextField("Left wheel speed in rads/s");
+		// Label: Left
+		driveSkid.add(Utils.createFieldLabel("Left", driveLeft));
+		driveSkid.add(driveLeft);
+		// Spacer: 5px
+		driveSkid.add(Box.createHorizontalStrut(5));
+		// Text Box: Right Wheel Speed
+		driveRight = createFloatTextField("Right wheel speed in rads/s");
+		// Label: Right
+		driveSkid.add(Utils.createFieldLabel("Right", driveRight));
+		driveSkid.add(driveRight);
+	}
+	/**
+	 * Initializes the UI for "DRIVE" options.
+	 */
+	private void setupDriveUI() {
+		// Layout: Drive Options
+		final JComponent drivePanel = new JPanel(new BorderLayout(0, 2));
+		typePanel.add(drivePanel, "drive");
+		final JComponent driveMaster = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		drivePanel.add(driveMaster, BorderLayout.NORTH);
+		// Combo Box: Steering Type
+		driveType = Utils.createComboBox("Steering type used by the robot", "Skid", "Ackerman",
+			"Aerial");
+		driveType.setActionCommand("drive");
+		driveType.addActionListener(listener);
+		// Label: DriveType
+		driveMaster.add(Utils.createFieldLabel("DriveType", driveType));
+		driveMaster.add(driveType);
+		// Spacer: 5px
+		driveMaster.add(Box.createHorizontalStrut(5));
+		// Check Box: Normalized
+		driveNormalized = Utils.createCheckBox("Normalized",
+			"Allow values to be input from -100 to 100 and scaled");
+		driveMaster.add(driveNormalized);
+		// Spacer: 5px
+		driveMaster.add(Box.createHorizontalStrut(5));
+		// Check Box: Headlights
+		driveHeadlights = Utils.createCheckBox("Headlights",
+			"Turns the robot headlight on or off");
+		driveMaster.add(driveHeadlights);
+		// Layout: Drive Views
+		driveView = new JPanel(new CardLayout(0, 0));
+		drivePanel.add(driveView, BorderLayout.CENTER);
+		setupDriveSkidUI();
+		setupDriveAckermanUI();
+		setupDriveAerialUI();
+	}
+	/**
 	 * Initializes the UI for "GETGEO"/"GETCONF" options.
 	 */
 	private void setupGeoUI() {
@@ -897,8 +847,9 @@ public class IridiumUI {
 		final JPanel geoOptions = new JPanel(new GridBagLayout());
 		typePanel.add(geoOptions, "geoconf");
 		// Combo Box: Configuration Type
-		geoType = Utils.createComboBox("Configuration type to request", "Robot", "MisPkg",
-			"Sensor", "Gripper");
+		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "MisPkg",
+			"Gripper");
+		Utils.armActionListener(geoType, listener, "send");
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -931,7 +882,7 @@ public class IridiumUI {
 		final JPanel initPanel = new JPanel(new GridBagLayout());
 		typePanel.add(initPanel, "init");
 		// Combo Box: Init Class
-		initClass = createEntryBox("Class name of robot to spawn", "USARBot.");
+		initClass = Utils.createEntryBox("Class name of robot to spawn", "USARBot.");
 		addToComboBox(initClass, "RobotType");
 		initClass.setSelectedIndex(0);
 		Utils.armActionListener(initClass, listener, "send");
@@ -942,7 +893,7 @@ public class IridiumUI {
 		gbc.insets = FIELD_INSETS;
 		initPanel.add(initClass, gbc);
 		// Combo Box: Location Select
-		initLocation = createEntryBox("Coordinates in m, or PlayerStart name, to spawn robot",
+		initLocation = Utils.createEntryBox("Coordinates or PlayerStart name to spawn robot",
 			"0.00, 0.00, 0.00");
 		Utils.armActionListener(initLocation, listener, "send");
 		// Add a listener to selectively enable/disable the rotation field as appropriate
@@ -1002,7 +953,7 @@ public class IridiumUI {
 		final JComponent misOptions = new JPanel(new GridBagLayout());
 		typePanel.add(misOptions, "mispkg");
 		// Combo Box: Mission Package Name
-		misName = createEntryBox("Mission package name to control", "");
+		misName = Utils.createEntryBox("Mission package name to control", "");
 		Utils.armActionListener(misName, listener, "send");
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -1011,7 +962,8 @@ public class IridiumUI {
 		gbc.insets = FIELD_INSETS;
 		misOptions.add(misName, gbc);
 		// Text Field: Link to Move
-		misLink = createIntTextField("Link index to move");
+		misLink = createTextField("1", 4, "Link index to move");
+		misLink.setDocument(new RestrictInputDocument("0123456789", "1"));
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		misOptions.add(misLink, gbc);
@@ -1062,7 +1014,7 @@ public class IridiumUI {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		setOptions.add(setType, gbc);
 		// Combo Box: Package Name
-		setName = createEntryBox("Joint or sensor to move");
+		setName = Utils.createEntryBox("Joint or sensor to move");
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		setOptions.add(setName, gbc);
@@ -1117,7 +1069,6 @@ public class IridiumUI {
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = FIELD_INSETS;
 		topPanel.add(serverName, gbc);
 		// Button: Connect/Disconnect
@@ -1125,50 +1076,42 @@ public class IridiumUI {
 			"connect");
 		connectButton.setMnemonic('n');
 		gbc.gridx = 3;
-		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = NO_INSETS;
 		topPanel.add(connectButton, gbc);
 		// Spacer: 10px
 		gbc.gridx = 4;
-		gbc.gridy = 0;
 		topPanel.add(Box.createHorizontalStrut(10), gbc);
 		// Check Box: Degree mode
-		rotDegrees = createCheckBox("Degree Mode", Utils.asHTML(
+		rotDegrees = Utils.createCheckBox("Degree Mode", Utils.asHTML(
 			"Enter angles in degree mode; does <b>not</b> apply to raw commands"));
 		rotDegrees.setMnemonic('D');
 		// Default value from config
 		if (state.getConfig().getProperty("Degrees", "false").equalsIgnoreCase("true"))
 			rotDegrees.setSelected(true);
 		gbc.gridx = 5;
-		gbc.gridy = 0;
 		topPanel.add(rotDegrees, gbc);
 		// Label: Connect To
 		final JLabel lConnect = Utils.createFieldLabel("Connect To: ", serverName);
 		lConnect.setDisplayedMnemonic('C');
 		gbc.gridx = 0;
-		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;
 		topPanel.add(lConnect, gbc);
 		// Label: Level Name
-		levelName = new JLabel();
-		levelName.setToolTipText("Name of the currently loaded world");
+		levelName = Utils.createInfoLabel("Name of the currently loaded world");
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		topPanel.add(levelName, gbc);
 		// Label: Elapsed Time
-		elapsedTime = new JLabel();
-		elapsedTime.setToolTipText("Time in seconds since world creation");
+		elapsedTime = Utils.createInfoLabel("Time in seconds since world creation");
 		gbc.gridx = 3;
-		gbc.gridy = 1;
 		topPanel.add(elapsedTime, gbc);
 		// Label: Battery Life
-		batteryLife = new JLabel();
-		batteryLife.setToolTipText("Estimated remaining robot battery life");
+		batteryLife = Utils.createInfoLabel("Estimated remaining robot battery life");
 		gbc.gridx = 5;
-		gbc.gridy = 1;
 		topPanel.add(batteryLife, gbc);
 		// Layout: additional components
 		topInfo = new Box(BoxLayout.PAGE_AXIS);
@@ -1210,13 +1153,38 @@ public class IridiumUI {
 		setupGeoUI();
 	}
 	/**
+	 * Shows or hides the "Advanced command" box.
+	 *
+	 * @param show whether the box should be shown (and basic UI hidden)
+	 */
+	private void showRawCommand(boolean show) {
+		rawCommand.setVisible(show);
+		swapButton.setSelected(show);
+		typePanel.setVisible(!show);
+		commandType.setVisible(!show);
+		if (show)
+			rawCommand.requestFocusInWindow();
+	}
+	/**
+	 * Updates the battery life indicator.
+	 *
+	 * @param battery the approximate life time remaining of battery (seconds)
+	 */
+	public void updateBattery(int battery) {
+		if (battery >= 99999)
+			batteryLife.setText(null);
+		else if (battery <= 0)
+			batteryLife.setText("Battery dead");
+		else
+			batteryLife.setText(String.format("Battery: %d:%2d", battery / 60, battery % 60));
+	}
+	/**
 	 * Updates the names and values of joints on the specified (legged) robot.
 	 *
 	 * @param packet the packet containing joint information
-	 * @return whether joint names were updated
 	 */
-	public boolean updateJoints(USARPacket packet) {
-		String key; boolean changed = false;
+	public void updateJoints(USARPacket packet) {
+		String key;
 		if (packet != null && setName.getItemCount() == 0) {
 			// Go through the packet (keys that aren't "Battery" or "Type" are joints)
 			for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
@@ -1224,14 +1192,11 @@ public class IridiumUI {
 				if (!key.equalsIgnoreCase("Battery") && !key.equalsIgnoreCase("Type"))
 					setName.addItem(key);
 			}
-			if (setName.getItemCount() > 0) {
+			if (setName.getItemCount() > 0)
 				setName.setSelectedIndex(0);
-				changed = true;
-			}
 		}
 		// Manual clean
 		if (packet == null) setName.removeAllItems();
-		return changed;
 	}
 	/**
 	 * Changes the displayed level.
@@ -1251,7 +1216,7 @@ public class IridiumUI {
 	 * @return whether mission package information was updated
 	 */
 	public boolean updateMisPkg(USARPacket packet) {
-		String value;
+		String value; boolean updated = false;
 		if (packet != null && misName.getItemCount() == 0) {
 			// Go through the packet (all Name, Name_0, ... are packages)
 			value = packet.getParam("Name");
@@ -1260,12 +1225,12 @@ public class IridiumUI {
 				misName.addItem(value);
 			if (misName.getItemCount() > 0) {
 				misName.setSelectedIndex(0);
-				return true;
+				updated = true;
 			}
 		}
 		// Manual clean
 		if (packet == null) misName.removeAllItems();
-		return false;
+		return updated;
 	}
 	/**
 	 * Updates the list of available start poses.
@@ -1303,19 +1268,6 @@ public class IridiumUI {
 		}
 	}
 	/**
-	 * Updates the battery life indicator.
-	 *
-	 * @param battery the approximate life time remaining of battery (seconds)
-	 */
-	public void updateBattery(int battery) {
-		if (battery >= 99999)
-			batteryLife.setText(null);
-		else if (battery <= 0)
-			batteryLife.setText("Battery dead");
-		else
-			batteryLife.setText(String.format("Battery: %d:%2d", battery / 60, battery % 60));
-	}
-	/**
 	 * Updates the elapsed-time indicator.
 	 *
 	 * @param elapsed how much time has elapsed (since world creation)
@@ -1343,51 +1295,12 @@ public class IridiumUI {
 	}
 
 	/**
-	 * Change the available options in the joint "Opcode" dialog by
-	 */
-	private class OpcodeModel extends DefaultComboBoxModel {
-		/**
-		 * Notifies the list that this data has changed.
-		 */
-		public void fireChange() {
-			fireContentsChanged(this, 0, getSize());
-		}
-		public int getSize() {
-			switch (setType.getSelectedIndex()) {
-			case 0:
-				// Angle, Velocity, Torque
-				return OPT_JOINTS.length;
-			case 1:
-				// Open, Close
-				return OPT_GRIPPER.length;
-			case 2:
-				// FOV
-				return OPT_CAMERA.length;
-			default:
-				return 0;
-			}
-		}
-		public Object getElementAt(int index) {
-			switch (setType.getSelectedIndex()) {
-			case 0:
-				return OPT_JOINTS[index];
-			case 1:
-				return OPT_GRIPPER[index];
-			case 2:
-				return OPT_CAMERA[index];
-			default:
-				return "";
-			}
-		}
-	}
-
-	/**
 	 * A class representing an information panel shown in the UI.
 	 */
 	public static class InfoPanel {
 		private final Map<String, JLabel> entries;
-		private JComboBox names;
-		private JComponent panel;
+		private final JComboBox names;
+		private final JComponent panel;
 
 		/**
 		 * Creates a new information panel.
@@ -1417,7 +1330,8 @@ public class IridiumUI {
 			});
 			names.setVisible(false);
 			panel.add(names);
-			panel.add(Box.createHorizontalStrut(5));
+			panel.add(Box.createHorizontalStrut(10));
+			panel.add(Box.createHorizontalGlue());
 			setValue(initialName, " ");
 			names.setSelectedIndex(0);
 		}
@@ -1428,6 +1342,31 @@ public class IridiumUI {
 		 */
 		public JComponent getPanel() {
 			return panel;
+		}
+		/**
+		 * Changes the value shown on the panel.
+		 *
+		 * @param name the name of the value to update
+		 * @param text the value to display
+		 */
+		public void setValue(String name, String text) {
+			synchronized (entries) {
+				if (entries.containsKey(name))
+					entries.get(name).setText(text);
+				else {
+					// Create new label
+					final JLabel lbl = new JLabel(text);
+					lbl.setVisible(false);
+					lbl.setHorizontalAlignment(SwingConstants.LEFT);
+					entries.put(name, lbl);
+					panel.add(lbl, panel.getComponentCount() - 1);
+					names.addItem(name);
+					names.setMaximumSize(names.getPreferredSize());
+					if (names.getItemCount() > 1)
+						names.setVisible(true);
+					panel.revalidate();
+				}
+			}
 		}
 		/**
 		 * Switches the display to show this value.
@@ -1441,30 +1380,54 @@ public class IridiumUI {
 					label.setVisible(label == show);
 			}
 		}
+	}
+
+	/**
+	 * Change the available options in the joint "Opcode" dialog by
+	 */
+	private class OpcodeModel extends DefaultComboBoxModel {
+		private static final long serialVersionUID = 0L;
+
 		/**
-		 * Changes the value shown on the panel.
-		 *
-		 * @param name the name of the value to update
-		 * @param text the value to display
+		 * Notifies the list that this data has changed.
 		 */
-		public void setValue(String name, String text) {
-			synchronized (entries) {
-				if (!entries.containsKey(name)) {
-					// Create new label
-					final JLabel lbl = new JLabel(text);
-					lbl.setVisible(false);
-					lbl.setHorizontalAlignment(SwingConstants.LEFT);
-					lbl.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-					entries.put(name, lbl);
-					panel.add(lbl);
-					names.addItem(name);
-					names.setMaximumSize(names.getPreferredSize());
-					if (names.getItemCount() > 1)
-						names.setVisible(true);
-					panel.revalidate();
-				} else
-					entries.get(name).setText(text);
+		public void fireChange() {
+			fireContentsChanged(this, 0, getSize());
+		}
+		public Object getElementAt(int index) {
+			String element = "";
+			switch (setType.getSelectedIndex()) {
+			case 0:
+				element = OPT_JOINTS[index];
+				break;
+			case 1:
+				element = OPT_GRIPPER[index];
+				break;
+			case 2:
+				element = OPT_CAMERA[index];
+				break;
+			default:
 			}
+			return element;
+		}
+		public int getSize() {
+			int len = 0;
+			switch (setType.getSelectedIndex()) {
+			case 0:
+				// Angle, Velocity, Torque
+				len = OPT_JOINTS.length;
+				break;
+			case 1:
+				// Open, Close
+				len = OPT_GRIPPER.length;
+				break;
+			case 2:
+				// FOV
+				len = OPT_CAMERA.length;
+				break;
+			default:
+			}
+			return len;
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class Iridium {
 	private BufferedReader in;
 	private Writer out;
 	private Socket toUSAR;
-	private IridiumUI ui;
+	private final IridiumUI ui;
 	private final List<USARPacket> usarData;
 
 	/**
@@ -103,28 +103,32 @@ public class Iridium {
 				Utils.showWarning(ui.getRoot(), "<b>Invalid address: \"" + hostPort +
 					"\".</b><br><br>Valid forms:<br><ul><li><i>host</i></li>" +
 					"<li><i>host</i>:<i>port</i></li></ul>");
-				return;
+				host = null;
 			}
 		} else
 			host = hostPort;
-		try {
-			temp = new Socket();
-			temp.connect(new InetSocketAddress(host, port), 1000);
-			temp.setSoTimeout(0);
-			toUSAR = temp;
-			in = new BufferedReader(new InputStreamReader(toUSAR.getInputStream()));
-			out = new BufferedWriter(new OutputStreamWriter(toUSAR.getOutputStream()));
-		} catch (Exception e) {
-			Utils.showWarning(ui.getRoot(), "<b>Cannot connect to \"" + host +
-				"\".</b><br><br>Is Windows Firewall blocking UDK?");
-			return;
+		if (host != null) {
+			try {
+				// Open socket
+				temp = new Socket();
+				temp.connect(new InetSocketAddress(host, port), 1000);
+				temp.setSoTimeout(0);
+				// Create socket input and output
+				toUSAR = temp;
+				in = new BufferedReader(new InputStreamReader(toUSAR.getInputStream()));
+				out = new BufferedWriter(new OutputStreamWriter(toUSAR.getOutputStream()));
+				// Start thread to handle socket messages
+				Thread t = new Thread(new USARThread(), "USAR Messaging Thread");
+				t.setPriority(Thread.MIN_PRIORITY);
+				t.setDaemon(true);
+				t.start();
+				// Notify UI of connection (Do not clear the log window!)
+				ui.invokeEvent("connected");
+			} catch (IOException e) {
+				Utils.showWarning(ui.getRoot(), "<b>Cannot connect to \"" + host +
+					"\".</b><br><br>Is Windows Firewall blocking UDK?");
+			}
 		}
-		Thread t = new Thread(new USARThread(), "USAR Messaging Thread");
-		t.setPriority(Thread.MIN_PRIORITY);
-		t.setDaemon(true);
-		t.start();
-		ui.invokeEvent("clear");
-		ui.invokeEvent("connected");
 	}
 	/**
 	 * Disconnects from the server.
@@ -175,12 +179,12 @@ public class Iridium {
 		return toUSAR != null && toUSAR.isConnected() && !toUSAR.isClosed();
 	}
 	/**
-	 * Gets whether the message log is frozen (no new messages added)
+	 * Gets whether the message log is not frozen (new messages can be added)
 	 *
-	 * @return whether log messages have been stopped
+	 * @return whether log messages are being added and processed
 	 */
-	public boolean isFrozen() {
-		return frozen;
+	public boolean isUnfrozen() {
+		return !frozen;
 	}
 	/**
 	 * Try to load user config; if that fails, load the one from the JAR
@@ -211,11 +215,11 @@ public class Iridium {
 			config.put("RawCommand0", "INIT {Could not read iridium.properties file}");
 	}
 	/**
-	 * Loads the data handlers
+	 * Loads the data handlers from the ActiveStatusHandlers.properties file.
 	 */
 	@SuppressWarnings( "ConstantConditions" )
 	private void loadHandlers() {
-		Properties specs = new Properties(); String value; Class<?>[] arguments;
+		Properties specs = new Properties(); String key, value; Class<?>[] arguments;
 		try {
 			InputStream is = getClass().getResourceAsStream("ActiveStatusHandlers.properties");
 			if (is != null) {
@@ -224,12 +228,12 @@ public class Iridium {
 			}
 			// If not available, none will be loaded
 		} catch (IOException ignore) { }
-		for (String key : specs.stringPropertyNames()) {
-			value = specs.getProperty(key);
+		for (Object oKey : specs.keySet()) {
+			key = (String)oKey;
+			value = specs.getProperty(key).trim();
 			// Key name is only partially relevant
 			if (key.startsWith("Activate") && value != null)
 				try {
-					value = "org.nist.usarui.handlers." + value.trim();
 					// Load up class and instantiate (assume constructor with Iridium)
 					Class<?> hc = Class.forName(value);
 					for (Constructor cons : hc.getConstructors()) {
@@ -296,7 +300,7 @@ public class Iridium {
 	 * Runs the thread which checks the socket for updates
 	 */
 	private class USARThread implements Runnable {
-		private USARPacket packet;
+		private final USARPacket packet;
 
 		/**
 		 * Creates a new monitor thread.
@@ -316,7 +320,7 @@ public class Iridium {
 				// Listener thread
 				try {
 					while (isConnected() && (line = in.readLine()) != null)
-						if (!frozen && (line = line.trim()).length() > 0)
+						if (isUnfrozen() && (line = line.trim()).length() > 0)
 							putPacketOnEventThread(new USARPacket(line, true));
 				} catch (IOException ignore) {
 				} finally {

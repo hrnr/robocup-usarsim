@@ -9,15 +9,15 @@ public class Vec3 {
 	/**
 	 * The vector's x component.
 	 */
-	public float x;
+	private final float x;
 	/**
 	 * The vector's y component.
 	 */
-	public float y;
+	private final float y;
 	/**
 	 * The vector's z component.
 	 */
-	public float z;
+	private final float z;
 
 	/**
 	 * Creates a new 3-vector.
@@ -51,9 +51,10 @@ public class Vec3 {
 	 * to radians (* PI / 180)
 	 */
 	public Vec3 degToRad(boolean convert) {
+		Vec3 converted = this;
 		if (convert)
-			return new Vec3(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
-		return this;
+			converted = new Vec3(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
+		return converted;
 	}
 	/**
 	 * Gets the X component.
@@ -87,9 +88,10 @@ public class Vec3 {
 	 * to degrees (* 180 / PI)
 	 */
 	public Vec3 radToDeg(boolean convert) {
+		Vec3 converted = this;
 		if (convert)
-			return new Vec3(Math.toDegrees(x), Math.toDegrees(y), Math.toDegrees(z));
-		return this;
+			converted = new Vec3(Math.toDegrees(x), Math.toDegrees(y), Math.toDegrees(z));
+		return converted;
 	}
 	/**
 	 * Returns a higher-precision string representation of this vector.

@@ -9,10 +9,12 @@ import javax.swing.text.*;
  * @author Stephen Carlson (NIST)
  */
 public class RestrictInputDocument extends PlainDocument {
+	private static final long serialVersionUID = 0L;
+
 	/**
 	 * The characters allowed.
 	 */
-	private String allowChars;
+	private final String allowChars;
 
 	/**
 	 * Creates a RestrictInputDocument with the specified characters allowed.
@@ -31,8 +33,14 @@ public class RestrictInputDocument extends PlainDocument {
 	 * Only insertions can really cause issues with validation.
 	 */
 	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+		boolean allow = true;
 		for (int i = 0; i < str.length(); i++)
-			if (allowChars.indexOf(str.charAt(i)) < 0) return;
-		super.insertString(offs, str, a);
+			if (allowChars.indexOf(str.charAt(i)) < 0) {
+				// Check each character (better way?)
+				allow = false;
+				break;
+			}
+		if (allow)
+			super.insertString(offs, str, a);
 	}
 }

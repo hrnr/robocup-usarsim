@@ -8,7 +8,7 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public abstract class AbstractStatusHandler implements StatusHandler {
-	protected Iridium state;
+	protected final Iridium state;
 
 	/**
 	 * Creates a new instance.

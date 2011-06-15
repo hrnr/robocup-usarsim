@@ -8,7 +8,7 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public class InfoStatusHandler implements StatusHandler {
-	private Iridium state;
+	private final Iridium state;
 
 	/**
 	 * Creates a new instance.
@@ -19,6 +19,7 @@ public class InfoStatusHandler implements StatusHandler {
 		this.state = state;
 	}
 	public boolean statusReceived(USARPacket packet) {
+		boolean keep = true;
 		// If it's a startup message, update the UI
 		if (packet.getType().equals("NFO")) {
 			String lvl = packet.getParam("Level"), sp = packet.getParam("StartPoses");
@@ -27,9 +28,9 @@ public class InfoStatusHandler implements StatusHandler {
 			if (sp != null)
 				state.getUI().updateStartPoses(packet);
 			// Ignore it
-			return lvl == null && sp == null;
+			keep = (lvl == null && sp == null);
 		}
-		return true;
+		return keep;
 	}
 	public boolean statusSent(USARPacket packet) {
 		// Nothing to do here. NFO can't be sent.
