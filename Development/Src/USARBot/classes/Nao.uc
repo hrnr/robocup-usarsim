@@ -4,11 +4,6 @@
  * Joint information: 
  * http://users.aldebaran-robotics.com/docs/site_en/reddoc/hardware/joints-names.html
  * 
- * - TempRotatePart is bugged right now, joints are temporary symmetrical
- *   Seems it doesn't takes the direction of the constraint into account (thus not 
- *   rotating the part correctly while initializing)
- * 
- * TODO Remove this comment once changes are made
  */
 class Nao extends LeggedVehicle config(USAR);
 
@@ -139,8 +134,7 @@ defaultproperties
 		Parent=LShoulder 
 		Child=LUpperArm
 		Offset=(x=0.01,y=-0.098,z=-0.075)
-		//LimitLow=.0087 // 0.5
-		LimitLow=-1.649 // Temp
+		LimitLow=.0087 // 0.5
 		LimitHigh=1.649 // 94.5
 		Direction=(x=3.14,y=0,z=1.57)
 	End Object
@@ -161,8 +155,7 @@ defaultproperties
 		Child=RUpperArm
 		Offset=(x=0,y=0.098,z=-0.075)
 		LimitLow=-1.649 // -94.5
-		//LimitHigh=-.0087 // -0.5
-		LimitHigh=1.649 // temp
+		LimitHigh=-.0087 // -0.5
 		Direction=(x=3.14,y=0,z=1.57)
 	End Object
 	Joints.Add(RShoulderRoll)
@@ -212,8 +205,7 @@ defaultproperties
 		Child=LLowerArm
 		Offset=(x=0.09,y=-0.098,z=-0.084)
 		LimitLow=-1.56 // -89.5
-		//LimitHigh=-.0087 // -0.5
-		LimitHigh = 1.56 // Temp
+		LimitHigh=-.0087 // -0.5
 		Direction=(x=-3.14,y=0,z=-3.14)
 	End Object
 	Joints.Add(LElbowRoll)
@@ -233,8 +225,7 @@ defaultproperties
 		Parent=RElbow
 		Child=RLowerArm
 		Offset=(x=0.09,y=0.098,z=-0.084)
-		//LimitLow=-.0087 // -0.5
-		LimitLow=-1.56 // Temp
+		LimitLow=-.0087 // -0.5
 		LimitHigh=1.56 // 89.5
 		Direction=(x=-3.14,y=0,z=-3.14)
 	End Object
@@ -260,8 +251,7 @@ defaultproperties
 		Child=LHip
 		Offset=(x=-0.01,y=-0.055,z=0.1)
 		LimitLow=-1.1452 // -65.62
-		//LimitHigh=0.7407 // 42.44
-		LimitHigh = 1.1452 // Temp
+		LimitHigh=0.7407 // 42.44
 		Direction=(x=-2.36,y=0,z=3.14)
 	End Object
 	Joints.Add(LHipYawPitch)
@@ -271,8 +261,7 @@ defaultproperties
 		Child=RHip
 		Offset=(x=-0.01,y=0.055,z=0.1)
 		LimitLow=-1.1452 // -65.62
-		//LimitHigh=0.7407 // 42.44
-		LimitHigh = 1.1452 // Temp
+		LimitHigh=0.7407 // 42.44
 		Direction=(x=-0.79,y=0,z=3.14)
 	End Object
 	Joints.Add(RHipYawPitch)
@@ -316,8 +305,7 @@ defaultproperties
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=-0.055,z=0.115)   
 		LimitLow=-.738 // -42.30
-		//LimitHigh=.4147 // 23.76
-		LimitHigh=.738 // Temp
+		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
 	End Object
 	Joints.Add(LHipRoll)
@@ -327,8 +315,7 @@ defaultproperties
 		Child=LThigh
 		Offset=(x=-0.01,y=-0.055,z=0.115)
 		LimitLow=-1.772 // -101.54
-		//LimitHigh=.4855 // 27.82
-		LimitHigh=1.772 // Temp
+		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(LHipPitch)
@@ -339,8 +326,7 @@ defaultproperties
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0.055,z=0.115)
 		LimitLow=-.7382 // -42.30
-		//LimitHigh=.4147 // 23.76
-		LimitHigh=.7382 // Temp
+		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
 	End Object
 	Joints.Add(RHipRoll)
@@ -350,8 +336,7 @@ defaultproperties
 		Child=RThigh
 		Offset=(x=-0.01,y=0.055,z=0.115)
 		LimitLow=-1.772 // -101.54
-		//LimitHigh=.4855 // 27.82
-		LimitHigh=1.772 // temp
+		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
 	End Object
 	Joints.Add(RHipPitch)
@@ -378,8 +363,7 @@ defaultproperties
 		Parent=LThigh
 		Child=LShank
 		Offset=(x=-0.01,y=0,z=-0.045)
-		LimitLow=-2.120 // Temp
-		//LimitLow=-.1029 // -5.90
+		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
 	End Object
@@ -390,8 +374,7 @@ defaultproperties
 		Parent=RThigh
 		Child=RShank
 		Offset=(x=-0.01,y=0,z=-0.045)
-		LimitLow=-2.120 // Temp
-		//LimitLow=-.1029 // -5.90
+		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
 	End Object
@@ -436,8 +419,7 @@ defaultproperties
 		Child=LAnkle
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-1.185 // -67.96
-		//LimitHigh=.9844 // 53.40
-		LimitHigh=1.185 // Temp
+		LimitHigh=.9844 // 53.40
 		Direction=(x=1.57,y=0,z=0)
 	End Object
 	Joints.Add(LAnklePitch)
@@ -449,8 +431,7 @@ defaultproperties
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-.7689 // -44.06
-		//LimitHigh=.3978 // 22.79
-		LimitHigh=.7689 // Temp
+		LimitHigh=.3978 // 22.79
 		Direction=(x=0,y=1.57,z=0)
 	End Object
 	Joints.Add(LAnkleRoll)
@@ -461,8 +442,7 @@ defaultproperties
 		Child=RAnkle
 		Offset=(x=-0.01,y=0,z=0.055)
 		LimitLow=-1.1861 // -67.96
-		//LimitHigh=.9320 // 53.40
-		LimitHigh=1.185 // Temp
+		LimitHigh=.9320 // 53.40
 		Direction=(x=1.57,y=0,z=0)
 	End Object
 	Joints.Add(RAnklePitch)
@@ -473,8 +453,7 @@ defaultproperties
 		Child=RFoot
 		InverseMeasureAngle=true
 		Offset=(x=-0.01,y=0,z=0.055)
-		LimitLow=-.7859 // Temp
-		//LimitLow=-.3887 // -22.27
+		LimitLow=-.3887 // -22.27
 		LimitHigh=.7859 // 45.03
 		Direction=(x=0,y=1.57,z=0)
 	End Object
