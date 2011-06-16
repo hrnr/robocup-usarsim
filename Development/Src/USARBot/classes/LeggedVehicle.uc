@@ -25,8 +25,7 @@ simulated function String GetStatus()
 		if (Parts[i].IsJoint())
 		{
 			ji = JointItem(Parts[i]);
-			status = status $ " {" $ ji.GetJointName() $ " " $
-				class'UnitsConverter'.static.Str_AngleFromUU(ji.CurValue) $ "}";
+			status = status $ " {" $ ji.GetJointName() $ " " $ ji.CurValue $ "}";
 		}
 	status = status $ " {Battery " $ GetBatteryLife() $ "}";
 	return status;
