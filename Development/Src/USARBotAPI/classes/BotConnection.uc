@@ -245,32 +245,23 @@ function ProcessTurn(ParsedMessage parsedMessage)
 
 }
 
-// Commands to handle:
-//  DRIVE {Left float} {Right float} {Normalized bool} {Light bool}
-//  DRIVE {Speed float} {FrontSteer float} {RearSteer float} {Normalized bool} {Light bool} {Flip bool}
-//  DRIVE {Propeller float} {Rudder float} {SternPlane float} {Normalized bool} {Light bool}
-//  DRIVE {AltitudeVelocity float} {LinearVelocity float} {LateralVelocity float} {RotationalVelocity float} {Normalized bool}
-//  DRIVE {WheelNumber int} {WheelSpeed float} {WheelSteer float} {WheelNumber int} (WheeSpeed float} ...
-//  DRIVE (Name string} {Steer int} {Order int} {Value float}
-//  DRIVE {Name string} {Bone name} {Order int} {Value float} {Axis string(one letter)}
-//  DRIVE {Left float} {Right float}
+// Handle a DRIVE command which varies by robot
 function ProcessDrive(ParsedMessage parsedMessage)
 {
-	local float leftSpeed, rightSpeed;
 	local USARVehicle bot;
+	local String value;
 	
 	bot = USARVehicle(theBot.Pawn);
 	// Check if normalized drive command was received
-	bot.setNormalized(parsedMessage.GetArgVal("Normalized") == "true");
+	value = parsedMessage.GetArgVal("Normalized");
+	if (value != "")
+		bot.SetNormalized(value == "true");
 	// Check for headlight command
-	bot.setHeadLights(parsedMessage.GetArgVal("Light") == "true");
-	// Inidividual vehicle drives
-	if (bot.IsA('SkidSteeredVehicle'))
-	{
-		leftSpeed = float(parsedMessage.GetArgVal("Left"));
-		rightSpeed = float(parsedMessage.GetArgVal("Right"));
-		SkidSteeredVehicle(bot).SetDriveSpeed(leftSpeed, rightSpeed);
-	}
+	value = parsedMessage.GetArgVal("Light");
+	if (value != "")
+		bot.SetHeadLights(value == "true");
+	// Individual vehicle drives
+	bot.Drive(parsedMessage);
 }
 
 // TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
@@ -448,7 +439,7 @@ function ProcessSet(ParsedMessage parsedMessage)
 	}
 	else if (opcode == "Stiffness")
 		bot.SetJointStiffnessByName(Name(JointName), param);
-	else if (opcode == "MaxTorque" && theBot.Pawn.IsA('WheeledVehicle'))
+	else if (opcode == "MaxTorque" && bot.IsA('WheeledVehicle'))
 		WheeledVehicle(bot).SetMaxTorque(param);
 }
 

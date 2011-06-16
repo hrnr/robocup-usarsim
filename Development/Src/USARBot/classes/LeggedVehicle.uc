@@ -12,6 +12,12 @@
  */
 class LeggedVehicle extends USARVehicle config(USAR) abstract;
 
+// Unsupported
+function Drive(ParsedMessage message)
+{
+	LogInternal("LeggedVehicle: Vehicles of this type cannot be moved using Drive()");
+}
+
 // Returns robot status (all joint angles) in radians (NOT degrees!)
 simulated function String GetStatus()
 {

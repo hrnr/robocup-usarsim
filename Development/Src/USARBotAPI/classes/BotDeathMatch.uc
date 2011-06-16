@@ -95,13 +95,6 @@ function BotController AddBotController(Actor theOwner, String botName, int team
 	{
 		NumRemoteBots++;
 		NumPlayers++;
-		/*
-		NewBot.PlayerReplicationInfo.PlayerID = CurrentID++;
-		if (botName == "")
-			newBot.PlayerReplicationInfo.PlayerName = "Unnamed_Bot_" $ NumRemoteBots;
-		else
-			newBot.PlayerReplicationInfo.PlayerName = botName;
-		*/
 		if (className != "")
 			NewBot.PawnClass = class<Pawn>(DynamicLoadObject(className, class'Class'));
 		else if (NewBot.PawnClass == None)

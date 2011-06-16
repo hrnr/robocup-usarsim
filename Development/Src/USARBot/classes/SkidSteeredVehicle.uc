@@ -8,33 +8,45 @@
 *****************************************************************************/
 
 /*
- * SkidSteeredVehicle - Base class for USAR skid steered vehicles.
+ * SkidSteeredVehicle - Base class for USAR skid steered vehicles
  */
 class SkidSteeredVehicle extends WheeledVehicle config(USAR) abstract;
 
 // Drives the vehicle given the left and right side speeds
-simulated function SetDriveSpeed(float leftSpeed, float rightSpeed)
+//  DRIVE {Left float} {Right float}
+function Drive(ParsedMessage message)
 {
 	local int i;
 	local JointItem ji;
 	local WheelJoint jt;
+	local String ls, rs;
+	local float leftSpeed, rightSpeed;
 	
-	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].IsJoint())
-		{
-			ji = JointItem(Parts[i]);
-			if (ji.JointIsA('WheelJoint'))
+	ls = message.GetArgVal("Left");
+	rs = message.GetArgVal("Right");
+	if (ls != "" && rs != "")
+	{
+		// Valid drive message
+		leftSpeed = float(ls);
+		rightSpeed = float(rs);
+		for (i = 0; i < Parts.Length; i++)
+			if (Parts[i].IsJoint())
 			{
-				jt = WheelJoint(ji.Spec);
-				if (jt.bIsDriven)
+				ji = JointItem(Parts[i]);
+				if (ji.JointIsA('WheelJoint'))
 				{
-					if (jt.Side == SIDE_LEFT)
-						ji.SetVelocity(leftSpeed);
-					else if (jt.Side == SIDE_RIGHT)
-						ji.SetVelocity(rightSpeed);
+					jt = WheelJoint(ji.Spec);
+					// Driven wheels are moved according to their side
+					if (jt.bIsDriven)
+					{
+						if (jt.Side == SIDE_Left)
+							ji.SetVelocity(leftSpeed);
+						else if (jt.Side == SIDE_Right)
+							ji.SetVelocity(rightSpeed);
+					}
 				}
 			}
-		}
+	}
 }
 
 defaultproperties

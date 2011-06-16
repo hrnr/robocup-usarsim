@@ -15,15 +15,15 @@ class WheelJoint extends Joint config(USAR);
 // The side of the robot this joint is on (useful in many cases for symmetrical robots)
 enum ESide
 {
+	// For the skid vehicles
 	SIDE_Left,
 	SIDE_Right,
+	// Default
 	SIDE_None
 };
 
 // Whether the wheen can be driven
 var bool bIsDriven;
-// Whether the wheel can be steered
-var bool bIsSteered;
 // Whether the wheel can also rotate in the other direction (caster/omni wheels)
 var bool bOmni;
 // The side of the robot this joint inhabits
@@ -97,7 +97,6 @@ simulated function Update(JointItem ji)
 defaultproperties
 {
 	bIsDriven=true
-	bIsSteered=false
 	bOmni=false
 	Side=SIDE_None
 }

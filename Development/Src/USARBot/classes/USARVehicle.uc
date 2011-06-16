@@ -61,6 +61,11 @@ simulated event Destroyed()
 	super.Destroyed();
 }
 
+// Drives the vehicle using the parameters in the given message, which should be checked
+function Drive(ParsedMessage msg)
+{
+}
+
 // Gets the estimated life remaining in the battery; negative is a dead battery
 simulated function int GetBatteryLife()
 {
@@ -321,22 +326,29 @@ reliable server function SetupItem(SpecItem desc)
 	pos = pos >> OriginalRotation;
 	// Create item actor
 	it = Item(Spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
-	it.SetBase(CenterItem);
-	// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot when
-	// rotating many times in place
-	it.SetHardAttach(false);
-	// Initialize item
-	it.init(desc.ItemName, self, desc.Parent);
-	if (bDebug)
-		LogInternal("USARVehicle: Created part " $ String(it.Name));
-	// Set up batteries properly (into its variable)
-	if (it.isA('Battery'))
-		VehicleBattery = Battery(it);
-	// Set up audio sensor
-	if (it.IsType("Acoustic"))
-		SetupAudio();
-	// Add item to world
-	Parts.AddItem(it);
+	if (it == None)
+	{
+		LogInternal("USARVehicle: Failed to spawn attachment: " $ desc.ItemName);
+	}
+	else
+	{
+		it.SetBase(CenterItem);
+		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
+		// when rotating in place; until resolved, do NOT hard attach
+		it.SetHardAttach(false);
+		// Initialize item
+		it.init(desc.ItemName, self, desc.Parent);
+		if (bDebug)
+			LogInternal("USARVehicle: Created part " $ String(it.Name));
+		// Set up batteries properly (into its variable)
+		if (it.isA('Battery'))
+			VehicleBattery = Battery(it);
+		// Set up audio sensor
+		if (it.IsType("Acoustic"))
+			SetupAudio();
+		// Add item to world
+		Parts.AddItem(it);
+	}
 }
 
 // Initializes joints and their corresponding constraints
@@ -355,34 +367,41 @@ reliable server function SetupJoint(Joint jt)
 	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
 	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
 		spawnRotation);
-	// See note in SetupItem as to why this is false
-	ji.SetHardAttach(false);
-	ji.SetBase(CenterItem);
-	// Find parts for parent and child
-	ji.Parent = GetPartByName(jt.Parent.Name);
-	if (ji.Parent == None)
+	if (ji == None)
 	{
-		LogInternal("USARVehicle: Could not find parent for " $ String(jt.Name));
-		return;
+		LogInternal("USARVehicle: Failed to realize joint " $ jt.Name);
 	}
-	ji.Child = GetPartByName(jt.Child.Name);
-	if (ji.Child == None)
+	else
 	{
-		LogInternal("USARVehicle: Could not find child for " $ String(jt.Name));
-		return;
+		// See note in SetupItem as to why this is false
+		ji.SetHardAttach(false);
+		ji.SetBase(CenterItem);
+		// Find parts for parent and child
+		ji.Parent = GetPartByName(jt.Parent.Name);
+		if (ji.Parent == None)
+		{
+			LogInternal("USARVehicle: Could not find parent for " $ String(jt.Name));
+			return;
+		}
+		ji.Child = GetPartByName(jt.Child.Name);
+		if (ji.Child == None)
+		{
+			LogInternal("USARVehicle: Could not find child for " $ String(jt.Name));
+			return;
+		}
+		// Initialize joint
+		jt.Init(ji);
+		// This line seems to be required to avoid weird bug with initial physics on some robots
+		// Without this line, some robots will spawn in midair and will only start physics when
+		// a joint or drive command is sent
+		ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
+			ji.Child.CollisionComponent, ji.Constraint.ConstraintSetup, 1, self,
+			ji.Parent.CollisionComponent, false);
+		Parts.AddItem(ji);
+		if (bDebug)
+			LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
+				String(jt.Name));
 	}
-	// Initialize joint
-	jt.Init(ji);
-	// This line seems to be required to avoid weird bug with initial physics on some robots
-	// Without this line, some robots will spawn in midair and will only start physics when
-	// a joint or drive command is sent
-	ji.Constraint.ConstraintInstance.InitConstraint(ji.Parent.CollisionComponent,
-		ji.Child.CollisionComponent, ji.Constraint.ConstraintSetup, 1, self,
-		ji.Parent.CollisionComponent, false);
-	Parts.AddItem(ji);
-	if (bDebug)
-		LogInternal("USARVehicle: Created joint '" $ String(ji.Name) $ "' for spec " $
-			String(jt.Name));
 }
 
 // Sets up a part's parameters and spawns it into the world (static constrained pieces)
@@ -397,22 +416,36 @@ reliable server function SetupPart(Part part)
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;
 	it = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
 		OriginalRotation + spawnRotation);
-	it.Spec = part;
-	it.StaticMeshComponent.SetStaticMesh(part.Mesh);
-	it.SetPhysicalCollisionProperties();
-	it.SetMass(part.Mass);
-	// Initialize center item properly (for sensors and parenting reasons)
-	if (part.Name == Body.Name)
+	if (it == None)
 	{
-		CenterItem = it;
-		if (bDebug)
-			LogInternal("USARVehicle: Found vehicle body " $ String(Body.Name));
+		// Error when creating
+		LogInternal("USARVehicle: Failed to realize part: " $ part.Name);
 	}
-	// Add item into world
-	Parts.AddItem(it);
-	if (bDebug)
-		LogInternal("USARVehicle: Created part '" $ String(it.Name) $ "' for spec " $
-			String(part.Name));
+	else
+	{
+		// Initialize fields
+		it.Spec = part;
+		if (part.Mesh == None)
+			LogInternal("USARVehicle: Static mesh for '" $ part.Name $ "' not found");
+		else
+		{
+			it.StaticMeshComponent.SetStaticMesh(part.Mesh);
+			it.SetPhysicalCollisionProperties();
+			it.SetMass(part.Mass);
+			// Initialize center item properly (for sensors and parenting reasons)
+			if (part.Name == Body.Name)
+			{
+				CenterItem = it;
+				if (bDebug)
+					LogInternal("USARVehicle: Found vehicle body " $ String(Body.Name));
+			}
+			// Add item into world
+			Parts.AddItem(it);
+			if (bDebug)
+				LogInternal("USARVehicle: Created part '" $ String(it.Name) $ "' for spec " $
+					String(part.Name));
+		}
+	}
 }
 
 // Check battery; if alive, call client timer functions
