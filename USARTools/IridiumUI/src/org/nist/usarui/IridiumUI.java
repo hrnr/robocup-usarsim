@@ -338,6 +338,8 @@ public class IridiumUI {
 				if (pose.toString().equalsIgnoreCase(text))
 					// Matched!
 					break;
+				else
+					pose = null;
 			}
 		}
 		return pose;
@@ -541,7 +543,7 @@ public class IridiumUI {
 				front = Float.parseFloat(driveFront.getText());
 				back = Float.parseFloat(driveRear.getText());
 				// Convert if needed
-				if (rotDegrees.isSelected()) {
+				if (isInDegrees()) {
 					front = (float)Math.toRadians(front);
 					back = (float)Math.toRadians(back);
 				}
@@ -561,7 +563,7 @@ public class IridiumUI {
 				lat = Float.parseFloat(driveLateral.getText());
 				rot = Float.parseFloat(driveRotational.getText());
 				// Convert if needed
-				if (rotDegrees.isSelected())
+				if (isInDegrees())
 					rot = (float)Math.toRadians(rot);
 			} catch (NumberFormatException e) {
 				Utils.showWarning(mainUI, "Enter valid velocities for vehicle.");
@@ -587,7 +589,7 @@ public class IridiumUI {
 				// Read location and rotation from custom input
 				rot = Utils.read3Vector(initRotation.getText());
 				loc = Utils.read3Vector(initLocation.getEditor().getItem().toString());
-				rot = rot.degToRad(rotDegrees.isSelected());
+				rot = rot.degToRad(isInDegrees());
 				etc = "{Location " + loc.toPrecisionString() + "} {Rotation " +
 					rot.toPrecisionString() + "}";
 			} catch (RuntimeException e) {
@@ -607,7 +609,7 @@ public class IridiumUI {
 			link = Integer.parseInt(misLink.getText());
 			value = Float.parseFloat(misValue.getText());
 			// Convert if needed
-			if (rotDegrees.isSelected())
+			if (isInDegrees())
 				value = (float)Math.toRadians(value);
 			sendMessage("MISPKG {Name " + misName.getEditor().getItem() + "} {Link " + link +
 				String.format("} {Order 0} {Value %.4f}", value));
@@ -623,7 +625,7 @@ public class IridiumUI {
 		try {
 			params = Float.parseFloat(setParams.getText());
 			// Convert if needed
-			if (rotDegrees.isSelected() && setOpcode.getSelectedIndex() == 0)
+			if (isInDegrees() && setOpcode.getSelectedIndex() == 0)
 				params = (float)Math.toRadians(params);
 			sendMessage("SET {Type " + setType.getSelectedItem() + "} {Name " +
 				setName.getEditor().getItem() + "} {Opcode " + setOpcode.getSelectedItem() +
@@ -976,7 +978,7 @@ public class IridiumUI {
 				if (pose == null)
 					initRotation.setEnabled(true);
 				else {
-					Vec3 outRot = pose.getRotation().radToDeg(rotDegrees.isSelected());
+					Vec3 outRot = pose.getRotation().radToDeg(isInDegrees());
 					initRotation.setText(outRot.toString());
 					initRotation.setEnabled(false);
 				}
