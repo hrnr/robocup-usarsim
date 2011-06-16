@@ -57,6 +57,7 @@ public class IridiumUI {
 	private JTextField driveAltitude;
 	private JTextField driveFront;
 	private JCheckBox driveHeadlights;
+	private JCheckBox driveInvert;
 	private JTextField driveLateral;
 	private JTextField driveLeft;
 	private JTextField driveLinear;
@@ -272,12 +273,16 @@ public class IridiumUI {
 				z = stick.getY();
 				y = r = 0.f;
 			}
+			if (driveInvert.isSelected()) {
+				// Invert R and Y (vertical) axes
+				y = -y; r = -r;
+			}
 			if (!Utils.isFloatEqual(x, axes[0]) || !Utils.isFloatEqual(y, axes[1]) ||
 				!Utils.isFloatEqual(z, axes[2]) || !Utils.isFloatEqual(r, axes[3])) {
 				// Send message; if error, treat like any other
 				if (state.isConnected())
 					try {
-						state.sendJoystickValues(driveType.getSelectedIndex(), z, r, x, y);
+						state.sendJoystickValues(driveType.getSelectedIndex(), x, y, z, r);
 					} catch (IOException e) {
 						state.disconnect();
 					}
@@ -897,6 +902,12 @@ public class IridiumUI {
 		driveHeadlights = Utils.createCheckBox("Headlights",
 			"Turns the robot headlight on or off");
 		driveMaster.add(driveHeadlights);
+		// Spacer: 5px
+		driveMaster.add(Box.createHorizontalStrut(5));
+		// Check Box: Invert Joystick
+		driveInvert = Utils.createCheckBox("Invert Axes",
+			"Inverts the vertical axes of the joystick");
+		driveMaster.add(driveInvert);
 		// Layout: Drive Views
 		driveView = new JPanel(new CardLayout(0, 0));
 		drivePanel.add(driveView, BorderLayout.CENTER);

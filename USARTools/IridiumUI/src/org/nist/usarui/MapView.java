@@ -279,9 +279,9 @@ public class MapView extends MouseInputAdapter {
 			}
 			// Render axes
 			ig.setColor(Color.RED);
-			ig.drawLine(0, -size.height, 0, size.height);
+			ig.drawLine(0, cY - size.height, 0, cY + size.height);
 			ig.setColor(Color.GREEN);
-			ig.drawLine(-size.width, 0, size.width, 0);
+			ig.drawLine(cX - size.width, 0, cX + size.width, 0);
 			// Render path
 			ig.setColor(Color.BLUE);
 			synchronized (path) {
