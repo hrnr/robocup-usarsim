@@ -248,11 +248,15 @@ public final class Utils {
 	 * @throws NumberFormatException if an element cannot be parsed
 	 */
 	public static Vec3 read3Vector(String value) {
-		StringTokenizer str = new StringTokenizer(value, ",");
-		float x = Float.parseFloat(str.nextToken().trim());
-		float y = Float.parseFloat(str.nextToken().trim());
-		float z = Float.parseFloat(str.nextToken().trim());
-		return new Vec3(x, y, z);
+		Vec3 vector = null;
+		if (value != null) {
+			StringTokenizer str = new StringTokenizer(value, ",");
+			float x = Float.parseFloat(str.nextToken().trim());
+			float y = Float.parseFloat(str.nextToken().trim());
+			float z = Float.parseFloat(str.nextToken().trim());
+			vector = new Vec3(x, y, z);
+		}
+		return vector;
 	}
 	/**
 	 * Makes the Java UI match the system UI much more closely.

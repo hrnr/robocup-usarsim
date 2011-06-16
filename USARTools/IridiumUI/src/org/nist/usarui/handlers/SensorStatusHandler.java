@@ -23,10 +23,10 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 		return "Sen_";
 	}
 	public boolean statusReceived(USARPacket packet) {
-		boolean keep = false, deg = state.getUI().isInDegrees();
+		boolean keep = true, deg = state.getUI().isInDegrees();
 		if (packet.getType().equals("SEN")) {
 			// Update time
-			String tm = packet.getParam("Time"), value, test, type;
+			String tm = packet.getParam("Time"), value, test, type, name;
 			if (tm != null)
 				try {
 					state.getUI().updateTime(Float.parseFloat(tm));
@@ -34,6 +34,9 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			// Update value, using typical names (this is for the simple sensors)
 			type = packet.getParam("Type");
 			if (type == null) type = "Sensor";
+			name = packet.getParam("Name");
+			if (name == null) name = type;
+			// Default bulk data
 			value = packet.getParam("");
 			if (value != null) value = Utils.asHTML(floatString(value, false));
 			// Accelerometer
@@ -67,8 +70,8 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 					")");
 			// Send whatever we got
 			if (value != null)
-				setInformation(type, packet.getParam("Name"), value);
-			keep = (value == null && !type.equals("Camera"));
+				setInformation(type, name, value);
+			keep = false;
 		}
 		return keep;
 	}

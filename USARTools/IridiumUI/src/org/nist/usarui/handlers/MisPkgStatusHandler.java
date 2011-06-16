@@ -21,6 +21,7 @@ public class MisPkgStatusHandler implements StatusHandler {
 	}
 	public boolean statusReceived(USARPacket packet) {
 		String type = packet.getParam("Type");
+		if (type == null) type = "";
 		// Intercept it and suppress only if useful information gleaned (1st time)
 		return !(packet.getType().equals("CONF") && type.equals("MisPkg")) ||
 			!state.getUI().updateMisPkg(packet);

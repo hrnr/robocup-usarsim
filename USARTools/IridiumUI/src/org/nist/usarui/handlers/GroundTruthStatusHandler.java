@@ -24,12 +24,14 @@ public class GroundTruthStatusHandler implements StatusHandler {
 			String sensor = packet.getParam("Type"), name = packet.getParam("Name");
 			if (sensor != null && sensor.equals("GroundTruth")) {
 				// Plot point on the map view
+				if (name == null) name = "Unnamed";
 				MapView view = state.getUI().getView("Ground Truth - " + name);
 				if (view.isVisible()) {
 					// But only if visible
 					Vec3 loc = Utils.read3Vector(packet.getParam("Location"));
 					Vec3 rot = Utils.read3Vector(packet.getParam("Orientation"));
-					view.setPose(loc.getX(), loc.getY(), rot.getZ());
+					if (loc != null && rot != null)
+						view.setPose(loc.getX(), loc.getY(), rot.getZ());
 				}
 			}
 		}

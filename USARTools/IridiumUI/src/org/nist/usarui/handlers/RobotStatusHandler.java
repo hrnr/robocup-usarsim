@@ -28,7 +28,7 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 					state.getUI().updateBattery(Integer.parseInt(batt));
 				} catch (NumberFormatException ignore) { }
 			// Joint selection list update
-			if (type.equals("LeggedVehicle")) {
+			if (type != null && type.equals("LeggedVehicle")) {
 				state.getUI().updateJoints(packet);
 				// Joint values update
 				for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
