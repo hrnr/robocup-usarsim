@@ -262,7 +262,7 @@ defaultproperties
 		LimitLow=-1.1452 // -65.62
 		//LimitHigh=0.7407 // 42.44
 		LimitHigh = 1.1452 // Temp
-		Direction=(x=-2.36,y=3.14,z=0)
+		Direction=(x=-2.36,y=0,z=3.14)
 	End Object
 	Joints.Add(LHipYawPitch)
 
@@ -273,7 +273,7 @@ defaultproperties
 		LimitLow=-1.1452 // -65.62
 		//LimitHigh=0.7407 // 42.44
 		LimitHigh = 1.1452 // Temp
-		Direction=(x=-0.79,y=3.14,z=0)
+		Direction=(x=-0.79,y=0,z=3.14)
 	End Object
 	Joints.Add(RHipYawPitch)
 
@@ -402,7 +402,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=1.5000
+		Mass=2.5000
 	End Object
 	PartList.Add(LFoot)
 
@@ -410,7 +410,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=1.5000
+		Mass=2.5000
 	End Object
 	PartList.Add(RFoot)
 
