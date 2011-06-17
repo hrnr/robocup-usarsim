@@ -1,3 +1,12 @@
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced in part by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
+*****************************************************************************/
+
 package org.nist.usarui;
 
 import com.centralnexus.input.*;
@@ -97,7 +106,7 @@ public class IridiumUI {
 	private JComponent typePanel;
 
 	private final float[] axes;
-	private final Map<String, MapView> dialogs;
+	private final Map<String, View> dialogs;
 	private final Map<String, InfoPanel> infoPanels;
 	private final Iridium state;
 	private Joystick stick;
@@ -109,7 +118,7 @@ public class IridiumUI {
 	 */
 	public IridiumUI(Iridium state) {
 		axes = new float[4];
-		dialogs = new HashMap<String, MapView>(8);
+		dialogs = new HashMap<String, View>(8);
 		infoPanels = new HashMap<String, InfoPanel>(24);
 		this.state = state;
 		stick = null;
@@ -157,7 +166,7 @@ public class IridiumUI {
 	 */
 	private void closeAllDialogs() {
 		synchronized (dialogs) {
-			for (MapView view : dialogs.values())
+			for (View view : dialogs.values())
 				view.close();
 			dialogs.clear();
 		}
@@ -363,10 +372,11 @@ public class IridiumUI {
 	 * @param title the view title
 	 * @return the view
 	 */
-	public MapView getView(final String title) {
-		MapView ret = dialogs.get(title); final Rectangle ss, thisWin;
+	public View getView(final String title) {
+		View ret = dialogs.get(title); final Rectangle ss, thisWin;
 		if (ret == null) {
-			ret = new MapView(title, mainUI);
+			// This needs to be fixed so that other views can be instantiated
+			ret = new MapView(mainUI, title);
 			synchronized (dialogs) {
 				dialogs.put(title, ret);
 			}

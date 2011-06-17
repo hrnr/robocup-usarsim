@@ -1,3 +1,12 @@
+/*****************************************************************************
+  DISCLAIMER:
+  This software was produced in part by the National Institute of Standards
+  and Technology (NIST), an agency of the U.S. government, and by statute is
+  not subject to copyright in the United States.  Recipients of this software
+  assume all responsibility associated with its operation, modification,
+  maintenance, and subsequent redistribution.
+*****************************************************************************/
+
 package org.nist.usarui;
 
 import java.awt.*;
@@ -14,7 +23,7 @@ import javax.swing.event.*;
  *
  * @author Stephen Carlson (NIST)
  */
-public class MapView extends MouseInputAdapter {
+public class MapView extends View {
 	/**
 	 * The background color for the map.
 	 */
@@ -40,10 +49,6 @@ public class MapView extends MouseInputAdapter {
 	 * The center of the map in screen coordinates.
 	 */
 	private final Point center;
-	/**
-	 * The dialog window that shows the map.
-	 */
-	private final JDialog dialog;
 	/**
 	 * The coordinates at which the mouse was last seen when dragging started.
 	 */
@@ -73,23 +78,52 @@ public class MapView extends MouseInputAdapter {
 	/**
 	 * Creates a new attached map view.
 	 *
-	 * @param parent the parent that contains this window
 	 * @param title the map title
+	 * @param parent the parent that contains this window
 	 */
-	public MapView(String title, Component parent) {
+	public MapView(Component parent, String title) {
+		super(parent, title);
+		MouseInputAdapter listener = new MouseInputAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				if (lastDrag == null)
+					lastDrag = new Point(e.getX(), e.getY());
+				else {
+					// Find deltas and move center
+					int dx = lastDrag.x - e.getX(), dy = e.getY() - lastDrag.y;
+					if (dx != 0 || dy != 0) {
+						center.setLocation(center.x + dx, center.y + dy);
+						lastDrag.setLocation(e.getX(), e.getY());
+						renderer.repaint();
+					}
+				}
+			}
+			public void mouseReleased(MouseEvent e) {
+				lastDrag = null;
+			}
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				double newScale = scalar;
+				// Zoom in or out by 10% each time
+				if (e.getUnitsToScroll() > 0)
+					newScale /= 1.1;
+				else
+					newScale *= 1.1;
+				// Limit zoom from 10 px/m to 100 px/m (big range!)
+				newScale = Math.min(Math.max(newScale, 10.), 100.);
+				// Fix center location to avoid disorientation
+				center.x = (int)Math.round(center.x * newScale / scalar);
+				center.y = (int)Math.round(center.y * newScale / scalar);
+				scalar = newScale;
+				renderer.repaint();
+			}
+		};
 		// Load bot icon (triangle facing up)
 		botIcon	= new Polygon(new int[] { 4, 0, -4, 0 }, new int[] { 5, -5, 5, 3 }, 4);
 		center = new Point(0, 0);
 		// Prepare renderer
 		renderer = new MapRenderer();
-		renderer.addMouseMotionListener(this);
-		renderer.addMouseListener(this);
-		renderer.addMouseWheelListener(this);
-		// Build and show dialog
-		dialog = new JDialog(Utils.findParent(parent), title, false);
-		dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		dialog.setFocusableWindowState(false);
-		dialog.setSize(200, 200);
+		renderer.addMouseMotionListener(listener);
+		renderer.addMouseListener(listener);
+		renderer.addMouseWheelListener(listener);
 		dialog.getContentPane().add(renderer);
 		// Initialize variables
 		lastDrag = null;
@@ -97,91 +131,6 @@ public class MapView extends MouseInputAdapter {
 		path = new LinkedList<Point2D>();
 		scalar = SCALE;
 		theta = 0.;
-	}
-	/**
-	 * Closes the window.
-	 */
-	public void close() {
-		dialog.dispose();
-	}
-	/**
-	 * Gets the size of this view.
-	 *
-	 * @return the view's window size
-	 */
-	public Dimension getSize() {
-		return dialog.getSize();
-	}
-	/**
-	 * Determines whether this view is visible.
-	 *
-	 * @return whether the view is visible on the screen
-	 */
-	public boolean isVisible() {
-		return dialog.isVisible();
-	}
-	/**
-	 * Triggered when the user drags the map to move it around.
-	 *
-	 * @param e the event with coordinate information
-	 */
-	public void mouseDragged(MouseEvent e) {
-		if (lastDrag == null)
-			lastDrag = new Point(e.getX(), e.getY());
-		else {
-			// Find deltas and move center
-			int dx = lastDrag.x - e.getX(), dy = e.getY() - lastDrag.y;
-			if (dx != 0 || dy != 0) {
-				center.setLocation(center.x + dx, center.y + dy);
-				lastDrag.setLocation(e.getX(), e.getY());
-				renderer.repaint();
-			}
-		}
-	}
-	/**
-	 * Properly handle drag ends and prepare for the next move.
-	 *
-	 * @param e the event with coordinate information
-	 */
-	public void mouseReleased(MouseEvent e) {
-		lastDrag = null;
-	}
-	/**
-	 * Zooms the view when triggered by the user scrolling the wheel.
-	 *
-	 * @param e the event with scroll information
-	 */
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		double newScale = scalar;
-		// Zoom in or out by 10% each time
-		if (e.getUnitsToScroll() > 0)
-			newScale /= 1.1;
-		else
-			newScale *= 1.1;
-		// Limit zoom from 10 px/m to 100 px/m (big range!)
-		newScale = Math.min(Math.max(newScale, 10.), 100.);
-		// Fix center location to avoid disorientation
-		center.x = (int)Math.round(center.x * newScale / scalar);
-		center.y = (int)Math.round(center.y * newScale / scalar);
-		scalar = newScale;
-		renderer.repaint();
-	}
-	/**
-	 * Moves this view to center it over another component.
-	 *
-	 * @param c the component to center this dialog over
-	 */
-	public void setLocationRelativeTo(Component c) {
-		dialog.setLocationRelativeTo(c);
-	}
-	/**
-	 * Moves this view to the specified location.
-	 *
-	 * @param x the x coordinate in screen space
-	 * @param y the y coordinate in screen space
-	 */
-	public void setLocation(int x, int y) {
-		dialog.setLocation(x, y);
 	}
 	/**
 	 * Sets the pose of the on-screen robot to the specified coordinate.
@@ -210,14 +159,6 @@ public class MapView extends MouseInputAdapter {
 		// Always redraw
 		this.theta = theta;
 		renderer.repaint();
-	}
-	/**
-	 * Changes the visibility of the view.
-	 *
-	 * @param visible whether the view should be visible
-	 */
-	public void setVisible(boolean visible) {
-		dialog.setVisible(visible);
 	}
 
 	/**
@@ -320,6 +261,9 @@ public class MapView extends MouseInputAdapter {
 		 */
 		private int round(double point) {
 			return (int)Math.round(point * scalar);
+		}
+		public void update(Graphics g) {
+			paint(g);
 		}
 	}
 }

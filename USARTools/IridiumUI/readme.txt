@@ -40,3 +40,7 @@ Known Issues:
   (available by clicking the "Raw" button near the Send button)
 - The UI employs some features documented on the USARSim Wiki (http://usarsim.sourceforge.net/) that are not
   supported by the USAR UDK port.
+
+Notes:
+Some libraries used by this software were not developed at NIST.
+For details see the included license.txt file.
