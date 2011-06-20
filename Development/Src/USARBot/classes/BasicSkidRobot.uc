@@ -98,4 +98,6 @@ defaultproperties
 		MaxVelocity=1.4
 	End Object
 	Joints.Add(BLWheelRoll)
+
+	WheelRadius=0.128
 }

@@ -269,4 +269,6 @@ defaultproperties
 		Offset=(X=-.288,Y=-.232,Z=.088)
 	End Object
 	Joints.Add(BLLBumperFixed)
+
+	WheelRadius=0.098
 }

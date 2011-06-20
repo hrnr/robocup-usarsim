@@ -80,4 +80,6 @@ defaultproperties
 		MaxVelocity=1.5
 	End Object
 	Joints.Add(CasterWheelJoint)
+
+	WheelRadius=0.128
 }
