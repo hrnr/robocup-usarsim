@@ -117,5 +117,6 @@ defaultproperties
 		LimitHigh=6.28
 	End Object
 	Joints.Add(TopJoint)
-
+	
+	WheelRadius=.098
 }
