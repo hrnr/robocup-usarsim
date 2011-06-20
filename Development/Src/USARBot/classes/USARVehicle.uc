@@ -80,19 +80,13 @@ function String GetGeneralConfData(String itemType, String itemName)
 {
 	local String outStr;
 	local int i;
-	local int firstIndex;
 	
 	// Look for items
 	outStr = "";
-	firstIndex = -1;
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
-		{
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetConfData();
-			if (firstIndex < 0)
-				firstIndex = i;
-		}
 	if (outStr != "")
 		outStr = "CONF {Type " $ itemType $ "}" $ outStr;
 	return outStr;
@@ -103,19 +97,13 @@ function String GetGeneralGeoData(String itemType, String itemName)
 {
 	local String outStr;
 	local int i;
-	local int firstIndex;
 	
 	// Look for items
 	outStr = "";
-	firstIndex = -1;
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
-		{
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
-			if (firstIndex < 0)
-				firstIndex = i;
-		}
 	if (outStr != "")
 		outStr = "GEO {Type " $ itemType $ "}" $ outStr;
 	return outStr;
@@ -130,6 +118,23 @@ simulated function vector GetJointOffset(Joint jt)
 	if (jt.RelativeTo != None)
 		pos += GetPartOffset(jt.RelativeTo);
 	return pos;
+}
+
+// Gets the specified mission package, or None if it was not found
+simulated function MissionPackage GetMisPkg(String misName)
+{
+	local int i;
+	local MissionPackage pkg;
+	
+	// Search for mission package in list
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].isA('MissionPackage'))
+		{
+			pkg = MissionPackage(Parts[i]).GetMisPkg(misName);
+			if (pkg != None)
+				return pkg;
+		}
+	return None;
 }
 
 // Gets configuration data from all mission packages
@@ -195,6 +200,8 @@ simulated function PostBeginPlay()
 	
 	// Initialize parts
 	CenterItem = None;
+	if (PartList.Length < 1)
+		LogInternal("USARVehicle: No parts in part list, was a PartList.Add(...) used?");
 	for (i = 0; i < PartList.Length; i++)
 		SetupPart(PartList[i]);
 	// Warn on null body
@@ -202,8 +209,9 @@ simulated function PostBeginPlay()
 	{
 		LogInternal("USARVehicle: Vehicle body not intialized, defaulting to first part");
 		LogInternal("USARVehicle:  To fix this warning, declare Body=<item> in properties");
-		// Can't fail, only physical items are in the array to begin with
-		CenterItem = PhysicalItem(Parts[0]);
+		// Cast cannot fail, only physical items are in the array to begin with
+		if (Parts.Length > 0)
+			CenterItem = PhysicalItem(Parts[0]);
 	}
 	// Initialize joints
 	for (i = 0; i < Joints.Length; i++)
@@ -316,7 +324,7 @@ reliable server function SetupAudio()
 // Creates and initializes an Item from its specification in the INI file
 reliable server function SetupItem(SpecItem desc)
 {
-	local Item it;
+	local Item it, test;
 	local vector pos;
 	local rotator dir;
 	
@@ -325,14 +333,18 @@ reliable server function SetupItem(SpecItem desc)
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
 	pos = pos >> OriginalRotation;
 	// Create item actor
-	it = Item(Spawn(desc.ItemClass, self, , OriginalLocation + pos, OriginalRotation + dir));
+	it = Item(Spawn(desc.ItemClass, self, name(desc.ItemName), OriginalLocation + pos,
+		OriginalRotation + dir));
 	if (it == None)
-	{
 		LogInternal("USARVehicle: Failed to spawn attachment: " $ desc.ItemName);
-	}
 	else
 	{
-		it.SetBase(CenterItem);
+		test = GetPartByName(desc.Parent);
+		// Base on a specified part
+		if (test != None && test.isA('PhysicalItem'))
+			it.SetBase(test);
+		else
+			it.SetBase(CenterItem);
 		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
 		// when rotating in place; until resolved, do NOT hard attach
 		it.SetHardAttach(false);
@@ -368,9 +380,7 @@ reliable server function SetupJoint(Joint jt)
 	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
 		spawnRotation);
 	if (ji == None)
-	{
 		LogInternal("USARVehicle: Failed to realize joint " $ jt.Name);
-	}
 	else
 	{
 		// See note in SetupItem as to why this is false
@@ -417,10 +427,8 @@ reliable server function SetupPart(Part part)
 	it = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
 		OriginalRotation + spawnRotation);
 	if (it == None)
-	{
 		// Error when creating
 		LogInternal("USARVehicle: Failed to realize part: " $ part.Name);
-	}
 	else
 	{
 		// Initialize fields
@@ -465,11 +473,15 @@ simulated function UpdateJoints()
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].IsJoint())
 		{
+			// Update joints
 			ji = JointItem(Parts[i]);
 			if (ji.Parent != None && ji.Child != None)
 				ji.Spec.Update(ji);
 			ji.CurValue = JointTransform(ji, ji.CurValue);
 		}
+		else if (Parts[i].isA('MissionPackage'))
+			// Update these too
+			MissionPackage(Parts[i]).UpdateJoints();
 }
 
 defaultproperties 

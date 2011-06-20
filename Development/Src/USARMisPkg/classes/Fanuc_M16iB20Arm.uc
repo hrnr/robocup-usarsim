@@ -7,76 +7,66 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-class Fanuc_M16iB20Arm extends vacuumGripArm placeable config (USAR);
+// TODO Has no model
+class Fanuc_M16iB20Arm extends VacuumArm placeable config (USAR);
 
-simulated function getRotation()
+simulated function array<float> getRotation(array<float> pos)
 {
 	// Joint 3's real value must compensate for 2's position
-	Joints[3].ActualPos -= Joints[2].ActualPos;
+	pos[2] -= pos[1];
+	return pos;
 }
 
 simulated function updateRotation(int Link, float Value)
 {
-	if (2 == Link)
+	if (1 == Link)
 	{
 		// Need to update joint 3 when joint 2 changes
-		Joints[2].MotorCmd = Value;
-		Joints[3].MotorCmd += Value;
+		CmdPos[1] = Value;
+		CmdPos[2] += Value;
 	}
-	else if (3 == Link)
+	else if (2 == Link)
 		// Need to take 2 into account when changing 3
-		Joints[3].MotorCmd = Value + Joints[2].MotorCmd;
+		CmdPos[2] = Value + CmdPos[1];
 	else
 		super.updateRotation(Link, Value);
 }
 
 defaultproperties
 {
-	grippedObject=None;
-	gDebug=0;
-	suctionLength=.25;
-	lastBoneOffset=.66;
+	SuctionLength=.25
 
-	BlockRigidBody=true;
-	bCollideComplex=true;
-	bCollideActors=true;
-	bBlockActors=false;
-	bProjTarget=true;
-	bCollideWhenPlacing=true;
-	bCollideWorld=true;
-	DrawScale=25;
-	
-	Begin Object Class=SkeletalMeshComponent Name=SKMesh01
-		SkeletalMesh=SkeletalMesh'Fanuc_M16iB20.M16iB20_Mesh';
-		PhysicsAsset=PhysicsAsset'Fanuc_M16iB20.M16iB20_Phys';
-		AnimTreeTemplate=AnimTree'Fanuc_M16iB20.M16iB20_Anim';
-		bHasPhysicsAssetInstance=true;
-		bSkipAllUpdateWhenPhysicsAsleep=true;
-		bUpdateKinematicBonesFromAnimation=false;
+	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
+		SkeletalMesh=SkeletalMesh'Fanuc_M16iB20.M16iB20_Mesh'
+		PhysicsAsset=PhysicsAsset'Fanuc_M16iB20.M16iB20_Phys'
+		AnimTreeTemplate=AnimTree'Fanuc_M16iB20.M16iB20_Anim'
+		bHasPhysicsAssetInstance=true
+		bSkipAllUpdateWhenPhysicsAsleep=true
+		bUpdateKinematicBonesFromAnimation=false
 
-		PhysicsWeight=0.0f;
-		CollideActors=true;
-		BlockActors=true;
-		BlockRigidBody=true;
-		BlockZeroExtent=true;
-		BlockNonZeroExtent=true;
+		PhysicsWeight=0.0
+		CollideActors=true
+		BlockActors=true
+		BlockRigidBody=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
 		RBChannel=RBCC_GameplayPhysics
 		RBCollideWithChannels=(Default=true, GameplayPhysics=true, EffectPhysics=true)
 	End Object
 	
-	BaseSkelComponent=SKMesh01;
-	SkelMeshComp=SKMesh01;
+	BaseSkelComponent=SKMesh01
+	SkelMeshComp=SKMesh01
 	
-	CollisionType=COLLIDE_BlockAll;
-	Components(1)=SKMesh01;
-	CollisionComponent=SKMesh01;
+	CollisionType=COLLIDE_BlockAll
+	Components(1)=SKMesh01
+	CollisionComponent=SKMesh01
 	
 	// Joint Max Limit (rad), Joint Min Limit (rad), Joint Max Speed (m/s or rad/s), Init Speed, Joint Max Torque
-	JointSpecs[0]=( MaxLimit=0, MinLimit=0, MaxSpeed=0, InitSpeed=0, MaxTorque=20 );
-	JointSpecs[1]=( MaxLimit=-2.967, MinLimit=2.967, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -170 to 170
-	JointSpecs[2]=( MaxLimit=-1.571, MinLimit=2.793, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -90 to 160
-	JointSpecs[3]=( MaxLimit=-2.967, MinLimit=4.538, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -170 to 260
-	JointSpecs[4]=( MaxLimit=-3.491, MinLimit=3.491, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -200 to 200
-	JointSpecs[5]=( MaxLimit=-2.443, MinLimit=2.443, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -140 to 140
-	JointSpecs[6]=( MaxLimit=-7.854, MinLimit=7.854, MaxSpeed=2, InitSpeed=2, MaxTorque=20 ); // -450 to 450
+	JointSpecs[0]=( MaxLimit=0, MinLimit=0, MaxSpeed=0, MaxTorque=20 )
+	JointSpecs[1]=( MaxLimit=-2.967, MinLimit=2.967, MaxSpeed=2, MaxTorque=20 ) // -170 to 170
+	JointSpecs[2]=( MaxLimit=-1.571, MinLimit=2.793, MaxSpeed=2, MaxTorque=20 ) // -90 to 160
+	JointSpecs[3]=( MaxLimit=-2.967, MinLimit=4.538, MaxSpeed=2, MaxTorque=20 ) // -170 to 260
+	JointSpecs[4]=( MaxLimit=-3.491, MinLimit=3.491, MaxSpeed=2, MaxTorque=20 ) // -200 to 200
+	JointSpecs[5]=( MaxLimit=-2.443, MinLimit=2.443, MaxSpeed=2, MaxTorque=20 ) // -140 to 140
+	JointSpecs[6]=( MaxLimit=-7.854, MinLimit=7.854, MaxSpeed=2, MaxTorque=20 ) // -450 to 450*/
 }

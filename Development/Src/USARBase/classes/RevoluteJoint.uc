@@ -23,8 +23,21 @@ var bool InverseMeasure;
 // Inverts the measured angle's sign
 var bool InverseMeasureAngle;
 
+// Gets the maximum value of this joint (only applies for some joint types)
+simulated function float GetMax()
+{
+	return LimitLow;
+}
+
+// Gets the minimum value of this joint (only applies for some joint types)
+simulated function float GetMin()
+{
+	return LimitHigh;
+}
+
 // Configure the JointItem for this joint
-reliable server function JointItem Init(JointItem ji) {
+reliable server function JointItem Init(JointItem ji)
+{
 	local vector savedLocation;
 	local rotator savedRotation, angle;
 	local int trueZero, hi, lo, limit;
@@ -55,7 +68,7 @@ reliable server function JointItem Init(JointItem ji) {
 		RestoreRotatePart(ji.Child, savedLocation, savedRotation);
 	// Enable angular drive position and set the initial drive parameters
 	ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, true);
-	ji.SetStiffness(1.0);
+	ji.SetStiffness(ji.Spec.Stiffness);
 	ji.SetTarget(0.0);
 	return ji;
 }
@@ -133,4 +146,6 @@ simulated function Update(JointItem ji)
 defaultproperties
 {
 	MaxForce=50000.0
+	LimitHigh=0.0
+	LimitLow=0.0
 }

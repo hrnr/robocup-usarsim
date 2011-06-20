@@ -162,15 +162,6 @@ function ProcessAction(ParsedMessage parsedMessage)
 	case "INIT":
 		InitReceived(parsedMessage);
 		break;
-	case "POSALL":
-		ProcessPosAll(parsedMessage);
-		break;
-	case "TRACE":
-		ProcessTrace(parsedMessage);
-		break;
-	case "PAUSE":
-		ProcessPause(parsedMessage);
-		break;
 	case "GETSTARTPOSES":
 		ProcessGetStartPoses(parsedMessage);
 		break;
@@ -189,26 +180,8 @@ function ProcessAction(ParsedMessage parsedMessage)
 		case "TEST":
 			ProcessTest(parsedMessage);
 			break;
-		case "CAMERA":
-			ProcessCamera(parsedMessage);
-			break;
-		case "TURN":
-			ProcessTurn(parsedMessage);
-			break;
 		case "DRIVE":
 			ProcessDrive(parsedMessage);
-			break;
-		case "SETBALL":
-			ProcessSetball(parsedMessage);
-			break;
-		case "FACTORY":
-			ProcessFactoryController(parsedMessage);
-			break;
-		case "SENSOR":
-			ProcessSensor(parsedMessage);
-			break;
-		case "EFFECTOR":
-			ProcessEffector(parsedMessage);
 			break;
 		case "GETGEO":
 			ProcessGetGeo(parsedMessage);
@@ -233,18 +206,6 @@ function ProcessTest(ParsedMessage parsedMessage)
 		theBot.GotoState('Startup', 'Test');
 }
 
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessCamera(ParsedMessage parsedMessage)
-{
-
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessTurn(ParsedMessage parsedMessage)
-{
-
-}
-
 // Handle a DRIVE command which varies by robot
 function ProcessDrive(ParsedMessage parsedMessage)
 {
@@ -262,12 +223,6 @@ function ProcessDrive(ParsedMessage parsedMessage)
 		bot.SetHeadLights(value == "true");
 	// Individual vehicle drives
 	bot.Drive(parsedMessage);
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessSetBall(ParsedMessage parsedMessage)
-{
-
 }
 
 // Manipulate objects in the world
@@ -369,24 +324,6 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 			parsedMessage.GetArgVal("Type"));
 }
 
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessFactoryController(ParsedMessage parsedMessage)
-{
-
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessSensor(ParsedMessage parsedMessage)
-{
-
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessEffector(ParsedMessage parsedMessage)
-{
-
-}
-
 // Gets geometric configuration from the robot
 function ProcessGetGeo(ParsedMessage parsedMessage)
 {
@@ -446,80 +383,50 @@ function ProcessSet(ParsedMessage parsedMessage)
 // Manipulates mission packages
 function ProcessMisPkg(ParsedMessage parsedMessage)
 {
-	local String misPkgName;
+	local MissionPackage misPkg;
 	local int i;
-	local int argCount;
-	local int link;
+	local int link, order, gripper, seq;
 	local float value;
-	local int order;
-	local int gripper;
-	local int seq;
 	local array<String> receivedArgs;
 	local array<String> receivedVals;
 	
-	MisPkgName = parsedMessage.GetArgVal("Name");
-	for (i = 0; i < theBot.Pawn.Children.length; i++)
-		if (theBot.Pawn.Children[i].Tag == name(MisPkgName))
+	if (theBot.Pawn.isA('USARVehicle'))
+		misPkg = USARVehicle(theBot.Pawn).GetMisPkg(parsedMessage.GetArgVal("Name"));
+	else
+		misPkg = None;
+	
+	// Found mission package, update
+	if (misPkg != None)
+	{
+		ReceivedArgs = parsedMessage.GetArguments();
+		ReceivedVals = parsedMessage.GetValues();
+		for (i = 0; i < ReceivedArgs.Length; i++) 
 		{
-			ReceivedArgs = parsedMessage.GetArguments();
-			ReceivedVals = parsedMessage.GetValues();
-			for (argCount = 0; argCount < ReceivedArgs.Length; argCount++) 
+			// Case 1: Link Value Order
+			if (i + 2 < ReceivedArgs.Length && ReceivedArgs[i] == "Link" &&
+				ReceivedArgs[i + 1] == "Value" && ReceivedArgs[i + 2] == "Order")
 			{
-				// Case 1: Link Value Order
-				if (Caps(ReceivedArgs[argCount]) == "LINK") 
-				{
-					Link = int(ReceivedVals[argCount]);
-					argCount++;
-					if (argCount < ReceivedArgs.Length && Caps(ReceivedArgs[argCount]) == "VALUE") 
-					{
-						Value = float(ReceivedVals[argCount]);
-						argCount++;
-						if (argCount < ReceivedArgs.Length && Caps(ReceivedArgs[argCount]) == "ORDER") 
-						{
-							Order = int(ReceivedVals[argCount]);
-							MissionPackage(theBot.Pawn.Children[i]).setThisRotation(Link, Value, Order);
-						}
-					}
-					else if (argCount < ReceivedArgs.Length)
-						argCount--;
-				}
-				// Case 2: Gripper
-				if (Caps(ReceivedArgs[argCount]) == "GRIPPER") 
-				{
-					if (bDebug)
-						LogInternal("Gripper Command called");
-					Gripper = int(ReceivedVals[argCount]);
-					MissionPackage(theBot.Pawn.Children[i]).setGripperToBox(Gripper);
-				}
-				// Case 3: Sequence
-				if (Caps(ReceivedArgs[argCount]) == "SEQ") 
-				{
-					if (bDebug)
-						LogInternal("Sequence Command called");
-					Seq = int(ReceivedVals[argCount]);
-					MissionPackage(theBot.Pawn.Children[i]).runSequence(Seq);
-				}
+				Link = int(ReceivedVals[i++]);
+				Value = float(ReceivedVals[i++]);
+				Order = int(ReceivedVals[i]);
+				misPkg.setThisRotation(Link, Value, Order);
 			}
-			return;
+			// Case 2: Gripper
+			else if (ReceivedArgs[i] == "Gripper") 
+			{
+				Gripper = int(ReceivedVals[i]);
+				misPkg.setGripperToBox(Gripper);
+			}
+			// Case 3: Sequence
+			else if (ReceivedArgs[i] == "Seq") 
+			{
+				Seq = int(ReceivedVals[i]);
+				misPkg.runSequence(Seq);
+			}
 		}
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessPosAll(ParsedMessage parsedMessage)
-{
-
-}
-
-// TODO It does not appear that tracing works in the UT3 implementation
-function ProcessTrace(ParsedMessage parsedMessage)
-{
-
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function ProcessPause(ParsedMessage parsedMessage)
-{
-
+	}
+	else
+		LogInternal("Mission package not found!");
 }
 
 // Returns a list of valid starting positions for a robot
@@ -559,7 +466,8 @@ function receiveMessage(String Text)
 // Sends a line of text to the client
 function SendLine(String text, optional bool bNoCRLF)
 {
-	if (text != "") {
+	if (text != "")
+	{
 		if (bDebug)
 			LogInternal("BotConnection: Sending " $ text);
 		if (bNoCRLF)
@@ -567,12 +475,6 @@ function SendLine(String text, optional bool bNoCRLF)
 		else
 			SendText(text $ Chr(13) $ Chr(10));
 	}
-}
-
-// TODO Not sure what this function should do - not in the wiki API nor in UT3 implementation
-function int findFirstCameraMisPkg()
-{
-
 }
 
 // Fire right up into the loop for sending updates

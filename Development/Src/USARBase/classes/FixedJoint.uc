@@ -12,8 +12,31 @@
  */
 class FixedJoint extends Joint config(USAR);
 
+// Creates and returns a fixed joint between the parent and child
+simulated static function Hinge CreateFixJoint(Actor par, Actor chi)
+{
+	local RB_ConstraintSetup setup;
+	local Hinge cons;
+	
+	cons = par.Spawn(class'Hinge', par, '', par.Location, par.Rotation);
+	setup = cons.ConstraintSetup;
+	// Cannot set these in default properties, do it here
+	setup.LinearXSetup.LimitSize = 0.0;
+	setup.LinearYSetup.LimitSize = 0.0;
+	setup.LinearZSetup.LimitSize = 0.0;
+	// Init constraint and return it
+	cons.InitConstraint(par, chi, , , 6000.0);
+	cons.ConstraintInstance.SetAngularPositionDrive(false, false);
+	// Emulate default FixedJoint values and re-init
+	cons.ConstraintInstance.SetAngularDriveParams(50000.0, 0.25, 50000.0);
+	cons.ConstraintInstance.InitConstraint(par.CollisionComponent, chi.CollisionComponent,
+		cons.ConstraintSetup, 1, par, par.CollisionComponent, false);
+	return cons;
+}
+
 // Configure the JointItem for this joint as an angular joint that can't be moved
-reliable server function JointItem Init(JointItem ji) {
+reliable server function JointItem Init(JointItem ji)
+{
 	local RB_ConstraintSetup setup;
 	
 	ji = super.Init(ji);
@@ -23,7 +46,7 @@ reliable server function JointItem Init(JointItem ji) {
 	setup.LinearZSetup.LimitSize = 0.0;
 	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
 	ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
-	ji.SetStiffness(1.0);
+	ji.SetStiffness(ji.Spec.Stiffness);
 	return ji;
 }
 

@@ -25,6 +25,20 @@ var vector Offset;
 var Part Parent;
 // Transforms the joint's location to be relative to this part; cannot be relative to a joint
 var Part RelativeTo;
+// Default value only (updated value in JointItems) of maximum force (torque)
+var float Stiffness;
+
+// Gets the maximum value of this joint (only applies for some joint types)
+simulated function float GetMax()
+{
+	return 0.0;
+}
+
+// Gets the minimum value of this joint (only applies for some joint types)
+simulated function float GetMin()
+{
+	return 0.0;
+}
 
 // Finds the rotation of MyRotation relative to BaseRotation (convenience)
 simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseRotation)
@@ -36,11 +50,13 @@ simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseR
 }
 
 // Configure the JointItem for this joint
-reliable server function JointItem Init(JointItem ji) {
+reliable server function JointItem Init(JointItem ji)
+{
 	ji.Constraint = ji.Spawn(class'Hinge', ji, '', ji.Location, ji.Rotation);
 	ji.CurValue = 0;
 	ji.MaxForce = MaxForce;
 	ji.Spec = self;
+	ji.Stiffness = Stiffness;
 	// Mimic value from earlier iterations of UDKUSAR
 	ji.Damping = 0.25;
 	// Cannot set these in default properties, do it here
@@ -99,4 +115,5 @@ simulated function Update(JointItem ji)
 defaultproperties
 {
 	MaxForce=50000.0
+	Stiffness=1.0
 }

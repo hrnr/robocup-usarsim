@@ -7,38 +7,21 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-class vacuumGripArm extends MissionPackage placeable config (USAR);
+/*
+ * VacuumArm - parents mission packages with suction/vacuum grippers
+ * TODO This type of arm does not yet have its grippers working
+ */
+class VacuumArm extends MissionPackage placeable config (USAR);
 
-var Actor grippedObject;
-var Pose grippedObjectOffset;
-var Pose vehiclePoseInGripped; // gives the vehicle pose in the gripped objects frame. 
-                               // This pose should remain constant while object is gripped.
-var int gDebug;
-var int dirty; // should we turn back on physics
-var float suctionLength; // the distance away from the effector that the suction will work
-var float lastBoneOffset; // the length of the last bone; offset from elbow to end
-var int vacuumBone; // the number of the bone that the vacuum is attached to
-var EPhysics originalPhysics;
-var EPhysics platformPhysics;
-var int vacuumBreak; // 0 - platform will be blocked by collisions, 1 - vacuum will break due to collisions.
+var Actor GrippedObject;
+var float SuctionLength; // the distance away from the effector that the suction will work
+var int VacuumBreak; // 0 - platform will be blocked by collisions, 1 - vacuum will break due to collisions.
 
+/*
 simulated function ConvertParam()
 {
 	super.ConvertParam();
 	suctionLength = -class'UnitsConverter'.static.LengthToUU(suctionLength);
-	lastBoneOffset = -class'UnitsConverter'.static.LengthToUU(lastBoneOffset) * DrawScale;
-}
-
-simulated function PostBeginPlay()
-{
-	local array<name> boneNames;
-	
-	super.postBeginPlay();
-	SetBase(Owner);
-	SkelMeshComp.GetBoneNames(boneNames);
-	if (vacuumBone < 0 || vacuumBone >= boneNames.Length)
-		vacuumBone = boneNames.Length - 1;
-	dirty = 0;
 }
 
 reliable server function runSequence(int Sequence)
@@ -46,10 +29,10 @@ reliable server function runSequence(int Sequence)
 	switch(Sequence)
 	{
 	case 1:
-		gDebug = 1;
+		bDebug = true;
 		break;
 	case 0:
-		gDebug = 0;
+		bDebug = false;
 		break;
 	default:
 	}
@@ -61,18 +44,18 @@ function gripObject(Actor _object)
 	local Pose boxTransform;
 	local Pose boxTransformInv;
 	local vector lastBone, rayAxis;
-
+	
 	// Only one component that matches
 	foreach ComponentList (class 'SkeletalMeshComponent', SkelMeshComp) 
 	{
 		SkelMeshComp.GetBoneNames(boneNames);
 		break;
 	}
-		
+	
 	grippedObject = _object;
 	originalPhysics = grippedObject.Physics;
 	grippedObject.SetPhysics(PHYS_None);
-
+	
 	// Get last joint information
 	rayAxis = SkelMeshComp.GetBoneAxis(boneNames[vacuumBone], AXIS_Z);
 	lastBone = SkelMeshComp.GetBoneLocation(boneNames[vacuumBone], 0);
@@ -84,8 +67,6 @@ function gripObject(Actor _object)
 	boxTransform.tran = grippedObject.Location;
 	boxTransform.rot = QuatFromRotator(grippedObject.Rotation);
 	grippedObjectOffset = class'PoseMath'.static.PosePoseMult(grippedObjectOffset, boxTransform);
-	if (gDebug > 0)
-		LogInternal( "Set grippedObject to bone " $ (boneNames.Length-1) );
 	// Compute vehiclePoseInGripped
 	boxTransformInv = class'PoseMath'.static.PoseInvert(boxTransform);
 	// Overloaded use of boxTransform to represent vehicle pose
@@ -134,9 +115,6 @@ simulated function Tick(float DT2)
 		// Get location of rayEnd (only used for drawing line)
 		rayEnd = lastBone + (rayAxis * suctionLength);
 		
-		if (gDebug > 0)
-			DrawDebugLine(rayStart, rayEnd, 0, 0, 255); // blue line for ray
-		
 		if (grippedObject != None) {
 			tempMatrix.rot = SkelMeshComp.GetBoneQuaternion(boneNames[vacuumBone], 0);
 			tempMatrix.tran = rayStart;
@@ -167,9 +145,6 @@ simulated function Tick(float DT2)
 					dirty = 2;
 				}
 			}
-			if (gDebug > 0)
-				// Draw green line to gripped object
-				DrawDebugLine(rayStart, grippedObject.Location, 0, 255, 0);
 		}
 	}
     super.tick(DT2);
@@ -187,7 +162,6 @@ reliable server function setGripperToBox(int Gripper)
 		case 0:
 			ungripObject();
 			break;
-
 		case 1:
 			// Only one component that matches
 			foreach ComponentList (class 'SkeletalMeshComponent', SkelMeshComp) 
@@ -206,31 +180,18 @@ reliable server function setGripperToBox(int Gripper)
 			rayEnd = lastBone + (rayAxis * suctionLength);
 
 			A = Trace(HitLocation, HitNormal, rayEnd, rayStart, true);
-			if (A == None)
-				`log("Trace: Nothing to grip from bone " $ (boneNames.Length - 1));
-			else 
-			{
-				if (gDebug > 0)
-				{
-					`log(A);
-					`log("... can be gripped...");
-				}
+			if (A != None)
 				gripObject(A);
-			}
 			break;
-
 		default:
-			LogInternal("kr60ArmGripper: Default");
 			break;
 	}
 }
+*/
 
 defaultproperties
 {
-	vacuumBreak=1;
-	vacuumBone=-1;
-	grippedObject=None;
-	gDebug=0;
-	suctionLength=.25;
-	lastBoneOffset=.66;
+	VacuumBreak=1
+	GrippedObject=None
+	SuctionLength=.25
 }

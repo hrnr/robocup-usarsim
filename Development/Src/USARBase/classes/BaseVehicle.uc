@@ -15,10 +15,8 @@ class BaseVehicle extends Pawn config(USAR) abstract;
 // FIXME delete
 struct SpecItem {
 	var class<Actor> ItemClass;
-	var class<Actor> VehicleClass;
 	var name Parent;
 	var String ItemName;
-	var name Platform;
 	var vector Position;
 	var vector Direction;
 	var rotator uuDirection;
@@ -58,6 +56,7 @@ simulated event Destroyed()
 {
 	local int i;
 	
+	super.Destroyed();
 	// Remove all parts
 	for (i = 0; i < Parts.length; i++)
 		Parts[i].Destroy();
@@ -82,7 +81,7 @@ function String GetGeoData()
 }
 
 // Gets a part's actor representation using its spec name
-simulated function PhysicalItem GetPartByName(name partName)
+simulated function Item GetPartByName(name partName)
 {
 	local int i;
 	local PhysicalItem p;
@@ -91,10 +90,14 @@ simulated function PhysicalItem GetPartByName(name partName)
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('PhysicalItem'))
 		{
+			// Check spec for the name
 			p = PhysicalItem(Parts[i]);
-			if (Caps(String(p.Spec.Name)) == Caps(String(partName)))
+			if (p.Spec.Name == partName)
 				return p;
 		}
+		else if (Parts[i].Name == partName)
+			// Matched spawned item (sensor, mission package)
+			return Parts[i];
 	
 	// Not found
 	return None;

@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * Parents all static mesh physics objects added to the world.
+ * PhysicalItem - Parents all static mesh physics objects added to the world
  */
 class PhysicalItem extends Item;
 

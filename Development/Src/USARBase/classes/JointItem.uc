@@ -14,7 +14,7 @@
 class JointItem extends Item config(USAR);
 
 // The child item controlled by this joint
-var PhysicalItem Child;
+var Item Child;
 // The constraint handling this joint
 var Hinge Constraint;
 // The angle this joint is currently pointing
@@ -26,7 +26,7 @@ var float MaxForce;
 // Used by many joint types when determining rotation amounts
 var float OldValue;
 // The parent item controlled by this joint
-var PhysicalItem Parent;
+var Item Parent;
 // The specifier which declared this joint
 var Joint Spec;
 // Joint stiffness

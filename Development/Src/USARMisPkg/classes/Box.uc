@@ -14,12 +14,12 @@ defaultproperties
 	bWakeOnLevelStart=true;
 	
 	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'SBox2.SM.SBox2';
+		StaticMesh=StaticMesh'SBox2.SM.SBox2'
 		bNotifyRigidBodyCollision=true 
 		HiddenGame=false
 		ScriptRigidBodyCollisionThreshold=0.001 
 		LightingChannels=(Dynamic=true) 
 	End Object
 	
-	CollisionType=COLLIDE_BlockAll;
+	CollisionType=COLLIDE_BlockAll
 }

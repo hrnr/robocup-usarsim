@@ -7,30 +7,31 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-class kr5Arm extends krArm placeable config (USAR);
+// TODO Has no model
+class kr5Arm extends GripperArm placeable config (USAR);
 
 defaultproperties
 {
-	Begin Object Class=SkeletalMeshComponent Name=SKMesh01
-		SkeletalMesh=SkeletalMesh'kr5Arm.SkeletalMesh.kr5Arm';
-		PhysicsAsset=PhysicsAsset'kr5Arm.SkeletalMesh.kr5Arm_Physics';
-		AnimTreeTemplate=AnimTree'kr5Arm.SkeletalMesh.kr5Arm_AnimTree';
-		bHasPhysicsAssetInstance=true;
-		bSkipAllUpdateWhenPhysicsAsleep=true;
-		bUpdateKinematicBonesFromAnimation=false;
+	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
+		SkeletalMesh=SkeletalMesh'kr5Arm.SkeletalMesh.kr5Arm'
+		PhysicsAsset=PhysicsAsset'kr5Arm.SkeletalMesh.kr5Arm_Physics'
+		AnimTreeTemplate=AnimTree'kr5Arm.SkeletalMesh.kr5Arm_AnimTree'
+		bHasPhysicsAssetInstance=true
+		bSkipAllUpdateWhenPhysicsAsleep=true
+		bUpdateKinematicBonesFromAnimation=false
 
-		PhysicsWeight=0.0f;
-		CollideActors=true;
-		BlockActors=true;
-		BlockRigidBody=true;
-		BlockZeroExtent=true;
-		BlockNonZeroExtent=true;
+		PhysicsWeight=0.0
+		CollideActors=true
+		BlockActors=true
+		BlockRigidBody=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
 		RBChannel=RBCC_GameplayPhysics
 		RBCollideWithChannels=(Default=true, GameplayPhysics=true, EffectPhysics=true)
 	End Object
 
-	BaseSkelComponent=SKMesh01;
-	SkelMeshComp=SKMesh01;
-	Components(1)=SKMesh01;
-	CollisionComponent=SKMesh01;
+	BaseSkelComponent=SKMesh01
+	SkelMeshComp=SKMesh01
+	Components(1)=SKMesh01
+	CollisionComponent=SKMesh01*/
 }

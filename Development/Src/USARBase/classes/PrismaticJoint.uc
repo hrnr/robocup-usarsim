@@ -30,7 +30,8 @@ simulated function float GetMin()
 }
 
 // Configure the JointItem for this joint
-reliable server function JointItem Init(JointItem ji) {
+reliable server function JointItem Init(JointItem ji)
+{
 	local vector savedLocation, amount;
 	local int trueZero, hi, lo;
 	local RB_ConstraintSetup setup;
@@ -53,7 +54,7 @@ reliable server function JointItem Init(JointItem ji) {
 	RestoreMovePart(ji.Child, savedLocation);
 	// Enable angular drive position and set the initial drive parameters
 	ji.Constraint.ConstraintInstance.SetLinearPositionDrive(true, false, false);
-	ji.SetStiffness(1.0);
+	ji.SetStiffness(ji.Spec.Stiffness);
 	ji.SetTarget(0.0);
 	return ji;
 }
