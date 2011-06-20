@@ -22,10 +22,12 @@ enum ESide
 	SIDE_None
 };
 
-// Whether the wheen can be driven
+// Whether the wheel can be driven
 var bool bIsDriven;
 // Whether the wheel can also rotate in the other direction (caster/omni wheels)
 var bool bOmni;
+// The maximum speed of the wheel in rads/s
+var float MaxVelocity;
 // The side of the robot this joint inhabits
 var ESide Side;
 
@@ -62,6 +64,8 @@ function SetVelocity(JointItem ji, float target)
 {
 	local vector vel;
 	
+	if (target > MaxVelocity) target = MaxVelocity;
+	if (target < -MaxVelocity) target = -MaxVelocity;
 	vel.X = target;
 	vel.Y = 0;
 	vel.Z = 0;
@@ -98,5 +102,6 @@ defaultproperties
 {
 	bIsDriven=true
 	bOmni=false
+	MaxVelocity=6.283
 	Side=SIDE_None
 }
