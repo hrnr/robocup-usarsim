@@ -627,7 +627,7 @@ public class IridiumUI {
 			if (isInDegrees())
 				value = (float)Math.toRadians(value);
 			sendMessage("MISPKG {Name " + misName.getEditor().getItem() + "} {Link " + link +
-				String.format("} {Order 0} {Value %.4f}", value));
+				String.format("} {Value %.4f} {Order 0}", value));
 		} catch (NumberFormatException e) {
 			Utils.showWarning(mainUI, "Enter valid link and target for mission package.");
 		}
