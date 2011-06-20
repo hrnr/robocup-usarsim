@@ -17,6 +17,18 @@ var float LimitHigh;
 // Lower limit of joint's travel
 var float LimitLow;
 
+// Gets the maximum value of this joint (only applies for some joint types)
+simulated function float GetMax()
+{
+	return LimitLow;
+}
+
+// Gets the minimum value of this joint (only applies for some joint types)
+simulated function float GetMin()
+{
+	return LimitHigh;
+}
+
 // Configure the JointItem for this joint
 reliable server function JointItem Init(JointItem ji) {
 	local vector savedLocation, amount;
@@ -33,14 +45,14 @@ reliable server function JointItem Init(JointItem ji) {
 	trueZero = int((-hi - lo) / 2.0);
 	ji.TrueZero = trueZero;
 	// Setup joint limits of movement
-	setup.LinearZSetup.LimitSize = hi + trueZero;
+	setup.LinearXSetup.LimitSize = hi + trueZero;
 	// Perform fix to handle asymmetrical joints
-	amount.Z = trueZero;
+	amount.X = trueZero;
 	TempMovePart(ji, ji.Child, amount, savedLocation);
 	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
 	RestoreMovePart(ji.Child, savedLocation);
 	// Enable angular drive position and set the initial drive parameters
-	ji.Constraint.ConstraintInstance.SetLinearPositionDrive(false, false, true);
+	ji.Constraint.ConstraintInstance.SetLinearPositionDrive(true, false, false);
 	ji.SetStiffness(1.0);
 	ji.SetTarget(0.0);
 	return ji;
@@ -66,7 +78,7 @@ function SetTarget(JointItem ji, float value)
 	local vector pos;
 	
 	// Update the values to match new target
-	pos.Z = value + ji.TrueZero;
+	pos.X = class'UnitsConverter'.static.LengthToUU(value) + ji.TrueZero;
 	SetLinearTarget(ji, pos);
 }
 
