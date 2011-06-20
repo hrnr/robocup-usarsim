@@ -19,16 +19,21 @@ function Drive(ParsedMessage message)
 	local int i;
 	local JointItem ji;
 	local WheelJoint jt;
-	local String ls, rs;
-	local float leftSpeed, rightSpeed;
+	local String ls, rs, nm;
+	local float left, leftSpeed, right, rightSpeed;
+	local bool norm;
 	
 	ls = message.GetArgVal("Left");
 	rs = message.GetArgVal("Right");
+	nm = message.GetArgVal("Normalized");
+	norm = false;
 	if (ls != "" && rs != "")
 	{
 		// Valid drive message
 		leftSpeed = float(ls);
 		rightSpeed = float(rs);
+		if (nm != "")
+			norm = (nm == "true");
 		for (i = 0; i < Parts.Length; i++)
 			if (Parts[i].IsJoint())
 			{
@@ -36,13 +41,24 @@ function Drive(ParsedMessage message)
 				if (ji.JointIsA('WheelJoint'))
 				{
 					jt = WheelJoint(ji.Spec);
+					// Scale velocity
+					if (norm)
+					{
+						left = leftSpeed * jt.MaxVelocity / 100.;
+						right = rightSpeed * jt.MaxVelocity / 100.;
+					}
+					else
+					{
+						left = leftSpeed;
+						right = rightSpeed;
+					}
 					// Driven wheels are moved according to their side
 					if (jt.bIsDriven)
 					{
 						if (jt.Side == SIDE_Left)
-							ji.SetVelocity(leftSpeed);
+							ji.SetVelocity(left);
 						else if (jt.Side == SIDE_Right)
-							ji.SetVelocity(rightSpeed);
+							ji.SetVelocity(right);
 					}
 				}
 			}

@@ -159,6 +159,7 @@ defaultproperties
 		Side=SIDE_Right
 		Offset=(X=.124,Y=.18,Z=.048)
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.3
 	End Object
 	Joints.Add(FRWheelRoll)
 
@@ -168,6 +169,7 @@ defaultproperties
 		Side=SIDE_Left
 		Offset=(X=.124,Y=-.18,Z=.048)
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.3
 	End Object
 	Joints.Add(FLWheelRoll)
 
@@ -177,6 +179,7 @@ defaultproperties
 		Side=SIDE_Right
 		Offset=(X=-.124,Y=.18,Z=.048)
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.3
 	End Object
 	Joints.Add(BRWheelRoll)
 
@@ -186,6 +189,7 @@ defaultproperties
 		Side=SIDE_Left
 		Offset=(X=-.124,Y=-.18,Z=.048)
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.3
 	End Object
 	Joints.Add(BLWheelRoll)
 

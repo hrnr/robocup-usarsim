@@ -53,6 +53,7 @@ defaultproperties
 		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.5
 	End Object
 	Joints.Add(BRWheelRoll)
 
@@ -63,6 +64,7 @@ defaultproperties
 		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.5
 	End Object
 	Joints.Add(BLWheelRoll)
 
@@ -75,6 +77,7 @@ defaultproperties
 		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
+		MaxVelocity=1.5
 	End Object
 	Joints.Add(CasterWheelJoint)
 }
