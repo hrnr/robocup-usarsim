@@ -192,7 +192,6 @@ public class IridiumUI {
 		setConnected(true);
 		// Startup info that would be nice to populate boxes
 		sendInternalMessage("GETSTARTPOSES");
-		sendInternalMessage("GETCONF {Type MisPkg}");
 	}
 	/**
 	 * Creates a button.
@@ -612,8 +611,13 @@ public class IridiumUI {
 			}
 		else
 			etc = "{Start " + pose.getTag() + "}";
-		if (etc != null)
+		if (etc != null) {
 			sendMessage("INIT {ClassName " + botClass + "} " + etc);
+			// After init, send a mission package configuration command to populate box
+			updateMisPkg(null);
+			updateJoints(null);
+			sendInternalMessage("GETCONF {Type MisPkg}");
+		}
 	}
 	/**
 	 * Sends a MIS command with the appropriate values.
