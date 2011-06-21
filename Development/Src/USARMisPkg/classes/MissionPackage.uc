@@ -92,13 +92,11 @@ simulated event Destroyed()
 // Finds the index of the joint whose child is the specified part
 simulated function int FindParentIndex(Item p)
 {
-	local name specName;
 	local int i;
 
-	specName = p.Name;
 	// Find first joint whose "child" field is the specified part
-	for (i = 0; i < Joints.Length; i++)
-		if (Joints[i].Child.Name == specName)
+	for (i = 0; i < JointItems.Length; i++)
+		if (JointItems[i].Child.Name == p.Name)
 			return i;
 	return -1;
 }
