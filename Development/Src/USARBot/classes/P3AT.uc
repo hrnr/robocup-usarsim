@@ -200,75 +200,115 @@ defaultproperties
 	End Object
 	Joints.Add(ChassisFixed)
 
-	Begin Object Class=FixedJoint Name=FRRBumperFixed
+	Begin Object Class=PrismaticJoint Name=FRRBumperPrismatic
 		Child=ChassisBottom
 		Parent=FRRBumper
 		Offset=(X=.288,Y=.232,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(FRRBumperFixed)
+	Joints.Add(FRRBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=FRBumperFixed
+	Begin Object Class=PrismaticJoint Name=FRBumperPrismatic
 		Child=ChassisBottom
 		Parent=FRBumper
 		Offset=(X=.296,Y=.116,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(FRBumperFixed)
+	Joints.Add(FRBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=FBumperFixed
+	Begin Object Class=PrismaticJoint Name=FBumperPrismatic
 		Child=ChassisBottom
 		Parent=FBumper
 		Offset=(X=.296,Y=0,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(FBumperFixed)
+	Joints.Add(FBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=FLBumperFixed
+	Begin Object Class=PrismaticJoint Name=FLBumperPrismatic
 		Child=ChassisBottom
 		Parent=FLBumper
 		Offset=(X=.296,Y=-.116,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(FLBumperFixed)
+	Joints.Add(FLBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=FLLBumperFixed
+	Begin Object Class=PrismaticJoint Name=FLLBumperPrismatic
 		Child=ChassisBottom
 		Parent=FLLBumper
 		Offset=(X=.288,Y=-.232,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(FLLBumperFixed)
+	Joints.Add(FLLBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=BRRBumperFixed
+	Begin Object Class=PrismaticJoint Name=BRRBumperPrismatic
 		Child=ChassisBottom
 		Parent=BRRBumper
 		Offset=(X=-.288,Y=.232,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(BRRBumperFixed)
+	Joints.Add(BRRBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=BRBumperFixed
+	Begin Object Class=PrismaticJoint Name=BRBumperPrismatic
 		Child=ChassisBottom
 		Parent=BRBumper
 		Offset=(X=-.296,Y=.116,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(BRBumperFixed)
+	Joints.Add(BRBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=BBumperFixed
+	Begin Object Class=PrismaticJoint Name=BBumperPrismatic
 		Child=ChassisBottom
 		Parent=BBumper
 		Offset=(X=-.296,Y=0,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(BBumperFixed)
+	Joints.Add(BBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=BLBumperFixed
+	Begin Object Class=PrismaticJoint Name=BLBumperPrismatic
 		Child=ChassisBottom
 		Parent=BLBumper
 		Offset=(X=-.296,Y=-.116,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(BLBumperFixed)
+	Joints.Add(BLBumperPrismatic)
 
-	Begin Object Class=FixedJoint Name=BLLBumperFixed
+	Begin Object Class=PrismaticJoint Name=BLLBumperPrismatic
 		Child=ChassisBottom
 		Parent=BLLBumper
 		Offset=(X=-.288,Y=-.232,Z=.088)
+		Direction=(X=0,Y=-1.571,Z=0)
+		LimitLow=-0.02
+		MaxForce=50
+		Stiffness=0.01
 	End Object
-	Joints.Add(BLLBumperFixed)
-
+	Joints.Add(BLLBumperPrismatic)
+	
 	WheelRadius=0.098
 }
