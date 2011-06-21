@@ -9,8 +9,8 @@
 
 class RangeSensor extends Sensor config(USAR) abstract;
 
-var config float MaxRange,MinRange;
-var Rotator curRot;
+var config float MaxRange, MinRange;
+var rotator curRot;
 var config bool bSendRange;
 
 simulated function ConvertParam()
@@ -39,18 +39,21 @@ function float GetRange()
 	return range;
 }
 
+// Get range data from the program as a string
+function String GetData()
+{
+	return "{Name " $ ItemName $ "} {Range " $
+		class'UnitsConverter'.static.FloatString(GetRange()) $ "}";
+}
+
 // Don't call parent to avoid sending excess data if bSendRange is true
 simulated function ClientTimer()
 {
-	local float range;
-	
 	curRot = Rotation;
-	range = getRange();
 	if (bSendRange)
-		RangeSendDelegate(self, range);
+		RangeSendDelegate(self, GetRange());
 	else
-		MessageSendDelegate(getHead() @ "{Name " $ ItemName $ "} {Range " $
-			class'UnitsConverter'.static.FloatString(range) $ "}");
+		MessageSendDelegate(GetHead() @ GetData());
 }
 
 delegate RangeSendDelegate(Actor a, float range)
