@@ -21,14 +21,6 @@ defaultproperties
 	End Object
 	Body=Chassis
 	PartList.Add(Chassis)
-	
-	// Create Top part
-	Begin Object Class=Part Name=Top
-		Mesh=StaticMesh'Kiva_static.Top'
-		Offset=(X=0,Y=0,Z=-.164)
-		//Mass=
-	End Object
-	PartList.Add(Top)
 
 	// Front caster wheel
 	Begin Object Class=Part Name=FCasterWheel
@@ -107,16 +99,6 @@ defaultproperties
 		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(LWheelJoint)
-	
-	// Top joint
-	Begin Object Class=RevoluteJoint Name=TopJoint
-		Parent=Chassis
-		Child=Top
-		Offset=(X=0,Y=0,Z=-.164)
-		LimitLow=-6.28
-		LimitHigh=6.28
-	End Object
-	Joints.Add(TopJoint)
 	
 	WheelRadius=.098
 }
