@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * RevoluteJoint - used for revolving limited-range joints on mission packages and legs
+ * RevoluteJoint - used for revolving limited-range joints on actuators and legs
  */
 class RevoluteJoint extends Joint config(USAR);
 

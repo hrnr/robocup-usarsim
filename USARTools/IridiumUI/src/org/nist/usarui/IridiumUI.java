@@ -59,6 +59,9 @@ public class IridiumUI {
 	 */
 	public static final int PAD = 5;
 
+	private JTextField actLink;
+	private JComboBox actName;
+	private JTextField actValue;
 	private Icon badIcon;
 	private JLabel batteryLife;
 	private JComboBox commandType;
@@ -88,9 +91,6 @@ public class IridiumUI {
 	private JLabel levelName;
 	private EventListener listener;
 	private JComponent mainUI;
-	private JTextField misLink;
-	private JComboBox misName;
-	private JTextField misValue;
 	private JComboBox rawCommand;
 	private JList responseList;
 	private JCheckBox rotDegrees;
@@ -188,7 +188,7 @@ public class IridiumUI {
 		clearAllPanels();
 		closeAllDialogs();
 		updateJoints(null);
-		updateMisPkg(null);
+		updateActuators(null);
 		setConnected(true);
 		// Startup info that would be nice to populate boxes
 		sendInternalMessage("GETSTARTPOSES");
@@ -243,7 +243,7 @@ public class IridiumUI {
 		setConnected(false);
 		updateJoints(null);
 		updateLevel(null);
-		updateMisPkg(null);
+		updateActuators(null);
 		updateStartPoses(null);
 		updateTime(-1.f);
 		updateBattery(Integer.MAX_VALUE);
@@ -613,27 +613,27 @@ public class IridiumUI {
 			etc = "{Start " + pose.getTag() + "}";
 		if (etc != null) {
 			sendMessage("INIT {ClassName " + botClass + "} " + etc);
-			// After init, send a mission package configuration command to populate box
-			updateMisPkg(null);
+			// After init, send an actuator configuration command to populate box
+			updateActuators(null);
 			updateJoints(null);
-			sendInternalMessage("GETCONF {Type MisPkg}");
+			sendInternalMessage("GETCONF {Type Actuator}");
 		}
 	}
 	/**
-	 * Sends a MIS command with the appropriate values.
+	 * Sends an ACT command with the appropriate values.
 	 */
-	private void sendCmdMis() {
+	private void sendCmdAct() {
 		int link; float value;
 		try {
-			link = Integer.parseInt(misLink.getText());
-			value = Float.parseFloat(misValue.getText());
+			link = Integer.parseInt(actLink.getText());
+			value = Float.parseFloat(actValue.getText());
 			// Convert if needed
 			if (isInDegrees())
 				value = (float)Math.toRadians(value);
-			sendMessage("MISPKG {Name " + misName.getEditor().getItem() + "} {Link " + link +
-				String.format("} {Value %.4f} {Order 0}", value));
+			sendMessage("ACT {Name " + actName.getEditor().getItem() +
+				String.format("} {Link %d} {Value %.4f}", link, value));
 		} catch (NumberFormatException e) {
-			Utils.showWarning(mainUI, "Enter valid link and target for mission package.");
+			Utils.showWarning(mainUI, "Enter valid link index and target value for actuator.");
 		}
 	}
 	/**
@@ -705,8 +705,8 @@ public class IridiumUI {
 			sendCmdSet();
 			break;
 		case 3:
-			// MISPKG
-			sendCmdMis();
+			// ACT
+			sendCmdAct();
 			break;
 		case 4:
 			// GETGEO
@@ -736,6 +736,50 @@ public class IridiumUI {
 			connectButton.setIcon(badIcon);
 			connectButton.setText("Connect");
 		}
+	}
+	/**
+	 * Initializes the UI for "ACT" options.
+	 */
+	private void setupActUI() {
+		GridBagConstraints gbc = new GridBagConstraints();
+		// Layout: Actuator Options
+		final JComponent act = new JPanel(new GridBagLayout());
+		typePanel.add(act, "act");
+		// Combo Box: Actuator Name
+		actName = Utils.createEntryBox("Actuator name to control", "");
+		Utils.armActionListener(actName, listener, "send");
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = FIELD_INSETS;
+		act.add(actName, gbc);
+		// Text Field: Link to Move
+		actLink = createTextField("0", 4, "Link index to move");
+		actLink.setDocument(new RestrictInputDocument("0123456789", "0"));
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		act.add(actLink, gbc);
+		// Text Field: Target Position
+		actValue = createFloatTextField("Angle or position to move joint");
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		act.add(actValue, gbc);
+		// Label: Name
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = NO_INSETS;
+		act.add(Utils.createFieldLabel("Name ", actName), gbc);
+		// Label: Link
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		act.add(Utils.createFieldLabel("Link ", actLink), gbc);
+		// Label: Value
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		act.add(Utils.createFieldLabel("Value ", actValue), gbc);
 	}
 	/**
 	 * Initializes the UI for the bottom panel (command buttons and entries)
@@ -799,7 +843,7 @@ public class IridiumUI {
 		bottomPanel.add(commandPanel, BorderLayout.WEST);
 		// Combo Box: Command Type
 		commandType = Utils.createComboBox("Command type to send", "INIT", "DRIVE", "SET",
-			"MISPKG", "GETGEO", "GETCONF");
+			"ACT", "GETGEO", "GETCONF");
 		commandType.addActionListener(listener);
 		commandType.setActionCommand("card");
 		commandPanel.add(commandType, BorderLayout.NORTH);
@@ -938,7 +982,7 @@ public class IridiumUI {
 		final JPanel geoOptions = new JPanel(new GridBagLayout());
 		typePanel.add(geoOptions, "geoconf");
 		// Combo Box: Configuration Type
-		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "MisPkg",
+		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "Actuator",
 			"Gripper");
 		Utils.armActionListener(geoType, listener, "send");
 		gbc.gridx = 1;
@@ -1034,50 +1078,6 @@ public class IridiumUI {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		initPanel.add(Utils.createFieldLabel("Rotation ", initRotation), gbc);
-	}
-	/**
-	 * Initializes the UI for "MISPKG" options.
-	 */
-	private void setupMisUI() {
-		GridBagConstraints gbc = new GridBagConstraints();
-		// Layout: Mission Package Options
-		final JComponent misOptions = new JPanel(new GridBagLayout());
-		typePanel.add(misOptions, "mispkg");
-		// Combo Box: Mission Package Name
-		misName = Utils.createEntryBox("Mission package name to control", "");
-		Utils.armActionListener(misName, listener, "send");
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = FIELD_INSETS;
-		misOptions.add(misName, gbc);
-		// Text Field: Link to Move
-		misLink = createTextField("1", 4, "Link index to move");
-		misLink.setDocument(new RestrictInputDocument("0123456789", "1"));
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		misOptions.add(misLink, gbc);
-		// Text Field: Target Position
-		misValue = createFloatTextField("Angle or position to move joint");
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		misOptions.add(misValue, gbc);
-		// Label: Name
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.insets = NO_INSETS;
-		misOptions.add(Utils.createFieldLabel("Name ", misName), gbc);
-		// Label: Link
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		misOptions.add(Utils.createFieldLabel("Link ", misLink), gbc);
-		// Label: Value
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		misOptions.add(Utils.createFieldLabel("Value ", misValue), gbc);
 	}
 	/**
 	 * Initializes the ui for "SET" options.
@@ -1240,7 +1240,7 @@ public class IridiumUI {
 		setupInitUI();
 		setupDriveUI();
 		setupSetUI();
-		setupMisUI();
+		setupActUI();
 		setupGeoUI();
 	}
 	/**
@@ -1301,26 +1301,26 @@ public class IridiumUI {
 			levelName.setText("Level: " + level);
 	}
 	/**
-	 * Updates the list of available mission packages.
+	 * Updates the list of available actuators.
 	 *
-	 * @param packet the packet containing mission package information
-	 * @return whether mission package information was updated
+	 * @param packet the packet containing actuator information
+	 * @return whether actuator information was updated
 	 */
-	public boolean updateMisPkg(USARPacket packet) {
+	public boolean updateActuators(USARPacket packet) {
 		String value; boolean updated = false;
-		if (packet != null && misName.getItemCount() == 0) {
-			// Go through the packet (all Name, Name_0, ... are packages)
+		if (packet != null && actName.getItemCount() == 0) {
+			// Go through the packet (all Name, Name_0, ... are actuators)
 			value = packet.getParam("Name");
-			if (value != null) misName.addItem(value);
+			if (value != null) actName.addItem(value);
 			for (int i = 0; (value = packet.getParam("Name_" + i)) != null; i++)
-				misName.addItem(value);
-			if (misName.getItemCount() > 0) {
-				misName.setSelectedIndex(0);
+				actName.addItem(value);
+			if (actName.getItemCount() > 0) {
+				actName.setSelectedIndex(0);
 				updated = true;
 			}
 		}
 		// Manual clean
-		if (packet == null) misName.removeAllItems();
+		if (packet == null) actName.removeAllItems();
 		return updated;
 	}
 	/**

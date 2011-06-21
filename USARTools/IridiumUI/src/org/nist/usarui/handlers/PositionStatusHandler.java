@@ -29,7 +29,7 @@ public class PositionStatusHandler extends AbstractStatusHandler {
 	public boolean statusReceived(USARPacket packet) {
 		String name, deg, key, lastLink; float value;
 		boolean keep = true;
-		if (packet.getType().equals("MISSTA")) {
+		if (packet.getType().equals("MISSTA") || packet.getType().equals("ASTA")) {
 			name = packet.getParam("Name");
 			lastLink = "0";
 			// Positions update

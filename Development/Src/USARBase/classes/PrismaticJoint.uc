@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * PrismaticJoint - used for sliding limited-range joints on mission packages
+ * PrismaticJoint - used for sliding limited-range joints on actuators
  */
 class PrismaticJoint extends Joint config(USAR);
 

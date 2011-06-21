@@ -193,7 +193,11 @@ function ProcessAction(ParsedMessage parsedMessage)
 			ProcessSet(parsedMessage);
 			break;
 		case "MISPKG":
+			// Deprecated. May be removed in future releases without warning
 			ProcessMisPkg(parsedMessage);
+			break;
+		case "ACT":
+			ProcessAct(parsedMessage);
 			break;
 		default:
 		}
@@ -335,6 +339,7 @@ function ProcessGetGeo(ParsedMessage parsedMessage)
 	if (Type == "Robot")
 		SendLine(bot.GetGeoData());
 	else if (Type == "MisPkg")
+		// Deprecated
 		SendLine(bot.GetMisPkgGeoData());
 	else
 		SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
@@ -351,6 +356,7 @@ function ProcessGetConf(ParsedMessage parsedMessage)
 	if (Type == "Robot")
 		SendLine(bot.GetConfData());
 	else if (Type == "MisPkg")
+		// Deprecated
 		SendLine(bot.GetMisPkgConfData());
 	else
 		SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
@@ -380,23 +386,61 @@ function ProcessSet(ParsedMessage parsedMessage)
 		WheeledVehicle(bot).SetMaxTorque(param);
 }
 
-// Manipulates mission packages
-function ProcessMisPkg(ParsedMessage parsedMessage)
+// Manipulates actuators using new "ACT" API
+function ProcessAct(ParsedMessage parsedMessage)
 {
-	local MissionPackage misPkg;
-	local int i;
-	local int link, order, gripper, seq;
+	local Actuator act;
+	local int i, link;
 	local float value;
 	local array<String> receivedArgs;
 	local array<String> receivedVals;
 	
+	// Find actuator on vehicle
 	if (theBot.Pawn.isA('USARVehicle'))
-		misPkg = USARVehicle(theBot.Pawn).GetMisPkg(parsedMessage.GetArgVal("Name"));
+		act = USARVehicle(theBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
 	else
-		misPkg = None;
+		act = None;
+	// Found actuator, update
+	if (act != None)
+	{
+		receivedArgs = parsedMessage.GetArguments();
+		receivedVals = parsedMessage.GetValues();
+		for (i = 0; i < receivedArgs.Length; i++) 
+		{
+			// Case 1: Link Value
+			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
+				receivedArgs[i + 1] == "Value")
+			{
+				link = int(receivedVals[i++]);
+				value = float(receivedVals[i++]);
+				act.SetLinkTarget(link, value);
+			}
+			// Case 2: Gripper
+			else if (receivedArgs[i] == "Gripper")
+				act.SetGripper(int(receivedVals[i]));
+			// Case 3: Sequence
+			else if (receivedArgs[i] == "Sequence")
+				act.RunSequence(int(receivedVals[i]));
+		}
+	}
+}
+
+// Manipulates actuators using legacy "mission package" API
+function ProcessMisPkg(ParsedMessage parsedMessage)
+{
+	local Actuator act;
+	local int i, link, order;
+	local float value;
+	local array<String> receivedArgs;
+	local array<String> receivedVals;
 	
-	// Found mission package, update
-	if (misPkg != None)
+	// Find actuator on vehicle
+	if (theBot.Pawn.isA('USARVehicle'))
+		act = USARVehicle(theBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
+	else
+		act = None;
+	// Found actuator, update
+	if (act != None)
 	{
 		ReceivedArgs = parsedMessage.GetArguments();
 		ReceivedVals = parsedMessage.GetValues();
@@ -406,27 +450,19 @@ function ProcessMisPkg(ParsedMessage parsedMessage)
 			if (i + 2 < ReceivedArgs.Length && ReceivedArgs[i] == "Link" &&
 				ReceivedArgs[i + 1] == "Value" && ReceivedArgs[i + 2] == "Order")
 			{
-				Link = int(ReceivedVals[i++]);
-				Value = float(ReceivedVals[i++]);
-				Order = int(ReceivedVals[i]);
-				misPkg.setThisRotation(Link, Value, Order);
+				link = int(ReceivedVals[i++]);
+				value = float(ReceivedVals[i++]);
+				order = int(ReceivedVals[i]);
+				act.SetThisRotation(link, value, order);
 			}
 			// Case 2: Gripper
 			else if (ReceivedArgs[i] == "Gripper") 
-			{
-				Gripper = int(ReceivedVals[i]);
-				misPkg.setGripperToBox(Gripper);
-			}
+				act.SetGripper(int(ReceivedVals[i]));
 			// Case 3: Sequence
 			else if (ReceivedArgs[i] == "Seq") 
-			{
-				Seq = int(ReceivedVals[i]);
-				misPkg.runSequence(Seq);
-			}
+				act.RunSequence(int(ReceivedVals[i]));
 		}
 	}
-	else
-		LogInternal("Mission package not found!");
 }
 
 // Returns a list of valid starting positions for a robot

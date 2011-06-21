@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class ForkLiftMisPkg extends GripperArm placeable config (USAR);
+class ForkLift extends GripperArm placeable config (USAR);
 
 defaultproperties
 {

@@ -8,10 +8,10 @@
 *****************************************************************************/
 
 /*
- * VacuumArm - parents mission packages with suction/vacuum grippers
+ * VacuumArm - parents actuators with suction/vacuum grippers
  * TODO This type of arm does not yet have its grippers working
  */
-class VacuumArm extends MissionPackage placeable config (USAR);
+class VacuumArm extends Actuator placeable config (USAR);
 
 var Actor GrippedObject;
 var float SuctionLength; // the distance away from the effector that the suction will work
@@ -24,7 +24,7 @@ simulated function ConvertParam()
 	suctionLength = -class'UnitsConverter'.static.LengthToUU(suctionLength);
 }
 
-reliable server function runSequence(int Sequence)
+reliable server function RunSequence(int Sequence)
 {
 	switch(Sequence)
 	{
@@ -150,7 +150,7 @@ simulated function Tick(float DT2)
     super.tick(DT2);
 }
 
-reliable server function setGripperToBox(int Gripper)
+reliable server function SetGripper(int Gripper)
 {
 	local array<name> boneNames;
 	local Actor A;

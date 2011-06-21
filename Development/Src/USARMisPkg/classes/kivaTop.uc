@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * kivaTop - simple example mission package (has a model)
+ * kivaTop - simple example actuator (has a model)
  */
 class kivaTop extends VacuumArm placeable config (USAR);
 

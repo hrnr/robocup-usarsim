@@ -96,7 +96,7 @@ simulated function Item GetPartByName(name partName)
 				return p;
 		}
 		else if (Parts[i].Name == partName)
-			// Matched spawned item (sensor, mission package)
+			// Matched spawned item (sensor, actuator)
 			return Parts[i];
 	
 	// Not found

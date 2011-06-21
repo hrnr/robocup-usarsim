@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 /*
- * Item - Base class for all USAR addons, including effectors, sensors, and mission packages.
+ * Item - Base class for all USAR addons, including effectors, sensors, and actuators.
  */
 class Item extends KActor config(USAR) abstract;
 

@@ -8,9 +8,9 @@
 *****************************************************************************/
 
 /*
- * GripperArm - parents a large quantity of mission packages
+ * GripperArm - parents a large quantity of actuators
  */
-class GripperArm extends MissionPackage placeable config (USAR);
+class GripperArm extends Actuator placeable config (USAR);
 
 var Part End;
 var Item EndItem;
@@ -42,7 +42,7 @@ simulated function ConvertParam()
 	suctionLength = -class'UnitsConverter'.static.LengthToUU(suctionLength);
 }
 
-reliable server function runSequence(int sequence)
+reliable server function RunSequence(int sequence)
 {
 	switch (sequence)
 	{
@@ -75,7 +75,7 @@ function ungripObject()
 	}
 }
 
-reliable server function setGripperToBox(int gripper)
+reliable server function SetGripper(int gripper)
 {
 	local Actor hit;
 	local vector hitLocation, hitNormal;

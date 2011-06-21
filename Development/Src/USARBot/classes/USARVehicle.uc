@@ -66,6 +66,23 @@ function Drive(ParsedMessage msg)
 {
 }
 
+// Gets the specified actuator, or None if it was not found
+simulated function Actuator GetActuator(String actName)
+{
+	local int i;
+	local Actuator pkg;
+	
+	// Search for actuator in list
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].isA('Actuator'))
+		{
+			pkg = Actuator(Parts[i]).GetActuator(actName);
+			if (pkg != None)
+				return pkg;
+		}
+	return None;
+}
+
 // Gets the estimated life remaining in the battery; negative is a dead battery
 simulated function int GetBatteryLife()
 {
@@ -120,47 +137,30 @@ simulated function vector GetJointOffset(Joint jt)
 	return pos;
 }
 
-// Gets the specified mission package, or None if it was not found
-simulated function MissionPackage GetMisPkg(String misName)
-{
-	local int i;
-	local MissionPackage pkg;
-	
-	// Search for mission package in list
-	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA('MissionPackage'))
-		{
-			pkg = MissionPackage(Parts[i]).GetMisPkg(misName);
-			if (pkg != None)
-				return pkg;
-		}
-	return None;
-}
-
-// Gets configuration data from all mission packages
+// Gets configuration data from all actuators (deprecated mission package version)
 function String GetMisPkgConfData()
 {
 	local String outStr;
 	local int i;
 	
-	// Look for mission packages
+	// Look for actuators
 	outStr = "CONF {Type MisPkg}";
 	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA('MissionPackage'))
-			outStr = outStr $ " " $ Parts[i].GetConfData();
+		if (Parts[i].isA('Actuator'))
+			outStr = outStr $ " " $ Actuator(Parts[i]).GetMisPkgConfData();
 	return outStr;
 }
 
-// Gets geometry data from all mission packages
+// Gets geometry data from all actuators (deprecated mission package version)
 function String GetMisPkgGeoData()
 {
 	local String outStr;
 	local int i;
 	
-	// Look for mission packages
+	// Look for actuators
 	outStr = "GEO {Type MisPkg}";
 	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA('MissionPackage'))
+		if (Parts[i].isA('Actuator'))
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
 	return outStr;
 }
@@ -479,9 +479,9 @@ simulated function UpdateJoints()
 				ji.Spec.Update(ji);
 			ji.CurValue = JointTransform(ji, ji.CurValue);
 		}
-		else if (Parts[i].isA('MissionPackage'))
+		else if (Parts[i].isA('Actuator'))
 			// Update these too
-			MissionPackage(Parts[i]).UpdateJoints();
+			Actuator(Parts[i]).UpdateJoints();
 }
 
 defaultproperties 
