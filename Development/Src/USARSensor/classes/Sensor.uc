@@ -90,6 +90,13 @@ simulated function Timer()
 
 defaultproperties
 {
+	BlockRigidBody=false
+	bCollideActors=false
+	bBlockActors=false
+	bProjTarget=true
+	bCollideWhenPlacing=false
+	bCollideWorld=false
+	
 	ItemType="Sensor"
 	Mean=0.0
 	Sigma=0.05

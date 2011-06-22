@@ -62,8 +62,8 @@ reliable client function Initialize()
 	theComServerInterface = spawn(ComServerInterfaceClass, self);
 }
 
-simulated function AddBotController(BotConnection botCon, String botName, int teamNum,
-	vector startLocation, rotator startRotation, string className)
+function AddBotController(BotConnection botCon, String botName, vector startLocation,
+	rotator startRotation, String className)
 {
 	local int i;
 	
@@ -73,7 +73,7 @@ simulated function AddBotController(BotConnection botCon, String botName, int te
 		{
 			// Assign caller BotConnection to open slot and replicate AddBot function on server
 			waitConnections[i] = botCon;
-			AddBotController_internal(i, botName, teamNum, startLocation, startRotation, className);
+			AddBotController_internal(i, botName, startLocation, startRotation, className);
 			return;
 		}
 	LogInternal("Too many unbound robots, failed to create " $ className);
@@ -89,14 +89,18 @@ reliable server protected function DeleteBotController_internal(BotController th
 	theGameInfo.DeleteBotController(theBot);
 }
 
-reliable server protected function AddBotController_internal(int botConID, String botName,
-	int teamNum, vector startLocation, rotator startRotation, String className)
+reliable server protected function bool AddBotController_internal(int botConID, String botName,
+	vector startLocation, rotator startRotation, String className)
 {
 	local BotController theBot;
 	
-	theBot = theGameInfo.AddBotController(Owner, botName, teamNum, startLocation, startRotation, className);
-	theBot.SetConnection(self, botConID);
-	LogInternal("Created " $ className $ ", assigned to " $ theBot);
+	theBot = theGameInfo.AddBotController(Owner, botName, startLocation, startRotation, className);
+	if (theBot.PawnClass != None)
+	{
+		theBot.SetConnection(self, botConID);
+		LogInternal("Created " $ className $ ", assigned to " $ theBot);
+	}
+	return theBot.PawnClass != None;
 }
 
 simulated function BotConnection getConnection(int botConnectionID)

@@ -17,9 +17,8 @@ defaultproperties
 	bProjTarget=true
 	bCollideWhenPlacing=true
 	bCollideWorld=true
-	DrawScale=1
-
-	Begin Object Class=StaticMeshComponent Name=StMesh01
+	
+	Begin Object Name=StaticMeshComponent0
 		StaticMesh=StaticMesh'AcousticArraySensor.Example.AcousticMicrophoneArray'
 		CollideActors=true
 		BlockActors=false
@@ -27,8 +26,4 @@ defaultproperties
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
 	End Object
-
-	CollisionType=COLLIDE_BlockAll
-	Components(1)=StMesh01
-	CollisionComponent=StMesh01
 }

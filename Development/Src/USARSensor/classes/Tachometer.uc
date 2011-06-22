@@ -71,25 +71,4 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="Tachometer"
-
-	BlockRigidBody=false
-	bCollideActors=false
-	bBlockActors=false
-	bProjTarget=true
-	bCollideWhenPlacing=false
-	bCollideWorld=false
-	DrawScale=1
-
-	Begin Object Class=StaticMeshComponent Name=StMesh01
-		StaticMesh=StaticMesh'INSIMUSensor.Sensor'
-		CollideActors=false
-		BlockActors=false
-		BlockRigidBody=false
-		BlockZeroExtent=false
-		BlockNonZeroExtent=false
-	End Object
-
-	CollisionType=COLLIDE_BlockAll
-	Components(1)=StMesh01
-	CollisionComponent=StMesh01
 }

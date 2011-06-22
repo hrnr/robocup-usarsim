@@ -13,18 +13,435 @@
 class BotConnection extends TcpLink config(USAR);
 
 var BotServer Parent;
-var BotController theBot;
-var MessageParser messageParser;
+var BotController TheBot;
+var MessageParser Parser;
 var config bool bIterative;
 
-// Socket established
+// Socket established, send game information
 event Accepted()
 {
 	if (bDebug)
 		LogInternal("Accepted BotConnection " $ self);
-
 	SendGameInfo();
 	gotoState('monitoring', 'WaitingForInit');
+}
+
+// Socket closed, clean up
+event Closed()
+{
+	if (bDebug)
+		LogInternal("BotConnection: Closed");
+	if (TheBot != None)
+	{
+		Parent.Parent.DeleteBotController(TheBot);
+		TheBot.Destroy();
+	}
+	Destroy();
+}
+
+// Extracts a pose from the command message, assuming Location has location (m) and Rotation
+// has rotation (rad), and returns it in position and rotation
+simulated function GetPose(ParsedMessage msg, out vector pPosition, out rotator pRotation)
+{
+	local vector pos, rot;
+	
+	pos = class'Utilities'.static.ParseVector(msg.GetArgVal("Location"));
+	rot = class'Utilities'.static.ParseVector(msg.GetArgVal("Rotation"));
+	pPosition = class'UnitsConverter'.static.LengthVectorToUU(pos);
+	pRotation = class'UnitsConverter'.static.AngleVectorToUU(rot);
+}
+
+// Sets the parent properly so that the connection is cleaned up when the server dies
+function PreBeginPlay()
+{
+	Parent = BotServer(Owner);
+	if (bDebug)
+		LogInternal("BotConnection: Spawned");
+}
+
+function ProcessAction(ParsedMessage parsedMessage)
+{
+	local USARVehicle usarVehicle;
+	local String type;
+	
+	type = Caps(parsedMessage.GetCommandType());
+	if (bDebug)
+		LogInternal("BotConnection: Received Command type " $ type);
+	if (bIterative)
+		WorldInfo.Pauser = None;
+	switch (type)
+	{
+	case "INIT":
+		ProcessInit(parsedMessage);
+		break;
+	case "GETSTARTPOSES":
+		ProcessGetStartPoses(parsedMessage);
+		break;
+	case "CONTROL":
+		ProcessWorldController(parsedMessage);
+		break;
+	default:
+	}
+	
+	if (TheBot != None && TheBot.Pawn != None && TheBot.Pawn.isA('USARVehicle'))
+	{
+		usarVehicle = USARVehicle(TheBot.Pawn);
+		
+		// Vehicle must have battery life remaining for these messages
+		if (usarVehicle.GetBatteryLife() > 0)
+			switch (type)
+			{
+			case "TEST":
+				ProcessTest(parsedMessage);
+				break;
+			case "DRIVE":
+				ProcessDrive(parsedMessage);
+				break;
+			case "GETGEO":
+				ProcessGetGeo(parsedMessage);
+				break;
+			case "GETCONF":
+				ProcessGetConf(parsedMessage);
+				break;
+			case "SET":
+				ProcessSet(parsedMessage);
+				break;
+			case "MISPKG":
+				// Deprecated. May be removed in future releases without warning
+				ProcessMisPkg(parsedMessage);
+				break;
+			case "ACT":
+				ProcessAct(parsedMessage);
+				break;
+			default:
+			}
+	}
+}
+
+// Handle a DRIVE command which varies by robot
+function ProcessDrive(ParsedMessage parsedMessage)
+{
+	local USARVehicle bot;
+	local String value;
+	
+	bot = USARVehicle(TheBot.Pawn);
+	// Check if normalized drive command was received
+	value = parsedMessage.GetArgVal("Normalized");
+	if (value != "")
+		bot.SetNormalized(value == "true");
+	// Check for headlight command
+	value = parsedMessage.GetArgVal("Light");
+	if (value != "")
+		bot.SetHeadLights(value == "true");
+	// Individual vehicle drives
+	bot.Drive(parsedMessage);
+}
+
+// Manipulates actuators using new "ACT" API
+function ProcessAct(ParsedMessage parsedMessage)
+{
+	local Actuator act;
+	local int i;
+	local array<String> receivedArgs;
+	local array<String> receivedVals;
+	
+	act = USARVehicle(TheBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
+	// Found actuator, update
+	if (act != None)
+	{
+		receivedArgs = parsedMessage.GetArguments();
+		receivedVals = parsedMessage.GetValues();
+		for (i = 0; i < receivedArgs.Length; i++) 
+		{
+			// Case 1: Link Value
+			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
+					receivedArgs[i + 1] == "Value")
+				act.SetLinkTarget(int(receivedVals[i++]), float(receivedVals[i++]));
+			// Case 2: Gripper
+			else if (receivedArgs[i] == "Gripper")
+				act.SetGripper(int(receivedVals[i]));
+			// Case 3: Sequence
+			else if (receivedArgs[i] == "Sequence")
+				act.RunSequence(int(receivedVals[i]));
+		}
+	}
+}
+
+// Gets configuration information from the robot
+function ProcessGetConf(ParsedMessage parsedMessage) 
+{
+	local String Type;
+	local USARVehicle bot;
+
+	Type = parsedMessage.GetArgVal("Type");
+	bot = USARVehicle(TheBot.Pawn);
+	if (Type == "Robot")
+		SendLine(bot.GetConfData());
+	else if (Type == "MisPkg")
+		// Deprecated
+		SendLine(bot.GetMisPkgConfData());
+	else
+		SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
+}
+
+// Gets geometric configuration from the robot
+function ProcessGetGeo(ParsedMessage parsedMessage)
+{
+	local String Type;
+	local USARVehicle bot;
+
+	Type = parsedMessage.GetArgVal("Type");
+	bot = USARVehicle(TheBot.Pawn);
+	if (Type == "Robot")
+		SendLine(bot.GetGeoData());
+	else if (Type == "MisPkg")
+		// Deprecated
+		SendLine(bot.GetMisPkgGeoData());
+	else
+		SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
+}
+
+// Returns a list of valid starting positions for a robot
+function ProcessGetStartPoses(ParsedMessage parsedMessage)
+{
+	local String outstring, locations;
+	local PlayerStart start;
+	local vector l, vr;
+	local int num;
+
+	foreach AllActors(class 'PlayerStart', start)
+	{
+		l = class'UnitsConverter'.static.LengthVectorFromUU(start.Location);
+		vr = class'UnitsConverter'.static.AngleVectorFromUU(start.Rotation);
+		if (num > 0)
+			locations = locations $ " " $ start.Tag $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
+				vr.X $ "," $ vr.Y $ "," $vr.Z;
+		else
+			locations = start.Tag $ " " $ l.X $ "," $ l.Y $ "," $ l.Z $ " " $ vr.X $ "," $
+				vr.Y $ "," $ vr.Z;
+		num++;
+	}
+	outstring = "NFO {StartPoses " $ num $ "}";
+	if (num > 0)
+		outstring = outstring $ " {" $ locations $ "}";
+	SendLine(outstring);
+}
+
+// Event occuring when initialization string is first received from
+// the client socket.  At this point, the bot itself *hasn't been created*.
+// Robot-centric initialization done here may cause problems with multi-
+// client distribution, as robot pawn may not be created yet.
+function ProcessInit(ParsedMessage parsedMessage)
+{
+	local String startName;
+	local PlayerStart start;
+	local vector newLocation;
+	local rotator newRotation;
+
+	if (bDebug)
+		LogInternal("BotConnection: ProcessInit");
+	// Find player start if specified
+	startName = Caps(parsedMessage.GetArgVal("Start"));
+	if (startName != "")
+	{
+		foreach AllActors(class 'PlayerStart', start)
+			if (Caps(String(start.Tag)) == startName)
+			{
+				newLocation = start.Location; // stays in UU
+				newRotation = start.Rotation;
+				break;
+			}
+	}
+	else
+		GetPose(parsedMessage, newLocation, newRotation);
+	// Add robot
+	LogInternal("Adding robot at location: " $ newLocation $ ", rotation: " $ newRotation);
+	Parent.Parent.AddBotController(self, parsedMessage.GetArgVal("Name"), newLocation,
+		newRotation, parsedMessage.GetArgVal("ClassName"));
+	gotoState('monitoring', 'WaitingForController');
+}
+
+// Manipulates actuators using legacy "mission package" API
+function ProcessMisPkg(ParsedMessage parsedMessage)
+{
+	local Actuator act;
+	local int i;
+	local array<String> receivedArgs;
+	local array<String> receivedVals;
+	
+	// Find actuator on vehicle
+	act = USARVehicle(TheBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
+	// Found actuator, update
+	if (act != None)
+	{
+		ReceivedArgs = parsedMessage.GetArguments();
+		ReceivedVals = parsedMessage.GetValues();
+		for (i = 0; i < ReceivedArgs.Length; i++) 
+		{
+			// Case 1: Link Value Order
+			if (i + 2 < ReceivedArgs.Length && ReceivedArgs[i] == "Link" &&
+					ReceivedArgs[i + 1] == "Value" && ReceivedArgs[i + 2] == "Order")
+				act.SetThisRotation(int(ReceivedVals[i++]), float(ReceivedVals[i++]),
+					int(ReceivedVals[i]));
+			// Case 2: Gripper
+			else if (ReceivedArgs[i] == "Gripper") 
+				act.SetGripper(int(ReceivedVals[i]));
+			// Case 3: Sequence
+			else if (ReceivedArgs[i] == "Seq") 
+				act.RunSequence(int(ReceivedVals[i]));
+		}
+	}
+}
+
+// Sets joint angles or other related parameters
+function ProcessSet(ParsedMessage parsedMessage)
+{
+	local String jointName, opcode;
+	local float param;
+	local USARVehicle bot;
+	
+	bot = USARVehicle(TheBot.Pawn);
+	jointName = parsedMessage.GetArgVal("Name");
+	opcode = parsedMessage.GetArgVal("Opcode");
+	param = float(parsedMessage.GetArgVal("Params"));
+	if (opcode == "Angle" || opcode == "Target")
+	{
+		if (jointName != "AllAngles" && jointName != "AllJoints")
+			bot.SetJointTargetByName(JointName, param);
+		else
+			bot.SetAllJointTargets(param);
+	}
+	else if (opcode == "Stiffness")
+		bot.SetJointStiffnessByName(name(JointName), param);
+}
+
+// Enters "TEST" mode
+function ProcessTest(ParsedMessage parsedMessage)
+{
+	if (TheBot != None) 
+		TheBot.GotoState('Startup', 'Test');
+}
+
+// Manipulate objects in the world
+function ProcessWorldController(ParsedMessage parsedMessage)
+{
+	local WorldController control;
+	local vector loc, end, scale;
+	local bool permanent;
+	local rotator rot;
+	local PlayerStart start;
+	local String startName, type, minPos, maxPos;
+	
+	// Sanity
+	if (TheBot == None || !TheBot.Pawn.IsA('WorldController'))
+	{
+		LogInternal("BotConnection: Bot is not a world controller");
+		return;
+	}
+	// Initialize
+	control = WorldController(TheBot.Pawn);
+	type = parsedMessage.GetArgVal("Type");
+	if (bDebug)
+		LogInternal("BotConnection: Received WC command " $ type);
+	// CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
+	if (type == "RelMove")
+	{
+		GetPose(parsedMessage, loc, rot);
+		control.RelMove(parsedMessage.GetArgVal("Name"), loc, rot);
+	}
+	// CONTROL {Type AbsMove} {Name name} {Location x,y,z} {Rotation x,y,z}
+	else if (type == "AbsMove")
+	{
+		GetPose(parsedMessage, loc, rot);
+		control.AbsMove(parsedMessage.GetArgVal("Name"), loc, rot);
+	}
+	// CONTROL {Type Create} {ClassName class} {Name name} {Memory memory} {Location x,y,z}
+	// {Rotation x,y,z} {Physics None/RigidBody} {Permanent true/false}
+	else if (type == "Create")
+	{
+		startName = Caps(parsedMessage.GetArgVal("Start"));
+		if (startName != "") 
+		{
+			foreach AllActors(class 'PlayerStart', start) 
+				if (Caps(String(start.Tag)) == startName)
+				{
+					// Convert to meters
+					loc = start.Location;
+					rot = start.Rotation;
+					break;
+				}
+		}
+		else 
+			GetPose(parsedMessage, loc, rot);
+		scale = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Scale"));
+		// Prevent a zero-size scale
+		if (scale.X == 0 && scale.Y == 0 && scale.Z == 0)
+			scale = vect(1, 1, 1);
+		permanent = (Caps(parsedMessage.GetArgVal("Permanent")) == "TRUE");
+		// Create object
+		control.Create(parsedMessage.GetArgVal("ClassName"), parsedMessage.GetArgVal("Name"),
+			parsedMessage.GetArgVal("Memory"), loc, rot, scale,
+			parsedMessage.GetArgVal("Physics"), permanent);
+	}
+	// CONTROL {Type Kill} {Name name}
+	else if (type == "Kill")
+		control.Kill(parsedMessage.GetArgVal("Name"));
+	// CONTROL {Type KillAll} {MinPos x, y, z} {MaxPos x, y, z}
+	else if (type == "KillAll")
+	{
+		maxPos = parsedMessage.GetArgVal("MaxPos");
+		minPos = parsedMessage.GetArgVal("MinPos");
+		if (minPos == "" || maxPos == "")
+		{
+			// Destroy all
+			loc = vect(0, 0, 0); end = loc;
+		}
+		else
+		{
+			// Destroy in rectangle
+			loc = class'UnitsConverter'.static.LengthVectorToUU(
+				class'Utilities'.static.ParseVector(minPos));
+			end = class'UnitsConverter'.static.LengthVectorToUU(
+				class'Utilities'.static.ParseVector(maxPos));
+		}
+		control.KillAll(loc, end);
+	}
+	// CONTROL {Type GetSTA} {ClassName type} {Name name}
+	else if (type == "GetSTA")
+		SendLine(control.GetSTA(parsedMessage.GetArgVal("ClassName"),
+			parsedMessage.GetArgVal("Name"))); 
+	// CONTROL {Type Conveyor} {Name name} {Speed speed}
+	else if (type == "Conveyor")
+		control.SetZoneVel(parsedMessage.GetArgVal("Name"),
+			float(parsedMessage.GetArgVal("Speed")));
+	else
+		LogInternal("BotConnection: Unsupported world controller command " $ type);
+}
+
+// Parse input message into lines and call ReceivedLine
+event ReceivedText(String Text)
+{
+	local ParsedMessage parsedMessage;
+	local name curBotState;
+
+	if (bDebug)
+		LogInternal("BotConnection: Received " $ Text);
+	if (TheBot != None)
+		curBotState = TheBot.GetStateName();
+	Parser.ReceiveText(Text);
+	parsedMessage = Parser.getNextMessage();
+	while (parsedMessage != None)
+	{
+		if (LinkState == STATE_Connected && curBotState != 'Dying' && curBotState != 'GameEnded')
+			ProcessAction(parsedMessage);
+		parsedMessage = Parser.getNextMessage();
+	}
+}
+
+// Delegate for robots to send messages back to the client
+function ReceiveMessage(String Text)
+{
+	SendLine(Text);
 }
 
 // Sends game information over the socket
@@ -43,462 +460,6 @@ function SendGameInfo()
 		timeLimitStr $ "}");
 }
 
-// Event occuring when initialization string is first received from
-// the client socket.  At this point, the bot itself *hasn't been created*.
-// Robot-centric initialization done here may cause problems with multi-
-// client distribution, as robot pawn may not be created yet.
-event InitReceived(ParsedMessage parsedMessage)
-{
-	local String clientName, startName, teamString, className;
-	local PlayerStart P;
-	local int teamNum;
-	local vector startLocation, newLocation;
-	// x,y,z corresponds to roll,pitch,yaw
-	local vector startRotation;
-	local rotator newRotation;
-
-	if (bDebug)
-		LogInternal("BotConnection: InitReceived");
-	clientName = parsedMessage.GetArgVal("Name");
-	teamString = parsedMessage.GetArgVal("Team");
-	startName = parsedMessage.GetArgVal("Start");
-	if (startName != "")
-	{
-		foreach AllActors(class 'PlayerStart', P)
-			if (Caps(String(P.Tag)) == Caps(startName))
-			{
-				newLocation = P.Location; // Stays in UU
-				newRotation = P.Rotation;
-				break;
-			}
-	}
-	else
-	{
-		startLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
-		startRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
-		newLocation = class'UnitsConverter'.static.LengthVectorToUU(startLocation);
-		newRotation = class'UnitsConverter'.static.AngleVectorToUU(startRotation);
-	}
-	className = parsedMessage.GetArgVal("ClassName");
-	if (teamString == "")
-		teamNum = 255;
-	else
-		teamNum = int(teamString);
-	LogInternal("Adding robot at location: " $ newLocation $ ", rotation: " $ newRotation);
-	Parent.Parent.AddBotController(self, clientName, teamNum, newLocation, newRotation, className);
-	gotoState('monitoring', 'WaitingForController');
-}
-
-// Event occurs when bot has been created on server.  Client socket is 
-// bound to bot pawn here.  All post-robot-creation initialization should
-// be done here to be compatible with multi-client distribution.
-event SetController(BotController bc)
-{
-	local USARVehicle usarVehicle;
-	
-	if (bDebug)
-		LogInternal("BotConnection: SetController");
-	theBot = bc;
-	theBot.theBotConnection = self;
-	if (theBot != None)
-	{
-		usarVehicle = USARVehicle(theBot.pawn);
-		if (usarVehicle != None)
-			usarVehicle.MessageSendDelegate = receiveMessage;
-	}
-	gotoState('monitoring', 'Running');
-}
-
-event Closed()
-{
-	if (bDebug)
-		LogInternal("BotConnection: Closed");
-	if (theBot != None)
-	{
-		Parent.Parent.DeleteBotController(theBot);
-		theBot.Destroy();
-	}
-	Destroy();
-}
-
-// Receive info - parse into lines and call ReceivedLine
-event ReceivedText(string Text)
-{
-	local ParsedMessage parsedMessage;
-	local name curBotState;
-
-	if (bDebug)
-		LogInternal("BotConnection: Received " $ Text);
-	if (theBot != None)
-		curBotState = theBot.GetStateName();
-	messageParser.ReceiveText(Text);
-	while (true)
-	{
-		parsedMessage = messageParser.getNextMessage();
-		if (parsedMessage == None)
-			break;
-		if (LinkState == STATE_Connected && curBotState != 'Dying' && curBotState != 'GameEnded')
-			ProcessAction(parsedMessage);
-	}
-}
-
-function PreBeginPlay()
-{
-	Parent = BotServer(Owner);
-	if (bDebug)
-		LogInternal("BotConnection: Spawned");
-}
-
-function ProcessAction(ParsedMessage parsedMessage)
-{
-	local USARVehicle usarVehicle;
-
-	if (bDebug)
-		LogInternal("BotConnection: Received Command type " $ parsedMessage.GetCommandType());
-	if (bIterative)
-		WorldInfo.Pauser = None;
-	switch (Caps(parsedMessage.GetCommandType()))
-	{
-	case "INIT":
-		InitReceived(parsedMessage);
-		break;
-	case "GETSTARTPOSES":
-		ProcessGetStartPoses(parsedMessage);
-		break;
-	case "CONTROL":
-		ProcessWorldController(parsedMessage);
-		break;
-	default:
-	}
-	if (theBot == None) return;
-	usarVehicle = USARVehicle(theBot.Pawn);
-	
-	// Vehicle must have battery life remaining for these messages
-	if (usarVehicle != None && usarVehicle.GetBatteryLife() > 0)
-		switch (Caps(parsedMessage.GetCommandType()))
-		{
-		case "TEST":
-			ProcessTest(parsedMessage);
-			break;
-		case "DRIVE":
-			ProcessDrive(parsedMessage);
-			break;
-		case "GETGEO":
-			ProcessGetGeo(parsedMessage);
-			break;
-		case "GETCONF":
-			ProcessGetConf(parsedMessage);
-			break;
-		case "SET":
-			ProcessSet(parsedMessage);
-			break;
-		case "MISPKG":
-			// Deprecated. May be removed in future releases without warning
-			ProcessMisPkg(parsedMessage);
-			break;
-		case "ACT":
-			ProcessAct(parsedMessage);
-			break;
-		default:
-		}
-}
-
-// Enters "TEST" mode
-function ProcessTest(ParsedMessage parsedMessage)
-{
-	if (theBot != None) 
-		theBot.GotoState('Startup', 'Test');
-}
-
-// Handle a DRIVE command which varies by robot
-function ProcessDrive(ParsedMessage parsedMessage)
-{
-	local USARVehicle bot;
-	local String value;
-	
-	bot = USARVehicle(theBot.Pawn);
-	// Check if normalized drive command was received
-	value = parsedMessage.GetArgVal("Normalized");
-	if (value != "")
-		bot.SetNormalized(value == "true");
-	// Check for headlight command
-	value = parsedMessage.GetArgVal("Light");
-	if (value != "")
-		bot.SetHeadLights(value == "true");
-	// Individual vehicle drives
-	bot.Drive(parsedMessage);
-}
-
-// Manipulate objects in the world
-function ProcessWorldController(ParsedMessage parsedMessage)
-{
-	local WorldController control;
-	local vector myLocation, myLocation2;
-	local vector myRotation;
-	local vector myScale;
-	local String myName;
-	local String startName;
-	local PlayerStart P;
-	local bool permanent;
-
-	if (bDebug)
-		LogInternal("BotConnection: Received world control message type: " $
-			parsedMessage.GetArgVal("Type"));
-	if (theBot == None || !theBot.Pawn.IsA('WorldController'))
-	{
-		LogInternal("BotConnection: Bot is not a world controller");
-		return;
-	}
-	control = WorldController(theBot.Pawn);
-	// CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
-	if (parsedMessage.GetArgVal("Type") == "RelMove")
-	{
-		myName = parsedMessage.GetArgVal("Name");
-		myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
-		myRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
-		control.RelMove(myName, myLocation, myRotation);
-	}
-	// CONTROL {Type AbsMove} {Name name} {Location x,y,z} {Rotation x,y,z}
-	else if (parsedMessage.GetArgVal("Type") == "AbsMove")
-	{
-		myName = parsedMessage.GetArgVal("Name");
-		myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
-		myRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));
-		control.AbsMove(myName, myLocation, myRotation);
-	}
-	// CONTROL {Type Create} {ClassName class} {Name name} {Memory memory} {Location x,y,z}
-	// {Rotation x,y,z} {Physics None/Ground/Falling} {Permanent true/false}	
-	else if (parsedMessage.GetArgVal("Type") == "Create")
-	{
-		startName = parsedMessage.GetArgVal("Start");
-		if (startName != "") 
-		{
-			foreach AllActors(class 'PlayerStart', P) 
-				if (string(P.Tag) == startName) 
-				{
-					// Convert to meters
-					myLocation = class'UnitsConverter'.static.LengthVectorFromUU(P.Location);
-					myRotation = class'UnitsConverter'.static.AngleVectorFromUU(P.Rotation);
-					break;
-				}
-		}
-		else 
-		{
-			myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
-			myRotation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Rotation"));	   
-		}
-		myScale = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Scale"));
-		if (myScale == vect(0,0,0))
-			myScale = vect(1,1,1);
-		permanent = (Caps(parsedMessage.GetArgVal("Permanent")) == "TRUE");
-		control.Create(parsedMessage.GetArgVal("ClassName"), parsedMessage.GetArgVal("Name"),
-			parsedMessage.getArgVal("Memory"), myLocation, myRotation, myScale,
-			parsedMessage.GetArgVal("Physics"), permanent);
-	}
-	// CONTROL {Type Kill} {Name name}
-	else if (parsedMessage.GetArgVal("Type") == "Kill")
-		control.Kill(parsedMessage.GetArgVal("Name"));
-	// CONTROL {Type KillAll} {MinPos x, y, z} {MaxPos x, y, z}
-	else if (parsedMessage.GetArgVal("Type") == "KillAll")
-	{
-		if (parsedMessage.GetArgVal("MinPos") == "" || parsedMessage.GetArgVal("MaxPos") == "")
-		{
-			// Destroy all
-			myLocation = vect(0, 0, 0);
-			myLocation2 = vect(0, 0, 0);
-		}
-		else
-		{
-			// Destroy in rectangle
-			myLocation = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("MinPos"));
-			myLocation2 = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("MaxPos"));
-		}
-		control.KillAll(myLocation, myLocation2);
-	} 
-	// CONTROL {Type GetSTA} {ClassName type} {Name name}
-	else if (parsedMessage.GetArgVal("Type") == "GetSTA")
-		SendLine(control.GetSTA(parsedMessage.GetArgVal("ClassName"),
-			parsedMessage.GetArgVal("Name"))); 
-	// CONTROL {Type Conveyor} {Name name} {Speed speed}
-	else if (parsedMessage.GetArgVal("Type") == "Conveyor")
-		control.SetZoneVel(parsedMessage.GetArgVal("Name"),
-			float(parsedMessage.GetArgVal("Speed")));
-	else
-		LogInternal("BotConnection: Unsupported world controller command " $
-			parsedMessage.GetArgVal("Type"));
-}
-
-// Gets geometric configuration from the robot
-function ProcessGetGeo(ParsedMessage parsedMessage)
-{
-	local String Type;
-	local USARVehicle bot;
-
-	Type = parsedMessage.GetArgVal("Type");
-	bot = USARVehicle(theBot.Pawn);
-	if (Type == "Robot")
-		SendLine(bot.GetGeoData());
-	else if (Type == "MisPkg")
-		// Deprecated
-		SendLine(bot.GetMisPkgGeoData());
-	else
-		SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
-}
-
-// Gets configuration information from the robot
-function ProcessGetConf(ParsedMessage parsedMessage) 
-{
-	local String Type;
-	local USARVehicle bot;
-
-	Type = parsedMessage.GetArgVal("Type");
-	bot = USARVehicle(theBot.Pawn);
-	if (Type == "Robot")
-		SendLine(bot.GetConfData());
-	else if (Type == "MisPkg")
-		// Deprecated
-		SendLine(bot.GetMisPkgConfData());
-	else
-		SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
-}
-
-// Sets joint angles or other related parameters
-function ProcessSet(ParsedMessage parsedMessage)
-{
-	local String jointName, opcode;
-	local float param;
-	local USARVehicle bot;
-
-	bot = USARVehicle(theBot.Pawn);
-	jointName = parsedMessage.GetArgVal("Name");
-	opcode = parsedMessage.GetArgVal("Opcode");
-	param = float(parsedMessage.GetArgVal("Params"));
-	if (opcode == "Angle")
-	{
-		if (JointName != "AllAngles")
-			bot.SetJointTargetByName(JointName, param);
-		else
-			bot.SetAllJointTargets(param);
-	}
-	else if (opcode == "Stiffness")
-		bot.SetJointStiffnessByName(Name(JointName), param);
-	else if (opcode == "MaxTorque" && bot.IsA('WheeledVehicle'))
-		WheeledVehicle(bot).SetMaxTorque(param);
-}
-
-// Manipulates actuators using new "ACT" API
-function ProcessAct(ParsedMessage parsedMessage)
-{
-	local Actuator act;
-	local int i, link;
-	local float value;
-	local array<String> receivedArgs;
-	local array<String> receivedVals;
-	
-	// Find actuator on vehicle
-	if (theBot.Pawn.isA('USARVehicle'))
-		act = USARVehicle(theBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
-	else
-		act = None;
-	// Found actuator, update
-	if (act != None)
-	{
-		receivedArgs = parsedMessage.GetArguments();
-		receivedVals = parsedMessage.GetValues();
-		for (i = 0; i < receivedArgs.Length; i++) 
-		{
-			// Case 1: Link Value
-			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
-				receivedArgs[i + 1] == "Value")
-			{
-				link = int(receivedVals[i++]);
-				value = float(receivedVals[i++]);
-				act.SetLinkTarget(link, value);
-			}
-			// Case 2: Gripper
-			else if (receivedArgs[i] == "Gripper")
-				act.SetGripper(int(receivedVals[i]));
-			// Case 3: Sequence
-			else if (receivedArgs[i] == "Sequence")
-				act.RunSequence(int(receivedVals[i]));
-		}
-	}
-}
-
-// Manipulates actuators using legacy "mission package" API
-function ProcessMisPkg(ParsedMessage parsedMessage)
-{
-	local Actuator act;
-	local int i, link, order;
-	local float value;
-	local array<String> receivedArgs;
-	local array<String> receivedVals;
-	
-	// Find actuator on vehicle
-	if (theBot.Pawn.isA('USARVehicle'))
-		act = USARVehicle(theBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
-	else
-		act = None;
-	// Found actuator, update
-	if (act != None)
-	{
-		ReceivedArgs = parsedMessage.GetArguments();
-		ReceivedVals = parsedMessage.GetValues();
-		for (i = 0; i < ReceivedArgs.Length; i++) 
-		{
-			// Case 1: Link Value Order
-			if (i + 2 < ReceivedArgs.Length && ReceivedArgs[i] == "Link" &&
-				ReceivedArgs[i + 1] == "Value" && ReceivedArgs[i + 2] == "Order")
-			{
-				link = int(ReceivedVals[i++]);
-				value = float(ReceivedVals[i++]);
-				order = int(ReceivedVals[i]);
-				act.SetThisRotation(link, value, order);
-			}
-			// Case 2: Gripper
-			else if (ReceivedArgs[i] == "Gripper") 
-				act.SetGripper(int(ReceivedVals[i]));
-			// Case 3: Sequence
-			else if (ReceivedArgs[i] == "Seq") 
-				act.RunSequence(int(ReceivedVals[i]));
-		}
-	}
-}
-
-// Returns a list of valid starting positions for a robot
-function ProcessGetStartPoses(ParsedMessage parsedMessage)
-{
-	local String outstring, locations;
-	local PlayerStart P;
-	local vector l,vr;
-	local int num;
-
-	foreach AllActors(class 'PlayerStart', P)
-	{
-		l = class'UnitsConverter'.static.LengthVectorFromUU(P.Location);
-		vr = class'UnitsConverter'.static.AngleVectorFromUU(P.Rotation);
-		if (num > 0)
-			locations = locations $ " " $ P.Tag $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
-				vr.X $ "," $ vr.Y $ "," $vr.Z;
-		else
-			locations = P.Tag $ " " $  l.X $ "," $ l.Y $ "," $ l.Z $ " " $ vr.X $ "," $
-				vr.Y $ "," $ vr.Z;
-		num++;
-	}
-	outstring = "NFO {StartPoses " $ num $ "}";
-	if (num > 0)
-		outstring = outstring $ " {" $ locations $ "}";
-	if (bDebug)
-		LogInternal(outstring);
-	SendLine(outstring);
-}
-
-// Delegate for robots to send messages back to the client
-function receiveMessage(String Text)
-{
-	SendLine(Text);
-}
-
 // Sends a line of text to the client
 function SendLine(String text, optional bool bNoCRLF)
 {
@@ -511,6 +472,26 @@ function SendLine(String text, optional bool bNoCRLF)
 		else
 			SendText(text $ Chr(13) $ Chr(10));
 	}
+}
+
+// Event occurs when bot has been created on server.  Client socket is 
+// bound to bot pawn here.  All post-robot-creation initialization should
+// be done here to be compatible with multi-client distribution.
+event SetController(BotController bc)
+{
+	local USARVehicle usarVehicle;
+	
+	if (bDebug)
+		LogInternal("BotConnection: SetController");
+	TheBot = bc;
+	TheBot.TheBotConnection = self;
+	if (TheBot != None && TheBot.Pawn.isA('USARVehicle'))
+	{
+		usarVehicle = USARVehicle(TheBot.Pawn);
+		if (usarVehicle != None)
+			usarVehicle.MessageSendDelegate = ReceiveMessage;
+	}
+	gotoState('monitoring', 'Running');
 }
 
 // Fire right up into the loop for sending updates
@@ -531,7 +512,8 @@ auto state monitoring
 defaultproperties
 {
 	bDebug=false
-	Begin Object Class=MessageParser Name=newMessageParser
+	
+	Begin Object Class=MessageParser Name=theParser
 	End Object
-	messageParser=newMessageParser
+	Parser=theParser
 }

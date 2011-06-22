@@ -89,6 +89,4 @@ defaultproperties
 {
 	bDebug=false
 	ItemType="Touch"
-	DrawScale3D=(X=0.1)
-	DrawScale=0.4762
 }

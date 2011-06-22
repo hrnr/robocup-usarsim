@@ -184,6 +184,5 @@ function String Set(String opcode, String args)
 defaultproperties
 {
 	ItemType="Acoustic"
-	OutputCurve=(Points=((InVal=0,OutVal=0),(InVal=1000,OutVal=1000)))
 	DrawScale=10
 }

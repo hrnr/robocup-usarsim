@@ -17,8 +17,6 @@ class USARVehicle extends BaseVehicle config(USAR);
 var config bool bUseVolumeOverride;
 // Whether an acoustic sensor is installed
 var bool HasAcoustic;
-// The time when the last status update was sent
-var float LastStatus;
 // Whether this robot is normalized
 var bool Normalized;
 // Location and rotation where the robot started, to fix bug where robot moves after spawning
@@ -41,16 +39,8 @@ simulated function BatteryDied()
 // Sends out status messages per timer if set (parent method is empty)
 simulated function ClientTimer()
 {
-	local float time;
-	
-	time = WorldInfo.TimeSeconds;
+	super.ClientTimer();
 	UpdateJoints();
-	if (time - LastStatus >= StatusTimer)
-	{
-		// Send robot statuses far less often
-		MessageSendDelegate(GetStatus());
-		LastStatus = time;
-	}
 }
 
 // Notify when this vehicle is removed
@@ -219,7 +209,14 @@ simulated function PostBeginPlay()
 	// Initialize items (sensors etc)
 	for (i = 0; i < AddParts.Length; i++)
 		SetupItem(AddParts[i]);
-	LastStatus = WorldInfo.TimeSeconds;
+	// Status timer
+	SetTimer(StatusTimer, true, 'SendStatus');
+}
+
+// Sends the robot's status to the client
+function SendStatus()
+{
+	MessageSendDelegate(GetStatus());
 }
 
 // Sets all joint targets to the specified value

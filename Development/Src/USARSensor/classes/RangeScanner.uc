@@ -72,5 +72,4 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="RangeScanner"
-	DrawScale=10
 }

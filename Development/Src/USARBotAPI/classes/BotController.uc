@@ -12,12 +12,13 @@
  */
 class BotController extends UDKBot config(USAR);
 
+var String BotName;
 var config bool bSilentGamebot;
-var BotConnection theBotConnection;
-var repnotify BotMaster theBotMaster;
-var repnotify int theBotConnectionID;
-var class<Pawn> PawnClass;
 var config float DeltaTime;
+var class<Pawn> PawnClass;
+var BotConnection theBotConnection;
+var repnotify int theBotConnectionID;
+var repnotify BotMaster theBotMaster;
 
 replication
 {
@@ -87,7 +88,8 @@ simulated event Destroyed()
 defaultproperties
 {
     bDebug=false
-	theBotConnectionID=-1
-	RemoteRole=ROLE_SimulatedProxy
 	bOnlyRelevantToOwner=true
+	BotName="Unnamed"
+	RemoteRole=ROLE_SimulatedProxy
+	theBotConnectionID=-1
 }

@@ -8,71 +8,98 @@
 *****************************************************************************/
 
 /*
- * TODO: Change to avoid using Skeletal meshes
- * Port to UT3 and additions by Stephen Balakirsky
- * Based on code by Marco Zaratti
+ * WCObject - Object spawnable via World Controller
+ * Based on code by Marco Zaratti (a long, long time ago)
  */
-class WCObject extends SVehicle config(USAR) // UTPawn seems to work, GameBreakableActor drop through the floor! Others tried DynamicSMActor and InterpActor ;
-	placeable; // placeable allows the actor to be placed from the editor
-var() String wcoName;
-var() String wcoMemory;
-var() String wcoClass;
-var() vector boundary; // values from center of object to extream points in meters
-var() int dirty; // does the physics need updating
-var() bool permanent; // should the object not be destroyed by a clear?
+class WCObject extends KActor config(USAR) placeable;
 
-// convert all variables of this object read from the UTUSAR.ini from SI to UU units
-// initialize this object
-simulated function PreBeginPlay()
+// Should the object loop around?
+var bool bLoop;
+// Should the object not be destroyed by a clear?
+var bool bPermanent;
+// Should the object be reset back to starting position on a clear?
+var bool bResetOnClear;
+// The object's current position in its path
+var int CurrentNode;
+// RFID tag information for pallet sorting and moving
+var String Memory;
+// The object's static mesh
+var StaticMesh Mesh;
+// Object's WC name (independent of the automatically-generated real name)
+var String ObjectName;
+// Object's starting location for reset
+var vector OriginalLocation;
+// Object's starting rotation for reset
+var rotator OriginalRotation;
+// Distance along the path that the object has gone so far
+var float PathProgress;
+// Distance of the path the object can travel (or 0 if it cannot move)
+var float PathLength;
+// The speed at which the object moves along its path
+var float PathSpeed;
+// Lengths of individual segments in the object's path
+var array<float> Paths;
+// Locations of segments in the object's path
+var array<vector> Waypoints;
+
+// Initializes this object using the specified values
+function Init(String objName, String mem, bool isPermanent, vector scale)
 {
-	super.PreBeginPlay(); // first initialize parent object
-	boundary.x = class'UnitsConverter'.static.LengthToUU(boundary.x);
-	boundary.y = class'UnitsConverter'.static.LengthToUU(boundary.y);
-	boundary.z = class'UnitsConverter'.static.LengthToUU(boundary.z);
+	bPermanent = isPermanent;
+	Memory = mem;
+	ObjectName = objName;
+	OriginalLocation = Location;
+	OriginalRotation = Rotation;
+	SetDrawScale3D(scale);
+	StaticMeshComponent.SetStaticMesh(Mesh);
+	// Need to do these to start physics
+	SetPhysicalCollisionProperties();
+	ForceUpdateComponents();
+	StaticMeshComponent.WakeRigidBody();
 }
 
-simulated function PostBeginPlay() 
+// Restore the object's initial position
+function RestorePosition()
 {
-    super.PostBeginPlay();
-    Mesh.WakeRigidBody();
+	SetLocation(OriginalLocation);
+	SetRotation(OriginalRotation);
+}
+
+// Changes the object location and rotation cleanly
+function SetPose(vector loc, rotator rot)
+{
+	if (Physics == PHYS_None)
+	{
+		SetLocation(loc);
+		SetRotation(rot);
+	}
+	else
+	{
+		StaticMeshComponent.SetRBPosition(loc);
+		StaticMeshComponent.SetRBRotation(rot);
+	}
 }
 
 defaultproperties
 {
-	// Local Variables
-	permanent=false
-	boundary=(x=.1,y=.1,z=0)
-	dirty=0
-	Begin Object Class=SkeletalMeshComponent Name=WCMesh
-		bUseSingleBodyPhysics=1
-		bForceDiscardRootMotion=true
-		CollideActors=true
-		BlockActors=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-		BlockRigidBody=true
-		RBChannel=RBCC_GameplayPhysics
-		RBCollideWithChannels=(Default=true,Vehicle=true,GameplayPhysics=true,EffectPhysics=true)
-		bNotifyRigidBodyCollision=true
-		ScriptRigidBodyCollisionThreshold=250.000000
-		Name="WCMesh"
-	End Object
-
-	BlockRigidBody=true
-	bStatic=false
-	bBlockActors=false
-	bCollideWhenPlacing=true
-	bHardAttach=false
+	bLoop=false
+	bPermanent=false
+	bResetOnClear=true
+	CurrentNode=0
+	Memory=""
+	ObjectName="UnnamedObject"
+	PathLength=0.0
+	PathProgress=0.0
+	PathSpeed=0.0
+	
+	Mesh=None
+	
+	bBlocksTeleport=true
+	bNetInitialRotation=true
 	bConsiderAllStaticMeshComponentsForStreaming=true
-	Components(0)=WCMesh
-	Components(1)=None // Get rid of collision cylinder
+	bNoDelete=false
+	CollisionType=COLLIDE_BlockAll
+	Name="DefaultWCObject"
 	Physics=PHYS_RigidBody
 	TickGroup=TG_PostAsyncWork
-	bNetInitialRotation=true
-	bBlocksTeleport=true
-	CollisionComponent=WCMesh
-
-	Mesh=WCMesh
-	COMOffset=(x=0,y=0,z=-4)
-	Name="Default__WCObject"
 }

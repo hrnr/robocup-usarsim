@@ -102,7 +102,7 @@ simulated function bool IsType(String type)
 }
 
 // Callback mechanism which uses a delegate to send messages
-simulated delegate MessageSendDelegate(string msg)
+simulated delegate MessageSendDelegate(String msg)
 {
 	LogInternal("Item: no callback registered for MessageSendDelegate: " @ msg);
 }

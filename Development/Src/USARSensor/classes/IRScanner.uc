@@ -81,6 +81,5 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="IRScanner"
-	OutputCurve=(Points=((InVal=0,OutVal=0),(InVal=1000,OutVal=1000)))
 	DrawScale=10
 }

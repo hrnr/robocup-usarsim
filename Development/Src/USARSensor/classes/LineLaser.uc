@@ -209,12 +209,8 @@ function ScanLaser()
 	sensorData = "{Location " $ class'UnitsConverter'.static.Str_LengthVectorFromUU(sensorLocation,
 		4) $ "} {Orientation " $ class'UnitsConverter'.static.Str_AngleVectorFromUU(currentRotation, 4) $ "}";
 	sensorData = sensorData $ " {Points ";
-	currentLineStartPoint.X = 0;
-	currentLineStartPoint.Y = 0;
-	currentLineStartPoint.Z = 0;
-	currentLineEndPoint.X = 0;
-	currentLineEndPoint.Y = 0;
-	currentLineEndPoint.Z = 0;
+	currentLineStartPoint = vect(0, 0, 0);
+	currentLineEndPoint = vect(0, 0, 0);
 
 	FlushPersistentDebugLines();
 	currentBeamDirection = firstBeamDirection;
@@ -279,9 +275,7 @@ function ScanLaser()
 						// The current point becomes the new start point.
 						currentLineStartPoint = HitLocation;
 						currentLineStartPointHitNormal = HitNormal;
-						currentLineEndPoint.X = 0;
-						currentLineEndPoint.Y = 0;
-						currentLineEndPoint.Z = 0;
+						currentLineEndPoint = vect(0, 0, 0);
 					}
 				}
 				else
@@ -309,9 +303,7 @@ function ScanLaser()
 				{
 					currentLineStartPointCorners = calculateSquareCorners(currentLineStartPoint, currentLineStartPointHitNormal, HitLocation - currentLineStartPoint, squareSize);
 					drawSquare(currentLineStartPointCorners[0], currentLineStartPointCorners[1], currentLineStartPointCorners[2], lineSpace);
-					currentLineStartPoint.X = 0;
-					currentLineStartPoint.Y = 0;
-					currentLineStartPoint.Z = 0;
+					currentLineStartPoint = vect(0, 0, 0);
 				}
 				else
 				{
@@ -321,12 +313,8 @@ function ScanLaser()
 					drawSquare(currentLineEndPointCorners[0], currentLineEndPointCorners[1], currentLineEndPointCorners[2], lineSpace);
 					drawLine(currentLineStartPointCorners[2], currentLineStartPointCorners[3], currentLineEndPointCorners[0], currentLineEndPointCorners[1], lineSpace);
 					// There is no current line.
-					currentLineStartPoint.X = 0;
-					currentLineStartPoint.Y = 0;
-					currentLineStartPoint.Z = 0;
-					currentLineEndPoint.X = 0;
-					currentLineEndPoint.Y = 0;
-					currentLineEndPoint.Z = 0;
+					currentLineStartPoint = vect(0, 0, 0);
+					currentLineEndPoint = vect(0, 0, 0);
 				}
 			}
 		}

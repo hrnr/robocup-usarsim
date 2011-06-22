@@ -43,14 +43,21 @@ defaultproperties
 	End Object
 	SceneCapture=SceneCapture2DComponent0
 	Components(0)=SceneCapture2DComponent0
-
-	Begin Object Class=StaticMeshComponent Name=StMesh01
+	
+	BlockRigidBody=true
+	bCollideActors=true
+	bBlockActors=false
+	bProjTarget=true
+	bCollideWhenPlacing=true
+	bCollideWorld=true
+	
+	Begin Object Name=StaticMeshComponent0
 		StaticMesh=StaticMesh'P3AT.StaticMeshDeco.P3ATDeco_BatteryPack'
 		// For new camera model: StaticMesh=StaticMesh'Camera.Mesh.Camera'
+		CollideActors=true
 		BlockActors=false
+		BlockRigidBody=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
 	End Object
-
-	CollisionType=COLLIDE_BlockAll
-	Components(1)=StMesh01
-	CollisionComponent=StMesh01
 }

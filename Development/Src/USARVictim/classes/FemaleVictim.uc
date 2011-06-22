@@ -38,6 +38,4 @@ defaultproperties
 		AnimTreeTemplate=AnimTree'VictimPackage.animation.GenericFemale_AnimTree'
 		AnimSets.Add(AnimSet'VictimPackage.animation.GenericFemale_AnimSet')
 	End Object
-
-	bIsFemale=true
 }

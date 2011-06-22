@@ -62,6 +62,4 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="Encoder"
-	DrawScale=0.004762
-	DrawScale3D=(X=0.001)
 }

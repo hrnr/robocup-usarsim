@@ -81,8 +81,8 @@ function DeleteBotController(BotController OldBot)
 		}
 }
 
-function BotController AddBotController(Actor theOwner, String botName, int teamNum,
-	vector startLocation, rotator startRotation, String className)
+function BotController AddBotController(Actor theOwner, String botName, vector startLocation,
+	rotator startRotation, String className)
 {
 	local BotController NewBot;
 	
@@ -90,20 +90,26 @@ function BotController AddBotController(Actor theOwner, String botName, int team
 		LogInternal("BotDeathmatch: AddBotController");
 	NewBot = Spawn(BotControllerClass, theOwner, , startLocation, startRotation);
 	NewBot.bIsPlayer = true;
+	NewBot.BotName = botName;
 	NewBot.SetHidden(false);
 	if (NewBot != None)
 	{
 		NumRemoteBots++;
 		NumPlayers++;
 		if (className != "")
-			NewBot.PawnClass = class<Pawn>(DynamicLoadObject(className, class'Class'));
+			NewBot.PawnClass = class<Pawn>(DynamicLoadObject(className, class'Class', true));
 		else if (NewBot.PawnClass == None)
 		{
 			LogInternal("BotDeathmatch: New robot has no actor class");
 			NewBot.PawnClass = class<Pawn>(DynamicLoadObject("Engine.Pawn", class'Class'));
 		}
-		SpawnPlayer(NewBot, startLocation, startRotation);
-		botList.AddItem(NewBot);
+		if (NewBot.PawnClass != None)
+		{
+			SpawnPlayer(NewBot, startLocation, startRotation);
+			botList.AddItem(NewBot);
+		}
+		else
+			LogInternal("Could not find the class named " $ className);
 	}
 	else
 		LogInternal("BotDeathmatch: BotController failed to spawn");
@@ -112,16 +118,18 @@ function BotController AddBotController(Actor theOwner, String botName, int team
 
 function SpawnPlayer(BotController newBot, optional vector startLocation, optional rotator startRotation)
 {
-	if (NewBot == None) {
+	if (NewBot == None)
+	{
 		LogInternal("BotDeathmatch: Robot was None");
 		return;
 	}
-	if (NewBot.Pawn != None) {
+	if (NewBot.Pawn != None)
+	{
 		LogInternal("BotDeathmatch: Robot already had pawn");
 		return;
 	}
 	FindPlayerStart(NewBot);
-	NewBot.Pawn = Spawn(NewBot.PawnClass,NewBot,,startLocation,startRotation);
+	NewBot.Pawn = Spawn(NewBot.PawnClass, NewBot, , startLocation, startRotation);
 	if (NewBot.Pawn == None)
 	{
 		LogInternal("Failed to spawn player of type " $ NewBot.PawnClass);
@@ -140,7 +148,6 @@ function RestartPlayer(Controller aPlayer)
 {
 	if (bDebug)
 		LogInternal("BotDeathmatch: RestartPlayer");
-
 	if (aPlayer.IsA('USARBot'))
 	{
 		if (aPlayer.IsInState('Dying'))

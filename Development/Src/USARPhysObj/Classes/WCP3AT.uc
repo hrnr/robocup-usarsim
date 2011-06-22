@@ -1,4 +1,4 @@
-    /*****************************************************************************
+/*****************************************************************************
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
@@ -6,28 +6,18 @@
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
-class WCP3AT extends WCObject 
-placeable;
 
-DefaultProperties
+/*
+ * WCP3AT - P3AT robot body spawnable by the world controller
+ */
+class WCP3AT extends WCObject placeable;
+
+defaultproperties
 {
-    //WCObject Variables
-    Begin Object Name=WCMesh
-        SkeletalMesh=SkeletalMesh'P3AT.SkeletalMesh.P3AT'
-        PhysicsAsset=PhysicsAsset'P3AT.SkeletalMesh.P3ATCollision_Physics'
-        bSkipAllUpdateWhenPhysicsAsleep=false
-        PhysicsWeight=1.0f
-    End Object
-    
-    //Actor Variables
- 	boundary = (x=.32,y=.256,z=.16);
-	Components(0)=WCMesh
-    bNoDelete=false
-    DrawScale=1
-    bDebug =false
-    DrawScale3D=(X=1,Y=1,Z=1)
-
-    //Pawn Variables
-    Mass = 18
+	// TODO The P3AT static mesh has only the middle part. Create a new mesh with everything
+	// joined together and replace this
+	Mesh=StaticMesh'P3AT_static.ChassisMiddle'
+	
+	Name="WCP3AT"
 }
 

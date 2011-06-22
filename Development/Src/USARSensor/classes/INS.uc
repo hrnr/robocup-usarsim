@@ -191,23 +191,21 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="INS"
-	BlockRigidBody=false
-	bCollideActors=false
+	DrawScale=0.9524
+	
+	BlockRigidBody=true
+	bCollideActors=true
 	bBlockActors=false
 	bProjTarget=true
-	bCollideWhenPlacing=false
-	bCollideWorld=false
-	DrawScale=0.9524
-
-	Begin Object Class=StaticMeshComponent Name=StKMesh01
+	bCollideWhenPlacing=true
+	bCollideWorld=true
+	
+	Begin Object Name=StaticMeshComponent0
 		StaticMesh=StaticMesh'INSIMUSensor.Sensor'
-		CollideActors=false
+		CollideActors=true
 		BlockActors=false
-		BlockRigidBody=false
-		BlockZeroExtent=false
-		BlockNonZeroExtent=false
+		BlockRigidBody=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
 	End Object
-
-	Components(1)=StMesh01
-	CollisionComponent=StMesh01
 }

@@ -204,6 +204,4 @@ defaultproperties
 {
 	bDebug=true
 	ItemType="TouchArray"
-	DrawScale3D=(X=0.1)
-	DrawScale=0.4762
 }

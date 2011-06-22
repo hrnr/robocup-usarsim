@@ -90,8 +90,7 @@ reliable server function SetGripper(int gripper)
 			if (EndItem != None)
 			{
 				// Find axis along which to trace
-				rayAxis.X = 0;
-				rayAxis.Y = 0;
+				rayAxis = vect(0, 0, 0);
 				rayAxis.Z = suctionLength;
 				// Find where how far away the box can be
 				rayEnd = EndItem.Location + (rayAxis >> EndItem.Rotation);

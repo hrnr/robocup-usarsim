@@ -3,6 +3,7 @@ class VictimPawn extends UTPawn config(USAR);
 var AnimTree defaultAnimTree;
 var array<AnimSet> defaultAnimSet;
 var AnimNodeSequence defaultAnimSeq;
+var SkeletalMesh defaultMesh;
 var PhysicsAsset defaultPhysicsAsset;
 
 var VictimController MyController;
