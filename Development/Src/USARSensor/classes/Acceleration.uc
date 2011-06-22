@@ -29,7 +29,7 @@ function String GetData()
 	local vector curVelocity, accel;
 	local float curTime;
 	
-	curVelocity = Velocity;
+	curVelocity = Platform.CenterItem.StaticMeshComponent.BodyInstance.Velocity;
 	curTime = WorldInfo.TimeSeconds;
 	if (curTime != lastTime)
 	{
