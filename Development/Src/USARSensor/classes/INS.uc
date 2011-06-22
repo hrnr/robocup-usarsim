@@ -199,7 +199,7 @@ defaultproperties
 	bCollideWorld=false
 	DrawScale=0.9524
 
-	Begin Object Class=StaticMeshComponent Name=StKMesh01
+	Begin Object Class=StaticMeshComponent Name=StMesh01
 		StaticMesh=StaticMesh'INSIMUSensor.Sensor'
 		CollideActors=false
 		BlockActors=false
