@@ -14,18 +14,17 @@
  * Commands:
  * 
  * CONTROL {Type Create} {ClassName class} {Name name} {Location x,y,z} {Rotation x,y,z}
- *     {Scale x,y,z} {Physics None/RigidBody/} {Permanent true/false}
+ *     {Scale x,y,z} {Physics None/RigidBody} {Permanent true/false} {Material materialName}
  * CONTROL {Type Kill} {Name name}
  * CONTROL {Type KillAll} {MinPos x,y,z} {MaxPos x,y,z}
  * CONTROL {Type AbsMove} {Name name} {Location x,y,z} {Rotation x,y,z}
  * CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
  * CONTROL {Type Rotate} {Name name} {Speed x,y,z}
- * CONTROL {Type SetWP} {Name name} [{Speed s}|{Time t}] [{Move <true/false>}]
- *     [{Autoalign <true/false>}] [{Show <true/false>}] [{Loop <true/false>}]
- *     [{ResetOnClear <true/false>}] [{WP x,y,z;x,y,z;...}]
+ * CONTROL {Type SetWP} {Name name} [{Speed s}|{Time t}] [{Loop <true/false>}]
+ *     [{ResetOnClear <true/false>}]
  * CONTROL {Type AddWP} {Name name} {WP x,y,z;x,y,z;...}
  * CONTROL {Type ClearWP} {Name name}
- * CONTROL {Type GetSTA} {Name name} {ClassName class} - get all objects, or just ones named name or of class class
+ * CONTROL {Type GetSTA} [{Name name}] [{ClassName class}]
  * 
  * Port and additions by Stephen Balakirsky
  * based on code by Marco Zaratti - marco.zaratti@gmail.com
@@ -132,69 +131,6 @@ simulated function int GetObjectIndex(String objName)
 	return -1;
 }
 
-// Find the size of the current vector and the position in said vector
-simulated function GetSegmentPos(WCObject item, out float segSize, out float segPos)
-{
-	local int node;
-	
-	node = item.CurrentNode;
-	if (node == 0)
-	{
-		// On the first path
-		segSize = item.Paths[0];
-		segPos = item.PathProgress;
-	}
-	else
-	{
-		// On a subsequent path
-		segSize = item.Paths[node] - item.Paths[node - 1];
-		segPos = item.PathProgress - item.Paths[node - 1];
-	}
-}
-
-// Gets the vector between the specified node of the item and the next node
-simulated function vector GetSegmentVect(WCObject item, int node)
-{
-	local int maxNode;
-
-	maxNode = item.WayPoints.Length - 1;
-	if (node < maxNode)
-		// Inside loop
-		return item.WayPoints[node + 1] - item.WayPoints[node];
-	else
-		// Close loop
-		return item.WayPoints[0] - item.WayPoints[node];
-}
-
-// Calculates the toal distance of the waypoints path of the given object. Also calculates the
-// length of each segment and stores it in Paths (Paths[i] = distance from point 0 to i + 1)
-// The object needs at least one waypoint for this to work (obviously?)
-simulated function float GetTotalDistance(WCObject item, bool loop)
-{
-	local int i, numPoints;
-	local float dist;
-	
-	numPoints = item.Waypoints.Length;
-	if (numPoints > 0)
-	{
-		item.Paths.Length = numPoints;
-		// Find all path lengths
-		for (i = 0; i < numPoints; i++)
-		{
-			dist += VSize(GetSegmentVect(item, i));
-			item.Paths[i] = dist;
-		}
-		// Always completely fill the segment length array as if it were looped
-		if (loop || numPoints < 2)
-			dist = item.Paths[numPoints - 1];
-		else
-			dist = item.Paths[numPoints - 2];
-	}
-	else
-		dist = 0;
-	return dist;
-}
-
 // Moves the specified world controller object to the given new position
 function MoveItem(WCObject item, vector newLocation, rotator newRotation)
 {
@@ -222,7 +158,7 @@ simulated function SetObjectPosition(WCObject item, float dist)
 	local vector newPos;
 	local float segSize;
 	local float segPos;
-
+	
 	// In bounds
 	if (dist < 0)
 		dist = 0;
@@ -233,9 +169,9 @@ simulated function SetObjectPosition(WCObject item, float dist)
 		item.CurrentNode++;
 	// Calculate position through segment math
 	item.PathProgress = dist;
-	GetSegmentPos(item, segSize, segPos);
+	item.GetSegmentPos(segSize, segPos);
 	// Now calculate the new object position, use Move() to get there (respects collision!)
-	newPos = item.Waypoints[item.CurrentNode] + GetSegmentVect(item, item.CurrentNode) *
+	newPos = item.Waypoints[item.CurrentNode] + item.GetSegmentVect(item.CurrentNode) *
 		segSize / segPos;
 	item.Move(newPos - item.Location);
 }
@@ -251,26 +187,33 @@ simulated function Tick(float DT)
 	for (i = 0; i < Objects.Length; i++)
 	{
 		item = Objects[i];
-		if (item != None && item.PathLength > 0)
+		if (item != None)
 		{
-			// Moves the object along its path
-			progress += item.PathProgress + item.PathSpeed * DT;
-			// See if it has reached the end
-			if (progress >= item.PathLength)
+			if (item.PathLength > 0 && item.bMoving)
 			{
-				if (item.bLoop)
-					progress -= item.PathLength;
-				else
+				// Moves the object along its path
+				progress += item.PathProgress + item.PathSpeed * DT;
+				// See if it has reached the end
+				if (progress >= item.PathLength)
 				{
-					// Done
-					progress = 0;
-					item.PathLength = 0;
-					item.RestorePosition();
+					if (item.bLoop)
+						progress -= item.PathLength;
+					else
+					{
+						// Done
+						progress = 0;
+						item.PathLength = 0;
+						item.RestorePosition();
+					}
+					item.CurrentNode = 0;
 				}
-				item.CurrentNode = 0;
+				// Update if necessary
+				SetObjectPosition(item, progress);
 			}
-			// Update if necessary
-			SetObjectPosition(item, progress);
+			// Rotate object
+			if (item.RotationRate.Roll != 0 || item.RotationRate.Pitch != 0 ||
+					item.RotationRate.Yaw != 0)
+				item.RotateRate(DT);
 		}
 	}
 	super.Tick(DT);
@@ -295,9 +238,43 @@ function AbsMove(String objName, vector targetLocation, rotator targetRotation)
 		LogInternal("WorldController: No object named " $ objName);
 }	
 
+// AddWP - adds waypoints to specified object
+function AddWP(String objName, String wpData)
+{
+	local int i;
+	local WCObject item;
+	local array<String> pts;
+	
+	item = GetObjectByName(objName);
+	if (item != None)
+	{
+		// Parse wpData by ;
+		pts = class'Utilities'.static.tokenizer(wpData, ";");
+		for (i = 0; i < pts.Length; i++)
+			item.Waypoints.AddItem(class'Utilities'.static.ParseVector(pts[i]));
+		// Update part
+		item.UpdateTotalDistance();
+	}
+	else
+		LogInternal("WorldController: No object named " $ objName);
+}
+
+// ClearWP - deletes all waypoints of specified object
+function ClearWP(String objName)
+{
+	local WCObject item;
+	
+	// Delete all waypoints
+	item = GetObjectByName(objName);
+	if (item != None)
+		ClearAllWaypoints(item);
+	else
+		LogInternal("WorldController: No object named " $ objName);
+}
+
 // Create - spawn an object at a given location with a given name
 function Create(String objClass, String objName, String memory, vector objLocation,
-	rotator objRotation, vector objScale, String objPhysics, bool isPermanent)
+	rotator objRotation, vector objScale, String objPhysics, String matName, bool isPermanent)
 {
 	local class<WCObject> objectClass;
 	local WCObject item;
@@ -332,7 +309,7 @@ function Create(String objClass, String objName, String memory, vector objLocati
 	if (bDebug)
 		LogInternal("WorldController: Spawned object '" $ objName $ "' at " $
 			class'UnitsConverter'.static.Str_LengthVectorFromUU(objLocation));
-	item.Init(objName, memory, isPermanent, objScale);
+	item.Init(objName, memory, isPermanent, objScale, matName);
 	// Set physics (defaults to rigid body)
 	if (objPhysics != "RigidBody" && objPhysics != "Falling" && objPhysics != "Ground")
 		item.SetPhysics(PHYS_None);
@@ -480,6 +457,60 @@ function RelMove(String objName, vector delLocation, rotator delRotation)
 		LogInternal("WorldController: No object named " $ objName);
 }	
 
+// Rotate - starts rotating an object at the specified rate
+function Rotate(String objName, rotator speed)
+{
+	local WCObject item;
+	
+	item = GetObjectByName(objName);
+	if (item != None)
+		item.RotationRate = speed;
+	else
+		LogInternal("WorldController: No object named " $ objName);
+}
+
+// SetWP - change parameters related to motion paths
+function SetWP(String objName, ParsedMessage msg)
+{
+	local WCObject item;
+	local float progress;
+	local String temp;
+	
+	item = GetObjectByName(objName);
+	if (item != None)
+	{
+		// Set speed
+		temp = msg.GetArgVal("Speed");
+		if (temp != "")
+			item.PathSpeed = float(temp);
+		// Set loop
+		temp = msg.GetArgVal("Loop");
+		if (temp != "")
+		{
+			item.bLoop = (Caps(temp) == "TRUE");
+			item.UpdateTotalDistance();
+		}
+		// Set reset on clear
+		temp = msg.GetArgVal("ResetOnClear");
+		if (temp != "")
+			item.bResetOnClear = (Caps(temp) == "TRUE");
+		// Set current time on path (set the progress to time * speed)
+		temp = msg.GetArgVal("Time");
+		if (temp != "")
+		{
+			progress = float(temp) * item.PathSpeed;
+			// Constrain in bounds
+			if (progress < 0)
+				progress = 0;
+			else if (progress > item.PathLength)
+				progress = item.PathLength;
+			item.PathProgress = progress;
+		}
+	}
+	else
+		LogInternal("WorldController: No object named " $ objName);
+}
+
 // Changes the velocity of a specified conveyor zone
 function SetZoneVel(String objName, float newVelocity)
 {
@@ -512,7 +543,6 @@ defaultproperties
 {
 	bDebug=false
 	LogPostfix=1
-	DrawScale=1
 	bNoDelete=false
 	bStatic=false
 	bBlockActors=false

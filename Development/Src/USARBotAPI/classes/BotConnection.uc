@@ -327,10 +327,9 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 {
 	local WorldController control;
 	local vector loc, end, scale;
-	local bool permanent;
 	local rotator rot;
 	local PlayerStart start;
-	local String startName, type, minPos, maxPos;
+	local String startName, objName, type, minPos, maxPos;
 	
 	// Sanity
 	if (TheBot == None || !TheBot.Pawn.IsA('WorldController'))
@@ -341,19 +340,20 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 	// Initialize
 	control = WorldController(TheBot.Pawn);
 	type = parsedMessage.GetArgVal("Type");
+	objName = parsedMessage.GetArgVal("Name");
 	if (bDebug)
 		LogInternal("BotConnection: Received WC command " $ type);
 	// CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
 	if (type == "RelMove")
 	{
 		GetPose(parsedMessage, loc, rot);
-		control.RelMove(parsedMessage.GetArgVal("Name"), loc, rot);
+		control.RelMove(objName, loc, rot);
 	}
 	// CONTROL {Type AbsMove} {Name name} {Location x,y,z} {Rotation x,y,z}
 	else if (type == "AbsMove")
 	{
 		GetPose(parsedMessage, loc, rot);
-		control.AbsMove(parsedMessage.GetArgVal("Name"), loc, rot);
+		control.AbsMove(objName, loc, rot);
 	}
 	// CONTROL {Type Create} {ClassName class} {Name name} {Memory memory} {Location x,y,z}
 	// {Rotation x,y,z} {Physics None/RigidBody} {Permanent true/false}
@@ -377,15 +377,15 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 		// Prevent a zero-size scale
 		if (scale.X == 0 && scale.Y == 0 && scale.Z == 0)
 			scale = vect(1, 1, 1);
-		permanent = (Caps(parsedMessage.GetArgVal("Permanent")) == "TRUE");
 		// Create object
-		control.Create(parsedMessage.GetArgVal("ClassName"), parsedMessage.GetArgVal("Name"),
+		control.Create(parsedMessage.GetArgVal("ClassName"), objName,
 			parsedMessage.GetArgVal("Memory"), loc, rot, scale,
-			parsedMessage.GetArgVal("Physics"), permanent);
+			parsedMessage.GetArgVal("Physics"), parsedMessage.GetArgVal("Material"),
+			Caps(parsedMessage.GetArgVal("Permanent")) == "TRUE");
 	}
 	// CONTROL {Type Kill} {Name name}
 	else if (type == "Kill")
-		control.Kill(parsedMessage.GetArgVal("Name"));
+		control.Kill(objName);
 	// CONTROL {Type KillAll} {MinPos x, y, z} {MaxPos x, y, z}
 	else if (type == "KillAll")
 	{
@@ -408,12 +408,26 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 	}
 	// CONTROL {Type GetSTA} {ClassName type} {Name name}
 	else if (type == "GetSTA")
-		SendLine(control.GetSTA(parsedMessage.GetArgVal("ClassName"),
-			parsedMessage.GetArgVal("Name"))); 
+		SendLine(control.GetSTA(parsedMessage.GetArgVal("ClassName"), objName)); 
 	// CONTROL {Type Conveyor} {Name name} {Speed speed}
 	else if (type == "Conveyor")
-		control.SetZoneVel(parsedMessage.GetArgVal("Name"),
-			float(parsedMessage.GetArgVal("Speed")));
+		control.SetZoneVel(objName, float(parsedMessage.GetArgVal("Speed")));
+	// CONTROL {Type Rotate} {Name name} {Speed x,y,z}
+	else if (type == "Rotate")
+	{
+		rot = class'UnitsConverter'.static.AngleVectorToUU(
+			class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Speed")));
+		control.Rotate(objName, rot);
+	}
+	// CONTROL {Type AddWP} {WP x,y,z;x,y,z;...}
+	else if (type == "AddWP")
+		control.AddWP(objName, parsedMessage.GetArgVal("WP"));
+	// CONTROL {Type ClearWP} {Name name}
+	else if (type == "ClearWP")
+		control.ClearWP(objName);
+	// CONTROL {Type SetWP} {Name name} {...} (see file header comment in WorldController.uc)
+	else if (type == "SetWP")
+		control.SetWP(objName, parsedMessage);
 	else
 		LogInternal("BotConnection: Unsupported world controller command " $ type);
 }
