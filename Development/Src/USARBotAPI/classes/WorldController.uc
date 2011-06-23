@@ -21,7 +21,7 @@
  * CONTROL {Type RelMove} {Name name} {Location x,y,z} {Rotation x,y,z}
  * CONTROL {Type Rotate} {Name name} {Speed x,y,z}
  * CONTROL {Type SetWP} {Name name} [{Speed s}|{Time t}] [{Loop <true/false>}]
- *     [{ResetOnClear <true/false>}]
+ *     [{ResetOnClear <true/false>}] [{Moving <true/false>}]
  * CONTROL {Type AddWP} {Name name} {WP x,y,z;x,y,z;...}
  * CONTROL {Type ClearWP} {Name name}
  * CONTROL {Type GetSTA} [{Name name}] [{ClassName class}]
@@ -152,7 +152,7 @@ function MoveRobot(BotController mover, vector newLocation, rotator newRotation)
 	mover.Pawn.SetRotation(newRotation);
 }
 
-// This function moves the specified object to a specified position in its path
+// Moves the specified object to a specified position in its path
 simulated function SetObjectPosition(WCObject item, float dist)
 {
 	local vector newPos;
@@ -172,7 +172,7 @@ simulated function SetObjectPosition(WCObject item, float dist)
 	item.GetSegmentPos(segSize, segPos);
 	// Now calculate the new object position, use Move() to get there (respects collision!)
 	newPos = item.Waypoints[item.CurrentNode] + item.GetSegmentVect(item.CurrentNode) *
-		segSize / segPos;
+		segPos / segSize;
 	item.Move(newPos - item.Location);
 }
 
@@ -251,7 +251,8 @@ function AddWP(String objName, String wpData)
 		// Parse wpData by ;
 		pts = class'Utilities'.static.tokenizer(wpData, ";");
 		for (i = 0; i < pts.Length; i++)
-			item.Waypoints.AddItem(class'Utilities'.static.ParseVector(pts[i]));
+			item.Waypoints.AddItem(class'UnitsConverter'.static.LengthVectorToUU(
+				class'Utilities'.static.ParseVector(pts[i])));
 		// Update part
 		item.UpdateTotalDistance();
 	}
@@ -482,7 +483,7 @@ function SetWP(String objName, ParsedMessage msg)
 		// Set speed
 		temp = msg.GetArgVal("Speed");
 		if (temp != "")
-			item.PathSpeed = float(temp);
+			item.PathSpeed = class'UnitsConverter'.static.LengthToUU(float(temp));
 		// Set loop
 		temp = msg.GetArgVal("Loop");
 		if (temp != "")
@@ -490,6 +491,10 @@ function SetWP(String objName, ParsedMessage msg)
 			item.bLoop = (Caps(temp) == "TRUE");
 			item.UpdateTotalDistance();
 		}
+		// Set moving
+		temp = msg.GetArgVal("Moving");
+		if (temp != "")
+			item.bMoving = (Caps(temp) == "TRUE");
 		// Set reset on clear
 		temp = msg.GetArgVal("ResetOnClear");
 		if (temp != "")

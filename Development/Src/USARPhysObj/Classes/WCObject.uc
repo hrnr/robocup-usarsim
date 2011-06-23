@@ -71,14 +71,14 @@ simulated function GetSegmentPos(out float segSize, out float segPos)
 simulated function vector GetSegmentVect(int node)
 {
 	local int maxNode;
-
+	
 	maxNode = WayPoints.Length - 1;
 	if (node < maxNode)
 		// Inside loop
 		return WayPoints[node + 1] - WayPoints[node];
 	else
 		// Close loop
-		return WayPoints[0] - WayPoints[node];
+		return WayPoints[0] - WayPoints[maxNode];
 }
 
 // Initializes this object using the specified values
