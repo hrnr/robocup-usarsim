@@ -127,16 +127,24 @@ simulated function Update(JointItem ji)
 	local RevoluteJoint jt;
 	local rotator relRot;
 	local float angle;
+	local Rotator r1, r2;
 
 	jt = RevoluteJoint(ji.Spec);
-	// Measure direction depends on spec
+	
+	// Transform rotation of the parts by the constraint rotation
+	// Then take the relative rotation between these two parts
+	// The angle of the Revolute joint is then the roll component
+	// TODO: Take the base rotations of the parts into account
+	//       Right now it assumes the contraint is initialized with
+	//       the same rotations for both parts
+	r1 = class'Utilities'.static.rTurn(ji.Parent.Rotation, -1*ji.Constraint.Rotation);
+	r2 = class'Utilities'.static.rTurn(ji.Child.Rotation, -1*ji.Constraint.Rotation);
 	if (jt.InverseMeasure)
-		relRot = GetRelativeRotation(ji.Parent.Rotation, ji.Child.Rotation);
+		relRot = GetRelativeRotation(r1, r2);
 	else
-		relRot = GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
-	relRot = class'Utilities'.static.rTurn(
-		-1 * class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction), relRot);
-	angle = class'UnitsConverter'.static.AngleFromUU(relRot.Yaw);
+		relRot = GetRelativeRotation(r2, r1);
+	angle = class'UnitsConverter'.static.AngleFromUU(relRot.Roll);
+
 	// Update angle representation
 	if (jt.InverseMeasureAngle)
 		angle = -angle;
