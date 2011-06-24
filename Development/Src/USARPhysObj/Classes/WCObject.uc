@@ -23,6 +23,8 @@ var bool bPermanent;
 var bool bResetOnClear;
 // The object's current position in its path
 var int CurrentNode;
+// The object's mass in kilograms
+var float Mass;
 // RFID tag information for pallet sorting and moving
 var String Memory;
 // The object's static mesh
@@ -43,6 +45,7 @@ var float PathSpeed;
 var array<float> Paths;
 // Locations of segments in the object's path
 var array<vector> Waypoints;
+
 
 // Find the size of the current vector and the position in said vector
 simulated function GetSegmentPos(out float segSize, out float segPos)
@@ -110,6 +113,7 @@ function Init(String objName, String mem, bool isPermanent, vector scale, String
 			LogInternal("WCObject: Invalid material " $ matName);
 	}
 	// Need to do these to start physics
+	class'Utilities'.static.SetMass(self, Mass * scale.X * scale.Y * scale.Z);
 	SetPhysicalCollisionProperties();
 	ForceUpdateComponents();
 	StaticMeshComponent.WakeRigidBody();
@@ -189,6 +193,7 @@ defaultproperties
 	PathProgress=0.0
 	PathSpeed=0.0
 	
+	Mass=0.1
 	Mesh=None
 	
 	bBlocksTeleport=true
@@ -197,6 +202,5 @@ defaultproperties
 	bNoDelete=false
 	CollisionType=COLLIDE_BlockAll
 	Name="DefaultWCObject"
-	Physics=PHYS_RigidBody
 	TickGroup=TG_PostAsyncWork
 }

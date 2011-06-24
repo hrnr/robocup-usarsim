@@ -178,7 +178,7 @@ static function rotator rTurn(rotator rHeading, rotator rTurnAngle)
 }
 
 // Gets the relative position between a part and its parent
-function vector getRelativePosition(vector ChildPosition, vector ParentPosition,
+static function vector getRelativePosition(vector ChildPosition, vector ParentPosition,
 	rotator ParentOrientation)
 {
 	local vector res, Forward, Right, Upward, Dif;
@@ -206,6 +206,25 @@ function vector getRelativePosition(vector ChildPosition, vector ParentPosition,
 
 	return res;
 }
+
+// Adjusts the mass of the specified item to match reality (takes mass in UU)
+static function SetMass(DynamicSMActor act, float DesiredMass)
+{
+	local float oldScale, oldMass;
+	local RB_BodySetup bs;
+	
+	// Change auto calculated mass to the desired mass
+	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
+	bs = act.StaticMeshComponent.StaticMesh.BodySetup;
+	oldMass = act.StaticMeshComponent.BodyInstance.GetBodyMass();
+	oldScale = bs.MassScale;
+	if (oldMass > 0.0 && oldScale > 0.0)
+	{
+		bs.MassScale = DesiredMass / (oldMass / oldScale);
+		act.StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
+	}
+}
+
 
 // Sets default values of persistent variables
 defaultproperties

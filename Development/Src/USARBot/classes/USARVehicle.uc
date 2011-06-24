@@ -346,7 +346,7 @@ reliable server function SetupItem(SpecItem desc)
 		// when rotating in place; until resolved, do NOT hard attach
 		it.SetHardAttach(false);
 		// Initialize item
-		it.init(desc.ItemName, self, desc.Parent);
+		it.init(desc.ItemName, self);
 		if (bDebug)
 			LogInternal("USARVehicle: Created part " $ String(it.Name));
 		// Set up batteries properly (into its variable)
@@ -435,8 +435,16 @@ reliable server function SetupPart(Part part)
 		else
 		{
 			it.StaticMeshComponent.SetStaticMesh(part.Mesh);
-			it.SetPhysicalCollisionProperties();
-			it.SetMass(part.Mass);
+			if (part.Collision)
+				it.SetPhysicalCollisionProperties();
+			else
+			{
+				// Disable collision (and therefore movement)
+				it.SetCollision(false, false);
+				it.StaticMeshComponent.SetBlockRigidBody(false);
+				it.SetPhysics(PHYS_None);
+			}
+			class'Utilities'.static.SetMass(it, part.Mass);
 			// Initialize center item properly (for sensors and parenting reasons)
 			if (part.Name == Body.Name)
 			{

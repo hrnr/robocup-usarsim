@@ -12,20 +12,12 @@
  */
 class Sensor extends Item config(USAR) abstract;
 
-// Whether the sensor is invisible
-var config bool HiddenSensor;
 // Configuration for noise
 var config float Noise;
-// UT3 port - not used?
-var InterpCurveFloat OutputCurve;
-// Typo ported from UT3 (sensorData)
-var String SenorData;
 // Variables to be used in the gaussian random number generator
 var float Mean;
 var float Sigma;
-// Whether the sensor data will be sent out in group style or not. Right now, all the sensors of the same
-// type are treated as a group
-var config bool bUseGroup; 
+// Whether the sensor sends back time stamps as well
 var config bool bWithTimeStamp;
 
 // Called when sensor is attached to a vehicle
@@ -59,7 +51,7 @@ function String GetGeoData()
 		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
 	
 	// Mount point
-	outstring = outstring $ "} {Mount " $ ItemMount $ "}";
+	outstring = outstring $ "} {Mount " $ String(Platform.Class) $ "}";
 	return outstring;
 }
 

@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class kr60Arm extends VacuumArm placeable config (USAR);
+class kr60Arm extends Actuator placeable config (USAR);
 
 defaultproperties
 {

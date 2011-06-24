@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class Fanuc_M16iB20Arm extends VacuumArm placeable config (USAR);
+class Fanuc_M16iB20Arm extends Actuator placeable config (USAR);
 
 simulated function array<float> getRotation(array<float> pos)
 {
@@ -34,8 +34,6 @@ simulated function updateRotation(int Link, float Value)
 
 defaultproperties
 {
-	SuctionLength=.25
-
 	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
 		SkeletalMesh=SkeletalMesh'Fanuc_M16iB20.M16iB20_Mesh'
 		PhysicsAsset=PhysicsAsset'Fanuc_M16iB20.M16iB20_Phys'

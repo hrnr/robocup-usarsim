@@ -12,6 +12,8 @@
  */
 class Part extends Object config(USAR);
 
+// Whether collision should be enabled on this part.
+var bool Collision;
 // The direction the part points towards
 var vector Direction;
 // The part's mass in kilograms
@@ -25,5 +27,9 @@ var Part RelativeTo;
 
 defaultproperties
 {
+	Collision=true
+	Direction=(X=0.0,Y=0.0,Z=0.0)
 	Mass=0.0
+	Offset=(X=0.0,Y=0.0,Z=0.0)
+	RelativeTo=None
 }

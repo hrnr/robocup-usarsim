@@ -27,8 +27,7 @@ simulated static function Hinge CreateFixJoint(Actor par, Actor chi)
 	// Init constraint and return it
 	cons.InitConstraint(par, chi, , , 6000.0);
 	cons.ConstraintInstance.SetAngularPositionDrive(false, false);
-	// Emulate default FixedJoint values and re-init
-	cons.ConstraintInstance.SetAngularDriveParams(50000.0, 0.25, 50000.0);
+	cons.ConstraintInstance.SetLinearPositionDrive(false, false, false);
 	cons.ConstraintInstance.InitConstraint(par.CollisionComponent, chi.CollisionComponent,
 		cons.ConstraintSetup, 1, par, par.CollisionComponent, false);
 	return cons;

@@ -14,6 +14,7 @@ class WCPallet extends WCObject placeable;
 
 defaultproperties
 {
+	Mass=18.0
 	Mesh=StaticMesh'WCObjectPkg.Pallets.Pallet'
 	
 	Name="WCPallet"

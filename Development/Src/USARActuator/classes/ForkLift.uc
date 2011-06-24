@@ -8,12 +8,10 @@
 *****************************************************************************/
 
 // TODO Has no model
-class ForkLift extends GripperArm placeable config (USAR);
+class ForkLift extends Actuator placeable config (USAR);
 
 defaultproperties
 {
-	SuctionLength=.25
-	
 	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
 		SkeletalMesh=SkeletalMesh'ForkLift.MissionMesh'
 		PhysicsAsset=PhysicsAsset'ForkLift.MissionPhys'

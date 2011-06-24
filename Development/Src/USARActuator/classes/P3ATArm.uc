@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class P3ATArm extends GripperArm placeable config (USAR);
+class P3ATArm extends Actuator placeable config (USAR);
 
 defaultproperties
 {

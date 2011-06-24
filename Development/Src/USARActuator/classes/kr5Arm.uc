@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class kr5Arm extends GripperArm placeable config (USAR);
+class kr5Arm extends Actuator placeable config (USAR);
 
 defaultproperties
 {

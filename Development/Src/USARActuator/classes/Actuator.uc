@@ -456,7 +456,7 @@ reliable server function SetupItem(SpecItem desc)
 		// when rotating in place; until resolved, do NOT hard attach
 		it.SetHardAttach(false);
 		// Initialize item
-		it.init(desc.ItemName, Platform, desc.Parent);
+		it.init(desc.ItemName, Platform);
 		if (bDebug)
 			LogInternal("Actuator: Created part " $ String(it.Name));
 		// Add item to world
@@ -541,8 +541,16 @@ reliable server function SetupPart(Part part)
 		else
 		{
 			it.StaticMeshComponent.SetStaticMesh(part.Mesh);
-			it.SetPhysicalCollisionProperties();
-			it.SetMass(part.Mass);
+			if (part.Collision)
+				it.SetPhysicalCollisionProperties();
+			else
+			{
+				// Disable collision (and therefore movement)
+				it.SetCollision(false, false);
+				it.StaticMeshComponent.SetBlockRigidBody(false);
+				it.SetPhysics(PHYS_None);
+			}
+			class'Utilities'.static.SetMass(it, part.Mass);
 			// Found base?
 			if (it.Spec.Name == Body.Name)
 			{

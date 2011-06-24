@@ -8,7 +8,7 @@
 *****************************************************************************/
 
 // TODO Has no model
-class Fanuc_Robot_And_Rail_Arm extends VacuumArm placeable config (USAR);
+class Fanuc_Robot_And_Rail_Arm extends Actuator placeable config (USAR);
 
 simulated function array<float> getRotation(array<float> pos)
 {
@@ -34,8 +34,6 @@ simulated function updateRotation(int Link, float Value)
 
 defaultproperties
 {
-	SuctionLength=.25
-	
 	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
 		SkeletalMesh=SkeletalMesh'FANUC_ROBOT_AND_RAIL.fanuc_robot_rail_Mesh'
 		PhysicsAsset=PhysicsAsset'FANUC_ROBOT_AND_RAIL.fanuc_robot_rail_Physics'

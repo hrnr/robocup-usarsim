@@ -10,13 +10,10 @@
 /*
  * kivaTop - simple example actuator (has a model)
  */
-class kivaTop extends VacuumArm placeable config (USAR);
+class kivaTop extends Actuator placeable config (USAR);
 
 defaultproperties
 {
-	SuctionLength=-.25
-	VacuumBreak=0
-	
 	// KivaTop didn't have a base, so made a small part to become one
 	Begin Object Class=Part Name=BaseItem
 		Mesh=StaticMesh'Kiva_static.PackageBase'
@@ -36,7 +33,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RotateJoint
 		Parent=BaseItem
 		Child=TopItem
-		MaxForce=10
+		MaxForce=1000
 		LimitLow=-3.228
 		LimitHigh=3.228
 	End Object

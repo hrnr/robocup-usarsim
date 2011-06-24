@@ -14,8 +14,7 @@ class Item extends KActor config(USAR) abstract;
 
 // The item name
 var repnotify String ItemName;
-// The item type and mount point
-var name ItemMount;
+// The item type
 var String ItemType;
 // True if the item is on a client
 var bool IsClient;
@@ -66,14 +65,8 @@ function String GetGeoData()
 }
 
 // Initializes this item
-function Init(String iName, BaseVehicle veh, name mount)
+function Init(String iName, BaseVehicle veh)
 {
-	// Default mount to HARD
-	if (mount == 'None')
-		ItemMount = 'HARD';
-	else
-		ItemMount = mount;
-	
 	// Initialize variables
     Platform = veh;
 	SetName(iName);
@@ -126,24 +119,6 @@ simulated function PostBeginPlay()
 	// Activate item timer based on the scan interval of each class
 	if (ScanInterval > 0.0)
 		SetTimer(ScanInterval, true);
-}
-
-// Adjusts the mass of the specified item to match reality (takes mass in UU)
-function SetMass(float DesiredMass)
-{
-	local float oldScale, oldMass;
-	local RB_BodySetup bs;
-
-	// Change auto calculated mass to the desired mass
-	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
-	bs = StaticMeshComponent.StaticMesh.BodySetup;
-	oldMass = StaticMeshComponent.BodyInstance.GetBodyMass();
-	oldScale = bs.MassScale;
-	if (oldMass > 0.0 && oldScale > 0.0)
-	{
-		bs.MassScale = DesiredMass / (oldMass / oldScale);
-		StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
-	}
 }
 
 replication
