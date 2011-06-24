@@ -47,10 +47,6 @@ public class IridiumUI {
 	 */
 	public static final String[] OPT_CAMERA = { "FOV" };
 	/**
-	 * Available options for SET when using "Gripper" as type.
-	 */
-	public static final String[] OPT_GRIPPER = { "Open", "Close" };
-	/**
 	 * Available options for SET when using "Joint" as type.
 	 */
 	public static final String[] OPT_JOINTS = { "Angle", "Velocity", "Torque" };
@@ -267,9 +263,9 @@ public class IridiumUI {
 		final Frame frame = Utils.findParent(mainUI);
 		state.disconnect();
 		closeJoystick();
-		closeAllDialogs();
 		if (frame != null)
 			frame.dispose();
+		closeAllDialogs();
 	}
 	/**
 	 * Feeds a DRIVE command if necessary to the robot if the joystick is connected and moved.
@@ -1275,8 +1271,7 @@ public class IridiumUI {
 		final JPanel geoOptions = new JPanel(new GridBagLayout());
 		typePanel.add(geoOptions, "geoconf");
 		// Combo Box: Configuration Type
-		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "Actuator",
-			"Gripper");
+		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "Actuator");
 		Utils.armActionListener(geoType, listener, "send");
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -1375,7 +1370,7 @@ public class IridiumUI {
 		final JComponent setOptions = new JPanel(new GridBagLayout());
 		typePanel.add(setOptions, "set");
 		// Combo Box: Item Type
-		setType = Utils.createComboBox("Type of item to control", "Joint", "Gripper", "Camera");
+		setType = Utils.createComboBox("Type of item to control", "Joint", "Camera");
 		setType.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				// Update the opcode box if the type is changed
@@ -1779,9 +1774,6 @@ public class IridiumUI {
 				element = OPT_JOINTS[index];
 				break;
 			case 1:
-				element = OPT_GRIPPER[index];
-				break;
-			case 2:
 				element = OPT_CAMERA[index];
 				break;
 			default:
@@ -1796,10 +1788,6 @@ public class IridiumUI {
 				len = OPT_JOINTS.length;
 				break;
 			case 1:
-				// Open, Close
-				len = OPT_GRIPPER.length;
-				break;
-			case 2:
 				// FOV
 				len = OPT_CAMERA.length;
 				break;
