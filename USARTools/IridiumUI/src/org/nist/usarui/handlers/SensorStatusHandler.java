@@ -25,65 +25,6 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 	 */
 	public static final int MAX_ENTRIES = 10;
 
-	public SensorStatusHandler(Iridium state) {
-		super(state);
-	}
-	public String getPrefix() {
-		return "Sen_";
-	}
-	public boolean statusReceived(USARPacket packet) {
-		boolean keep = true, deg = state.getUI().isInDegrees();
-		if (packet.getType().equals("SEN")) {
-			// Update time
-			String tm = packet.getParam("Time"), value, test, type, name;
-			if (tm != null)
-				try {
-					state.getUI().updateTime(Float.parseFloat(tm));
-				} catch (NumberFormatException ignore) { }
-			// Update value, using typical names (this is for the simple sensors)
-			type = packet.getParam("Type");
-			if (type == null) type = "Sensor";
-			name = packet.getParam("Name");
-			if (name == null) name = type;
-			// Default bulk data
-			value = packet.getParam("");
-			if (value != null) value = Utils.asHTML(floatString(value, false));
-			// Accelerometer
-			test = packet.getParam("Acceleration");
-			if (test != null) value = Utils.asHTML(floatString(test, false));
-			// Bumper
-			test = packet.getParam("Touch");
-			if (test != null) value = touchString(test);
-			// Encoder
-			test = packet.getParam("Tick");
-			if (test != null) value = test;
-			// GPS
-			test = packet.getParam("Fix");
-			if (test != null) value = getGPSData(packet);
-			// IR2Sensor, IRSensor, RangeSensor, RangeScanner, Sonar, and subclasses
-			test = packet.getParam("Range");
-			if (test != null) value = Utils.asHTML(floatString(test, false));
-			// Odometer
-			test = packet.getParam("Pose");
-			if (test != null) value = odoString(test, deg);
-			// Tachometer
-			test = packet.getParam("Pos");
-			if (test != null)
-				value = Utils.asHTML("<b>Rotation</b> (" + floatString(test, deg) +
-					"), <b>Velocity</b> (" + floatString(packet.getParam("Vel"), deg) + ")");
-			// GroundTruth, INS
-			test = packet.getParam("Location");
-			if (test != null)
-				value = Utils.asHTML("<b>At</b> (" + color3Vector(test, false) +
-					"), <b>facing</b> (" + color3Vector(packet.getParam("Orientation"), deg) +
-					")");
-			// Send whatever we got
-			if (value != null)
-				setInformation(type, name, value);
-			keep = false;
-		}
-		return keep;
-	}
 	/**
 	 * Returns the 3-vector with colors.
 	 *
@@ -137,6 +78,7 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 					out = value.substring(0, 40);
 				else
 					out = value;
+				out = Utils.htmlSpecialChars(out);
 			}
 		return out;
 	}
@@ -153,7 +95,7 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			value = "<font color=\"#009900\">Fix";
 		else
 			value = "<font color=\"#990000\">Loss";
-		value += "</font>(<b>" + packet.getParam("Satellites") + "</b>) ";
+		value += "</font> (" + Utils.htmlSpecialChars(packet.getParam("Satellites")) + ") ";
 		// GPS data: Latitude 39,20 Longitude -78,30
 		if (packet.getParam("Latitude") != null)
 			try {
@@ -170,7 +112,8 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 				// Output
 				value += String.format("%d%s %d' <i>%s</i>, %d%s %d' <i>%s</i>",
 					latDeg, DEG_SIGN, latMin, lat, longDeg, DEG_SIGN, longMin, lon);
-			} catch (RuntimeException ignore) { }
+			} catch (NoSuchElementException ignore) {
+			} catch (NumberFormatException ignore) { }
 		return Utils.asHTML(value);
 	}
 	/**
@@ -205,5 +148,65 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 		else
 			out = "<font color=\"009900\">No Touch</font>";
 		return Utils.asHTML(out);
+	}
+
+	public SensorStatusHandler(Iridium state) {
+		super(state);
+	}
+	public String getPrefix() {
+		return "Sen_";
+	}
+	public boolean statusReceived(USARPacket packet) {
+		boolean keep = true, deg = state.getUI().isInDegrees();
+		if (packet.getType().equals("SEN")) {
+			// Update time
+			String tm = packet.getParam("Time"), value, test, type, name;
+			if (tm != null)
+				try {
+					state.getUI().updateTime(Float.parseFloat(tm));
+				} catch (NumberFormatException ignore) { }
+			// Update value, using typical names (this is for the simple sensors)
+			type = packet.getParam("Type");
+			if (type == null) type = "Sensor";
+			name = packet.getParam("Name");
+			if (name == null) name = type;
+			// Default bulk data
+			value = packet.getParam("");
+			if (value != null) value = Utils.asHTML(floatString(value, false));
+			// Accelerometer
+			test = packet.getParam("Acceleration");
+			if (test != null) value = Utils.asHTML(floatString(test, false));
+			// Bumper
+			test = packet.getParam("Touch");
+			if (test != null) value = touchString(test);
+			// Encoder
+			test = packet.getParam("Tick");
+			if (test != null) value = Utils.htmlSpecialChars(test);
+			// GPS
+			test = packet.getParam("Fix");
+			if (test != null) value = getGPSData(packet);
+			// IR2Sensor, IRSensor, RangeSensor, RangeScanner, Sonar, and subclasses
+			test = packet.getParam("Range");
+			if (test != null) value = Utils.asHTML(floatString(test, false));
+			// Odometer
+			test = packet.getParam("Pose");
+			if (test != null) value = odoString(test, deg);
+			// Tachometer
+			test = packet.getParam("Pos");
+			if (test != null)
+				value = Utils.asHTML("<b>Rotation</b> (" + floatString(test, deg) +
+					"), <b>Velocity</b> (" + floatString(packet.getParam("Vel"), deg) + ")");
+			// GroundTruth, INS
+			test = packet.getParam("Location");
+			if (test != null)
+				value = Utils.asHTML("<b>At</b> (" + color3Vector(test, false) +
+					"), <b>facing</b> (" + color3Vector(packet.getParam("Orientation"), deg) +
+					")");
+			// Send whatever we got
+			if (value != null)
+				setInformation(type, name, value);
+			keep = false;
+		}
+		return keep;
 	}
 }

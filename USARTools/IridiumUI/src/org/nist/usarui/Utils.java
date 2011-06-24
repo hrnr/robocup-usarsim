@@ -140,18 +140,6 @@ public final class Utils {
 		return box;
 	}
 	/**
-	 * Creates a label meant to display data.
-	 *
-	 * @param tooltip the display label's tool tip text
-	 * @return the label with default options set
-	 */
-	public static JLabel createInfoLabel(String tooltip) {
-		final JLabel label = new JLabel();
-		label.setToolTipText(tooltip);
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		return label;
-	}
-	/**
 	 * Creates a label attached to an input field.
 	 *
 	 * @param text the label text
@@ -162,6 +150,18 @@ public final class Utils {
 		final JLabel label = new JLabel(text);
 		label.setHorizontalAlignment(SwingConstants.RIGHT);
 		label.setLabelFor(field);
+		return label;
+	}
+	/**
+	 * Creates a label meant to display data.
+	 *
+	 * @param tooltip the display label's tool tip text
+	 * @return the label with default options set
+	 */
+	public static JLabel createInfoLabel(String tooltip) {
+		final JLabel label = new JLabel();
+		label.setToolTipText(tooltip);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
 		return label;
 	}
 	/**
@@ -213,17 +213,6 @@ public final class Utils {
 		return found;
 	}
 	/**
-	 * Checks to see if the two floating-point values are about the same. Intended for use
-	 * with the joystick.
-	 *
-	 * @param one the first value
-	 * @param two the second value
-	 * @return whether the values are within epsilon (0.01) of each other
-	 */
-	public static boolean isFloatEqual(float one, float two) {
-		return Math.abs(one - two) < 0.01f;
-	}
-	/**
 	 * Gets the editor as a text field of the specified combo box.
 	 *
 	 * @param box the combo box (must be editable)
@@ -235,6 +224,50 @@ public final class Utils {
 		if (editor instanceof JTextField)
 			field = (JTextField)editor;
 		return field;
+	}
+	/**
+	 * Gets the selected starting pose for the robot (INIT/CONTROL panel), or null if custom.
+	 *
+	 * @param box the combo box with choices
+	 * @return the robot's starting pose
+	 */
+	public static StartPose getPlayerStart(JComboBox box) {
+		Object item; StartPose pose = null;
+		String text = box.getEditor().getItem().toString();
+		// Look for the pose location or tag, whichever is useful
+		for (int i = 0; i < box.getItemCount(); i++) {
+			item = box.getItemAt(i);
+			pose = null;
+			if (item instanceof StartPose) {
+				pose = (StartPose)box.getItemAt(i);
+				if (pose.toString().equalsIgnoreCase(text))
+					// Matched!
+					break;
+				else
+					pose = null;
+			}
+		}
+		return pose;
+	}
+	/**
+	 * Sanitizes the string by escaping its HTML characters.
+	 *
+	 * @param in the string to sanitize
+	 * @return the string with all HTML special characters (&lt;, &gt;, &amp;) escaped
+	 */
+	public static String htmlSpecialChars(String in) {
+		return in.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+	/**
+	 * Checks to see if the two floating-point values are about the same. Intended for use
+	 * with the joystick.
+	 *
+	 * @param one the first value
+	 * @param two the second value
+	 * @return whether the values are within epsilon (0.01) of each other
+	 */
+	public static boolean isFloatEqual(float one, float two) {
+		return Math.abs(one - two) < 0.01f;
 	}
 	/**
 	 * Loads an image from the specified path.

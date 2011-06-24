@@ -44,6 +44,5 @@ public class Main {
 		mainFrame.setSize(640, 480);
 		Utils.centerWindow(mainFrame);
 		mainFrame.setVisible(true);
-		program.getUI().grabJoystick();
 	}
 }

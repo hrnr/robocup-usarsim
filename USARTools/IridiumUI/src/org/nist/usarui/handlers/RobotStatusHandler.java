@@ -54,7 +54,8 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 					}
 				}
 			}
-			keep = false;
+			// Keep world controller status messages
+			keep = type == null && packet.getParam("Name") != null;
 		}
 		return keep;
 	}
