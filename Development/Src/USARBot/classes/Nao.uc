@@ -17,50 +17,6 @@ class Nao extends LeggedVehicle config(USAR);
 var Bool DebugNotifyJointErrors;
 var String DebugNotifySpecificJointError;
 
-//var PhysXProxy PhysXProxyInst;
-
-simulated function PostBeginPlay()
-{
-	//local int i, j;
-
-	super.PostBeginPlay(); 
-
-
-	//if( PhysXProxyInstance != none )
-	//{
-	/*
-		// Drastically increase the iteration solver count for each rigid body
-		for( i=0; i < Parts.Length; i++ )
-		{
-			if( Parts[i].StaticMeshComponent.BodyInstance != None )
-			{
-				PhysXProxyInst.SetIterationSolverCount( Parts[i].StaticMeshComponent.BodyInstance, 128 );
-				LogInternal(Parts[i].Name @ "Center mass: " $ PhysXProxyInst.GetCMassLocalPosition( Parts[i].StaticMeshComponent.BodyInstance ) );
-			}
-			
-		}
-	*/
-		/*
-		// As a test, temporary disable collision between all parts
-		for( i=0; i < Parts.Length; i++ )
-		{
-			for( j=0; j < Parts.Length; j++ )
-			{
-				if( i == j )
-					continue;
-				if( Parts[i].StaticMeshComponent.BodyInstance != None 
-					&& Parts[j].StaticMeshComponent.BodyInstance != None )
-				{
-					PhysXProxyInstance.SetActorPairIgnore( Parts[i].StaticMeshComponent.BodyInstance, 
-						Parts[j].StaticMeshComponent.BodyInstance, true );
-				}
-			}
-		}
-*/
-	//}
-
-}
-
 // Special case for the Nao
 // LHipYawPitch and RHipYawPitch are physically one motor
 // LHipYawPitch controls RHipYawPitch
