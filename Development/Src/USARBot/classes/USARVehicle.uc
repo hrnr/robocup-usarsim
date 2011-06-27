@@ -29,6 +29,14 @@ var float StatusTimer;
 var Battery VehicleBattery;
 // Value between 0.0001 (muted) and 1.0 (normal volume) used to change all sound volumes
 var config float volumeOverride;
+// Accessor to the PhysX dll through DLLBind. Allows access to certain functions not available in UnrealScript.
+var PhysXProxy PhysXProxyInstance;
+// Array of pairs of parts that do not generate contacts. Used to construct more complex joints.
+struct DisableContactPair {
+	var Part Part1;
+	var Part Part2;
+};
+var array<DisableContactPair> DisableContacts;
 
 // Called when the battery has died in order to stop all current actions like driving
 simulated function BatteryDied()
@@ -209,6 +217,13 @@ simulated function PostBeginPlay()
 	// Initialize items (sensors etc)
 	for (i = 0; i < AddParts.Length; i++)
 		SetupItem(AddParts[i]);
+	// Disable contacts between specified item pairs
+	for (i = 0; i < DisableContacts.Length; i++)
+		PhysXProxyInstance.SetActorPairIgnore(
+			GetPartByName(DisableContacts[i].Part1.Name).StaticMeshComponent.BodyInstance,
+			GetPartByName(DisableContacts[i].Part2.Name).StaticMeshComponent.BodyInstance,
+			true
+		);
 	// Status timer
 	SetTimer(StatusTimer, true, 'SendStatus');
 }
@@ -445,6 +460,8 @@ reliable server function SetupPart(Part part)
 				it.SetPhysics(PHYS_None);
 			}
 			class'Utilities'.static.SetMass(it, part.Mass);
+			PhysXProxyInstance.SetIterationSolverCount(
+				it.StaticMeshComponent.BodyInstance, part.SolverIterationCount);
 			// Initialize center item properly (for sensors and parenting reasons)
 			if (part.Name == Body.Name)
 			{
@@ -498,4 +515,9 @@ defaultproperties
 	Normalized=false
 	Physics=PHYS_None
 	StatusTimer=0.1
+
+	// PhysXProxy Instance
+	Begin Object class=PhysXProxy Name=PhysXProxyInstance
+	End Object
+	PhysXProxyInstance = PhysXProxyInstance
 }
