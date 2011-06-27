@@ -24,6 +24,9 @@ var StaticMesh Mesh;
 var vector Offset;
 // The object from which this part's offset is relative
 var Part RelativeTo;
+// The solver iteration count. Determines how accurately joints and contacts are resolved.
+// The default is 8 in Unreal Engine, which is too low for more complex robots
+var int SolverIterationCount;
 
 defaultproperties
 {
@@ -32,4 +35,5 @@ defaultproperties
 	Mass=0.0
 	Offset=(X=0.0,Y=0.0,Z=0.0)
 	RelativeTo=None
+	SolverIterationCount=8
 }

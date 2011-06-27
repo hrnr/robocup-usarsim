@@ -4,8 +4,62 @@
  * Joint information: 
  * http://users.aldebaran-robotics.com/docs/site_en/reddoc/hardware/joints-names.html
  * 
+ * TODO: Implemented missing sensors
+ * - Camera
+ * - Bumpers
+ * - Gyrometer
+ * - LEDS
+ * - (Optional) Laser sensor.
+ * 
  */
 class Nao extends LeggedVehicle config(USAR);
+
+var Bool DebugNotifyJointErrors;
+var String DebugNotifySpecificJointError;
+
+//var PhysXProxy PhysXProxyInst;
+
+simulated function PostBeginPlay()
+{
+	//local int i, j;
+
+	super.PostBeginPlay(); 
+
+
+	//if( PhysXProxyInstance != none )
+	//{
+	/*
+		// Drastically increase the iteration solver count for each rigid body
+		for( i=0; i < Parts.Length; i++ )
+		{
+			if( Parts[i].StaticMeshComponent.BodyInstance != None )
+			{
+				PhysXProxyInst.SetIterationSolverCount( Parts[i].StaticMeshComponent.BodyInstance, 128 );
+				LogInternal(Parts[i].Name @ "Center mass: " $ PhysXProxyInst.GetCMassLocalPosition( Parts[i].StaticMeshComponent.BodyInstance ) );
+			}
+			
+		}
+	*/
+		/*
+		// As a test, temporary disable collision between all parts
+		for( i=0; i < Parts.Length; i++ )
+		{
+			for( j=0; j < Parts.Length; j++ )
+			{
+				if( i == j )
+					continue;
+				if( Parts[i].StaticMeshComponent.BodyInstance != None 
+					&& Parts[j].StaticMeshComponent.BodyInstance != None )
+				{
+					PhysXProxyInstance.SetActorPairIgnore( Parts[i].StaticMeshComponent.BodyInstance, 
+						Parts[j].StaticMeshComponent.BodyInstance, true );
+				}
+			}
+		}
+*/
+	//}
+
+}
 
 // Special case for the Nao
 // LHipYawPitch and RHipYawPitch are physically one motor
@@ -21,37 +75,63 @@ function SetJointTargetByName(String jointName, float target)
 		super.SetJointTargetByName("RHipYawPitch", target);
 }
 
-// Gearing equation example to replace measurement types
-simulated function float JointTransform(JointItem ji, float value)
+// Temporary debug code
+// Might be nice to integrate into the RevoluteJoint?
+function ToggleNotifyJointErrors()
 {
-	/*
-	local rotator relRot, rotTemp;
-	local RevoluteJoint jt;
-	
-	jt = RevoluteJoint(ji.Spec);
-	if (jt == None) return value;
-	if (jt.InverseMeasure)
-		relRot = jt.GetRelativeRotation(ji.Parent.Rotation, ji.Child.Rotation);
-	else 
-		relRot = jt.GetRelativeRotation(ji.Child.Rotation, ji.Parent.Rotation);
-
-	if (ji.GetJointName() == 'HeadPitch')
-	{
-		rotTemp = rot(0, 0, 0);
-		rotTemp.Yaw = -relRot.Yaw;
-		relRot = class'Utilities'.static.rTurn(relRot, rotTemp);
-		value = class'UnitsConverter'.static.AngleFromUU(relRot.Pitch);
-	}
-*/
-	return value;
+	DebugNotifyJointErrors = !DebugNotifyJointErrors;
 }
+
+function CheckJointErrors()
+{
+	local float r;
+	local int i;
+	local JointItem ji;
+	local Rotator Target;
+
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (!Parts[i].IsJoint())
+			continue;
+		ji = JointItem(Parts[i]);
+
+		if( Len(DebugNotifySpecificJointError) != 0 && DebugNotifySpecificJointError != String(ji.GetJointName()) )
+			continue;
+		Target = QuatToRotator( ji.Constraint.ConstraintInstance.AngularPositionTarget );
+		r = class'UnitsConverter'.static.AngleFromUU(Target.Roll-ji.TrueZero);
+		if( abs(r-ji.CurValue) > 0.02 )
+		{
+			LogInternal("Joint " $ ji.GetJointName() $ ", desired: " $ r $ ", cur: " $ ji.CurValue $ ", error:" $ abs(r-ji.CurValue) );
+		}
+	}  
+}
+
+function Tick( float DeltaTime )
+{
+	super.Tick( DeltaTime );
+
+	if( DebugNotifyJointErrors )
+		CheckJointErrors();
+}
+
 
 defaultproperties
 {
+	DebugNotifyJointErrors = false;
+	DebugNotifySpecificJointError = "";
+
+	// The Nao has two different motor types
+	// Type 1 is used in the legs, type 2 in the arms and head.
+	`define MaxForceMotorType1 100
+	`define MaxForceMotorType2 100
+
+	`define NaoSolverIterationCount 128
+
 	// Create BodyItem part
 	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.naobody'
 		Mass=1.03948
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	Body=BodyItem
 	PartList.Add(BodyItem)
@@ -61,6 +141,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohead'
 		Offset=(x=0,y=0,z=-0.155)
 		Mass=0.52065
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(Head)
 
@@ -68,8 +149,11 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=0,y=0,z=-0.09)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(Neck)
+
+	DisableContacts.Add((Part1=BodyItem,Part2=Head))
 
 	Begin Object Class=RevoluteJoint Name=HeadYaw
 		Parent=Neck
@@ -78,6 +162,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=0,y=0,z=0)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(HeadYaw)
 
@@ -88,6 +173,7 @@ defaultproperties
 		LimitLow=-.672 // -38.5
 		LimitHigh=.515 // 29.5
 		Direction=(x=1.57,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(HeadPitch)
 
@@ -96,6 +182,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naolupperarm'
 		Offset=(x=0.02,y=-0.108,z=-0.075)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LUpperArm)
 
@@ -103,6 +190,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naorupperarm'
 		Offset=(x=0.02,y=0.108,z=-0.075)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RUpperArm)
 
@@ -110,6 +198,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=-0.098,z=-0.075)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LShoulder)
 
@@ -117,8 +206,12 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=0.098,z=-0.075)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RShoulder)
+
+	DisableContacts.Add((Part1=LUpperArm,Part2=BodyItem))
+	DisableContacts.Add((Part1=RUpperArm,Part2=BodyItem))
 
 	Begin Object Class=RevoluteJoint Name=LShoulderPitch
 		Parent=BodyItem
@@ -127,6 +220,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(LShoulderPitch)
 
@@ -137,6 +231,7 @@ defaultproperties
 		LimitLow=.0087 // 0.5
 		LimitHigh=1.649 // 94.5
 		Direction=(x=3.14,y=0,z=1.57)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(LShoulderRoll)
 
@@ -147,6 +242,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(RShoulderPitch)
 
@@ -157,6 +253,7 @@ defaultproperties
 		LimitLow=-1.649 // -94.5
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=3.14,y=0,z=1.57)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(RShoulderRoll)
 
@@ -165,6 +262,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=-0.108,z=-0.075)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LElbow)
 
@@ -172,6 +270,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=0.108,z=-0.075)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RElbow)
 
@@ -179,6 +278,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naollowerarm'
 		Offset=(x=0.14,y=-0.098,z=-0.084)
 		Mass=0.200
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LLowerArm)
 
@@ -186,8 +286,12 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naorlowerarm'
 		Offset=(x=0.14,y=0.098,z=-0.084)
 		Mass=0.200
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RLowerArm)
+
+	DisableContacts.Add((Part1=LUpperArm,Part2=LLowerArm))
+	DisableContacts.Add((Part1=RUpperArm,Part2=RLowerArm))
 
 	Begin Object Class=RevoluteJoint Name=LElbowYaw
 		Parent=LUpperArm
@@ -197,6 +301,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(LElbowYaw)
 
@@ -207,6 +312,7 @@ defaultproperties
 		LimitLow=-1.56 // -89.5
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=-3.14,y=0,z=-3.14)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(LElbowRoll)
 
@@ -218,6 +324,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(RElbowYaw)
 
@@ -228,6 +335,7 @@ defaultproperties
 		LimitLow=-.0087 // -0.5
 		LimitHigh=1.56 // 89.5
 		Direction=(x=-3.14,y=0,z=-3.14)
+		MaxForce=`MaxForceMotorType2
 	End Object
 	Joints.Add(RElbowRoll)
 
@@ -236,6 +344,7 @@ defaultproperties
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=-0.055,Z=0.08)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHip)
 
@@ -243,6 +352,7 @@ defaultproperties
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=0.055,Z=0.08)
 		Mass=0.12309
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHip)
 
@@ -252,7 +362,8 @@ defaultproperties
 		Offset=(x=-0.01,y=-0.055,z=0.1)
 		LimitLow=-1.1452 // -65.62
 		LimitHigh=0.7407 // 42.44
-		Direction=(x=-2.36,y=0,z=3.14)
+		Direction=(x=-0.79,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LHipYawPitch)
 
@@ -262,7 +373,8 @@ defaultproperties
 		Offset=(x=-0.01,y=0.055,z=0.1)
 		LimitLow=-1.1452 // -65.62
 		LimitHigh=0.7407 // 42.44
-		Direction=(x=-0.79,y=0,z=3.14)
+		Direction=(x=-2.36,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RHipYawPitch)
 
@@ -272,6 +384,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=-0.055,Z=0.12)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHipThigh)
 
@@ -280,14 +393,19 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,y=0.055,z=0.12)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHipThigh)
+
+	DisableContacts.Add((Part1=BodyItem,Part2=LHipThigh))
+	DisableContacts.Add((Part1=BodyItem,Part2=RHipThigh))
 
 	Begin Object Class=Part Name=LThigh
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
 		Offset=(x=-0.01,Y=-0.055,Z=0.155)
 		Mass=0.39421
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LThigh)
 
@@ -296,8 +414,12 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naorthigh'
 		Offset=(x=-0.01,y=0.055,z=0.155)
 		Mass=0.39421
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RThigh)
+
+	DisableContacts.Add((Part1=LHip,Part2=LThigh))
+	DisableContacts.Add((Part1=RHip,Part2=RThigh))
 
 	Begin Object Class=RevoluteJoint Name=LHipRoll
 		Parent=LHip
@@ -307,6 +429,7 @@ defaultproperties
 		LimitLow=-.738 // -42.30
 		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LHipRoll)
 
@@ -317,6 +440,7 @@ defaultproperties
 		LimitLow=-1.772 // -101.54
 		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LHipPitch)
 
@@ -328,6 +452,7 @@ defaultproperties
 		LimitLow=-.7382 // -42.30
 		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RHipRoll)
 
@@ -338,6 +463,7 @@ defaultproperties
 		LimitLow=-1.772 // -101.54
 		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RHipPitch)
 
@@ -347,6 +473,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naolshank'
 		Offset=(x=0.005,y=0,z=0.125)
 		Mass=0.29159
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LShank)
 
@@ -355,6 +482,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naorshank'
 		Offset=(x=0.005,y=0,z=0.125)
 		Mass=0.29159
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RShank)
 
@@ -366,6 +494,7 @@ defaultproperties
 		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LKneePitch)
 
@@ -377,6 +506,7 @@ defaultproperties
 		LimitLow=-.1029 // -5.90
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RKneePitch)
 
@@ -385,7 +515,8 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2.5000
+		Mass=0.5000
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LFoot)
 
@@ -393,7 +524,8 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=2.5000
+		Mass=0.5000
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RFoot)
 
@@ -402,6 +534,7 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=0,Y=0,Z=0.04)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LAnkle)
 
@@ -410,8 +543,12 @@ defaultproperties
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=0,y=0,z=0.04)
 		Mass=0.1
+		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RAnkle)
+
+	DisableContacts.Add((Part1=LFoot,Part2=LShank))
+	DisableContacts.Add((Part1=RFoot,Part2=RShank))
 	
 	Begin Object Class=RevoluteJoint Name=LAnklePitch
 		RelativeTo=LShank
@@ -421,6 +558,7 @@ defaultproperties
 		LimitLow=-1.185 // -67.96
 		LimitHigh=.9844 // 53.40
 		Direction=(x=1.57,y=0,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LAnklePitch)
 
@@ -433,6 +571,7 @@ defaultproperties
 		LimitLow=-.7689 // -44.06
 		LimitHigh=.3978 // 22.79
 		Direction=(x=0,y=1.57,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(LAnkleRoll)
 
@@ -444,6 +583,7 @@ defaultproperties
 		LimitLow=-1.1861 // -67.96
 		LimitHigh=.9320 // 53.40
 		Direction=(x=1.57,y=0,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RAnklePitch)
 
@@ -456,6 +596,7 @@ defaultproperties
 		LimitLow=-.3887 // -22.27
 		LimitHigh=.7859 // 45.03
 		Direction=(x=0,y=1.57,z=0)
+		MaxForce=`MaxForceMotorType1
 	End Object
 	Joints.Add(RAnkleRoll)
 }

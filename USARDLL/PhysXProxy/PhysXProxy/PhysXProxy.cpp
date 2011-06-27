@@ -16,6 +16,7 @@ extern "C"
 		float x,y,z;
 	};
 
+#if 0
 	struct FString
 	{
 		wchar_t* Data;
@@ -28,11 +29,20 @@ extern "C"
 			assert(ArrayNum <= ArrayMax);
 		}
 	};
+#endif // 0
 
 	struct BodyInstancePointer
 	{
 		void *pBodyInstance;
 	};
+
+#ifdef _WIN64
+	// Fix for 64 bit dll. 64 bit dll bind is not very well supported.
+	BodyInstancePointer *Fix64Bit( BodyInstancePointer * pBodyInstanceWrapper )
+	{
+		return (BodyInstancePointer*)(int)pBodyInstanceWrapper;;
+	}
+#endif // _WIN64
 
 	// General example to access PhysX information
 	__declspec(dllexport) void GeneralPhysX()
@@ -114,9 +124,8 @@ extern "C"
 		NxU32 i, nbActors;
 		void *pObject;
 
-		// Hax for 64 bit
 #ifdef _WIN64
-		pBodyInstanceWrapper = (BodyInstancePointer*)(int)pBodyInstanceWrapper;
+		pBodyInstanceWrapper = Fix64Bit( pBodyInstanceWrapper );
 #endif // _WIN64
 
 		if( !pBodyInstanceWrapper )
@@ -165,6 +174,18 @@ extern "C"
 		pActor->setSolverIterationCount( iterCount );
 	}
 
+	__declspec(dllexport) int GetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper )
+	{
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("GetIterationSolverCountInternal: Invalid body instance!\n");
+			return -1;
+		}
+
+		return pActor->getSolverIterationCount( );
+	}
+
 	// Make two actors not generate contacts between each other
 	__declspec(dllexport) void SetActorPairIgnoreInternal( BodyInstancePointer *pBodyInstWrapper1, 
 			BodyInstancePointer *pBodyInstWrapper2, int ignore )
@@ -196,6 +217,8 @@ extern "C"
 			pScene->setActorPairFlags( *pActor1, *pActor2, flags&~NX_IGNORE_PAIR );
 		}
 	}
+
+
 
 	__declspec(dllexport) FVector* GetCMassLocalPositionInternal( BodyInstancePointer *pBodyInstWrapper )
 	{
