@@ -10,6 +10,7 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
 
 /**
  * Transparently intercepts GETCONF requests for "MisPkg" or "Actuator" and loads the actuator
@@ -18,22 +19,22 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public class ActuatorStatusHandler implements StatusHandler {
-	private final Iridium state;
+	private final IridiumUI ui;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param state the application managing this handler
+	 * @param ui the application managing this handler
 	 */
-	public ActuatorStatusHandler(Iridium state) {
-		this.state = state;
+	public ActuatorStatusHandler(IridiumUI ui) {
+		this.ui = ui;
 	}
 	public boolean statusReceived(USARPacket packet) {
 		String type = packet.getParam("Type");
 		if (type == null) type = "";
 		// Intercept it and suppress only if useful information gleaned (1st time)
 		return !(packet.getType().equals("CONF") && (type.equals("MisPkg")) ||
-			type.equals("Actuator")) || !state.getUI().updateActuators(packet);
+			type.equals("Actuator")) || !ui.updateActuators(packet);
 	}
 	public boolean statusSent(USARPacket packet) {
 		// CONF can't be sent.

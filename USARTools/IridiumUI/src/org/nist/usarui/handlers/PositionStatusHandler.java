@@ -9,7 +9,7 @@
 
 package org.nist.usarui.handlers;
 
-import org.nist.usarui.Iridium;
+import org.nist.usarui.ui.IridiumUI;
 import org.nist.usarui.USARPacket;
 
 import java.util.*;
@@ -20,8 +20,13 @@ import java.util.*;
  * @author Stephen Carlson (NIST)
  */
 public class PositionStatusHandler extends AbstractStatusHandler {
-	public PositionStatusHandler(Iridium state) {
-		super(state);
+	/**
+	 * Creates a new instance.
+	 *
+	 * @param ui the application managing this handler
+	 */
+	public PositionStatusHandler(IridiumUI ui) {
+		super(ui);
 	}
 	public String getPrefix() {
 		return "Pos_";
@@ -40,7 +45,7 @@ public class PositionStatusHandler extends AbstractStatusHandler {
 				else if (key.equalsIgnoreCase("Value")) {
 					// Show value on panel, in degrees if needed
 					value = Float.parseFloat(entry.getValue());
-					if (state.getUI().isInDegrees()) {
+					if (ui.isInDegrees()) {
 						value = (float)Math.toDegrees(value);
 						deg = DEG_SIGN;
 					} else

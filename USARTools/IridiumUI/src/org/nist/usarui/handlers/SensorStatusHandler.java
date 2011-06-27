@@ -10,6 +10,7 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
 
 import java.util.*;
 
@@ -150,20 +151,25 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 		return Utils.asHTML(out);
 	}
 
-	public SensorStatusHandler(Iridium state) {
-		super(state);
+	/**
+	 * Creates a new instance.
+	 *
+	 * @param ui the application managing this handler
+	 */
+	public SensorStatusHandler(IridiumUI ui) {
+		super(ui);
 	}
 	public String getPrefix() {
 		return "Sen_";
 	}
 	public boolean statusReceived(USARPacket packet) {
-		boolean keep = true, deg = state.getUI().isInDegrees();
+		boolean keep = true, deg = ui.isInDegrees();
 		if (packet.getType().equals("SEN")) {
 			// Update time
 			String tm = packet.getParam("Time"), value, test, type, name;
 			if (tm != null)
 				try {
-					state.getUI().updateTime(Float.parseFloat(tm));
+					ui.updateTime(Float.parseFloat(tm));
 				} catch (NumberFormatException ignore) { }
 			// Update value, using typical names (this is for the simple sensors)
 			type = packet.getParam("Type");

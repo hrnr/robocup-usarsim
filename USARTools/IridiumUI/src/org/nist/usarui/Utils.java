@@ -9,9 +9,12 @@
 
 package org.nist.usarui;
 
+import org.nist.usarui.ui.SelectOnFocus;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
 
@@ -257,6 +260,44 @@ public final class Utils {
 	 */
 	public static String htmlSpecialChars(String in) {
 		return in.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+	/**
+	 * Creates an instance of the specified object.
+	 *
+	 * @param className the class name to instantiate
+	 * @param args the arguments for the constructor
+	 * @return the object
+	 * @throws InstantiationException if an error occurs when creating the item
+	 */
+	public static Object instantiate(String className, Object... args)
+			throws InstantiationException {
+		Class<?>[] argTypes; boolean valid;
+		try {
+			// Load up class
+			Class<?> hc = Class.forName(className);
+			for (Constructor cons : hc.getConstructors()) {
+				// Try to match arguments
+				argTypes = cons.getParameterTypes();
+				if (argTypes.length == args.length) {
+					valid = true;
+					for (int i = 0; i < args.length; i++)
+						valid &= argTypes[i].isAssignableFrom(args[i].getClass());
+					// Instantiate
+					if (valid)
+						return cons.newInstance(args);
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			// Class not found
+			throw new InstantiationException("No such class: " + className);
+		} catch (InvocationTargetException e) {
+			// Crashed at runtime
+			throw new RuntimeException("Constructor error: " + e.getMessage(), e);
+		} catch (Exception e) {
+			// Invalid parameters
+			throw new InstantiationException("Parameters do not match constructor");
+		}
+		throw new InstantiationException("Constructor not found");
 	}
 	/**
 	 * Checks to see if the two floating-point values are about the same. Intended for use

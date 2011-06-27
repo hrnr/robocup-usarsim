@@ -10,6 +10,7 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
 
 /**
  * Basic status handler for receiver classes which show "information bars."
@@ -17,15 +18,15 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public abstract class AbstractStatusHandler implements StatusHandler {
-	protected final Iridium state;
+	protected final IridiumUI ui;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param state the application managing this handler
+	 * @param ui the application managing this handler
 	 */
-	protected AbstractStatusHandler(Iridium state) {
-		this.state = state;
+	protected AbstractStatusHandler(IridiumUI ui) {
+		this.ui = ui;
 	}
 	/**
 	 * Gets the prefix appended to the panel labels to keep them unique.
@@ -42,7 +43,7 @@ public abstract class AbstractStatusHandler implements StatusHandler {
 	 */
 	protected void setInformation(String group, String name, String value) {
 		String panel = getPrefix() + "_" + group;
-		state.getUI().getInfoPanel(panel, name, group).setValue(name, value);
+		ui.getInfoPanel(panel, name, group).setValue(name, value);
 	}
 	public boolean statusSent(USARPacket packet) {
 		return true;

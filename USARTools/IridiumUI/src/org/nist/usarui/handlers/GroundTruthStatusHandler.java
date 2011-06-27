@@ -10,6 +10,8 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
+import org.nist.usarui.ui.MapView;
 
 /**
  * A handler which draws a map window for ground truth data. If multiple ground truth sensors
@@ -18,15 +20,15 @@ import org.nist.usarui.*;
  * @author Stephen Carlson
  */
 public class GroundTruthStatusHandler implements StatusHandler {
-	private final Iridium state;
+	private final IridiumUI ui;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param state the application managing this handler
+	 * @param ui the application managing this handler
 	 */
-	public GroundTruthStatusHandler(Iridium state) {
-		this.state = state;
+	public GroundTruthStatusHandler(IridiumUI ui) {
+		this.ui = ui;
 	}
 	public boolean statusReceived(USARPacket packet) {
 		if (packet.getType().equals("SEN")) {
@@ -34,7 +36,8 @@ public class GroundTruthStatusHandler implements StatusHandler {
 			if (sensor != null && sensor.equals("GroundTruth")) {
 				// Plot point on the map view
 				if (name == null) name = "Unnamed";
-				MapView view = (MapView)state.getUI().getView("Ground Truth - " + name);
+				MapView view = (MapView)ui.getView("org.nist.usarui.ui.MapView",
+					"Ground Truth - " + name);
 				if (view.isVisible()) {
 					// But only if visible
 					Vec3 loc = Utils.read3Vector(packet.getParam("Location"));

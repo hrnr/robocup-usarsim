@@ -10,6 +10,7 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
 
 /**
  * Handles the NFO messages sent at level startup and when poses are requested.
@@ -17,15 +18,15 @@ import org.nist.usarui.*;
  * @author Stephen Carlson (NIST)
  */
 public class InfoStatusHandler implements StatusHandler {
-	private final Iridium state;
+	private final IridiumUI ui;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param state the application managing this handler
+	 * @param ui the application managing this handler
 	 */
-	public InfoStatusHandler(Iridium state) {
-		this.state = state;
+	public InfoStatusHandler(IridiumUI ui) {
+		this.ui = ui;
 	}
 	public boolean statusReceived(USARPacket packet) {
 		boolean keep = true;
@@ -33,9 +34,9 @@ public class InfoStatusHandler implements StatusHandler {
 		if (packet.getType().equals("NFO")) {
 			String lvl = packet.getParam("Level"), sp = packet.getParam("StartPoses");
 			if (lvl != null)
-				state.getUI().updateLevel(lvl);
+				ui.updateLevel(lvl);
 			if (sp != null)
-				state.getUI().updateStartPoses(packet);
+				ui.updateStartPoses(packet);
 			// Ignore it
 			keep = (lvl == null && sp == null);
 		}

@@ -10,6 +10,7 @@
 package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
+import org.nist.usarui.ui.IridiumUI;
 
 import java.util.*;
 
@@ -19,8 +20,13 @@ import java.util.*;
  * @author Stephen Carlson (NIST)
  */
 public class RobotStatusHandler extends AbstractStatusHandler {
-	public RobotStatusHandler(Iridium state) {
-		super(state);
+	/**
+	 * Creates a new instance.
+	 *
+	 * @param ui the application managing this handler
+	 */
+	public RobotStatusHandler(IridiumUI ui) {
+		super(ui);
 	}
 	public String getPrefix() {
 		return "Sta_";
@@ -34,18 +40,18 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 			batt = packet.getParam("Battery");
 			if (batt != null)
 				try {
-					state.getUI().updateBattery(Integer.parseInt(batt));
+					ui.updateBattery(Integer.parseInt(batt));
 				} catch (NumberFormatException ignore) { }
 			// Joint selection list update
 			if (type != null && type.equals("LeggedVehicle")) {
-				state.getUI().updateJoints(packet);
+				ui.updateJoints(packet);
 				// Joint values update
 				for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
 					key = entry.getKey();
 					if (!key.equalsIgnoreCase("Battery") && !key.equalsIgnoreCase("Type")) {
 						// Show value on panel, in degrees if needed
 						value = Float.parseFloat(entry.getValue());
-						if (state.getUI().isInDegrees()) {
+						if (ui.isInDegrees()) {
 							value = (float)Math.toDegrees(value);
 							deg = DEG_SIGN;
 						} else
