@@ -17,7 +17,8 @@ defaultproperties
 	// KivaTop didn't have a base, so made a small part to become one
 	Begin Object Class=Part Name=BaseItem
 		Mesh=StaticMesh'Kiva_static.PackageBase'
-		Mass=0.01
+		Collision=false
+		Mass=1.0
 	End Object
 	Body=BaseItem
 	PartList.Add(BaseItem)
@@ -25,7 +26,6 @@ defaultproperties
 	Begin Object Class=Part Name=TopItem
 		Mesh=StaticMesh'Kiva_static.Top'
 		Mass=0.2
-		Offset=(X=0,Y=0,Z=-0.05)
 		RelativeTo=BaseItem
 	End Object
 	PartList.Add(TopItem)

@@ -13,6 +13,8 @@
  */
 class Vacuum extends Actuator placeable config (USAR);
 
+// Item used for attachment (use self if no parent found)
+var Actor attachTo;
 // Constraint that causes gripping to occur
 var Hinge GripCons;
 // The physics this object used to have before grabbing
@@ -27,6 +29,20 @@ var float SuctionLength;
 // How much force the vacuum can exert
 var config float VacuumForce;
 
+// Hide the black object for now
+simulated function AttachItem()
+{
+	super.AttachItem();
+	CenterItem.SetHidden(!bDebug);
+	if (Base != None)
+	{
+		LogInternal("Vacuum: Attaching to " $ String(Base.Name) $ " for greater stability");
+		AttachTo = Base;
+	}
+	else
+		AttachTo = CenterItem;
+}
+
 simulated function ConvertParam()
 {
 	super.ConvertParam();
@@ -38,7 +54,7 @@ function GripObject(Actor target)
 {
 	if (GripCons == None && GripTarget == None)
 	{
-		GripCons = class'FixedJoint'.static.CreateFixJoint(CenterItem, target);
+		GripCons = class'FixedJoint'.static.CreateFixJoint(AttachTo, target);
 		if (GripCons == None)
 			LogInternal("Vacuum: Error creating grip constraint, is object blocked?");
 		else
@@ -46,19 +62,19 @@ function GripObject(Actor target)
 			// Save physics and set to rigidbody so joint works
 			GripTarget = target;
 			GripPhys = target.Physics;
-			GripPos = (target.Location - CenterItem.Location) << CenterItem.Rotation;
+			GripPos = (target.Location - AttachTo.Location) << AttachTo.Rotation;
 			target.SetPhysics(PHYS_RigidBody);
 			// Allow some motion
 			GripCons.ConstraintSetup.LinearXSetup.LimitSize = SuctionLength;
 			GripCons.ConstraintSetup.LinearYSetup.LimitSize = SuctionLength;
-			GripCons.ConstraintSetup.LinearZSetup.LimitSize = SuctionLength;
-			GripCons.ConstraintInstance.SetAngularDriveParams(VacuumForce, 0.8, VacuumForce);
-			GripCons.ConstraintInstance.SetLinearDriveParams(VacuumForce, 0.8, VacuumForce);
+			GripCons.ConstraintSetup.LinearZSetup.LimitSize = 0;
 			// Init again (2nd time!)
-			GripCons.ConstraintInstance.InitConstraint(CenterItem.CollisionComponent,
-				target.CollisionComponent, GripCons.ConstraintSetup, 1, CenterItem,
-				CenterItem.CollisionComponent, false);
-			GripCons.ConstraintInstance.SetLinearPositionDrive(true, true, true);
+			GripCons.ConstraintInstance.InitConstraint(AttachTo.CollisionComponent,
+				target.CollisionComponent, GripCons.ConstraintSetup, 1, AttachTo,
+				AttachTo.CollisionComponent, false);
+			// Set the force high but leave the restitution low so that it imitates real vacuum
+			GripCons.ConstraintInstance.SetLinearDriveParams(1.0, 0.8, VacuumForce);
+			GripCons.ConstraintInstance.SetLinearPositionDrive(true, true, false);
 		}
 	}
 }
@@ -68,10 +84,10 @@ function UngripObject()
 {
 	if (GripCons != None && GripTarget != None)
 	{
-		GripCons.Destroy();
-		GripCons = None;
 		GripTarget.SetPhysics(GripPhys);
 		GripTarget = None;
+		GripCons.Destroy();
+		GripCons = None;
 	}
 }
 
@@ -84,7 +100,7 @@ event Tick(float DT)
 	{
 		// Check for an auto drop
 		newPos = (GripTarget.Location - CenterItem.Location) << CenterItem.Rotation;
-		if (VSize(newPos - GripPos) > SuctionLength)
+		if (VSize(newPos - GripPos) > abs(SuctionLength))
 		{
 			LogInternal("Vacuum: Suction lost");
 			UngripObject();
@@ -108,16 +124,22 @@ reliable server function SetGripper(int gripper)
 			if (GripCons == None && GripTarget == None)
 			{
 				// Find axis along which to trace
+				hitLocation = CenterItem.Location;
 				rayAxis = vect(0, 0, 0);
 				rayAxis.Z = suctionLength;
 				// Find where how far away the box can be
-				rayEnd = CenterItem.Location + (rayAxis >> CenterItem.Rotation);
-				// Look for actors within the specified length to grab; cannot grab a brush!
+				rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location;
 				hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location, true);
-				if (hit != None && !hit.isA('Brush'))
+				// Cannot grab base or self
+				if (hit == CenterItem || hit == Base)
+					LogInternal("Vacuum: Not placed or oriented properly; can only see self");
+				// Look for actors within the specified length; cannot grab a brush!
+				else if (hit != None && !hit.isA('Brush'))
 				{
+					// Cannot pick up self or base
 					LogInternal("Vacuum: Picking up " $ String(hit.Name));
 					GripObject(hit);
+					break;
 				}
 			}
 			break;
@@ -127,6 +149,7 @@ reliable server function SetGripper(int gripper)
 
 defaultproperties
 {
+	bDebug=false
 	GripCons=None
 	GripTarget=None
 	GripPhys=PHYS_None

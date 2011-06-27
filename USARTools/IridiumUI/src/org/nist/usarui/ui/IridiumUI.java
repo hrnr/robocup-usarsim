@@ -7,23 +7,39 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-package org.nist.usarui;
+package org.nist.usarui.ui;
 
 import com.centralnexus.input.*;
+import org.nist.usarui.*;
+import org.nist.usarui.handlers.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Iridium graphical user interface (hand cleaned)
  *
  * @author Stephen Carlson (NIST)
  */
-public class IridiumUI {
+public class IridiumUI implements IridiumListener {
+	/**
+	 * Indicates a skid-steered robot.
+	 */
+	public static final int DRIVETYPE_SKID = 0;
+	/**
+	 * Indicates an Ackerman steered robot.
+	 */
+	public static final int DRIVETYPE_ACKERMAN = 1;
+	/**
+	 * Indicates a flying robot.
+	 */
+	public static final int DRIVETYPE_AIR = 2;
 	/**
 	 * Insets applied to fields.
 	 */
@@ -38,6 +54,11 @@ public class IridiumUI {
 	 * The color used for the title of information bars.
 	 */
 	public static final Color INFO_TITLE = new Color(0, 0, 127);
+	/**
+	 * Maximum number of messages to display in the window. Messages parsed by sensor or data
+	 * handlers do not count towards this limit.
+	 */
+	public static final int MAX_SIZE = 100;
 	/**
 	 * Insets applied to field labels.
 	 */
@@ -93,9 +114,11 @@ public class IridiumUI {
 	private JComponent driveView;
 	private JLabel elapsedTime;
 	private JButton freezeButton;
+	private boolean frozen;
 	private JTextField geoName;
 	private JComboBox geoType;
 	private Icon goodIcon;
+	private final List<StatusHandler> handlers;
 	private final Map<String, InfoPanel> infoPanels;
 	private JComboBox initClass;
 	private JComboBox initLocation;
@@ -112,27 +135,33 @@ public class IridiumUI {
 	private JComboBox setOpcode;
 	private JTextField setParams;
 	private JComboBox setType;
-	private final Iridium state;
+	private final IridiumConnector state;
 	private Joystick stick;
 	private JButton stopButton;
 	private JButton swapButton;
 	private JComponent topInfo;
 	private JComponent typePanel;
+	private final List<USARPacket> usarData;
 
 	/**
 	 * Initializes the Iridium GUI.
 	 *
 	 * @param state the program to link
 	 */
-	public IridiumUI(Iridium state) {
+	public IridiumUI(IridiumConnector state) {
 		axes = new float[4];
 		dialogs = new HashMap<String, View>(8);
+		frozen = false;
+		handlers = new ArrayList<StatusHandler>(16);
 		infoPanels = new HashMap<String, InfoPanel>(24);
+		usarData = new LinkedList<USARPacket>();
 		this.state = state;
 		stick = null;
+		loadHandlers();
 		loadImages();
 		setupUI();
 		setConnected(false);
+		state.addIridiumListener(this);
 	}
 	/**
 	 * Iterate through the properties and add items to the combo box as required.
@@ -156,7 +185,7 @@ public class IridiumUI {
 			if (((String)rawCommand.getItemAt(i)).equalsIgnoreCase(command))
 				rawCommand.removeItemAt(i);
 		rawCommand.insertItemAt(command, 0);
-		if (rawCommand.getItemCount() > Iridium.MAX_SIZE)
+		if (rawCommand.getItemCount() > MAX_SIZE)
 			// Clean this one up too
 			rawCommand.removeItemAt(rawCommand.getItemCount() - 1);
 		rawCommand.setSelectedIndex(0);
@@ -168,6 +197,14 @@ public class IridiumUI {
 		infoPanels.clear();
 		topInfo.removeAll();
 		mainUI.validate();
+	}
+	/**
+	 * Clears the log.
+	 */
+	public void clearLog() {
+		synchronized (usarData) {
+			usarData.clear();
+		}
 	}
 	/**
 	 * Closes all dialogs opened by sensor panels.
@@ -262,6 +299,7 @@ public class IridiumUI {
 	public void exit() {
 		final Frame frame = Utils.findParent(mainUI);
 		state.disconnect();
+		state.removeIridiumListener(this);
 		closeJoystick();
 		if (frame != null)
 			frame.dispose();
@@ -300,11 +338,7 @@ public class IridiumUI {
 				!Utils.isFloatEqual(z, axes[2]) || !Utils.isFloatEqual(r, axes[3])) {
 				// Send message; if error, treat like any other
 				if (state.isConnected())
-					try {
-						state.sendJoystickValues(driveType.getSelectedIndex(), x, y, z, r);
-					} catch (IOException e) {
-						state.disconnect();
-					}
+					sendJoystickValues(driveType.getSelectedIndex(), x, y, z, r);
 				// Update last values
 				axes[0] = x;
 				axes[1] = y;
@@ -356,31 +390,38 @@ public class IridiumUI {
 	/**
 	 * Gets the specified view, opening it if necessary.
 	 *
+	 * @param type the view class name to fetch
 	 * @param title the view title
-	 * @return the view
+	 * @return the view, or null if the view cannot be created
 	 */
-	public View getView(final String title) {
+	public View getView(final String type, final String title) {
 		View ret = dialogs.get(title); final Rectangle ss, thisWin;
 		if (ret == null) {
-			// This needs to be fixed so that other views can be instantiated
-			ret = new MapView(mainUI, title);
-			synchronized (dialogs) {
-				dialogs.put(title, ret);
+			// Instantiate specified type
+			try {
+				ret = (View)Utils.instantiate(type, mainUI, title);
+			} catch (InstantiationException e) {
+				ret = null;
 			}
-			final Dimension vs = ret.getSize();
-			// Try to place the view on the screen, first right, then left, then bottom
-			ss = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-			thisWin = Utils.findParent(mainUI).getBounds();
-			if (thisWin.width + thisWin.x + PAD + vs.width < ss.width)
-				ret.setLocation(thisWin.x + thisWin.width + PAD, thisWin.y);
-			else if (thisWin.x - PAD - vs.width > ss.x)
-				ret.setLocation(thisWin.x - PAD - vs.width, thisWin.y);
-			else if (thisWin.y + PAD + vs.height < ss.height)
-				ret.setLocation(thisWin.x, thisWin.y + PAD);
-			else
-				// Else give up
-				ret.setLocationRelativeTo(responseList);
-			ret.setVisible(true);
+			if (ret != null) {
+				synchronized (dialogs) {
+					dialogs.put(title, ret);
+				}
+				final Dimension vs = ret.getSize();
+				// Try to place the view on the screen, first right, then left, then bottom
+				ss = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+				thisWin = Utils.findParent(mainUI).getBounds();
+				if (thisWin.width + thisWin.x + PAD + vs.width < ss.width)
+					ret.setLocation(thisWin.x + thisWin.width + PAD, thisWin.y);
+				else if (thisWin.x - PAD - vs.width > ss.x)
+					ret.setLocation(thisWin.x - PAD - vs.width, thisWin.y);
+				else if (thisWin.y + PAD + vs.height < ss.height)
+					ret.setLocation(thisWin.x, thisWin.y + PAD);
+				else
+					// Else give up
+					ret.setLocationRelativeTo(responseList);
+				ret.setVisible(true);
+			}
 		}
 		return ret;
 	}
@@ -407,22 +448,6 @@ public class IridiumUI {
 		}
 	}
 	/**
-	 * Fires the specified event to occur on the event thread after all pending events have
-	 * been dispatched.
-	 *
-	 * @param cmd the event to invoke
-	 */
-	public void invokeEvent(final String cmd) {
-		if (EventQueue.isDispatchThread())
-			processEvent(cmd);
-		else
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					processEvent(cmd);
-				}
-			});
-	}
-	/**
 	 * Gets whether the UI is in degree mode.
 	 *
 	 * @return whether UI values should be degrees, not radians
@@ -431,90 +456,82 @@ public class IridiumUI {
 		return rotDegrees.isSelected();
 	}
 	/**
+	 * Loads the data handlers from the ActiveStatusHandlers.properties file.
+	 */
+	@SuppressWarnings( "ConstantConditions" )
+	private void loadHandlers() {
+		Properties specs = new Properties(); String key, value;
+		try {
+			InputStream is = getClass().getResourceAsStream("ActiveStatusHandlers.properties");
+			if (is != null) {
+				specs.load(is);
+				is.close();
+			}
+			// If not available, none will be loaded
+		} catch (IOException ignore) { }
+		for (Object oKey : specs.keySet()) {
+			key = (String)oKey;
+			value = specs.getProperty(key).trim();
+			// Key name is only partially relevant
+			if (key.startsWith("Activate") && value != null)
+				try {
+					handlers.add((StatusHandler)Utils.instantiate(value, this));
+				} catch (InstantiationException ignore) { }
+		}
+	}
+	/**
 	 * Loads the images required to run.
 	 */
 	private void loadImages() {
 		badIcon = Utils.loadImage("images/bad.png");
 		goodIcon = Utils.loadImage("images/good.png");
 	}
-	/**
-	 * Triggered when a message is added to the log.
-	 */
-	protected void packetAdded() {
-		// Message added
-		synchronized (state.getMessages()) {
-			((ListDataModel)responseList.getModel()).fireIntervalAdded(0, 0);
-		}
+	public void processEvent(final String cmd) {
+		if (EventQueue.isDispatchThread())
+			uiEvent(cmd);
+		else
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					uiEvent(cmd);
+				}
+			});
+	}
+	public void processPacket(final USARPacket packet) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				processPacketEvt(packet);
+			}
+		});
 	}
 	/**
-	 * Triggered when a message is removed from the log due to log size.
-	 */
-	protected void packetRemoved() {
-		// Message removed
-		int len = state.getMessages().size();
-		synchronized (state.getMessages()) {
-			((ListDataModel)responseList.getModel()).fireIntervalRemoved(len - 1, len - 1);
-		}
-	}
-	/**
-	 * Processes the specified UI event. <i>Must be called on the event thread.</i>
+	 * Adds a packet to the list. If a data handler can handle it instead, the packet is not
+	 * added and the handler gets the message instead. This method should be called on the event
+	 * thread since UI updating occurs.
 	 *
-	 * @param cmd the UI event that was triggered
+	 * @param packet the packet to insert
 	 */
-	private void processEvent(String cmd) {
-		boolean status;
-		if (cmd.equals("swap"))
-			// Show/hide Advanced Input
-			showRawCommand(!rawCommand.isVisible());
-		else if (cmd.equals("send") && state.isConnected()) {
-			// Send message
-			if (swapButton.isSelected())
-				sendMessage((String)rawCommand.getEditor().getItem());
+	@SuppressWarnings("unchecked")
+	private void processPacketEvt(USARPacket packet) {
+		boolean cont = true;
+		ListDataModel<USARPacket> model = ((ListDataModel<USARPacket>)responseList.getModel());
+		for (StatusHandler handler : handlers)
+			if (packet.isResponse())
+				cont &= handler.statusReceived(packet);
 			else
-				sendWSIWYG();
-		} else if (cmd.equals("freeze")) {
-			// Freeze/Unfreeze
-			status = state.isUnfrozen();
-			state.setFrozen(status);
-			if (status)
-				freezeButton.setText("Unfreeze");
-			else
-				freezeButton.setText("Freeze");
-		} else if (cmd.equals("card")) {
-			// Change available type
-			cmd = commandType.getSelectedItem().toString().toLowerCase();
-			if (cmd.equals("getgeo") || cmd.equals("getconf"))
-				cmd = "geoconf";
-			((CardLayout)typePanel.getLayout()).show(typePanel, cmd);
-			Utils.focusFirstComponent(typePanel);
-		} else if (cmd.equals("drive")) {
-			// Change drive type
-			cmd = driveType.getSelectedItem().toString();
-			((CardLayout)driveView.getLayout()).show(driveView, cmd.toLowerCase());
-			Utils.focusFirstComponent(driveView);
-		} else if (cmd.equals("connect")) {
-			// Connect/disconnect
-			if (state.isConnected())
-				state.disconnect();
-			else
-				state.connect(serverName.getText());
-		} else if (cmd.equals("connected"))
-			// Connect explicitly
-			connected();
-		else if (cmd.equals("disconnect"))
-			// Disconnect explicitly
-			disconnected();
-		else if (cmd.equals("clear")) {
-			// Clear log
-			state.clearLog();
-			((ListDataModel)responseList.getModel()).fireCleared();
-		} else if (cmd.equals("estop"))
-			// Stop robot!
-			sendInternalMessage("DRIVE {Left 0} {Right 0} {Speed 0} {AltitudeVelocity 0} " +
-				"{LinearVelocity 0} {LateralVelocity 0} {RotationalVelocity 0}");
-		else if (cmd.equals("feed"))
-			// Joystick
-			feedJoystickToRobot();
+				cont &= handler.statusSent(packet);
+		if (cont)
+			synchronized (usarData) {
+				// Truncate old data
+				if (usarData.size() > MAX_SIZE) {
+					usarData.remove(usarData.size() - 1);
+					// Fire message
+					int len = usarData.size();
+					model.fireIntervalRemoved(len - 1, len - 1);
+				}
+				usarData.add(0, packet);
+				// Fire message
+				model.fireIntervalAdded(0, 0);
+			}
 	}
 	/**
 	 * Sends an ACT command with the appropriate values.
@@ -748,7 +765,14 @@ public class IridiumUI {
 			// After init, send an actuator configuration command to populate box
 			updateActuators(null);
 			updateJoints(null);
-			sendInternalMessage("GETCONF {Type Actuator}");
+			// Would have liked to use listener, but setActionCommand is @since 1.6...
+			Timer actConf = new Timer(100, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					sendInternalMessage("GETCONF {Type Actuator}");
+				}
+			});
+			actConf.setRepeats(false);
+			actConf.start();
 		}
 	}
 	/**
@@ -787,6 +811,33 @@ public class IridiumUI {
 		return done;
 	}
 	/**
+	 * Sends joystick (or input field) commands to the robot drive. Expected range is from
+	 * -1 to 1. X is left/right, Y is up/down.
+	 *
+	 * @param type the drive type (e.g. DRIVETYPE_SKID)
+	 * @param lx left control stick, X axis
+	 * @param ly left control stick, Y axis
+	 * @param rx right control stick, X axis
+	 * @param ry right control stick, Y axis
+	 */
+	private void sendJoystickValues(int type, double lx, double ly, double rx, double ry) {
+		switch (type) {
+		case DRIVETYPE_SKID:
+			sendInternalMessage(String.format("DRIVE {Left %.2f} {Right %.2f}", ly, ry));
+			break;
+		case DRIVETYPE_ACKERMAN:
+			sendInternalMessage(String.format("DRIVE {Speed %.2f} {FrontSteer %.2f} " +
+				"{RearSteer %.2f}", ly, lx, ry));
+			break;
+		case DRIVETYPE_AIR:
+			sendInternalMessage(String.format("DRIVE {AltitudeVelocity %.2f} {LinearVelocity " +
+				"%.2f} {LateralVelocity %.2f} {RotationalVelocity %.2f}", ry, ly, lx, rx));
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid drive type: " + type);
+		}
+	}
+	/**
 	 * Sends a message to USAR.
 	 *
 	 * @param message the message text to send
@@ -798,7 +849,7 @@ public class IridiumUI {
 			// Add to the execute list in rawCommand
 			addToHistory(message);
 			// Add packet to the list
-			state.addPacket(new USARPacket(message, false));
+			processPacketEvt(new USARPacket(message, false));
 		}
 	}
 	/**
@@ -1499,7 +1550,7 @@ public class IridiumUI {
 		mainUI.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		listener = new EventListener();
 		// List: Responses
-		responseList = new JList(new ListDataModel<USARPacket>(state.getMessages()));
+		responseList = new JList(new ListDataModel<USARPacket>(usarData));
 		responseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		responseList.setToolTipText("Response messages from the server");
 		responseList.addMouseListener(new MouseAdapter() {
@@ -1535,6 +1586,72 @@ public class IridiumUI {
 		commandType.setVisible(!show);
 		if (show)
 			rawCommand.requestFocusInWindow();
+	}
+	/**
+	 * Processes the specified UI event or Iridium system event.
+	 *
+	 * @param eventName the UI event that was triggered
+	 */
+	private void uiEvent(String eventName) {
+		if (eventName.equals("swap"))
+			// Show/hide Advanced Input
+			showRawCommand(!rawCommand.isVisible());
+		else if (eventName.equals("send") && state.isConnected()) {
+			// Send message
+			if (swapButton.isSelected())
+				sendMessage((String)rawCommand.getEditor().getItem());
+			else
+				sendWSIWYG();
+		} else if (eventName.equals("freeze")) {
+			// Freeze/Unfreeze
+			frozen = !frozen;
+			if (frozen)
+				freezeButton.setText("Unfreeze");
+			else
+				freezeButton.setText("Freeze");
+		} else if (eventName.equals("card")) {
+			// Change available type
+			eventName = commandType.getSelectedItem().toString().toLowerCase();
+			if (eventName.equals("getgeo") || eventName.equals("getconf"))
+				eventName = "geoconf";
+			((CardLayout)typePanel.getLayout()).show(typePanel, eventName);
+			Utils.focusFirstComponent(typePanel);
+		} else if (eventName.equals("drive")) {
+			// Change drive type
+			eventName = driveType.getSelectedItem().toString();
+			((CardLayout)driveView.getLayout()).show(driveView, eventName.toLowerCase());
+			Utils.focusFirstComponent(driveView);
+		} else if (eventName.equals("connect")) {
+			// Connect/disconnect
+			if (state.isConnected())
+				state.disconnect();
+			else {
+				String host = serverName.getText();
+				try {
+					state.connect(host);
+				} catch (IOException e) {
+					// Error when connecting
+					Utils.showWarning(mainUI, "<b>Cannot connect to \"" + host +
+						"\".</b><br><br>Is Windows Firewall blocking UDK?");
+				}
+			}
+		} else if (eventName.equals("connected"))
+			// Connect explicitly
+			connected();
+		else if (eventName.equals("disconnect"))
+			// Disconnect explicitly
+			disconnected();
+		else if (eventName.equals("clear")) {
+			// Clear log
+			clearLog();
+			((ListDataModel)responseList.getModel()).fireCleared();
+		} else if (eventName.equals("estop"))
+			// Stop robot!
+			sendInternalMessage("DRIVE {Left 0} {Right 0} {Speed 0} {AltitudeVelocity 0} " +
+				"{LinearVelocity 0} {LateralVelocity 0} {RotationalVelocity 0}");
+		else if (eventName.equals("feed"))
+			// Joystick
+			feedJoystickToRobot();
 	}
 	/**
 	 * Updates the list of available actuators.
@@ -1657,7 +1774,7 @@ public class IridiumUI {
 	 */
 	private class EventListener implements ActionListener, JoystickListener {
 		public void actionPerformed(ActionEvent e) {
-			processEvent(e.getActionCommand());
+			uiEvent(e.getActionCommand());
 		}
 		public void joystickAxisChanged(Joystick joystick) {
 			feedJoystickToRobot();
@@ -1756,7 +1873,7 @@ public class IridiumUI {
 	}
 
 	/**
-	 * Change the available options in the joint "Opcode" dialog by
+	 * Change the available options in the joint "Opcode" dialog.
 	 */
 	private class OpcodeModel extends DefaultComboBoxModel {
 		private static final long serialVersionUID = 0L;

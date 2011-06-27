@@ -7,7 +7,7 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-package org.nist.usarui;
+package org.nist.usarui.ui;
 
 import javax.swing.*;
 import java.util.*;

@@ -9,25 +9,22 @@
 
 package org.nist.usarui;
 
-import java.awt.event.*;
-import javax.swing.text.*;
-
 /**
- * A class which automatically selects the contents of a text box when given focus.
+ * Specifies a class which can listen for Iridium events.
+ *
+ * @author Stephen Carlson (NIST)
  */
-public class SelectOnFocus extends FocusAdapter {
-	private final JTextComponent box;
-
+public interface IridiumListener {
 	/**
-	 * Creates a new SelectOnFocus that will use the target component.
+	 * Processes an Iridium system event.
 	 *
-	 * @param toSelect the component to select when focused
+	 * @param eventName the event that occurred
 	 */
-	public SelectOnFocus(JTextComponent toSelect) {
-		box = toSelect;
-	}
-	public void focusGained(FocusEvent e) {
-		if (!e.isTemporary() && e.getSource() == box)
-			box.selectAll();
-	}
+	public void processEvent(String eventName);
+	/**
+	 * Processes the send or receive of a server message.
+	 *
+	 * @param packet the parsed server message sent or received
+	 */
+	public void processPacket(USARPacket packet);
 }

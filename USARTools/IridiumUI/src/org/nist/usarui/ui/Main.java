@@ -7,8 +7,9 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-package org.nist.usarui;
+package org.nist.usarui.ui;
 
+import org.nist.usarui.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -23,6 +24,7 @@ public class Main {
 		Errors.handleErrors();
 		Utils.setUI();
 		final Iridium program = new Iridium();
+		final IridiumUI ui = new IridiumUI(program);
 		final Image icon16 = Utils.loadImage("images/icon16.png").getImage();
 		final Image icon32 = Utils.loadImage("images/icon32.png").getImage();
 		final Image icon48 = Utils.loadImage("images/icon48.png").getImage();
@@ -35,12 +37,12 @@ public class Main {
 		}
 		mainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				program.getUI().exit();
+				ui.exit();
 			}
 		});
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mainFrame.setResizable(true);
-		mainFrame.getContentPane().add(program.getUI().getRoot(), BorderLayout.CENTER);
+		mainFrame.getContentPane().add(ui.getRoot(), BorderLayout.CENTER);
 		mainFrame.setSize(640, 480);
 		Utils.centerWindow(mainFrame);
 		mainFrame.setVisible(true);

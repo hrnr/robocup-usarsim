@@ -22,6 +22,8 @@ class Utilities extends Object config(USARBot);
 // Persistent variables needed for gaussRand function
 var float y2;
 var bool use_last;
+// PhysX DLL proxy instance
+var const PhysXProxy PhysXProxyInstance;
 
 // Generates Gaussian random number given a mean and a standard deviation(sigma)
 // Uses Box-Muller method
@@ -56,68 +58,34 @@ simulated function float gaussRand(float mean, float sigma)
 	return mean + y1 * sigma;
 }
 
-// Parses a string of arguments into tokens. The tokens are split by the specified delimiter.
-// Returns a dynamic array of strings
-static final function array<String> tokenizer(String argStr, optional String delim)
+// Gets the relative position between a part and its parent
+static function vector GetRelativePosition(vector ChildPosition, vector ParentPosition,
+	rotator ParentOrientation)
 {
-	local int i;
-	local int count;
-	local array<String> opt;
+	local vector res, Forward, Right, Upward, Dif;
 
-	if (delim == "")
-		delim = ",";
-	count = 0;
-	if (argStr != "")
-		do
-		{
-			opt.Length = count + 1;
-			i = InStr(argStr, delim);
-			if (i == -1)
-				opt[count] = argStr;
-			else
-			{
-				opt[count] = Left(argStr, i);
-				argStr = mid(argStr, i + 1);
-			}
-			count++;
-		} until (i == -1);
-	return opt;
-}
+	// Find the parent's orientation
+	if (ParentOrientation == rot(0, 0, 0))
+	{
+		Forward = vect(1, 0, 0);
+		Right = vect(0, 1, 0);
+		Upward  = vect(0, 0, -1);
+	}
+	else
+	{
+		Forward = (Vect(1, 0, 0) >> ParentOrientation);
+		Right = (Vect(0, 1, 0) >> ParentOrientation);
+		Upward  = (Vect(0, 0, -1) >> ParentOrientation);
+	}
 
-// Trims characters from the leading end of a string
-static final function String TrimLeft(coerce String S, optional String delim)
-{
-	local int size;
+	// Project to the parent's coordinate
+	dif = ChildPosition - ParentPosition;
+	res.X = Dif Dot Forward;
+	res.Y = Dif Dot Right;
+	res.Z = Dif Dot Upward;
+	res = class'UnitsConverter'.static.LengthVectorFromUU(res);
 
-	size = Len(S);
-	if (delim == "")
-		delim = " ";
-
-	while (Left(S, 1) == delim)
-		S = Right(S, --size);
-	return S;
-}
-
-// Trims characters from the trailing end of a string
-static final function String TrimRight(coerce String S, optional String delim)
-{
-	local int size;
-
-	size = Len(S);
-	if (delim == "")
-		delim = " ";
-
-	while (Right(S, 1) == delim)
-		S = Left(S, --size);
-	return S;
-}
-
-// Trims characters from a string
-static final function String Trim(coerce String S, optional String delim)
-{
-	S = TrimLeft(S, delim);
-	S = TrimRight(S, delim);
-	return S;
+	return res;
 }
 
 // Converts a string like "1.2,45.3,7.8" to a vector
@@ -177,34 +145,17 @@ static function rotator rTurn(rotator rHeading, rotator rTurnAngle)
 	return OrthoRotation(vForward2, vRight2, vUpward2);
 }
 
-// Gets the relative position between a part and its parent
-static function vector getRelativePosition(vector ChildPosition, vector ParentPosition,
-	rotator ParentOrientation)
+// Enables or disables contact point generation between two actors
+static final function SetActorPairIgnore(RB_BodyInstance body1, RB_BodyInstance body2,
+	bool ignore)
 {
-	local vector res, Forward, Right, Upward, Dif;
+	default.PhysXProxyInstance.SetActorPairIgnore(body1, body2, ignore);
+}
 
-	// Find the parent's orientation
-	if (ParentOrientation == rot(0, 0, 0))
-	{
-		Forward = vect(1, 0, 0);
-		Right = vect(0, 1, 0);
-		Upward  = vect(0, 0, -1);
-	}
-	else
-	{
-		Forward = (Vect(1, 0, 0) >> ParentOrientation);
-		Right = (Vect(0, 1, 0) >> ParentOrientation);
-		Upward  = (Vect(0, 0, -1) >> ParentOrientation);
-	}
-
-	// Project to the parent's coordinate
-	dif = ChildPosition - ParentPosition;
-	res.X = Dif Dot Forward;
-	res.Y = Dif Dot Right;
-	res.Z = Dif Dot Upward;
-	res = class'UnitsConverter'.static.LengthVectorFromUU(res);
-
-	return res;
+// Adjusts the solver iteration count for a particular rigid body to improve physics accuracy
+static final function SetIterationSolverCount(RB_BodyInstance instance, int iterCount)
+{
+	default.PhysXProxyInstance.SetIterationSolverCount(instance, iterCount);
 }
 
 // Adjusts the mass of the specified item to match reality (takes mass in UU)
@@ -225,10 +176,78 @@ static function SetMass(DynamicSMActor act, float DesiredMass)
 	}
 }
 
+// Parses a string of arguments into tokens. The tokens are split by the specified delimiter.
+// Returns a dynamic array of strings
+static final function array<String> tokenizer(String argStr, optional String delim)
+{
+	local int i;
+	local int count;
+	local array<String> opt;
+
+	if (delim == "")
+		delim = ",";
+	count = 0;
+	if (argStr != "")
+		do
+		{
+			opt.Length = count + 1;
+			i = InStr(argStr, delim);
+			if (i == -1)
+				opt[count] = argStr;
+			else
+			{
+				opt[count] = Left(argStr, i);
+				argStr = mid(argStr, i + 1);
+			}
+			count++;
+		} until (i == -1);
+	return opt;
+}
+
+// Trims characters from a string
+static final function String Trim(coerce String S, optional String delim)
+{
+	S = TrimLeft(S, delim);
+	S = TrimRight(S, delim);
+	return S;
+}
+
+// Trims characters from the leading end of a string
+static final function String TrimLeft(coerce String S, optional String delim)
+{
+	local int size;
+
+	size = Len(S);
+	if (delim == "")
+		delim = " ";
+
+	while (Left(S, 1) == delim)
+		S = Right(S, --size);
+	return S;
+}
+
+// Trims characters from the trailing end of a string
+static final function String TrimRight(coerce String S, optional String delim)
+{
+	local int size;
+
+	size = Len(S);
+	if (delim == "")
+		delim = " ";
+
+	while (Right(S, 1) == delim)
+		S = Left(S, --size);
+	return S;
+}
 
 // Sets default values of persistent variables
 defaultproperties
 {
 	use_last=true
 	y2=0.0
+	
+	// PhysXProxy Instance
+	Begin Object Class=PhysXProxy Name=SingletonPhysXProxy
+	End Object
+	PhysXProxyInstance=SingletonPhysXProxy
 }
