@@ -17,15 +17,14 @@ var config int CameraHeight;
 var int CamerasIndex;
 var USARCamera CameraViews[64];
 
-function DrawHUD() 
+event PostRender() 
 {
 	local int i;
 	
 	for (i = 0; i < CameraTileX * CameraTileY; i++)
 		if (CameraViews[i] != None)
 		{
-			Canvas.CurX = CameraViews[i].X;
-			Canvas.CurY = CameraViews[i].Y;
+			Canvas.SetPos(CameraViews[i].X, CameraViews[i].Y);
 			Canvas.SetDrawColor(255, 255, 255, 255);
 			Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
 		}	  

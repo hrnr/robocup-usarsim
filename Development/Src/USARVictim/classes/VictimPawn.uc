@@ -25,7 +25,6 @@ defaultproperties
 		MinTimeBetweenFullUpdates=0.2
 		AmbientGlow=(R=.01,G=.01,B=.01,A=1)
 		AmbientShadowColor=(R=0.15,G=0.15,B=0.15)
-		ShadowFilterQuality=SFQ_High
 	End Object
 
 	Begin Object Name=WPawnSkeletalMeshComponent

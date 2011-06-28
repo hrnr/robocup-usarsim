@@ -1,5 +1,3 @@
 @echo off
 
-title Making UDK
-Binaries\UDK.exe make -all
-pause
+start Binaries\UDKLift.exe make -all

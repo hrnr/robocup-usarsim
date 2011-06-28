@@ -1,1 +1,3 @@
-Binaries\udklift editor
+@echo off
+
+Binaries\UDKLift editor
