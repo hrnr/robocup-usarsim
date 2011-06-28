@@ -62,7 +62,7 @@ function String GetGeoData()
 	return "GEO {Type GroundVehicle} {Name " $ self.Class $ "} {Dimensions " $ 
 		class'UnitsConverter'.static.VectorString(dimensions) $ "} {COG " $
 		class'UnitsConverter'.static.Str_LengthVectorFromUU(COMOffset) $ "} {WheelRadius " $
-		class'UnitsConverter'.static.Str_LengthFromUU(WheelRadius) $ "} {WheelSeparation " $
+		class'UnitsConverter'.static.FloatString(WheelRadius) $ "} {WheelSeparation " $
 		class'UnitsConverter'.static.FloatString(dimensions.Y) $ "} {WheelBase " $
 		class'UnitsConverter'.static.FloatString(dimensions.X) $ "}";
 }
