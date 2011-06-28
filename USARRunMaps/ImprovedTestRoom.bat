@@ -1,1 +1,3 @@
-..\Binaries\Win32\udk ImprovedTestRoom?game=USARBotAPI.BotDeathMatch -log 
+@echo off
+
+..\Binaries\UDKLift ImprovedTestRoom?game=USARBotAPI.BotDeathMatch -log 

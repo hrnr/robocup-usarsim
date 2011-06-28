@@ -1,1 +1,3 @@
-..\Binaries\Win32\udk EmptyRoom?game=USARBotAPI.BotDeathMatch -log 
+@echo off
+
+..\Binaries\UDKLift EmptyRoom?game=USARBotAPI.BotDeathMatch -log 
