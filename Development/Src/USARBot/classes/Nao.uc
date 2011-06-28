@@ -78,8 +78,8 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 100
-	`define MaxForceMotorType2 100
+	`define MaxForceMotorType1 25
+	`define MaxForceMotorType2 25
 
 	`define NaoSolverIterationCount 128
 
@@ -355,6 +355,8 @@ defaultproperties
 
 	DisableContacts.Add((Part1=BodyItem,Part2=LHipThigh))
 	DisableContacts.Add((Part1=BodyItem,Part2=RHipThigh))
+	DisableContacts.Add((Part1=LHip,Part2=LHipThigh))
+	DisableContacts.Add((Part1=RHip,Part2=RHipThigh))
 
 	Begin Object Class=Part Name=LThigh
 		RelativeTo=BodyItem
@@ -374,8 +376,10 @@ defaultproperties
 	End Object
 	PartList.Add(RThigh)
 
-	DisableContacts.Add((Part1=LHip,Part2=LThigh))
-	DisableContacts.Add((Part1=RHip,Part2=RThigh))
+	DisableContacts.Add((Part1=BodyItem,Part2=LThigh))
+	DisableContacts.Add((Part1=BodyItem,Part2=RThigh))
+	DisableContacts.Add((Part1=LHipThigh,Part2=LThigh))
+	DisableContacts.Add((Part1=RHipThigh,Part2=RThigh))
 
 	Begin Object Class=RevoluteJoint Name=LHipRoll
 		Parent=LHip
@@ -471,7 +475,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=0.5000
+		Mass=0.6000
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LFoot)
@@ -480,7 +484,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=0.5000
+		Mass=0.6000
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RFoot)
