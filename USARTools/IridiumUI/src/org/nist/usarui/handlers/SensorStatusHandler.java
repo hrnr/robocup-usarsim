@@ -180,6 +180,8 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			value = packet.getParam("");
 			if (value != null) value = Utils.asHTML(floatString(value, false));
 			// Accelerometer
+			test = packet.getParam("ProperAcceleration");
+			if (test != null) value = Utils.asHTML(floatString(test, false));
 			test = packet.getParam("Acceleration");
 			if (test != null) value = Utils.asHTML(floatString(test, false));
 			// Bumper
@@ -208,6 +210,15 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 				value = Utils.asHTML("<b>At</b> (" + color3Vector(test, false) +
 					"), <b>facing</b> (" + color3Vector(packet.getParam("Orientation"), deg) +
 					")");
+			// If still empty, single-keyed sensors can be handled here
+			if (value == null) {
+				List<String> keys = new ArrayList<String>(packet.getParams().keySet());
+				keys.remove("Time");
+				keys.remove("Type");
+				keys.remove("Name");
+				if (keys.size() == 1)
+					value = Utils.htmlSpecialChars(packet.getParam(keys.get(0)));
+			}
 			// Send whatever we got
 			if (value != null)
 				setInformation(type, name, value);
