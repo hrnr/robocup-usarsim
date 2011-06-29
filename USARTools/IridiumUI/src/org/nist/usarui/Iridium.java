@@ -82,14 +82,21 @@ public class Iridium implements IridiumConnector {
 	public Properties getConfig() {
 		return config;
 	}
+	public IridiumListener[] getIridiumListeners() {
+		synchronized (listeners) {
+			return listeners.toArray(new IridiumListener[listeners.size()]);
+		}
+	}
 	/**
 	 * Fires the specified event to all listeners.
 	 *
 	 * @param eventName the event that occurred
 	 */
 	public void invokeEvent(String eventName) {
-		for (IridiumListener listener : listeners)
-			listener.processEvent(eventName);
+		synchronized (listeners) {
+			for (IridiumListener listener : listeners)
+				listener.processEvent(eventName);
+		}
 	}
 	/**
 	 * Fires the specified packet to all listeners.
@@ -97,8 +104,10 @@ public class Iridium implements IridiumConnector {
 	 * @param packet the packet triggering the event
 	 */
 	public void invokePacket(USARPacket packet) {
-		for (IridiumListener listener : listeners)
-			listener.processPacket(packet);
+		synchronized (listeners) {
+			for (IridiumListener listener : listeners)
+				listener.processPacket(packet);
+		}
 	}
 	public synchronized boolean isConnected() {
 		return toUSAR != null && toUSAR.isConnected() && !toUSAR.isClosed();

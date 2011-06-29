@@ -244,6 +244,22 @@ function SetAllJointTargets(float target)
 			JointItem(Parts[i]).SetTarget(target);
 }
 
+// Handles SET commands sent to the robot's sensors or actuators
+function SetCommand(String type, String iName, String opcode, String value)
+{
+	local int i;
+	
+	// Search local arrays
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].IsType(type) && Parts[i].IsName(iName))
+			Parts[i].Set(opcode, value);
+		// Search actuators
+		if (Parts[i].isA('Actuator'))
+			Actuator(Parts[i]).SetCommand(type, iName, opcode, value);
+	}
+}
+
 // Sets the specified joint's target to the specified value
 function SetJointTargetByName(String jointName, float target)
 {
@@ -264,7 +280,7 @@ function SetJointTargetByName(String jointName, float target)
 }
 
 // Sets the damping of a joint given its name
-function SetJointDampingByName(name jointName, float stiffness)
+function SetJointDampingByName(String jointName, float stiffness)
 {
 	local int i;
 	local JointItem ji;
@@ -283,7 +299,7 @@ function SetJointDampingByName(name jointName, float stiffness)
 }
 
 // Sets the stiffness of a joint given its name
-function SetJointStiffnessByName(name jointName, float stiffness)
+function SetJointStiffnessByName(String jointName, float stiffness)
 {
 	local int i;
 	local JointItem ji;
@@ -359,7 +375,7 @@ reliable server function SetupItem(SpecItem desc)
 			it.SetBase(CenterItem);
 		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
 		// when rotating in place; until resolved, do NOT hard attach
-		it.SetHardAttach(false);
+		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, self);
 		if (bDebug)

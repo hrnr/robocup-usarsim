@@ -76,6 +76,14 @@ public class View {
 		dialog.setLocation(x, y);
 	}
 	/**
+	 * Changes the title of this view.
+	 *
+	 * @param title the new view title
+	 */
+	public void setTitle(String title) {
+		dialog.setTitle(title);
+	}
+	/**
 	 * Changes the visibility of the view.
 	 *
 	 * @param visible whether the view should be visible

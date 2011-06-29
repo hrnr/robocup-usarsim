@@ -142,6 +142,19 @@ function String GetConfData()
 	return outstring;
 }
 
+// Allows odometer to be reset
+function String Set(String opcode, String args)
+{
+	if (Caps(opcode) == "RESET")
+	{
+		xPos = 0.0;
+		yPos = 0.0;
+		theta = 0.0;
+		return "OK";
+	}
+	return "Failed";
+}
+
 defaultproperties
 {
 	ItemType="Odometry"

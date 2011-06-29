@@ -41,10 +41,10 @@ function String GetData()
 	posString = "{Pos ";
 	for (i = 0; i < Wheels.Length; i++)
 	{
-		value = Wheels[i].Wheel.CurValue;
+		value = Wheels[i].Spun;
 		positionOut = value;
 		
-		myVelocity = (value - Wheels[i].Old) / timeDiff;
+		myVelocity = (Wheels[i].Wheel.CurValue - Wheels[i].Old) / timeDiff;
 		if (i == 0)
 		{
 			posString = posString $ positionOut;

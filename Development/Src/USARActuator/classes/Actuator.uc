@@ -392,6 +392,22 @@ reliable server function RunSequence(int Sequence)
 {
 }
 
+// Handles SET commands sent to the actuators's sensors or sub-actuators
+function SetCommand(String type, String iName, String opcode, String value)
+{
+	local int i;
+	
+	// Search local arrays
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].IsType(type) && Parts[i].IsName(iName))
+			Parts[i].Set(opcode, value);
+		// Search actuators
+		if (Parts[i].isA('Actuator'))
+			Actuator(Parts[i]).SetCommand(type, iName, opcode, value);
+	}
+}
+
 reliable server function SetGripper(int Gripper)
 {
 }
@@ -454,7 +470,7 @@ reliable server function SetupItem(SpecItem desc)
 			it.SetBase(self);
 		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
 		// when rotating in place; until resolved, do NOT hard attach
-		it.SetHardAttach(false);
+		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);
 		if (bDebug)

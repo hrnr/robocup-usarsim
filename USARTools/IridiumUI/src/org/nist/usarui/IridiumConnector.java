@@ -42,6 +42,12 @@ public interface IridiumConnector {
 	 */
 	public Properties getConfig();
 	/**
+	 * Gets the list of IridiumListener objects registered for events.
+	 *
+	 * @return the Iridium listeners currently recieving events
+	 */
+	public IridiumListener[] getIridiumListeners();
+	/**
 	 * Gets whether the program is connected to USARSim.
 	 *
 	 * @return whether the program is currently connected
