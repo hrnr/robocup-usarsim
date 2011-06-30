@@ -33,6 +33,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RotateJoint
 		Parent=BaseItem
 		Child=TopItem
+		Damping=5
 		MaxForce=1000
 		LimitLow=-3.228
 		LimitHigh=3.228

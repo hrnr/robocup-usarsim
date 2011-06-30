@@ -17,6 +17,8 @@ class Joint extends Object config(USAR);
 var vector Direction;
 // The child part (moveable relative to the parent)
 var Part Child;
+// Damping value to apply to joint
+var float Damping;
 // Default value only (updated value in JointItems) of maximum force (torque)
 var float MaxForce;
 // Part offset from the robot origin, or relative to
@@ -57,8 +59,7 @@ reliable server function JointItem Init(JointItem ji)
 	ji.MaxForce = MaxForce;
 	ji.Spec = self;
 	ji.Stiffness = Stiffness;
-	// Mimic value from earlier iterations of UDKUSAR
-	ji.Damping = 0.25;
+	ji.Damping = Damping;
 	// Cannot set these in default properties, do it here
 	ji.Constraint.ConstraintSetup.LinearXSetup.LimitSize = 0.0;
 	ji.Constraint.ConstraintSetup.LinearYSetup.LimitSize = 0.0;
@@ -114,6 +115,8 @@ simulated function Update(JointItem ji)
 
 defaultproperties
 {
+	// Much too small for most applications! Here for compatibility only!
+	Damping=0.25
 	MaxForce=50000.0
 	Stiffness=1.0
 }

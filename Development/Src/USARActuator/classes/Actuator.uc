@@ -422,7 +422,7 @@ reliable server function SetThisRotation(int link, float value, int order)
 // Changes the position of the given link to a new value
 reliable server function SetLinkTarget(int link, float value)
 {
-	local array<float> motorCmdOld;
+	local array<float> motorCmdOld, target;
 	local int i, len;
 	
 	// Check that link is within range (move reference to adapt)
@@ -430,15 +430,20 @@ reliable server function SetLinkTarget(int link, float value)
 	if (link >= 0 && link < len)
 	{
 		motorCmdOld.Length = len;
+		target.Length = len;
 		// Copy old values
 		for (i = 0; i < len; i++)
+		{
 			motorCmdOld[i] = CmdPos[i];
+			target[i] = CmdPos[i];
+		}
+		CmdPos[link] = Value;
 		// User control update
-		updateRotation(link, value);
+		target = updateRotation(target, link, value);
 		for (i = 0; i < len; i++)
 			// Set target per joint if different
-			if (motorCmdOld[i] != CmdPos[i])
-				JointItems[i].SetTarget(CmdPos[i]);
+			if (motorCmdOld[i] != target[i])
+				JointItems[i].SetTarget(target[i]);
 		if (bDebug)
 			LogInternal("Set target of joint " $ link $ " to " $ value);
 	}
@@ -611,9 +616,10 @@ simulated function UpdateJoints()
 }
 
 // Using the CmdPos[] array, user can implement gearing equations
-simulated function updateRotation(int Link, float Value)
+simulated function array<float> updateRotation(array<float> Target, int Link, float Value)
 {
-	CmdPos[Link] = Value;
+	Target[Link] = Value;
+	return Target;
 }
 
 defaultproperties
