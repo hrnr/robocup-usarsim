@@ -765,17 +765,9 @@ public class IridiumUI implements IridiumListener {
 			etc = "{Start " + pose.getTag() + "}";
 		if (etc != null) {
 			sendMessage("INIT {ClassName " + botClass + "} " + etc);
-			if (botClass.equalsIgnoreCase("USARBotAPI.WorldController")) {
-				// World controller always works; tab right to CONTROL
-				updateActuators(null);
-				updateJoints(null);
-				commandType.addItem("CONTROL");
-				commandType.removeItem("INIT");
-				commandType.setSelectedIndex(0);
-			} else {
-				// After init, send an actuator configuration command to populate box
-				updateActuators(null);
-				updateJoints(null);
+			updateActuators(null);
+			updateJoints(null);
+			if (!botClass.equalsIgnoreCase("USARBotAPI.WorldController")) {
 				// Would have liked to use listener, but setActionCommand is @since 1.6...
 				final Timer actConf = new Timer(200, new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -784,12 +776,6 @@ public class IridiumUI implements IridiumListener {
 				});
 				actConf.setRepeats(false);
 				actConf.start();
-				// Populate with useful items
-				commandType.addItem("DRIVE");
-				commandType.addItem("SET");
-				commandType.addItem("GETGEO");
-				commandType.addItem("GETCONF");
-				commandType.setSelectedItem("DRIVE");
 			}
 		}
 	}
@@ -1315,6 +1301,9 @@ public class IridiumUI implements IridiumListener {
 		driveInvert = Utils.createCheckBox("Invert Axes",
 			"Inverts the vertical axes of the joystick");
 		driveInvert.setSelected(true);
+		// Default value from config
+		if (state.getConfig().getProperty("NoInvert", "false").equalsIgnoreCase("true"))
+			driveInvert.setSelected(false);
 		driveMaster.add(driveInvert);
 		// Layout: Drive Views
 		driveView = new JPanel(new CardLayout(0, 0));
@@ -1713,6 +1702,27 @@ public class IridiumUI implements IridiumListener {
 			// Got a status, remove the INIT item if necessary
 			if (commandType.getItemCount() > 1)
 				commandType.removeItem("INIT");
+		}
+	}
+	/**
+	 * Fired whenever an INIT command is sent through any channel by AdaptiveInputHandler to
+	 * adjust the GUI inputs accordingly.
+	 *
+	 * @param isWC whether the fields should be set up for world control
+	 */
+	public void updateInitComplete(boolean isWC) {
+		// Populate with useful items
+		if (isWC) {
+			commandType.removeItem("INIT");
+			commandType.addItem("CONTROL");
+			commandType.setSelectedIndex(0);
+		} else {
+			commandType.addItem("DRIVE");
+			commandType.addItem("SET");
+			commandType.addItem("GETGEO");
+			commandType.addItem("GETCONF");
+			// Might not be the first command since INIT might still be hanging around
+			commandType.setSelectedItem("DRIVE");
 		}
 	}
 	/**

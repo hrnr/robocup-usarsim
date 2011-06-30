@@ -33,8 +33,7 @@ public class View {
 	protected View(Component parent, String title) {
 		dialog = new JDialog(Utils.findParent(parent), title, false);
 		dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		dialog.setFocusableWindowState(false);
-		dialog.setSize(200, 200);
+		dialog.setSize(300, 300);
 	}
 	/**
 	 * Closes the window.

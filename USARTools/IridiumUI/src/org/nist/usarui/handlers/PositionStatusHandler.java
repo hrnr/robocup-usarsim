@@ -32,17 +32,19 @@ public class PositionStatusHandler extends AbstractStatusHandler {
 		return "Pos_";
 	}
 	public boolean statusReceived(USARPacket packet) {
-		String name, deg, key, lastLink; float value;
+		String name, deg, key; int lastLink; float value;
 		boolean keep = true;
-		if (packet.getType().equals("MISSTA") || packet.getType().equals("ASTA")) {
+		if (packet.getType().equals("MISSTA")) {
 			name = packet.getParam("Name");
-			lastLink = "0";
-			// Positions update
+			lastLink = 0;
+			// Positions update (use MISSTA and -1 for compatibility with UT3)
 			for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
-				key = entry.getKey();
-				if (key.equalsIgnoreCase(""))
-					lastLink = entry.getValue();
-				else if (key.equalsIgnoreCase("Value")) {
+				key = entry.getKey().toLowerCase();
+				if (key.startsWith("link"))
+					try {
+						lastLink = Integer.parseInt(entry.getValue()) - 1;
+					} catch (NumberFormatException ignore) { }
+				else if (key.startsWith("value")) {
 					// Show value on panel, in degrees if needed
 					value = Float.parseFloat(entry.getValue());
 					if (ui.isInDegrees()) {
@@ -50,11 +52,13 @@ public class PositionStatusHandler extends AbstractStatusHandler {
 						deg = DEG_SIGN;
 					} else
 						deg = "";
-					setInformation(name, lastLink, String.format("%.2f%s", value, deg));
+					setInformation(name, Integer.toString(lastLink),
+						String.format("%.2f%s", value, deg));
 				}
 			}
 			keep = false;
-		}
+		} else if (packet.getType().equals("ASTA"))
+			keep = false;
 		return keep;
 	}
 }

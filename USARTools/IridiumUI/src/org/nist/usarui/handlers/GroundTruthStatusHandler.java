@@ -9,14 +9,13 @@
 
 package org.nist.usarui.handlers;
 
-import com.kenai.jffi.Type;
 import org.nist.usarui.*;
 import org.nist.usarui.ui.*;
 import java.util.*;
 
 /**
- * A handler which draws a map window for ground truth data. If multiple ground truth sensors
- * are installed, one map will be shown for each, but they will start on top of each other!
+ * A handler which draws a map window for ground truth data. Do not install more than one
+ * ground truth sensor on a robot!
  *
  * @author Stephen Carlson
  */
