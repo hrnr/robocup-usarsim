@@ -473,8 +473,6 @@ reliable server function SetupItem(SpecItem desc)
 			it.SetBase(test);
 		else
 			it.SetBase(self);
-		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
-		// when rotating in place; until resolved, do NOT hard attach
 		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);
