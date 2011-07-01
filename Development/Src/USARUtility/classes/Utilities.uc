@@ -152,7 +152,10 @@ static final function SetActorPairIgnore(RB_BodyInstance body1, RB_BodyInstance 
 	default.PhysXProxyInstance.SetActorPairIgnore(body1, body2, ignore);
 }
 
-// Adjusts the solver iteration count for a particular rigid body to improve physics accuracy
+// Sets the solver iteration count for the body. 
+// The solver iteration count determines how accurately joints and contacts are resolved. 
+// If you are having trouble with jointed bodies oscillating and behaving erratically, then
+// setting a higher solver iteration count may improve their stability. (PhysX docs)
 static final function SetIterationSolverCount(RB_BodyInstance instance, int iterCount)
 {
 	default.PhysXProxyInstance.SetIterationSolverCount(instance, iterCount);

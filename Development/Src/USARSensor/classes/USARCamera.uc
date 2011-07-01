@@ -29,6 +29,19 @@ simulated function Tick(float DeltaTime)
 	SceneCapture.SetView(Location, Rotation); 
 }
 
+// Gets configuration data for this item
+function String GetConfData()
+{
+	local string confData;
+	confData = super.GetConfData();
+	// Add information for the UPIS server
+	confData $= "{TextureOffsetX " $ int(X) $ "}";
+	confData $= "{TextureOffsetY " $ int(Y) $ "}";
+	confData $= "{TextureResolutionX " $ TextureResolutionX $ "}";
+	confData $= "{TextureResolutionY " $ TextureResolutionY $ "}";
+	return confData;
+}
+
 defaultproperties
 {
 	MultiviewIndex=-1
@@ -44,20 +57,20 @@ defaultproperties
 	SceneCapture=SceneCapture2DComponent0
 	Components(0)=SceneCapture2DComponent0
 	
-	BlockRigidBody=true
-	bCollideActors=true
+	BlockRigidBody=false
+	bCollideActors=false
 	bBlockActors=false
-	bProjTarget=true
-	bCollideWhenPlacing=true
-	bCollideWorld=true
+	bProjTarget=false
+	bCollideWhenPlacing=false
+	bCollideWorld=false
 	
 	Begin Object Name=StaticMeshComponent0
 		StaticMesh=StaticMesh'P3AT.StaticMeshDeco.P3ATDeco_BatteryPack'
 		// For new camera model: StaticMesh=StaticMesh'Camera.Mesh.Camera'
-		CollideActors=true
+		CollideActors=false
 		BlockActors=false
-		BlockRigidBody=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
+		BlockRigidBody=false
+		BlockZeroExtent=false
+		BlockNonZeroExtent=false
 	End Object
 }

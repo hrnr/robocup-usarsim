@@ -9,6 +9,8 @@
  * - Bumpers
  * - Gyrometer
  * - LEDS
+ * - Microphones
+ * - Loudspeakers
  * - (Optional) Laser sensor.
  * 
  */
