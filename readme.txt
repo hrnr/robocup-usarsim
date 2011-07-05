@@ -13,9 +13,12 @@ Notes:
 ------------------------------------------------------------------------------------------
 
 Installation instructions:
-1. Download and Install UDK June-2011 (http://www.udk.com/)
-2. Checkout this repository
-3. Copy the entire repository on top of the udk installation. This should include the .git file.
+1. Download and Install UDK June-2011 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
+   In this case 'yyyy' is the year of your UDK release and 'mm' is the month.
+2. Using a client such as Git Gui, open a bash window in the same directory that you specified in step 1 (UDK-yyyy-mm) and type:
+      git clone ssh://yourUserName@usarsim.git.sourceforge.net/gitroot/usarsim/usarsim
+3. Move all of the files (including the .git folder) from the usarsim folder into the directory specified in step 1.
+4. Run "make" in the UDK-yyyy-mm folder.
  
 Running:
 1. Execute make.bat (might require Administrative privileges to run correctly)
