@@ -7,6 +7,8 @@
 #undef max
 #include "NxPhysics.h"
 
+#define PHYSXPROXYDLL_API __declspec(dllexport)
+
 extern "C"
 {
 	struct FVector
@@ -38,14 +40,14 @@ extern "C"
 
 #ifdef _WIN64
 	// Fix for 64 bit dll. 64 bit dll bind is not very well supported.
-	BodyInstancePointer *Fix64Bit( BodyInstancePointer * pBodyInstanceWrapper )
+	void *Fix64Bit( void * pBodyInstanceWrapper )
 	{
-		return (BodyInstancePointer*)(int)pBodyInstanceWrapper;;
+		return (void*)(int)pBodyInstanceWrapper;;
 	}
 #endif // _WIN64
 
 	// General example to access PhysX information
-	__declspec(dllexport) void GeneralPhysX()
+	PHYSXPROXYDLL_API void GeneralPhysX()
 	{
 		NxU32 apiRev, descRev, branchId;
 		NxU32 nbScenes, nbCompartments;
@@ -125,7 +127,7 @@ extern "C"
 		void *pObject;
 
 #ifdef _WIN64
-		pBodyInstanceWrapper = Fix64Bit( pBodyInstanceWrapper );
+		pBodyInstanceWrapper = (BodyInstancePointer *)Fix64Bit( (void *)pBodyInstanceWrapper );
 #endif // _WIN64
 
 		if( !pBodyInstanceWrapper )
@@ -162,7 +164,7 @@ extern "C"
 	}
 	
 	// Changes the iteration solver count of the specified actor
-	__declspec(dllexport) void SetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper, int iterCount )
+	PHYSXPROXYDLL_API void SetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper, int iterCount )
 	{
 		NxActor *pActor = GetActor(pBodyInstWrapper);
 		if( !pActor )
@@ -174,7 +176,7 @@ extern "C"
 		pActor->setSolverIterationCount( iterCount );
 	}
 
-	__declspec(dllexport) int GetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper )
+	PHYSXPROXYDLL_API int GetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper )
 	{
 		NxActor *pActor = GetActor(pBodyInstWrapper);
 		if( !pActor )
@@ -187,7 +189,7 @@ extern "C"
 	}
 
 	// Make two actors not generate contacts between each other
-	__declspec(dllexport) void SetActorPairIgnoreInternal( BodyInstancePointer *pBodyInstWrapper1, 
+	PHYSXPROXYDLL_API void SetActorPairIgnoreInternal( BodyInstancePointer *pBodyInstWrapper1, 
 			BodyInstancePointer *pBodyInstWrapper2, int ignore )
 	{
 		NxActor *pActor1 = GetActor(pBodyInstWrapper1);
@@ -220,7 +222,7 @@ extern "C"
 
 
 
-	__declspec(dllexport) FVector* GetCMassLocalPositionInternal( BodyInstancePointer *pBodyInstWrapper )
+	PHYSXPROXYDLL_API FVector* GetCMassLocalPositionInternal( BodyInstancePointer *pBodyInstWrapper )
 	{
 		static FVector result;	// declared static so that the struct's memory is still valid after the function returns.
 
@@ -238,4 +240,46 @@ extern "C"
 		result.z = cmass.z;
 		return &result;
 	}
+
+	// Set/get the iteration mass space inertia tensor of the specified actor
+	PHYSXPROXYDLL_API void SetMassSpaceInertiaTensorInternal( BodyInstancePointer *pBodyInstWrapper, FVector *utensor )
+	{
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("SetMassSpaceInertiaTensorInternal: Invalid body instance!\n");
+			return;
+		}
+
+#ifdef _WIN64
+		utensor = (FVector *)Fix64Bit( (void *)utensor );
+#endif // _WIN64
+
+		NxVec3 tensor;
+		tensor.x = utensor->x;
+		tensor.y = utensor->y;
+		tensor.z = utensor->z;
+
+		pActor->setMassSpaceInertiaTensor( tensor );
+	}
+
+	PHYSXPROXYDLL_API FVector* GetMassSpaceInertiaTensorInternal( BodyInstancePointer *pBodyInstWrapper )
+	{
+		static FVector result;	// declared static so that the struct's memory is still valid after the function returns.
+
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("GetMassSpaceInertiaTensorInternal: Invalid body instance!\n");
+			result.x = result.y = result.z = 666.0f;
+			return &result;
+		}
+
+		NxVec3 tensor = pActor->getMassSpaceInertiaTensor();
+		result.x = tensor.x;
+		result.y = tensor.y;
+		result.z = tensor.z;
+		return &result;
+	}
+
 }

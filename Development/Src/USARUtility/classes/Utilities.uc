@@ -161,6 +161,17 @@ static final function SetIterationSolverCount(RB_BodyInstance instance, int iter
 	default.PhysXProxyInstance.SetIterationSolverCount(instance, iterCount);
 }
 
+// Retrieves the inertia tensor of the given rigid body; Return values are small!
+static final function Vector GetMassSpaceInertiaTensor(RB_BodyInstance instance)
+{
+	return default.PhysXProxyInstance.GetMassSpaceInertiaTensor(instance);
+}
+
+static final function SetMassSpaceInertiaTensor(RB_BodyInstance instance, Vector InertiaTensor)
+{
+	default.PhysXProxyInstance.SetMassSpaceInertiaTensor(instance, InertiaTensor);
+}
+
 // Adjusts the mass of the specified item to match reality (takes mass in UU)
 static function SetMass(DynamicSMActor act, float DesiredMass)
 {

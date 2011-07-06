@@ -41,3 +41,15 @@ function Vector GetCMassLocalPosition( RB_BodyInstance BodyInstance )
 	return GetCMassLocalPositionInternal(WrapBodyInstance(BodyInstance));
 }
 
+dllimport final function Vector GetMassSpaceInertiaTensorInternal( BodyInstancePointer bodyInst );
+function Vector GetMassSpaceInertiaTensor( RB_BodyInstance BodyInstance )
+{
+	return GetMassSpaceInertiaTensorInternal(WrapBodyInstance(BodyInstance));
+}
+
+dllimport final function SetMassSpaceInertiaTensorInternal( BodyInstancePointer bodyInst, Vector Tensor );
+function SetMassSpaceInertiaTensor( RB_BodyInstance BodyInstance, Vector InertiaTensor )
+{
+	SetMassSpaceInertiaTensorInternal(WrapBodyInstance(BodyInstance), InertiaTensor);
+}
+

@@ -5,7 +5,6 @@
  * http://users.aldebaran-robotics.com/docs/site_en/reddoc/hardware/joints-names.html
  * 
  * TODO: Implemented missing sensors
- * - Camera
  * - Bumpers
  * - Gyrometer
  * - LEDS
@@ -61,7 +60,65 @@ function CheckJointErrors()
 		{
 			LogInternal("Joint " $ ji.GetJointName() $ ", desired: " $ r $ ", cur: " $ ji.CurValue $ ", error:" $ abs(r-ji.CurValue) );
 		}
-	}  
+	} 
+}
+
+simulated function PostBeginPlay()
+{
+	//local int i;
+	local Vector Tensor;
+	local PhysicalItem pcopy, pdest;
+
+	super.PostBeginPlay();
+
+	// Bit of an hack here. The mass inertia tensor is calculated 
+	// using the shape + mass of the part. However the Nao contains 
+	// special small parts. We will copy the inertia tensor from the normal
+	// parts, otherwise these parts become too floppy in behavior.
+
+	// Copy mass inertia tensor from LThigh to LHip and LHipThigh
+	pcopy = PhysicalItem( GetPartByName('LThigh') );
+	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
+	pdest = PhysicalItem( GetPartByName('LHipThigh') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	pdest = PhysicalItem( GetPartByName('LHip') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+
+	// Copy mass inertia tensor from RThigh to RHip and RHipThigh
+	pcopy = PhysicalItem( GetPartByName('RThigh') );
+	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
+	pdest = PhysicalItem( GetPartByName('RHipThigh') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	pdest = PhysicalItem( GetPartByName('RHip') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+
+	// Copy mass inertia tensor from Foot to Ankle
+	pcopy = PhysicalItem( GetPartByName('LFoot') );
+	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
+	pdest = PhysicalItem( GetPartByName('LAnkle') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	pdest = PhysicalItem( GetPartByName('RAnkle') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+
+	// Copy mass inertia tensor from lowerarm to elbow
+	pcopy = PhysicalItem( GetPartByName('LLowerArm') );
+	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
+	pdest = PhysicalItem( GetPartByName('LElbow') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	pdest = PhysicalItem( GetPartByName('RElbow') ); 
+	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+
+	/*
+	for (i = 0; i < Parts.Length; i++)
+	{
+		pitem = PhysicalItem(Parts[i]);
+		if( pitem == none )
+			continue;
+		Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pitem.StaticMeshComponent.BodyInstance );
+		LogInternal( "Nao tensor: " $ class'UnitsConverter'.static.VectorString(Tensor, 10) );
+	}
+*/
+
 }
 
 function Tick( float DeltaTime )
@@ -80,8 +137,10 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 25
-	`define MaxForceMotorType2 25
+	`define MaxForceMotorType1 32
+	`define MaxForceMotorType2 32
+	`define DampingMotorType1 0.25
+	`define DampingMotorType2 0.25
 
 	`define NaoSolverIterationCount 128
 
@@ -121,6 +180,7 @@ defaultproperties
 		LimitHigh=2.086 // 119.5
 		Direction=(x=0,y=0,z=0)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(HeadYaw)
 
@@ -132,6 +192,7 @@ defaultproperties
 		LimitHigh=.515 // 29.5
 		Direction=(x=1.57,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(HeadPitch)
 
@@ -179,6 +240,7 @@ defaultproperties
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(LShoulderPitch)
 
@@ -190,6 +252,7 @@ defaultproperties
 		LimitHigh=1.649 // 94.5
 		Direction=(x=3.14,y=0,z=1.57)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(LShoulderRoll)
 
@@ -201,6 +264,7 @@ defaultproperties
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(RShoulderPitch)
 
@@ -212,6 +276,7 @@ defaultproperties
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=3.14,y=0,z=1.57)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(RShoulderRoll)
 
@@ -219,7 +284,7 @@ defaultproperties
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=-0.108,z=-0.075)
-		Mass=0.12309
+		Mass=0.075
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LElbow)
@@ -227,7 +292,7 @@ defaultproperties
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.09,y=0.108,z=-0.075)
-		Mass=0.12309
+		Mass=0.075
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RElbow)
@@ -260,6 +325,7 @@ defaultproperties
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(LElbowYaw)
 
@@ -271,6 +337,7 @@ defaultproperties
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=-3.14,y=0,z=-3.14)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(LElbowRoll)
 
@@ -283,6 +350,7 @@ defaultproperties
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(RElbowYaw)
 
@@ -294,6 +362,7 @@ defaultproperties
 		LimitHigh=1.56 // 89.5
 		Direction=(x=-3.14,y=0,z=-3.14)
 		MaxForce=`MaxForceMotorType2
+		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(RElbowRoll)
 
@@ -301,7 +370,7 @@ defaultproperties
 	Begin Object Class=Part Name=LHip
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=-0.055,Z=0.08)
-		Mass=0.12309
+		Mass=0.1
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHip)
@@ -309,7 +378,7 @@ defaultproperties
 	Begin Object Class=Part Name=RHip
 		Mesh = StaticMesh'Nao.naohip'
 		Offset=(x=-0.01,Y=0.055,Z=0.08)
-		Mass=0.12309
+		Mass=0.1
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHip)
@@ -322,6 +391,7 @@ defaultproperties
 		LimitHigh=0.7407 // 42.44
 		Direction=(x=-0.79,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LHipYawPitch)
 
@@ -333,8 +403,10 @@ defaultproperties
 		LimitHigh=0.7407 // 42.44
 		Direction=(x=-2.36,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RHipYawPitch)
+
 
 	// Thigh + hip joints
 	Begin Object Class=Part Name=LHipThigh
@@ -360,6 +432,12 @@ defaultproperties
 	DisableContacts.Add((Part1=LHip,Part2=LHipThigh))
 	DisableContacts.Add((Part1=RHip,Part2=RHipThigh))
 
+	// These parts shouldn't collide with the arms
+	DisableContacts.Add((Part1=LHip,Part2=LLowerArm))
+	DisableContacts.Add((Part1=RHip,Part2=RLowerArm))
+	DisableContacts.Add((Part1=LHipThigh,Part2=LLowerArm))
+	DisableContacts.Add((Part1=RHipThigh,Part2=RLowerArm))
+
 	Begin Object Class=Part Name=LThigh
 		RelativeTo=BodyItem
 		Mesh=StaticMesh'Nao.naolthigh'
@@ -380,9 +458,21 @@ defaultproperties
 
 	DisableContacts.Add((Part1=BodyItem,Part2=LThigh))
 	DisableContacts.Add((Part1=BodyItem,Part2=RThigh))
-	DisableContacts.Add((Part1=LHipThigh,Part2=LThigh))
-	DisableContacts.Add((Part1=RHipThigh,Part2=RThigh))
+	DisableContacts.Add((Part1=LHip,Part2=LThigh))
+	DisableContacts.Add((Part1=RHip,Part2=RThigh))
 
+	/*
+	DisableContacts.Add((Part1=LThigh,Part2=RHip))
+	DisableContacts.Add((Part1=LThigh,Part2=RHipThigh))
+	DisableContacts.Add((Part1=RThigh,Part2=LHip))
+	DisableContacts.Add((Part1=RThigh,Part2=LHipThigh))
+
+	DisableContacts.Add((Part1=LHip,Part2=RHipThigh))
+	DisableContacts.Add((Part1=LHipThigh,Part2=RHip))
+	DisableContacts.Add((Part1=LHip,Part2=RHip))
+	DisableContacts.Add((Part1=LHipThigh,Part2=RHipThigh))
+	DisableContacts.Add((Part1=LThigh,Part2=RThigh))
+*/
 	Begin Object Class=RevoluteJoint Name=LHipRoll
 		Parent=LHip
 		Child=LHipThigh
@@ -392,6 +482,7 @@ defaultproperties
 		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LHipRoll)
 
@@ -403,6 +494,7 @@ defaultproperties
 		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LHipPitch)
 
@@ -415,6 +507,7 @@ defaultproperties
 		LimitHigh=.4147 // 23.76
 		Direction=(x=0,y=1.57,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RHipRoll)
 
@@ -426,6 +519,7 @@ defaultproperties
 		LimitHigh=.4855 // 27.82
 		Direction=(x=-1.57,y=0,z=3.14)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RHipPitch)
 
@@ -457,6 +551,7 @@ defaultproperties
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LKneePitch)
 
@@ -469,6 +564,7 @@ defaultproperties
 		LimitHigh=2.120 // 121.47
 		Direction=(x=1.57,y=0,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RKneePitch)
 
@@ -477,7 +573,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=0.6000
+		Mass=0.8500
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LFoot)
@@ -486,7 +582,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.09)
-		Mass=0.6000
+		Mass=0.8500
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RFoot)
@@ -521,6 +617,7 @@ defaultproperties
 		LimitHigh=.9844 // 53.40
 		Direction=(x=1.57,y=0,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LAnklePitch)
 
@@ -534,6 +631,7 @@ defaultproperties
 		LimitHigh=.3978 // 22.79
 		Direction=(x=0,y=1.57,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(LAnkleRoll)
 
@@ -546,6 +644,7 @@ defaultproperties
 		LimitHigh=.9320 // 53.40
 		Direction=(x=1.57,y=0,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RAnklePitch)
 
@@ -559,6 +658,7 @@ defaultproperties
 		LimitHigh=.7859 // 45.03
 		Direction=(x=0,y=1.57,z=0)
 		MaxForce=`MaxForceMotorType1
+		Damping=`DampingMotorType1
 	End Object
 	Joints.Add(RAnkleRoll)
 }
