@@ -17,7 +17,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=ChassisMiddle
 		Mesh=StaticMesh'P3AT_static.ChassisMiddle'
-		Mass=1.0
+		Mass=3.0
 	End Object
 	Body=ChassisMiddle
 	PartList.Add(ChassisMiddle)
@@ -25,7 +25,7 @@ defaultproperties
 	// Create bottom part
 	Begin Object Class=Part Name=ChassisBottom
 		Mesh=StaticMesh'P3AT_static.ChassisBottom'
-		Mass=0.5
+		Mass=0.8
 		Offset=(X=.012,Y=0,Z=.068)
 	End Object
 	PartList.Add(ChassisBottom)
@@ -65,7 +65,7 @@ defaultproperties
 	// Front right right Bumper
 	Begin Object Class=Part Name=FRRBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=.288,Y=.232,Z=.088)
+		Offset=(X=.268,Y=.232,Z=.088)
 		// 5.63 degree rotation about Z axis
 		Direction=(X=0,Y=0,Z=3.238)
 		Mass=0.05
@@ -75,7 +75,7 @@ defaultproperties
 	// Front right Bumper
 	Begin Object Class=Part Name=FRBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=.296,Y=.116,Z=.088)
+		Offset=(X=.276,Y=.116,Z=.088)
 		Direction=(X=0,Y=0,Z=3.14)
 		Mass=0.05
 	End Object
@@ -84,7 +84,7 @@ defaultproperties
 	// Front Bumper
 	Begin Object Class=Part Name=FBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=.296,Y=0,Z=.088)
+		Offset=(X=.276,Y=0,Z=.088)
 		Direction=(X=0,Y=0,Z=3.14)
 		Mass=0.05
 	End Object
@@ -93,7 +93,7 @@ defaultproperties
 	// Front left Bumper
 	Begin Object Class=Part Name=FLBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=.296,Y=-.116,Z=.088)
+		Offset=(X=.276,Y=-.116,Z=.088)
 		Direction=(X=0,Y=0,Z=3.14)
 		Mass=0.05
 	End Object
@@ -102,7 +102,7 @@ defaultproperties
 	// Front left left Bumper
 	Begin Object Class=Part Name=FLLBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=.288,Y=-.232,Z=.088)
+		Offset=(X=.268,Y=-.232,Z=.088)
 		// -5.63 degree rotation about Z axis
 		Direction=(X=0,Y=0,Z=3.042)
 		Mass=0.05
@@ -112,7 +112,7 @@ defaultproperties
 	// Back right right Bumper
 	Begin Object Class=Part Name=BRRBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=-.270,Y=.232,Z=.088)
+		Offset=(X=-.268,Y=.232,Z=.088)
 		// -5.63 degree rotation about Z axis
 		Direction=(X=0,Y=0,Z=-0.098)
 		Mass=0.05
@@ -122,7 +122,7 @@ defaultproperties
 	// back right Bumper
 	Begin Object Class=Part Name=BRBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=-.278,Y=.116,Z=.088)
+		Offset=(X=-.276,Y=.116,Z=.088)
 		Mass=0.05
 	End Object
 	PartList.Add(BRBumper)
@@ -130,7 +130,7 @@ defaultproperties
 	// back Bumper
 	Begin Object Class=Part Name=BBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=-.278,Y=0,Z=.088)
+		Offset=(X=-.276,Y=0,Z=.088)
 		Mass=0.05
 	End Object
 	PartList.Add(BBumper)
@@ -138,7 +138,7 @@ defaultproperties
 	// back left Bumper
 	Begin Object Class=Part Name=BLBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=-.278,Y=-.116,Z=.088)
+		Offset=(X=-.276,Y=-.116,Z=.088)
 		Mass=0.05
 	End Object
 	PartList.Add(BLBumper)
@@ -146,7 +146,7 @@ defaultproperties
 	// back left left Bumper
 	Begin Object Class=Part Name=BLLBumper
 		Mesh=StaticMesh'P3AT_static.Bumper'
-		Offset=(X=-.270,Y=-.232,Z=.088)
+		Offset=(X=-.268,Y=-.232,Z=.088)
 		// 5.63 degree rotation about Z axis
 		Direction=(X=0,Y=0,Z=0.098)
 		Mass=0.05
@@ -201,112 +201,102 @@ defaultproperties
 	Joints.Add(ChassisFixed)
 
 	Begin Object Class=PrismaticJoint Name=FRRBumperPrismatic
-		Child=ChassisBottom
-		Parent=FRRBumper
-		Offset=(X=.288,Y=.232,Z=.088)
+		Child=FRRBumper
+		Parent=ChassisBottom
+		Offset=(X=.268,Y=.232,Z=.088)
 		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(FRRBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=FRBumperPrismatic
-		Child=ChassisBottom
-		Parent=FRBumper
-		Offset=(X=.296,Y=.116,Z=.088)
+		Child=FRBumper
+		Parent=ChassisBottom
+		Offset=(X=.276,Y=.116,Z=.088)
 		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(FRBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=FBumperPrismatic
-		Child=ChassisBottom
-		Parent=FBumper
-		Offset=(X=.296,Y=0,Z=.088)
+		Child=FBumper
+		Parent=ChassisBottom
+		Offset=(X=.276,Y=0,Z=.088)
 		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(FBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=FLBumperPrismatic
-		Child=ChassisBottom
-		Parent=FLBumper
-		Offset=(X=.296,Y=-.116,Z=.088)
+		Child=FLBumper
+		Parent=ChassisBottom
+		Offset=(X=.276,Y=-.116,Z=.088)
 		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(FLBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=FLLBumperPrismatic
-		Child=ChassisBottom
-		Parent=FLLBumper
-		Offset=(X=.288,Y=-.232,Z=.088)
+		Child=FLLBumper
+		Parent=ChassisBottom
+		Offset=(X=.268,Y=-.232,Z=.088)
 		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(FLLBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=BRRBumperPrismatic
-		Child=ChassisBottom
-		Parent=BRRBumper
-		Offset=(X=-.270,Y=.232,Z=.088)
+		Child=BRRBumper
+		Parent=ChassisBottom
+		Offset=(X=-.288,Y=.232,Z=.088)
 		Direction=(X=0,Y=1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(BRRBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=BRBumperPrismatic
-		Child=ChassisBottom
-		Parent=BRBumper
-		Offset=(X=-.278,Y=.116,Z=.088)
+		Child=BRBumper
+		Parent=ChassisBottom
+		Offset=(X=-.296,Y=.116,Z=.088)
 		Direction=(X=0,Y=1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(BRBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=BBumperPrismatic
-		Child=ChassisBottom
-		Parent=BBumper
-		Offset=(X=-.278,Y=0,Z=.088)
+		Child=BBumper
+		Parent=ChassisBottom
+		Offset=(X=-.296,Y=0,Z=.088)
 		Direction=(X=0,Y=1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(BBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=BLBumperPrismatic
-		Child=ChassisBottom
-		Parent=BLBumper
-		Offset=(X=-.278,Y=-.116,Z=.088)
+		Child=BLBumper
+		Parent=ChassisBottom
+		Offset=(X=-.296,Y=-.116,Z=.088)
 		Direction=(X=0,Y=1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(BLBumperPrismatic)
 
 	Begin Object Class=PrismaticJoint Name=BLLBumperPrismatic
-		Child=ChassisBottom
-		Parent=BLLBumper
-		Offset=(X=-.270,Y=-.232,Z=.088)
+		Child=BLLBumper
+		Parent=ChassisBottom
+		Offset=(X=-.288,Y=-.232,Z=.088)
 		Direction=(X=0,Y=1.571,Z=0)
-		LimitLow=-0.02
-		MaxForce=50
-		Stiffness=0.01
+		LimitHigh=0.02
+		MaxForce=0.5
 	End Object
 	Joints.Add(BLLBumperPrismatic)
 	
