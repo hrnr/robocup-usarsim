@@ -19,21 +19,16 @@ function Drive(ParsedMessage message)
 	local int i;
 	local JointItem ji;
 	local WheelJoint jt;
-	local String ls, rs, nm;
+	local String ls, rs;
 	local float left, leftSpeed, right, rightSpeed;
-	local bool norm;
 	
 	ls = message.GetArgVal("Left");
 	rs = message.GetArgVal("Right");
-	nm = message.GetArgVal("Normalized");
-	norm = false;
 	if (ls != "" && rs != "")
 	{
 		// Valid drive message
 		leftSpeed = float(ls);
 		rightSpeed = float(rs);
-		if (nm != "")
-			norm = (nm == "true");
 		for (i = 0; i < Parts.Length; i++)
 			if (Parts[i].IsJoint())
 			{
@@ -42,7 +37,7 @@ function Drive(ParsedMessage message)
 				{
 					jt = WheelJoint(ji.Spec);
 					// Scale velocity
-					if (norm)
+					if (Normalized)
 					{
 						left = leftSpeed * jt.MaxVelocity / 100.;
 						right = rightSpeed * jt.MaxVelocity / 100.;
@@ -63,6 +58,24 @@ function Drive(ParsedMessage message)
 				}
 			}
 	}
+}
+
+// Returns configuration data of this robot
+function String GetConfData()
+{
+	return super.GetConfData() $ " {MaxFrontSteer 0} {MaxRearSteer 0}";
+}
+
+// Gets robot status (adds zero steer amounts)
+simulated function String GetStatus()
+{
+	return super.GetStatus() $ " {FrontSteer 0} {RearSteer 0}";
+}
+
+// Gets the robot's steering type
+simulated function String GetSteeringType()
+{
+	return "SkidSteered";
 }
 
 defaultproperties

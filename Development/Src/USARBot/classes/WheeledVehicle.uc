@@ -54,8 +54,6 @@ function String GetGeoData()
 		}
 	// TODO This still does not work as intended
 	COMOffset = CenterItem.StaticMeshComponent.StaticMesh.BodySetup.COMNudge;
-	// TODO Unsure if this is how dimensions were calculated in UT3
-	// If not, it may have to go in config per robot
 	dimensions.X = lFTire.Spec.Offset.X - rRTire.Spec.Offset.X;
 	dimensions.Y = rRTire.Spec.Offset.Y - lFTire.Spec.Offset.Y;
 	dimensions.Z = 0;
@@ -65,6 +63,37 @@ function String GetGeoData()
 		class'UnitsConverter'.static.FloatString(WheelRadius) $ "} {WheelSeparation " $
 		class'UnitsConverter'.static.FloatString(dimensions.Y) $ "} {WheelBase " $
 		class'UnitsConverter'.static.FloatString(dimensions.X) $ "}";
+}
+
+// Returns configuration data of this robot
+function String GetConfData()
+{
+	local float MaxSpeed, MaxTorque;
+	local int i;
+	local JointItem ji;
+	local WheelJoint jt;
+
+	// Pick some very-high values for these
+	MaxSpeed = 100;
+	MaxTorque = 50000;
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].IsJoint())
+		{
+			// Search for wheel joints to find maximum speed
+			ji = JointItem(Parts[i]);
+			if (ji.JointIsA('WheelJoint'))
+			{
+				jt = WheelJoint(ji.Spec);
+				if (jt.MaxVelocity < MaxSpeed)
+					MaxSpeed = jt.MaxVelocity;
+				if (jt.MaxForce < MaxTorque)
+					MaxTorque = jt.MaxForce;
+			}
+		}
+	return super.GetConfData() $ " {Type GroundVehicle} {SteeringType " $ GetSteeringType() $
+		"} {Mass " $ class'UnitsConverter'.static.FloatString(GetMass()) $ "} {MaxSpeed " $
+		class'UnitsConverter'.static.FloatString(MaxSpeed) $ "} {MaxTorque " $
+		class'UnitsConverter'.static.FloatString(MaxTorque) $ "}";
 }
 
 // Workaround for wheel radius in build-order
@@ -78,7 +107,14 @@ simulated function float GetProperty(String key)
 // Gets robot status (adds the ground vehicle type)
 simulated function String GetStatus()
 {
-	return super.GetStatus() $ " {Type GroundVehicle} {Battery " $ GetBatteryLife() $ "}";
+	return super.GetStatus() $ " {Type GroundVehicle} {LightToggle false} " $
+		"{LightIntensity 100} {Battery " $ GetBatteryLife() $ "}";
+}
+
+// Gets the robot's steering type
+simulated function String GetSteeringType()
+{
+	return "Unknown";
 }
 
 // Changes the maximum torque of the wheels

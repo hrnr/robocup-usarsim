@@ -135,6 +135,24 @@ simulated function vector GetJointOffset(Joint jt)
 	return pos;
 }
 
+// Calculates the sum masses of all parts and returns it (polls actuators too)
+simulated function float GetMass()
+{
+	local float sumMass;
+	local int i;
+
+	sumMass = 0;
+	// Add sub items
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isA('PhysicalItem'))
+			sumMass += PhysicalItem(Parts[i]).Spec.Mass;
+		if (Parts[i].isA('Actuator'))
+			sumMass += Actuator(Parts[i]).GetMass();
+	}
+	return sumMass;
+}
+
 // Gets configuration data from all actuators (deprecated mission package version)
 function String GetMisPkgConfData()
 {
