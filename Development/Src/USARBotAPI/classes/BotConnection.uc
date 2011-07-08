@@ -296,23 +296,33 @@ function ProcessMisPkg(ParsedMessage parsedMessage)
 // Sets joint angles or other related parameters
 function ProcessSet(ParsedMessage parsedMessage)
 {
-	local String jointName, opcode;
+	local String itemName, opcode, type;
 	local float param;
 	local USARVehicle bot;
 	
 	bot = USARVehicle(TheBot.Pawn);
-	jointName = parsedMessage.GetArgVal("Name");
+	itemName = parsedMessage.GetArgVal("Name");
 	opcode = parsedMessage.GetArgVal("Opcode");
-	param = float(parsedMessage.GetArgVal("Params"));
-	if (opcode == "Angle" || opcode == "Target")
+	type = parsedMessage.GetArgVal("Type");
+	if (type == "Joint")
 	{
-		if (jointName != "AllAngles" && jointName != "AllJoints")
-			bot.SetJointTargetByName(JointName, param);
-		else
-			bot.SetAllJointTargets(param);
+		// Send to joint processor
+		param = float(parsedMessage.GetArgVal("Params"));
+		if (opcode == "Angle" || opcode == "Target")
+		{
+			if (itemName != "AllAngles" && itemName != "AllJoints")
+				bot.SetJointTargetByName(itemName, param);
+			else
+				bot.SetAllJointTargets(param);
+		}
+		else if (opcode == "Stiffness")
+			bot.SetJointStiffnessByName(itemName, param);
 	}
-	else if (opcode == "Stiffness")
-		bot.SetJointStiffnessByName(name(JointName), param);
+	else
+	{
+		// Send to the robot and look for sensor/actuator to handle
+		bot.SetCommand(type, itemName, opcode, parsedMessage.GetArgVal("Params"));
+	}
 }
 
 // Enters "TEST" mode

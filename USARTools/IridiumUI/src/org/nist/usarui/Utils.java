@@ -25,6 +25,17 @@ import java.util.*;
  */
 public final class Utils {
 	/**
+	 * Inexact but quick.
+	 */
+	private static final float[] sin = new float[91];
+
+	static {
+		// Build sine table
+		for (int i = 0; i < 91; i++)
+			sin[i] = (float)Math.sin(Math.toRadians(i));
+	}
+
+	/**
 	 * Adds an action listener for when the Enter key is pressed in an editable combo box.
 	 *
 	 * @param comp the combo box to modify
@@ -176,6 +187,15 @@ public final class Utils {
 		return new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
 	}
 	/**
+	 * Returns the fast cosine of angle.
+	 *
+	 * @param angle the angle in radians
+	 * @return its cosine, quickly
+	 */
+	public static float fCos(float angle) {
+		return fSin((float)Math.PI / 2.f - angle);
+	}
+	/**
 	 * Finds the top-level component which contains and paints the specified one.
 	 *
 	 * @param comp the component to investigate
@@ -214,6 +234,25 @@ public final class Utils {
 			}
 		}
 		return found;
+	}
+	/**
+	 * Returns the fast sine of angle.
+	 *
+	 * @param angle the angle in radians
+	 * @return its sine, quickly
+	 */
+	public static float fSin(float angle) {
+		final int deg = (((int)Math.round(Math.toDegrees(angle)) % 360) + 360) % 360;
+		float out;
+		if (deg <= 90)
+			out = sin[deg];
+		else if (deg <= 180)
+			out = sin[180 - deg];
+		else if (deg <= 270)
+			out = -sin[deg - 180];
+		else
+			out = -sin[360 - deg];
+		return out;
 	}
 	/**
 	 * Gets the editor as a text field of the specified combo box.

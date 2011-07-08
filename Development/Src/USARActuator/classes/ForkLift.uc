@@ -7,42 +7,140 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-// TODO Has no model
 class ForkLift extends Actuator placeable config (USAR);
 
 defaultproperties
 {
-	/*Begin Object Class=SkeletalMeshComponent Name=SKMesh01
-		SkeletalMesh=SkeletalMesh'ForkLift.MissionMesh'
-		PhysicsAsset=PhysicsAsset'ForkLift.MissionPhys'
-		AnimTreeTemplate=AnimTree'ForkLift.MissionAnim'
-		bHasPhysicsAssetInstance=true
-		bSkipAllUpdateWhenPhysicsAsleep=true
-		bUpdateKinematicBonesFromAnimation=false
-
-		PhysicsWeight=0.0
-		CollideActors=true
-		BlockActors=true
-		BlockRigidBody=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-		RBChannel=RBCC_GameplayPhysics
-		RBCollideWithChannels=(Default=true, GameplayPhysics=true, EffectPhysics=true)
+	Begin Object Class=Part Name=BodyItem
+		Mesh=StaticMesh'Basic.EmptyMesh'
+		Collision=false
+		Mass=5
 	End Object
-
-	BaseSkelComponent=SKMesh01
-	SkelMeshComp=SKMesh01
-
-	CollisionType=COLLIDE_BlockAll
-	Components(1)=SKMesh01
-	CollisionComponent=SKMesh01
+	Body=BodyItem
+	PartList.Add(BodyItem)
 	
-	// Joint Max Limit (rad), Joint Min Limit (rad), Joint Max Speed (m/s or rad/s), Init Speed, Joint Max Torque
-	JointSpecs[0]=( MaxLimit=0, MinLimit=0, MaxSpeed=0, MaxTorque=20 )
-	JointSpecs[1]=( MaxLimit=-0.1, MinLimit=0.1, MaxSpeed=.25, MaxTorque=20 ) // -0.1 to 0.1 (rad)
-	JointSpecs[2]=( MaxLimit=0.0, MinLimit=5.0, MaxSpeed=.5, MaxTorque=20 ) // 0 to 5 (m)
-	JointSpecs[3]=( MaxLimit=-0.9, MinLimit=5.0, MaxSpeed=.5, MaxTorque=20 ) // -0.9 to 5 (m)
-	JointSpecs[4]=( MaxLimit=-1.0, MinLimit=1.0, MaxSpeed=.5, MaxTorque=20 ) // -1 to 1 (m)
-	JointSpecs[5]=( MaxLimit=-0.5, MinLimit=0.5, MaxSpeed=.5, MaxTorque=20 ) // -0.5 to 0.5 (m)
-	JointSpecs[6]=( MaxLimit=-0.5, MinLimit=0.5, MaxSpeed=.5, MaxTorque=20 ) // -0.5 to 0.5 (m)*/
+	Begin Object Class=Part Name=Joint1
+		Mesh=StaticMesh'Forklift_static.joint1'
+		Mass=2
+		Offset=(X=-.004,Y=0,Z=-.144)
+	End Object
+	PartList.Add(Joint1)
+	
+	Begin Object Class=Part Name=Joint2
+		Mesh=StaticMesh'Forklift_static.Joint2'
+		Mass=1
+		Offset=(X=.002,Y=0,Z=-.236)
+	End Object
+	PartList.Add(Joint2)
+	
+	Begin Object Class=Part Name=Joint3
+		Mesh=StaticMesh'Forklift_static.Joint3'
+		Mass=.5
+		Offset=(X=.012,Y=0,Z=0)
+	End Object
+	PartList.Add(Joint3)
+	
+	Begin Object Class=Part Name=Joint4
+		Mesh=StaticMesh'Forklift_static.Joint4'
+		Mass=.25
+		Offset=(X=.024,Y=0,Z=-.092)
+	End Object
+	PartList.Add(Joint4)
+	
+	Begin Object Class=Part Name=EmptyJoint
+		Mesh=StaticMesh'Basic.EmptyMesh'
+		Offset=(X=.104,Y=0,Z=0)
+		Mass=0.001
+	End Object
+	PartList.Add(EmptyJoint)
+	
+	Begin Object Class=Part Name=Joint5
+		Mesh=StaticMesh'Forklift_static.Joint5'
+		Mass=.0125
+		RelativeTo=EmptyJoint
+		Offset=(X=0,Y=-.032,Z=0)
+	End Object
+	PartList.Add(Joint5)
+	
+	Begin Object Class=Part Name=Joint6
+		Mesh=StaticMesh'Forklift_static.Joint5'
+		Mass=.0125
+		RelativeTo=EmptyJoint
+		Offset=(X=0,Y=.032,Z=0)
+	End Object
+	PartList.Add(Joint6)
+	
+	Begin Object Class=RevoluteJoint Name=Body_Joint1
+		Parent=BodyItem
+		Child=Joint1
+		Damping=5
+		MaxForce=50
+		LimitLow=-0.1
+		LimitHigh=0.1
+		Offset=(X=-.008,Y=0,Z=-.088)
+		Direction=(X=-1.571,Y=0,Z=0)
+	End Object
+	Joints.Add(Body_Joint1)
+	
+	Begin Object Class=PrismaticJoint Name=Joint1_Joint2
+		Parent=Joint1
+		Child=Joint2
+		Damping=5
+		MaxForce=50
+		LimitLow=0
+		LimitHigh=1
+		Offset=(X=.002,Y=0,Z=-.236)
+		Direction=(X=3.141,Y=0,Z=0)
+	End Object
+	Joints.Add(Joint1_Joint2)
+	
+	Begin Object Class=PrismaticJoint Name=Joint2_Joint3
+		Parent=Joint2
+		Child=Joint3
+		Damping=5
+		MaxForce=50
+		LimitLow=-.9
+		LimitHigh=5
+		Offset=(X=.012,Y=0,Z=0)
+		Direction=(X=3.141,Y=0,Z=0)
+	End Object
+	Joints.Add(Joint2_Joint3)
+	
+	Begin Object Class=PrismaticJoint Name=Joint3_Joint4
+		Parent=Joint3
+		Child=Joint4
+		Damping=5
+		MaxForce=50
+		LimitLow=-1
+		LimitHigh=1
+		Offset=(X=.024,Y=0,Z=-.092)
+		Direction=(X=1.571,Y=0,Z=0)
+	End Object
+	Joints.Add(Joint3_Joint4)
+	
+	Begin Object Class=PrismaticJoint Name=Joint4_Empty
+		Parent=Joint4
+		Child=EmptyJoint
+		Damping=5
+		MaxForce=50
+		LimitLow=-.5
+		LimitHigh=.5
+		Offset=(X=.104,Y=0,Z=0)
+		Direction=(X=1.571,Y=0,Z=0)
+	End Object
+	Joints.Add(Joint4_Empty)
+	
+	Begin Object Class=FixedJoint Name=Empty_Joint5
+		Parent=EmptyJoint
+		Child=Joint5
+		RelativeTo=EmptyJoint
+	End Object
+	Joints.Add(Empty_Joint5)
+	
+	Begin Object Class=FixedJoint Name=Empty_Joint6
+		Parent=EmptyJoint
+		Child=Joint6
+		RelativeTo=EmptyJoint
+	End Object
+	Joints.Add(Empty_Joint6)
 }

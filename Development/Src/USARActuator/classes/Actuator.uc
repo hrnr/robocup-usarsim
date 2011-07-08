@@ -261,6 +261,24 @@ simulated function vector GetJointOffset(Joint jt)
 	return pos;
 }
 
+// Calculates the sum masses of all parts and returns it (polls sub-actuators too)
+simulated function float GetMass()
+{
+	local float sumMass;
+	local int i;
+
+	sumMass = 0;
+	// Add sub items
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isA('PhysicalItem'))
+			sumMass += PhysicalItem(Parts[i]).Spec.Mass;
+		if (Parts[i].isA('Actuator'))
+			sumMass += Actuator(Parts[i]).GetMass();
+	}
+	return sumMass;
+}
+
 // Gets configuration data from the actuator (deprecated mission package API)
 function String GetMisPkgConfData() {
 	local int i;
@@ -392,6 +410,22 @@ reliable server function RunSequence(int Sequence)
 {
 }
 
+// Handles SET commands sent to the actuators's sensors or sub-actuators
+function SetCommand(String type, String iName, String opcode, String value)
+{
+	local int i;
+	
+	// Search local arrays
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].IsType(type) && Parts[i].IsName(iName))
+			Parts[i].Set(opcode, value);
+		// Search actuators
+		if (Parts[i].isA('Actuator'))
+			Actuator(Parts[i]).SetCommand(type, iName, opcode, value);
+	}
+}
+
 reliable server function SetGripper(int Gripper)
 {
 }
@@ -406,23 +440,23 @@ reliable server function SetThisRotation(int link, float value, int order)
 // Changes the position of the given link to a new value
 reliable server function SetLinkTarget(int link, float value)
 {
-	local array<float> motorCmdOld;
+	local array<float> target;
 	local int i, len;
 	
 	// Check that link is within range (move reference to adapt)
 	len = JointItems.Length;
 	if (link >= 0 && link < len)
 	{
-		motorCmdOld.Length = len;
+		target.Length = len;
 		// Copy old values
 		for (i = 0; i < len; i++)
-			motorCmdOld[i] = CmdPos[i];
+			target[i] = CmdPos[i];
+		CmdPos[link] = value;
 		// User control update
-		updateRotation(link, value);
+		target = updateRotation(target, link, value);
 		for (i = 0; i < len; i++)
 			// Set target per joint if different
-			if (motorCmdOld[i] != CmdPos[i])
-				JointItems[i].SetTarget(CmdPos[i]);
+			JointItems[i].SetTarget(target[i]);
 		if (bDebug)
 			LogInternal("Set target of joint " $ link $ " to " $ value);
 	}
@@ -452,9 +486,7 @@ reliable server function SetupItem(SpecItem desc)
 			it.SetBase(test);
 		else
 			it.SetBase(self);
-		// NOTE: HardAttach=true causes an unusual bug where the item spirals off of the robot
-		// when rotating in place; until resolved, do NOT hard attach
-		it.SetHardAttach(false);
+		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);
 		if (bDebug)
@@ -595,9 +627,10 @@ simulated function UpdateJoints()
 }
 
 // Using the CmdPos[] array, user can implement gearing equations
-simulated function updateRotation(int Link, float Value)
+simulated function array<float> updateRotation(array<float> Target, int Link, float Value)
 {
-	CmdPos[Link] = Value;
+	Target[Link] = Value;
+	return Target;
 }
 
 defaultproperties

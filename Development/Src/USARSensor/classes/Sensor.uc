@@ -63,10 +63,10 @@ simulated function String GetHead()
 	// Add timestamp if necessary
 	outstring = "SEN";
 	if (bWithTimeStamp)
-		outstring @= " {Time " $ WorldInfo.TimeSeconds $ "}";
+		outstring @= "{Time " $ WorldInfo.TimeSeconds $ "}";
 	
 	// Add sensor type
-	outstring @= " {Type " $ ItemType $ "}";
+	outstring @= "{Type " $ ItemType $ "}";
 	return outstring;
 }
 

@@ -9,6 +9,8 @@
 
 package org.nist.usarui.ui;
 
+import org.nist.usarui.Utils;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -33,6 +35,13 @@ public class MapView extends View {
 	 */
 	public static final int MAX_POINTS = 1000;
 	/**
+	 * Colors used for painting range finder data. After the 4th range finder, it will cycle.
+	 */
+	public static final Color[] RANGE_COLOR = new Color[] {
+		new Color(255, 0, 0, 127), new Color(0, 255, 0, 127),
+		new Color(0, 0, 255, 127), new Color(255, 255, 0, 127)
+	};
+	/**
 	 * The resolution of the map; coordinates must be this far apart (in m) to be logged.
 	 */
 	public static final double RES = 0.05;
@@ -50,6 +59,14 @@ public class MapView extends View {
 	 */
 	private final Point center;
 	/**
+	 * Maps range sensor names to their appropriate colors.
+	 */
+	private final Map<String, Integer> colorMap;
+	/**
+	 * The last color index handed out.
+	 */
+	private volatile int lastColor;
+	/**
 	 * The coordinates at which the mouse was last seen when dragging started.
 	 */
 	private Point lastDrag;
@@ -62,6 +79,10 @@ public class MapView extends View {
 	 * really long run; but this is a utility, right?
 	 */
 	private final List<Point2D> path;
+	/**
+	 * Data stored from the range scanner.
+	 */
+	private RangeData ranges;
 	/**
 	 * Component which draws the map.
 	 */
@@ -119,6 +140,7 @@ public class MapView extends View {
 		// Load bot icon (triangle facing up)
 		botIcon	= new Polygon(new int[] { 4, 0, -4, 0 }, new int[] { 5, -5, 5, 3 }, 4);
 		center = new Point(0, 0);
+		colorMap = new HashMap<String, Integer>(8);
 		// Prepare renderer
 		renderer = new MapRenderer();
 		renderer.addMouseMotionListener(listener);
@@ -126,11 +148,44 @@ public class MapView extends View {
 		renderer.addMouseWheelListener(listener);
 		dialog.getContentPane().add(renderer);
 		// Initialize variables
+		lastColor = 0;
 		lastDrag = null;
 		lastPoint = null;
 		path = new LinkedList<Point2D>();
+		ranges = null;
 		scalar = SCALE;
 		theta = 0.;
+	}
+	/**
+	 * Displays range scanner data on the ground truth map.
+	 *
+	 * @param data range data from the sensor
+	 * @param res the sensor resolution in radians
+	 * @param fov the sensor field of view in radians
+	 * @param name the name of the range scanner
+	 */
+	public void addRangeData(float[] data, float res, float fov, String name) {
+		int index;
+		synchronized (colorMap) {
+			if (colorMap.containsKey(name))
+				index = colorMap.get(name);
+			else {
+				colorMap.put(name, lastColor);
+				index = lastColor;
+				lastColor = (lastColor + 1) % RANGE_COLOR.length;
+			}
+		}
+		ranges = new RangeData(data, fov, res, RANGE_COLOR[index]);
+		renderer.repaint();
+	}
+	/**
+	 * Rounds the point coordinate to the nearest integer coordinate.
+	 *
+	 * @param point the point to display
+	 * @return the point turned into the nearest integer
+	 */
+	private int round(double point) {
+		return (int)Math.round(point * scalar);
 	}
 	/**
 	 * Sets the pose of the on-screen robot to the specified coordinate.
@@ -159,6 +214,40 @@ public class MapView extends View {
 		// Always redraw
 		this.theta = theta;
 		renderer.repaint();
+	}
+
+	/**
+	 * Represents data from a range finder sensor.
+	 */
+	private static class RangeData {
+		private final Color color;
+		private final GeneralPath poly;
+
+		/**
+		 * Creates a new set of range data.
+		 *
+		 * @param data the data to show
+		 * @param fov the sensor's field of view in radians
+		 * @param resolution the sensor's resolution in radians
+		 * @param color the color to paint the data
+		 */
+		private RangeData(float[] data, float fov, float resolution, Color color) {
+			float heading = (float)(fov - Math.PI) / 2.f;
+			this.color = color;
+			// Trace outline of the scanned area
+			poly = new GeneralPath();
+			poly.moveTo(0.f, 0.f);
+			for (float value : data) {
+				poly.lineTo(value * Utils.fCos(heading), value * Utils.fSin(heading));
+				heading -= resolution;
+			}
+			poly.closePath();
+		}
+		public void paint(Graphics2D g) {
+			// Already assumes that the position, antialias, heading, etc. is right
+			g.setColor(color);
+			g.fill(poly);
+		}
 	}
 
 	/**
@@ -240,6 +329,11 @@ public class MapView extends View {
 				ig.translate(round(lastPoint.getX()), round(lastPoint.getY()));
 				ig.rotate(theta);
 				ig.fill(botIcon);
+				// Render range
+				if (ranges != null) {
+					ig.scale(scalar, scalar);
+					ranges.paint(ig);
+				}
 			}
 			ig.dispose();
 			// Draw compass rose
@@ -252,15 +346,6 @@ public class MapView extends View {
 			bg.dispose();
 			// Render back-buffer now
 			g.drawImage(buffer, 0, 0, null);
-		}
-		/**
-		 * Rounds the point coordinate to the nearest integer coordinate.
-		 *
-		 * @param point the point to display
-		 * @return the point turned into the nearest integer
-		 */
-		private int round(double point) {
-			return (int)Math.round(point * scalar);
 		}
 		public void update(Graphics g) {
 			paint(g);

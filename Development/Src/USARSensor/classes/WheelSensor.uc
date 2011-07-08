@@ -64,8 +64,12 @@ function String Set(String opcode, String args)
 	
 	if (Caps(opcode) == "RESET")
 	{
+		// Reset spin and sync position
 		for (i = 0; i < Wheels.Length; i++)
+		{
 			Wheels[i].Spun = 0.0;
+			Wheels[i].Old = Wheels[i].Wheel.CurValue;
+		}
 		return "OK";
 	}
 	return "Failed";

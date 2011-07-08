@@ -74,7 +74,7 @@ function String GetConfData()
 	confData = super.GetConfData();
 	confData @= "{Resolution " $ class'UnitsConverter'.static.FloatString(Resolution) $
 		"} {Fov " $ class'UnitsConverter'.static.FloatString(ScanFov) $ "}";
-	confData @= "{Paning " $ bYaw $ "} {Tilting " $ bPitch $ "}";
+	confData @= "{Panning " $ bYaw $ "} {Tilting " $ bPitch $ "}";
 	return confData;
 }
 

@@ -88,7 +88,7 @@ public class USARPacket {
 	public Map<String, String> getParams() {
 		return params;
 	}
-		/**
+	/**
 	 * Returns this packet's "original" message.
 	 * 
 	 * @return the message used to construct the packet

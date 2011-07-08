@@ -99,7 +99,7 @@ public final class Errors implements UncaughtExceptionHandler {
 				JOptionPane.ERROR_MESSAGE);
 			// If it crashes inside this block, it's probably very, very dire
 		} catch (Throwable e) {
-			t.printStackTrace();
+			e.printStackTrace();
 		}
 		System.exit(1);
 	}

@@ -235,6 +235,9 @@ public class IridiumUI implements IridiumListener {
 		updateJoints(null);
 		updateActuators(null);
 		setConnected(true);
+		commandType.removeAllItems();
+		commandType.addItem("INIT");
+		commandType.setSelectedIndex(0);
 		// Startup info that would be nice to populate boxes
 		sendInternalMessage("GETSTARTPOSES");
 	}
@@ -762,17 +765,18 @@ public class IridiumUI implements IridiumListener {
 			etc = "{Start " + pose.getTag() + "}";
 		if (etc != null) {
 			sendMessage("INIT {ClassName " + botClass + "} " + etc);
-			// After init, send an actuator configuration command to populate box
 			updateActuators(null);
 			updateJoints(null);
-			// Would have liked to use listener, but setActionCommand is @since 1.6...
-			Timer actConf = new Timer(100, new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					sendInternalMessage("GETCONF {Type Actuator}");
-				}
-			});
-			actConf.setRepeats(false);
-			actConf.start();
+			if (!botClass.equalsIgnoreCase("USARBotAPI.WorldController")) {
+				// Would have liked to use listener, but setActionCommand is @since 1.6...
+				final Timer actConf = new Timer(200, new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						sendInternalMessage("GETCONF {Type Actuator}");
+					}
+				});
+				actConf.setRepeats(false);
+				actConf.start();
+			}
 		}
 	}
 	/**
@@ -856,40 +860,32 @@ public class IridiumUI implements IridiumListener {
 	 * Sends whatever message has been coded in the input fields.
 	 */
 	public void sendWSIWYG() {
-		int type = commandType.getSelectedIndex();
-		if (state.isConnected())
-			switch (type) {
-			case 0:
+		String type = commandType.getSelectedItem().toString();
+		if (state.isConnected()) {
+			if (type.equals("INIT"))
 				// INIT
 				sendCmdInit();
-				break;
-			case 1:
+			else if (type.equals("DRIVE"))
 				// DRIVE
 				sendCmdDrive();
-				break;
-			case 2:
+			else if (type.equals("SET"))
 				// SET
 				sendCmdSet();
-				break;
-			case 3:
+			else if (type.equals("ACT"))
 				// ACT
 				sendCmdAct();
-				break;
-			case 4:
+			else if (type.equals("GETGEO"))
 				// GETGEO
 				sendMessage("GETGEO " + getGeoconfParameters());
-				break;
-			case 5:
+			else if (type.equals("GETCONF"))
 				// GETCONF
 				sendMessage("GETCONF " + getGeoconfParameters());
-				break;
-			case 6:
+			else if (type.equals("CONTROL"))
 				// CONTROL
 				sendCmdControl();
-				break;
-			default:
+			else
 				Utils.showWarning(mainUI, "Unimplemented command: " + commandType.getSelectedItem());
-			}
+		}
 	}
 	/**
 	 * Swaps the UI elements required when connection status changes.
@@ -1007,8 +1003,7 @@ public class IridiumUI implements IridiumListener {
 		final JComponent commandPanel = new JPanel(new BorderLayout());
 		bottomPanel.add(commandPanel, BorderLayout.WEST);
 		// Combo Box: Command Type
-		commandType = Utils.createComboBox("Command type to send", "INIT", "DRIVE", "SET",
-			"ACT", "GETGEO", "GETCONF", "CONTROL");
+		commandType = Utils.createComboBox("Command type to send", "INIT");
 		commandType.addActionListener(listener);
 		commandType.setActionCommand("card");
 		commandPanel.add(commandType, BorderLayout.NORTH);
@@ -1305,6 +1300,10 @@ public class IridiumUI implements IridiumListener {
 		// Check Box: Invert Joystick
 		driveInvert = Utils.createCheckBox("Invert Axes",
 			"Inverts the vertical axes of the joystick");
+		driveInvert.setSelected(true);
+		// Default value from config
+		if (state.getConfig().getProperty("NoInvert", "false").equalsIgnoreCase("true"))
+			driveInvert.setSelected(false);
 		driveMaster.add(driveInvert);
 		// Layout: Drive Views
 		driveView = new JPanel(new CardLayout(0, 0));
@@ -1562,7 +1561,11 @@ public class IridiumUI implements IridiumListener {
 				}
 			}
 		});
-		mainUI.add(new JScrollPane(responseList), BorderLayout.CENTER);
+		// Repair slow-scrolling bug
+		final JScrollPane sp = new JScrollPane(responseList);
+		sp.getVerticalScrollBar().setUnitIncrement(16);
+		sp.getHorizontalScrollBar().setUnitIncrement(16);
+		mainUI.add(sp, BorderLayout.CENTER);
 		// DO THIS!
 		setupTopUI();
 		setupBottomUI();
@@ -1611,11 +1614,14 @@ public class IridiumUI implements IridiumListener {
 				freezeButton.setText("Freeze");
 		} else if (eventName.equals("card")) {
 			// Change available type
-			eventName = commandType.getSelectedItem().toString().toLowerCase();
-			if (eventName.equals("getgeo") || eventName.equals("getconf"))
-				eventName = "geoconf";
-			((CardLayout)typePanel.getLayout()).show(typePanel, eventName);
-			Utils.focusFirstComponent(typePanel);
+			Object item = commandType.getSelectedItem();
+			if (item != null) {
+				eventName = item.toString().toLowerCase();
+				if (eventName.equals("getgeo") || eventName.equals("getconf"))
+					eventName = "geoconf";
+				((CardLayout)typePanel.getLayout()).show(typePanel, eventName);
+				Utils.focusFirstComponent(typePanel);
+			}
 		} else if (eventName.equals("drive")) {
 			// Change drive type
 			eventName = driveType.getSelectedItem().toString();
@@ -1674,6 +1680,11 @@ public class IridiumUI implements IridiumListener {
 		}
 		// Manual clean
 		if (packet == null) actName.removeAllItems();
+		if (updated && actName.getItemCount() > 0) {
+			// Add ACT to the menu (and remove INIT if still hanging around)
+			commandType.addItem("ACT");
+			commandType.removeItem("INIT");
+		}
 		return updated;
 	}
 	/**
@@ -1686,8 +1697,33 @@ public class IridiumUI implements IridiumListener {
 			batteryLife.setText(null);
 		else if (battery <= 0)
 			batteryLife.setText("Battery dead");
-		else
+		else {
 			batteryLife.setText(String.format("Battery: %d:%02d", battery / 60, battery % 60));
+			// Got a status, remove the INIT item if necessary
+			if (commandType.getItemCount() > 1)
+				commandType.removeItem("INIT");
+		}
+	}
+	/**
+	 * Fired whenever an INIT command is sent through any channel by AdaptiveInputHandler to
+	 * adjust the GUI inputs accordingly.
+	 *
+	 * @param isWC whether the fields should be set up for world control
+	 */
+	public void updateInitComplete(boolean isWC) {
+		// Populate with useful items
+		if (isWC) {
+			commandType.removeItem("INIT");
+			commandType.addItem("CONTROL");
+			commandType.setSelectedIndex(0);
+		} else {
+			commandType.addItem("DRIVE");
+			commandType.addItem("SET");
+			commandType.addItem("GETGEO");
+			commandType.addItem("GETCONF");
+			// Might not be the first command since INIT might still be hanging around
+			commandType.setSelectedItem("DRIVE");
+		}
 	}
 	/**
 	 * Updates the names and values of joints on the specified (legged) robot.

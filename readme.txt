@@ -27,3 +27,10 @@ Running:
 Known issues:
 1) Sensors need validation.
 2) Many materials and models have yet to be imported.
+
+-----------------------------------------------------------------------------------------
+
+Note:
+	Textures by nobiax.deviantart.com
+	Packed by dk2007.deviantart.com
+	Thanks to them!

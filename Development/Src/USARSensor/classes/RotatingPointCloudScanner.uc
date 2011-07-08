@@ -87,7 +87,7 @@ function String GetData()
 	local String data;
 	data = PclData;
 	PclData = "";
-	return "{Name " $ ItemName $ "}" $ "{" $ data $ "}";
+	return "{Name " $ ItemName $ "} {" $ data $ "}";
 }
 
 defaultproperties

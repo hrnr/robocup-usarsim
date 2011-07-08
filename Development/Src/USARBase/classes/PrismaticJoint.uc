@@ -20,20 +20,20 @@ var float LimitLow;
 // Gets the maximum value of this joint (only applies for some joint types)
 simulated function float GetMax()
 {
-	return LimitLow;
+	return LimitHigh;
 }
 
 // Gets the minimum value of this joint (only applies for some joint types)
 simulated function float GetMin()
 {
-	return LimitHigh;
+	return LimitLow;
 }
 
 // Configure the JointItem for this joint
 reliable server function JointItem Init(JointItem ji)
 {
 	local vector savedLocation, amount;
-	local int trueZero, hi, lo;
+	local float trueZero, hi, lo;
 	local RB_ConstraintSetup setup;
 	
 	// Parent initialization
@@ -43,23 +43,32 @@ reliable server function JointItem Init(JointItem ji)
 	// Make the limits symmetrical; map set angles to the actual constraint limits
 	hi = class'UnitsConverter'.static.LengthToUU(LimitHigh);
 	lo = class'UnitsConverter'.static.LengthToUU(LimitLow);
-	trueZero = int((-hi - lo) / 2.0);
+	trueZero = (-hi - lo) / 2.0;
 	ji.TrueZero = trueZero;
 	// Setup joint limits of movement
 	setup.LinearXSetup.LimitSize = hi + trueZero;
 	// Perform fix to handle asymmetrical joints
-	amount.X = trueZero;
-	TempMovePart(ji, ji.Child, amount, savedLocation);
+	amount = vect(0, 0, 0);
+	amount.Z = trueZero;
+	amount = amount << class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction);
+	if (trueZero != 0.0)
+		TempMovePart(ji, ji.Child, amount, savedLocation);
 	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
-	RestoreMovePart(ji.Child, savedLocation);
-	// Enable angular drive position and set the initial drive parameters
+	if (trueZero != 0.0)
+		RestoreMovePart(ji.Child, savedLocation);
+	// Enable linear drive position and set the initial drive parameters
 	ji.Constraint.ConstraintInstance.SetLinearPositionDrive(true, false, false);
 	ji.SetStiffness(ji.Spec.Stiffness);
 	ji.SetTarget(0.0);
+	// Now store the initial offset for the value checker later
+	ji.OldValue = 0.0;
+	Update(ji);
+	ji.OldValue = ji.CurValue;
+	ji.CurValue = 0.0;
 	return ji;
 }
 
-// Updates angular drive parameters with the given values
+// Updates linear drive parameters with the given values
 function Recalc(JointItem ji)
 {
 	ji.Constraint.ConstraintInstance.SetLinearDriveParams(ji.MaxForce * ji.Stiffness,
@@ -67,24 +76,25 @@ function Recalc(JointItem ji)
 }
 
 // Restores the part's rotation and location to the specified values to deal with symmetry
-// See TempRotatePart
+// See TempMovePart
 simulated function RestoreMovePart(Actor p, vector savedPosition)
 {
 	p.SetLocation(savedPosition);
 }
 
-// Rotates the specified joint to the given target angle
+// Moves the specified joint to the given target position
 function SetTarget(JointItem ji, float value)
 {
 	local vector pos;
 	
 	// Update the values to match new target
+	pos = vect(0, 0, 0);
 	pos.X = class'UnitsConverter'.static.LengthToUU(value) + ji.TrueZero;
 	SetLinearTarget(ji, pos);
 }
 
 // TempMovePart and RestoreMovePart are used to deal with the problem that the constraint 
-// angle limits are specified symmetrically. The part is temporary moved so the high and
+// value limits are specified symmetrically. The part is temporarily moved so the high and
 // low limits become symmetrical if there were not already when initializing the constraint
 simulated function TempMovePart(JointItem ji, Actor p, vector amount, out vector savedPosition)
 {
@@ -94,11 +104,15 @@ simulated function TempMovePart(JointItem ji, Actor p, vector amount, out vector
 	p.SetLocation(savedPosition + amount);
 }
 
-// Updates the joint item's angle to match the physics system's angle
+// Updates the joint item's value to match the physics system's location
 simulated function Update(JointItem ji)
 {
-	ji.CurValue = class'UnitsConverter'.static.LengthFromUU(ji.Child.Location.Z -
-		ji.Parent.Location.Z);
+	local vector diff;
+	
+	// Rotate back
+	diff = (ji.Parent.Location - ji.Child.Location) >> ji.Parent.Rotation;
+	diff = diff << class'UnitsConverter'.static.AngleVectorToUU(ji.Spec.Direction);
+	ji.CurValue = class'UnitsConverter'.static.LengthFromUU(diff.Z) - ji.OldValue;
 }
 
 defaultproperties
