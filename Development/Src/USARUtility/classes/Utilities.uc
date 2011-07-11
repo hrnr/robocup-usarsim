@@ -205,6 +205,12 @@ static function SetMass(DynamicSMActor act, float DesiredMass)
 	}
 }
 
+// TODO: Replace SetMass with this one if it works better
+static function SetMass2(RB_BodyInstance instance, float DesiredMass)
+{
+	default.PhysXProxyInstance.SetMass(instance, DesiredMass);
+}
+
 // Parses a string of arguments into tokens. The tokens are split by the specified delimiter.
 // Returns a dynamic array of strings
 static final function array<String> tokenizer(String argStr, optional String delim)

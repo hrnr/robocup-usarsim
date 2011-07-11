@@ -201,6 +201,19 @@ extern "C"
 		return NULL;
 	}
 
+	// Directly set the mass of the specified actor
+	PHYSXPROXYDLL_API void SetMassInternal( BodyInstancePointer *pBodyInstWrapper, float mass )
+	{
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("SetMassInternal: Invalid body instance!\n");
+			return;
+		}
+
+		pActor->setMass( mass );
+	}
+
 	// Changes the iteration solver count of the specified actor
 	PHYSXPROXYDLL_API void SetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper, int iterCount )
 	{

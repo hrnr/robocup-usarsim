@@ -16,6 +16,12 @@ function BodyInstancePointer WrapBodyInstance( Object BodyInstance )
 }
 
 // Functions that are normally not exposed in UDK
+dllimport final function SetMassInternal( BodyInstancePointer bodyInst, float Mass );
+function SetMass( RB_BodyInstance BodyInstance, float Mass )
+{
+	SetMassInternal(WrapBodyInstance(BodyInstance), Mass);
+}
+
 dllimport final function SetIterationSolverCountInternal( BodyInstancePointer bodyInst, int iterCount );
 function SetIterationSolverCount( RB_BodyInstance BodyInstance, int iterCount )
 {
