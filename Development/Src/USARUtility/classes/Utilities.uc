@@ -195,14 +195,15 @@ static function SetMass(DynamicSMActor act, float DesiredMass)
 	
 	// Change auto calculated mass to the desired mass
 	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
-	bs = act.StaticMeshComponent.StaticMesh.BodySetup;
+	/*bs = act.StaticMeshComponent.StaticMesh.BodySetup;
 	oldMass = act.StaticMeshComponent.BodyInstance.GetBodyMass();
 	oldScale = bs.MassScale;
 	if (oldMass > 0.0 && oldScale > 0.0)
 	{
 		bs.MassScale = DesiredMass / (oldMass / oldScale);
 		act.StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
-	}
+	}*/
+	SetMass2(act.StaticMeshComponent.BodyInstance, DesiredMass);
 }
 
 // TODO: Replace SetMass with this one if it works better
