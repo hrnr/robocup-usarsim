@@ -89,7 +89,7 @@ extern "C"
 		// Get Number of joints
 		NxU32 nbJoints;
 		nbJoints = pScene->getNbJoints();
-		printf("Number of actors: %u\n", nbJoints);
+		printf("Number of joints: %u\n", nbJoints);
 	}
 
 	// Retrieves the PhysX scene
@@ -121,6 +121,7 @@ extern "C"
 	//		 But that could give problems if the the body instance class changes.
 	NxActor *GetActor( BodyInstancePointer *pBodyInstanceWrapper )
 	{
+		NxScene *pScene;
 		NxActor **pActorArray;
 		NxActor *pActor;
 		NxU32 i, nbActors;
@@ -138,11 +139,10 @@ extern "C"
 		pObject = pBodyInstanceWrapper->pBodyInstance;
 		if( !pObject )
 		{
-			//printf("GetActor: No object\n");
 			return NULL;
 		}
 
-		NxScene *pScene = GetScene();
+		pScene = GetScene();
 		if( !pScene )
 			return NULL;
 
@@ -162,7 +162,45 @@ extern "C"
 		}
 		return NULL;
 	}
-	
+
+	// Lookup the matching joint by comparing the userdata to the object
+	// pObject is a pointer to a RB_ConstraintInstance class.
+	NxJoint *GetJoint( BodyInstancePointer *pBodyInstanceWrapper )
+	{
+		NxScene *pScene;
+		NxJoint *pJoint;
+		void *pObject;
+
+#ifdef _WIN64
+		pBodyInstanceWrapper = (BodyInstancePointer *)Fix64Bit( (void *)pBodyInstanceWrapper );
+#endif // _WIN64
+
+		if( !pBodyInstanceWrapper )
+		{
+			return NULL;
+		}
+
+		pObject = pBodyInstanceWrapper->pBodyInstance;
+		if( !pObject )
+		{
+			return NULL;
+		}
+
+		pScene = GetScene();
+		if( !pScene )
+			return NULL;
+
+		pScene->resetJointIterator();
+		while( (pJoint = pScene->getNextJoint()) != NULL )
+		{
+			if( pJoint->userData == pObject)
+			{
+				return pJoint;
+			}
+		}
+		return NULL;
+	}
+
 	// Changes the iteration solver count of the specified actor
 	PHYSXPROXYDLL_API void SetIterationSolverCountInternal( BodyInstancePointer *pBodyInstWrapper, int iterCount )
 	{
@@ -282,4 +320,27 @@ extern "C"
 		return &result;
 	}
 
+	PHYSXPROXYDLL_API float GetSolverExtrapolationFactorInternal( BodyInstancePointer *pJointInstWrapper )
+	{
+		NxJoint *pJoint = GetJoint(pJointInstWrapper);
+		if( !pJoint )
+		{
+			printf("GetSolverExtrapolationFactor: Invalid joint instance!\n");
+			return -1;
+		}
+
+		return pJoint->getSolverExtrapolationFactor();
+	}
+
+	PHYSXPROXYDLL_API void SetSolverExtrapolationFactorInternal( BodyInstancePointer *pJointInstWrapper, float solverExtrapolationFactor )
+	{
+		NxJoint *pJoint = GetJoint(pJointInstWrapper);
+		if( !pJoint )
+		{
+			printf("SetSolverExtrapolationFactorInternal: Invalid joint instance!\n");
+			return;
+		}
+
+		pJoint->setSolverExtrapolationFactor( solverExtrapolationFactor );
+	}
 }

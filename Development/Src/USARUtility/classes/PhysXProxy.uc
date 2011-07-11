@@ -8,7 +8,7 @@ struct BodyInstancePointer
 	var Object BodyInstance;
 };
 
-function BodyInstancePointer WrapBodyInstance( RB_BodyInstance BodyInstance )
+function BodyInstancePointer WrapBodyInstance( Object BodyInstance )
 {
 	local BodyInstancePointer bodyInst;
 	bodyInst.BodyInstance = BodyInstance;
@@ -53,3 +53,15 @@ function SetMassSpaceInertiaTensor( RB_BodyInstance BodyInstance, Vector Inertia
 	SetMassSpaceInertiaTensorInternal(WrapBodyInstance(BodyInstance), InertiaTensor);
 }
 
+// Joint functions
+dllimport final function float GetSolverExtrapolationFactorInternal( BodyInstancePointer jointInst);
+function float GetSolverExtrapolationFactor( RB_ConstraintInstance JointInstance )
+{
+	return GetSolverExtrapolationFactorInternal(WrapBodyInstance(JointInstance));
+}
+
+dllimport final function SetSolverExtrapolationFactorInternal( BodyInstancePointer jointInst, float SolverExtrapolationFactor );
+function SetSolverExtrapolationFactor( RB_ConstraintInstance JointInstance, float SolverExtrapolationFactor )
+{
+	SetSolverExtrapolationFactorInternal(WrapBodyInstance(JointInstance), SolverExtrapolationFactor);
+}

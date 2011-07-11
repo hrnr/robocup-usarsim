@@ -172,6 +172,21 @@ static final function SetMassSpaceInertiaTensor(RB_BodyInstance instance, Vector
 	default.PhysXProxyInstance.SetMassSpaceInertiaTensor(instance, InertiaTensor);
 }
 
+static final function float GetSolverExtrapolationFactor(RB_ConstraintInstance instance)
+{
+	return default.PhysXProxyInstance.GetSolverExtrapolationFactor(instance);
+}
+
+// Extrapolation factor for solving joint constraints. (PhysX docs)
+// This parameter can be used to build stronger joints and increase the solver convergence. Higher values
+// lead to stronger joints.
+// note Setting the value too high can decrease the joint stability.
+// note Currently, this feature is supported for D6, Revolute and Spherical Joints only.
+static final function SetSolverExtrapolationFactor(RB_ConstraintInstance instance, float SolverExtrapolationFactor)
+{
+	default.PhysXProxyInstance.SetSolverExtrapolationFactor(instance, SolverExtrapolationFactor);
+}
+
 // Adjusts the mass of the specified item to match reality (takes mass in UU)
 static function SetMass(DynamicSMActor act, float DesiredMass)
 {
