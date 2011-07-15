@@ -51,6 +51,8 @@ extern "C"
 	{
 		NxU32 apiRev, descRev, branchId;
 		NxU32 nbScenes, nbCompartments;
+		NxVec3 gravity;
+		NxU32 i;
 
 		NxPhysicsSDK *pPhysicsSDK = NxGetPhysicsSDK();
 
@@ -79,6 +81,10 @@ extern "C"
 		nbCompartments = pScene->getNbCompartments();
 		printf("Number of compartments: %u\n", nbCompartments ); 
 
+		// Print gravity
+		pScene->getGravity( gravity );
+		printf("Gravity is (x,y,z): %f %f %f\n", gravity.x, gravity.y, gravity.z);
+
 		// Get actors array and print number of actors
 		NxU32 nbActors;
 		NxActor **pActorArray;
@@ -90,6 +96,25 @@ extern "C"
 		NxU32 nbJoints;
 		nbJoints = pScene->getNbJoints();
 		printf("Number of joints: %u\n", nbJoints);
+
+		// Print forcefield information
+		NxU32 nbForceFields;
+		nbForceFields = pScene->getNbForceFields();
+		NxForceField **pForceFieldArray = pScene->getForceFields();
+		NxForceField *pForceField;
+		printf("Number of forcefields: %u\n", nbForceFields);
+		for( i =0; i < nbForceFields; i++ )
+		{
+			pForceField = pForceFieldArray[i];
+			if( !pForceField )
+			{
+				printf("Invalid forcefield %u\n", i);
+				continue;
+			}
+
+			printf("%u, rigid body type: %u\n", i, 
+				pForceField->getRigidBodyType() );
+		}
 	}
 
 	// Retrieves the PhysX scene
@@ -355,5 +380,78 @@ extern "C"
 		}
 
 		pJoint->setSolverExtrapolationFactor( solverExtrapolationFactor );
+	}
+
+	/* The remaining functions below are added for testing/debugging */
+	PHYSXPROXYDLL_API FVector* GetVelocityInternal( BodyInstancePointer *pBodyInstWrapper )
+	{
+		static FVector result;	// declared static so that the struct's memory is still valid after the function returns.
+
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("GetVelocityInternal: Invalid body instance!\n");
+			result.x = result.y = result.z = 666.0f;
+			return &result;
+		}
+
+		NxVec3 velocity = pActor->getLinearVelocity();
+		result.x = velocity.x;
+		result.y = velocity.y;
+		result.z = velocity.z;
+		return &result;
+	}
+
+	PHYSXPROXYDLL_API FVector* GetLinearMomentumInternal( BodyInstancePointer *pBodyInstWrapper )
+	{
+		static FVector result;	// declared static so that the struct's memory is still valid after the function returns.
+
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("GetLinearMomentumInternal: Invalid body instance!\n");
+			result.x = result.y = result.z = 666.0f;
+			return &result;
+		}
+
+		NxVec3 linearmomentum = pActor->getLinearMomentum();
+		result.x = linearmomentum.x;
+		result.y = linearmomentum.y;
+		result.z = linearmomentum.z;
+		return &result;
+	}
+
+	// For debugging/information, print joint info.
+	PHYSXPROXYDLL_API void PrintJointInfoInternal( BodyInstancePointer *pJointInstWrapper )
+	{
+		NxJoint *pJoint = GetJoint(pJointInstWrapper);
+		if( !pJoint )
+		{
+			printf("PrintJointInfo: Invalid joint instance!\n");
+			return;
+		}
+
+		NxRevoluteJoint *pRevJoint;
+		NxD6Joint *pD6Joint;
+
+		if( (pRevJoint = pJoint->isRevoluteJoint()) != NULL )
+		{
+			NxSpringDesc springdesc;
+			pRevJoint->getSpring( springdesc );
+			printf("Revolute joint: Spring: %f, Damper: %f\n", springdesc.spring, springdesc.damper );
+		}
+		else if( (pD6Joint = pJoint->isD6Joint()) != NULL )
+		{
+			NxD6JointDesc d6desc;
+			pD6Joint->saveToDesc( d6desc );
+			printf("D6 joint: Swing Spring: %f, Damper: %f, ForceLimit: %f | Twist Spring: %f, Damper: %f, ForceLimit: %f | useAccelerationSpring: %d \n", 
+				d6desc.swingDrive.spring, d6desc.swingDrive.damping, d6desc.swingDrive.forceLimit,
+				d6desc.twistDrive.spring, d6desc.twistDrive.damping, d6desc.twistDrive.forceLimit,
+				d6desc.useAccelerationSpring );
+		}
+		else
+		{
+			printf("Unknown joint\n");
+		}
 	}
 }

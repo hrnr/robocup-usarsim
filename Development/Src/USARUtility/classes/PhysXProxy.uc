@@ -15,6 +15,9 @@ function BodyInstancePointer WrapBodyInstance( Object BodyInstance )
 	return bodyInst;
 }
 
+// Test function, prints info about PhysX (only when compiled in 32 bit debug)
+dllimport final function GeneralPhysX();
+
 // Functions that are normally not exposed in UDK
 dllimport final function SetMassInternal( BodyInstancePointer bodyInst, float Mass );
 function SetMass( RB_BodyInstance BodyInstance, float Mass )
@@ -71,3 +74,23 @@ function SetSolverExtrapolationFactor( RB_ConstraintInstance JointInstance, floa
 {
 	SetSolverExtrapolationFactorInternal(WrapBodyInstance(JointInstance), SolverExtrapolationFactor);
 }
+
+// Temporary test functions
+dllimport final function Vector GetVelocityInternal( BodyInstancePointer bodyInst );
+function Vector GetVelocity( RB_BodyInstance BodyInstance )
+{
+	return GetVelocityInternal(WrapBodyInstance(BodyInstance));
+}
+
+dllimport final function Vector GetLinearMomentumInternal( BodyInstancePointer bodyInst );
+function Vector GetLinearMomentum( RB_BodyInstance BodyInstance )
+{
+	return GetLinearMomentumInternal(WrapBodyInstance(BodyInstance));
+}
+
+dllimport final function PrintJointInfoInternal( BodyInstancePointer jointInst );
+function PrintJointInfo( RB_ConstraintInstance JointInstance )
+{
+	PrintJointInfoInternal(WrapBodyInstance(JointInstance));
+}
+

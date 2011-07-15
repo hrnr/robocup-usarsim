@@ -80,11 +80,8 @@ simulated function PostBeginPlay()
 		if (!Parts[i].IsJoint())
 			continue;
 		ji = JointItem(Parts[i]);
-
-		LogInternal("Joint: " $ ji.GetJointName() $ " extrapolation: " $ class'Utilities'.static.GetSolverExtrapolationFactor( ji.Constraint.ConstraintInstance ));
 		class'Utilities'.static.SetSolverExtrapolationFactor( ji.Constraint.ConstraintInstance, 1.75 );
 	}
-
 	
 	// Temporary test code. Sometimes parts collide when they shouldn't collide, 
 	// causing movements to fail.
@@ -151,8 +148,6 @@ simulated function PostBeginPlay()
 	pdest = PhysicalItem( GetPartByName('RElbow') ); 
 	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
 
-	
-
 }
 
 function Tick( float DeltaTime )
@@ -171,9 +166,9 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 2
-	`define MaxForceMotorType2 2
-	`define DampingMotorType1 0.0005
+	`define MaxForceMotorType1 2.5
+	`define MaxForceMotorType2 2.5
+	`define DampingMotorType1 0.005
 	`define DampingMotorType2 0.005
 
 	`define NaoSolverIterationCount 128
