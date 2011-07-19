@@ -54,9 +54,9 @@ simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseR
 // Configure the JointItem for this joint
 reliable server function JointItem Init(JointItem ji)
 {
-	ji.Constraint = ji.Spawn(class'Hinge', ji, '', ji.Location, ji.Rotation);
-	ji.Constraint.setDisableCollision(true);
-	ji.CurValue = 0;
+	ji.Constraint = SpawnHinge(ji);
+	// Don't disable collision again, it was already disabled in default properties...
+	ji.CurValue = 0.0;
 	ji.MaxForce = MaxForce;
 	ji.Spec = self;
 	ji.Stiffness = Stiffness;
@@ -107,6 +107,12 @@ function SetTarget(JointItem ji, float target)
 // Overridden by subclasses to move joint at velocity
 function SetVelocity(JointItem ji, float velocity)
 {
+}
+
+// Create the hinge actor for the given joint item
+function RB_ConstraintActor SpawnHinge(JointItem ji)
+{
+	return ji.Spawn(class'Hinge', ji, '', ji.Location, ji.Rotation);
 }
 
 // Updates the joint's CurValue to match its physics

@@ -93,6 +93,12 @@ function SetTarget(JointItem ji, float value)
 	SetLinearTarget(ji, pos);
 }
 
+// Create the slider actor for the given joint item
+function RB_ConstraintActor SpawnHinge(JointItem ji)
+{
+	return ji.Spawn(class'Slider', ji, '', ji.Location, ji.Rotation);
+}
+
 // TempMovePart and RestoreMovePart are used to deal with the problem that the constraint 
 // value limits are specified symmetrically. The part is temporarily moved so the high and
 // low limits become symmetrical if there were not already when initializing the constraint

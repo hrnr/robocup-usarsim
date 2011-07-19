@@ -16,7 +16,7 @@ class JointItem extends Item config(USAR);
 // The child item controlled by this joint
 var Item Child;
 // The constraint handling this joint
-var Hinge Constraint;
+var RB_ConstraintActor Constraint;
 // The angle this joint is currently pointing
 var float CurValue;
 // The damping factor of this joint
