@@ -55,6 +55,7 @@ simulated function rotator GetRelativeRotation(rotator MyRotation, rotator BaseR
 reliable server function JointItem Init(JointItem ji)
 {
 	ji.Constraint = ji.Spawn(class'Hinge', ji, '', ji.Location, ji.Rotation);
+	ji.Constraint.setDisableCollision(true);
 	ji.CurValue = 0;
 	ji.MaxForce = MaxForce;
 	ji.Spec = self;

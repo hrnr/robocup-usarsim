@@ -42,7 +42,8 @@ reliable server function JointItem Init(JointItem ji)
 	if (bOmni)
 		setup.bSwingLimited = false;
 	ji.Constraint.InitConstraint(ji.Parent, ji.Child, , , 6000.0);
-	ji.Constraint.ConstraintInstance.SetAngularVelocityDrive(bOmni, true);
+	ji.Constraint.ConstraintInstance.SetAngularPositionDrive(false, false);
+	ji.Constraint.ConstraintInstance.SetAngularVelocityDrive(false, bIsDriven);
 	ji.SetStiffness(ji.Spec.Stiffness);
 	ji.SetVelocity(0.0);
 	// Fix initial-value problem that has some wheels rotated 180 degrees
@@ -64,12 +65,15 @@ function SetVelocity(JointItem ji, float target)
 {
 	local vector vel;
 	
-	if (target > MaxVelocity) target = MaxVelocity;
-	if (target < -MaxVelocity) target = -MaxVelocity;
-	vel.X = target;
-	vel.Y = 0;
-	vel.Z = 0;
-	SetAngularVelocity(ji, vel);
+	if (bIsDriven)
+	{
+		if (target > MaxVelocity) target = MaxVelocity;
+		if (target < -MaxVelocity) target = -MaxVelocity;
+		vel.X = target;
+		vel.Y = 0;
+		vel.Z = 0;
+		SetAngularVelocity(ji, vel);
+	}
 }
 
 // Updates the joint item's angle to match the physics system's angle

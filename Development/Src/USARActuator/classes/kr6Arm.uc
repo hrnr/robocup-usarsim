@@ -2,64 +2,63 @@
   DISCLAIMER:
   This software was produced in part by the National Institute of Standards
   and Technology (NIST), an agency of the U.S. government, and by statute is
-  not subject to copyright in the United States.  Recipients of this software
+  not subject to copyright in the United States.	Recipients of this software
   assume all responsibility associated with its operation, modification,
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-// TODO Has no model
-class kr60Arm extends Actuator placeable config (USAR);
+class kr6Arm extends Actuator placeable config (USAR);
 
 
 defaultproperties
 {
+
 	Begin Object Class=Part Name=Joint1
-		Mesh=StaticMesh'KR60.KR60_1'
+		Mesh=StaticMesh'KR6.KR6_1'
 		Mass=5.0
-		Offset=(X=-.112,Y=-.016,Z=-.18)
 	End Object
 	Body=Joint1
 	PartList.Add(Joint1)
 	
 	Begin Object Class=Part Name=Joint2
-		Mesh=StaticMesh'KR60.KR60_2'
-		Mass=1
-		Offset=(X=.212,Y=-.024,Z=-.868)
+		Mesh=StaticMesh'KR6.KR6_2'
+		Mass=1.0
+		Offset=(X=.316,Y=0,Z=-.688)
 	End Object
 	PartList.Add(Joint2)
 	
 	Begin Object Class=Part Name=Joint3
-		Mesh=StaticMesh'KR60.KR60_3'
-		Mass=.5
-		Offset=(X=.4,Y=.236,Z=-1.564)
+		Mesh=StaticMesh'KR6.KR6_3'
+		Mass=0.5
+		Offset=(X=.508,Y=.312,Z=-1.288)
 	End Object
 	PartList.Add(Joint3)
 	
 	Begin Object Class=Part Name=Joint4
-		Mesh=StaticMesh'KR60.KR60_4'
+		Mesh=StaticMesh'KR6.KR6_4'
 		Mass=0.2
-		Offset=(X=.496,Y=.02,Z=-2.088)
+		Offset=(X=.736,Y=.124,Z=-1.632)
 	End Object
 	PartList.Add(Joint4)
 	
 	Begin Object Class=Part Name=Joint5
-		Mesh=StaticMesh'KR60.KR60_5'
+		Mesh=StaticMesh'KR6.KR6_5'
 		Mass=0.1
-		Offset=(X=1.2,Y=.004,Z=-2.18)
+		Offset=(X=1.348,Y=.1,Z=-1.584)
 	End Object
 	PartList.Add(Joint5)
 	
 	Begin Object Class=Part Name=Joint6
-		Mesh=StaticMesh'KR60.KR60_6'
+		Mesh=StaticMesh'KR6.KR6_6'
 		Mass=0.05
-		Offset=(X=1.448,Y=0,Z=-2.168)
+		Offset=(X=1.456,Y=.072,Z=-1.58)
 	End Object
 	PartList.Add(Joint6)
 	
 	Begin Object Class=Part Name=Joint7
-		Mesh=StaticMesh'KR60.KR60_7'
-		Mass=0.025
-		Offset=(X=1.568,Y=0,Z=-2.172)
+		Mesh=StaticMesh'KR6.KR6_7'
+		Mass=0.01
+		Offset=(X=1.562,Y=.092,Z=-1.584)
 	End Object
 	PartList.Add(Joint7)
 	
@@ -68,9 +67,10 @@ defaultproperties
 		Child=Joint2
 		Damping=100
 		MaxForce=1000
-		LimitLow=-3.288
-		LimitHigh=3.288
-		Offset=(X=-.08,Y=0,Z=0)
+		LimitLow=-2.967
+		LimitHigh=2.967
+		Offset=(X=.008,Y=0.016,Z=-.448)
+		Direction=(X=0,Y=0,Z=0)
 	End Object
 	Joints.Add(Joint1_Joint2)
 	
@@ -79,11 +79,10 @@ defaultproperties
 		Child=Joint3
 		Damping=100
 		MaxForce=1000
-		LimitLow=-0.61
-		LimitHigh=2.356
-		Offset=(X=.408,Y=0,Z=-.972)
+		LimitLow=-1.571
+		LimitHigh=2.793
+		Offset=(X=.52,Y=.108,Z=-.784)
 		Direction=(X=1.571,Y=0,Z=0)
-		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint2_Joint3)
 	
@@ -92,10 +91,10 @@ defaultproperties
 		Child=Joint4
 		Damping=50
 		MaxForce=500
-		LimitLow=-2.757
-		LimitHigh=2.094
-		Offset=(X=.408,Y=0,Z=-1.98)
-		Direction=(X=1.571,Y=0,Z=0)
+		LimitLow=-2.967
+		LimitHigh=4.538
+		Offset=(X=.512,Y=.108,Z=-1.632)
+		Direction=(X=-1.571,Y=0,Z=0)
 		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint3_Joint4)
@@ -105,11 +104,10 @@ defaultproperties
 		Child=Joint5
 		Damping=50
 		MaxForce=500
-		LimitLow=-6.108
-		LimitHigh=6.108
-		Offset=(X=0,Y=0,Z=-2.172)
+		LimitLow=-3.491
+		LimitHigh=3.491
+		Offset=(X=1.236,Y=0.096,Z=-1.58)
 		Direction=(X=0,Y=-1.571,Z=0)
-		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint4_Joint5)
 	
@@ -118,11 +116,10 @@ defaultproperties
 		Child=Joint6
 		Damping=5
 		MaxForce=25
-		Offset=(X=1.392,Y=0,Z=-2.172)
-		Direction=(X=1.571,Y=0,Z=0)
-		LimitLow=-2.076
-		LimitHigh=2.076
-		InverseMeasureAngle=true
+		LimitLow=-3.491
+		LimitHigh=3.491
+		Offset=(X=1.448,Y=0.08,Z=-1.58)
+		Direction=(X=-1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(Joint5_Joint6)
 	
@@ -131,11 +128,10 @@ defaultproperties
 		Child=Joint7
 		Damping=5
 		MaxForce=10
-		Offset=(X=0,Y=0,Z=-2.172)
-		Direction=(X=0,Y=-1.571,Z=0)
-		LimitLow=-6.108
-		LimitHigh=6.108
-		InverseMeasureAngle=true
+		Offset=(X=1.544,Y=0.092,Z=-1.58)
+		Direction=(X=0,Y=1.571,Z=0)
+		LimitLow=-7.854
+		LimitHigh=7.854
 	End Object
 	Joints.Add(Joint6_Joint7)
 	
