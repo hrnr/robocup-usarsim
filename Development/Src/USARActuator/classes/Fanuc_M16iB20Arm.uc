@@ -87,8 +87,8 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Base_Joint1
 		Parent=Base
 		Child=Joint1
-		Damping=5
-		MaxForce=50
+		Damping=20
+		MaxForce=100
 		LimitLow=-2.967
 		LimitHigh=2.967
 		Offset=(X=.052,Y=0,Z=-.384)
@@ -99,7 +99,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Joint1_Joint2
 		Parent=Joint1
 		Child=Joint2
-		Damping=5
+		Damping=20
 		MaxForce=100
 		LimitLow=-1.571
 		LimitHigh=2.793
@@ -111,7 +111,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Joint2_Joint3
 		Parent=Joint2
 		Child=Joint3
-		Damping=5
+		Damping=10
 		MaxForce=50
 		LimitLow=-2.967
 		LimitHigh=4.538

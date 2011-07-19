@@ -14,7 +14,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Basic.BasicBody'
-		Mass=1.0
+		Mass=10
 	End Object
 	Body=BodyItem
 	PartList.Add(BodyItem)
@@ -24,7 +24,7 @@ defaultproperties
 		Mesh=StaticMesh'Basic.CasterWheel'
 		Offset=(X=.384,Y=0,Z=.136)
 		RelativeTo=BodyItem
-		Mass=0.07
+		Mass=1
 	End Object
 	PartList.Add(CasterWheel)
 
@@ -33,7 +33,7 @@ defaultproperties
 		Mesh=StaticMesh'Basic.BasicWheel'
 		Offset=(X=-.3,Y=.576,Z=.064)
 		RelativeTo=BodyItem
-		Mass=0.1
+		Mass=1
 	End Object
 	PartList.Add(BRWheel)
 
@@ -42,7 +42,7 @@ defaultproperties
 		Mesh=StaticMesh'Basic.BasicWheel'
 		Offset=(X=-.3,Y=-.576,Z=.064)
 		RelativeTo=BodyItem
-		Mass=0.1
+		Mass=1
 	End Object
 	PartList.Add(BLWheel)
 

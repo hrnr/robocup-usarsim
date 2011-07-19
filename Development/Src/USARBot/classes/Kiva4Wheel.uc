@@ -17,7 +17,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=Chassis
 		Mesh=StaticMesh'Kiva_static.Chassis'
-		//Mass=
+		Mass=12
 	End Object
 	Body=Chassis
 	PartList.Add(Chassis)
@@ -26,7 +26,7 @@ defaultproperties
 	Begin Object Class=Part Name=FCasterWheel
 		Mesh=StaticMesh'Kiva_static.CasterWheel'
 		Offset=(X=.432,Y=0,Z=.24)
-		//Mass=
+		Mass=1
 	End Object
 	PartList.Add(FCasterWheel)
 
@@ -34,7 +34,7 @@ defaultproperties
 	Begin Object Class=Part Name=BCasterWheel
 		Mesh=StaticMesh'Kiva_static.CasterWheel'
 		Offset=(X=-.432,Y=0,Z=.24)
-		//Mass=
+		Mass=1
 	End Object
 	PartList.Add(BCasterWheel)
 
@@ -43,7 +43,7 @@ defaultproperties
 		Mesh=StaticMesh'Kiva_static.Wheel'
 		Offset=(X=0,Y=.324,Z=.194)
 		Direction=(X=1.571,Y=0,Z=0)
-		//Mass=
+		Mass=1
 	End Object
 	PartList.Add(RWheel)
 
@@ -52,7 +52,7 @@ defaultproperties
 		Mesh=StaticMesh'Kiva_static.Wheel'
 		Offset=(X=0,Y=-.324,Z=.194)
 		Direction=(X=1.571,Y=0,Z=0)
-		//Mass=
+		Mass=1
 	End Object
 	PartList.Add(LWheel)
 

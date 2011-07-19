@@ -21,7 +21,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'AckermanExample.Body'
-		Mass=50
+		Mass=125
 		Direction=(X=0,Y=0,Z=1.571)
 	End Object
 	Body=BodyItem
@@ -32,7 +32,7 @@ defaultproperties
 		Mesh=StaticMesh'AckermanExample.BigWheel'
 		Offset=(X=.54,Y=.204,Z=.456)
 		Direction=(X=0,Y=0,Z=1.571)
-		Mass=1
+		Mass=5
 	End Object
 	PartList.Add(FRWheel)
 
@@ -41,7 +41,7 @@ defaultproperties
 		Mesh=StaticMesh'AckermanExample.BigWheel'
 		Offset=(X=.54,Y=-.204,Z=.456)
 		Direction=(X=0,Y=0,Z=1.571)
-		Mass=1
+		Mass=5
 	End Object
 	PartList.Add(FLWheel)
 
@@ -50,7 +50,7 @@ defaultproperties
 		Mesh=StaticMesh'AckermanExample.SmallWheel'
 		Offset=(X=-.416,Y=.248,Z=.512)
 		Direction=(X=0,Y=0,Z=1.571)
-		Mass=1
+		Mass=5
 	End Object
 	PartList.Add(BRWheel)
 
@@ -59,21 +59,21 @@ defaultproperties
 		Mesh=StaticMesh'AckermanExample.SmallWheel'
 		Offset=(X=-.416,Y=-.248,Z=.512)
 		Direction=(X=0,Y=0,Z=1.571)
-		Mass=1
+		Mass=5
 	End Object
 	PartList.Add(BLWheel)
 	
 	Begin Object Class=Part Name=FREmptyMesh
 		Mesh=StaticMesh'Basic.EmptyMesh'
 		Offset=(X=.54,Y=.104,Z=.456)
-		Mass=2
+		Mass=1
 	End Object
 	PartList.Add(FREmptyMesh)
 	
 	Begin Object Class=Part Name=FLEmptyMesh
 		Mesh=StaticMesh'Basic.EmptyMesh'
 		Offset=(X=.54,Y=-.104,Z=.456)
-		Mass=2
+		Mass=1
 	End Object
 	PartList.Add(FLEmptyMesh)
 	
@@ -103,7 +103,7 @@ defaultproperties
 		Side=SIDE_Right
 		Offset=(X=.54,Y=.204,Z=.456)
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=1.4
+		MaxVelocity=.56
 	End Object
 	Joints.Add(FRWheelRoll)
 
@@ -113,7 +113,7 @@ defaultproperties
 		Side=SIDE_Left
 		Offset=(X=.54,Y=-.204,Z=.456)
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=1.4
+		MaxVelocity=.56
 	End Object
 	Joints.Add(FLWheelRoll)
 
@@ -123,7 +123,7 @@ defaultproperties
 		Side=SIDE_Right
 		Offset=(X=-.416,Y=.248,Z=.512)
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=1.4
+		MaxVelocity=.8
 	End Object
 	Joints.Add(BRWheelRoll)
 
@@ -133,7 +133,7 @@ defaultproperties
 		Side=SIDE_Left
 		Offset=(X=-.416,Y=-.248,Z=.512)
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=1.4
+		MaxVelocity=.8
 	End Object
 	Joints.Add(BLWheelRoll)
 

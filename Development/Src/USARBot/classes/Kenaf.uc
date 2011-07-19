@@ -5,7 +5,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 	Begin Object Class=Part Name=`{FlipperName}Part\n \
 		Mesh=StaticMesh'Kenaf_static.Flipper'\n \
 		Offset=(X=`{PosX},Y=`{PosY},Z=0)\n \
-		Mass=0.1\n \
+		Mass=1\n \
 		Direction=`{FlipperDirection}\n \
 	End Object\n \
 	PartList.Add(`{FlipperName}Part)\n \
@@ -25,7 +25,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		RelativeTo=`{FlipperName}Part\n \
 		Mesh=StaticMesh'Kenaf_static.SmallTire'\n \
 		Offset=(X=0,Y=0,Z=0)\n \
-		Mass=0.1\n \
+		Mass=1\n \
 	End Object\n \
 	PartList.Add(`{FlipperName}Wheel)\n \
 	\
@@ -71,7 +71,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		Mesh=StaticMesh'Kenaf_static.TrackTireLarge'\n \
 		Offset=(X=`PosX,Y=`PosY,Z=0.0)\n \
 		Direction=`{WheelDirection}\n \
-		Mass=0.1\n \
+		Mass=1\n \
 	End Object\n \
 	PartList.Add(`{WheelName})\n \
 	Begin Object Class=WheelJoint Name=`{WheelName}Roll\n \
@@ -101,7 +101,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=ChassisMiddle
 		Mesh=StaticMesh'Kenaf_Static.Body'
-		Mass=1.0
+		Mass=10
 		Offset=(X=0,Y=0,Z=0)
 	End Object
 	Body=ChassisMiddle

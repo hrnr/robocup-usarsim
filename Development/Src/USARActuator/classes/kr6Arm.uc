@@ -66,7 +66,7 @@ defaultproperties
 		Parent=Joint1
 		Child=Joint2
 		Damping=100
-		MaxForce=1000
+		MaxForce=500
 		LimitLow=-2.967
 		LimitHigh=2.967
 		Offset=(X=.008,Y=0.016,Z=-.448)
@@ -78,7 +78,7 @@ defaultproperties
 		Parent=Joint2
 		Child=Joint3
 		Damping=100
-		MaxForce=1000
+		MaxForce=500
 		LimitLow=-1.571
 		LimitHigh=2.793
 		Offset=(X=.52,Y=.108,Z=-.784)
@@ -90,7 +90,7 @@ defaultproperties
 		Parent=Joint3
 		Child=Joint4
 		Damping=50
-		MaxForce=500
+		MaxForce=200
 		LimitLow=-2.967
 		LimitHigh=4.538
 		Offset=(X=.512,Y=.108,Z=-1.632)
@@ -102,8 +102,8 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Joint4_Joint5
 		Parent=Joint4
 		Child=Joint5
-		Damping=50
-		MaxForce=500
+		Damping=10
+		MaxForce=50
 		LimitLow=-3.491
 		LimitHigh=3.491
 		Offset=(X=1.236,Y=0.096,Z=-1.58)
@@ -115,7 +115,7 @@ defaultproperties
 		Parent=Joint5
 		Child=Joint6
 		Damping=5
-		MaxForce=25
+		MaxForce=50
 		LimitLow=-3.491
 		LimitHigh=3.491
 		Offset=(X=1.448,Y=0.08,Z=-1.58)
@@ -127,7 +127,7 @@ defaultproperties
 		Parent=Joint6
 		Child=Joint7
 		Damping=5
-		MaxForce=10
+		MaxForce=25
 		Offset=(X=1.544,Y=0.092,Z=-1.58)
 		Direction=(X=0,Y=1.571,Z=0)
 		LimitLow=-7.854

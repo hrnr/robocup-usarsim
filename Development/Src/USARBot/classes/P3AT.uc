@@ -17,7 +17,7 @@ defaultproperties
 	// Create body part
 	Begin Object Class=Part Name=ChassisMiddle
 		Mesh=StaticMesh'P3AT_static.ChassisMiddle'
-		Mass=3.0
+		Mass=1
 	End Object
 	Body=ChassisMiddle
 	PartList.Add(ChassisMiddle)
@@ -25,7 +25,7 @@ defaultproperties
 	// Create bottom part
 	Begin Object Class=Part Name=ChassisBottom
 		Mesh=StaticMesh'P3AT_static.ChassisBottom'
-		Mass=0.8
+		Mass=10
 		Offset=(X=.012,Y=0,Z=.068)
 	End Object
 	PartList.Add(ChassisBottom)
