@@ -30,11 +30,14 @@ public class ActuatorStatusHandler implements StatusHandler {
 		this.ui = ui;
 	}
 	public boolean statusReceived(USARPacket packet) {
-		String type = packet.getParam("Type");
+		String type = packet.getParam("Type"), pt = packet.getType();
+		boolean output = true;
 		if (type == null) type = "";
 		// Intercept it and suppress only if useful information gleaned (1st time)
-		return !(packet.getType().equals("CONF") && (type.equals("MisPkg")) ||
-			type.equals("Actuator")) || !ui.updateActuators(packet);
+		if ((pt.equals("CONF") || pt.equals("GEO")) && (type.equals("MisPkg") ||
+				type.equals("Actuator")))
+			output = !ui.updateActuators(packet);
+		return output;
 	}
 	public boolean statusSent(USARPacket packet) {
 		// CONF can't be sent.

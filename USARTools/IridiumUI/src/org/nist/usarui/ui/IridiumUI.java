@@ -83,6 +83,7 @@ public class IridiumUI implements IridiumListener {
 	private Icon badIcon;
 	private JLabel batteryLife;
 	private JComboBox commandType;
+	private final Object commandTypeLock;
 	private JButton connectButton;
 	private JComboBox controlClass;
 	private JTextField controlDims;
@@ -150,6 +151,7 @@ public class IridiumUI implements IridiumListener {
 	 */
 	public IridiumUI(IridiumConnector state) {
 		axes = new float[4];
+		commandTypeLock = new Object();
 		dialogs = new HashMap<String, View>(8);
 		frozen = false;
 		handlers = new ArrayList<StatusHandler>(16);
@@ -860,31 +862,34 @@ public class IridiumUI implements IridiumListener {
 	 * Sends whatever message has been coded in the input fields.
 	 */
 	public void sendWSIWYG() {
-		String type = commandType.getSelectedItem().toString();
-		if (state.isConnected()) {
-			if (type.equals("INIT"))
-				// INIT
-				sendCmdInit();
-			else if (type.equals("DRIVE"))
-				// DRIVE
-				sendCmdDrive();
-			else if (type.equals("SET"))
-				// SET
-				sendCmdSet();
-			else if (type.equals("ACT"))
-				// ACT
-				sendCmdAct();
-			else if (type.equals("GETGEO"))
-				// GETGEO
-				sendMessage("GETGEO " + getGeoconfParameters());
-			else if (type.equals("GETCONF"))
-				// GETCONF
-				sendMessage("GETCONF " + getGeoconfParameters());
-			else if (type.equals("CONTROL"))
-				// CONTROL
-				sendCmdControl();
-			else
-				Utils.showWarning(mainUI, "Unimplemented command: " + commandType.getSelectedItem());
+		synchronized (commandTypeLock) {
+			String type = commandType.getSelectedItem().toString();
+			if (state.isConnected()) {
+				if (type.equals("INIT"))
+					// INIT
+					sendCmdInit();
+				else if (type.equals("DRIVE"))
+					// DRIVE
+					sendCmdDrive();
+				else if (type.equals("SET"))
+					// SET
+					sendCmdSet();
+				else if (type.equals("ACT"))
+					// ACT
+					sendCmdAct();
+				else if (type.equals("GETGEO"))
+					// GETGEO
+					sendMessage("GETGEO " + getGeoconfParameters());
+				else if (type.equals("GETCONF"))
+					// GETCONF
+					sendMessage("GETCONF " + getGeoconfParameters());
+				else if (type.equals("CONTROL"))
+					// CONTROL
+					sendCmdControl();
+				else
+					Utils.showWarning(mainUI, "Unimplemented command: " +
+						commandType.getSelectedItem());
+			}
 		}
 	}
 	/**
@@ -1660,6 +1665,22 @@ public class IridiumUI implements IridiumListener {
 			feedJoystickToRobot();
 	}
 	/**
+	 * Enables the ACT item in the drop down menu if it is not already there.
+	 */
+	public void updateActuatorEnable() {
+		boolean hasAct = false;
+		synchronized (commandTypeLock) {
+			for (int i = 0; i < commandType.getItemCount(); i++)
+				if (commandType.getItemAt(i).toString().equals("ACT")) {
+					hasAct = true;
+					break;
+				}
+			if (!hasAct)
+				commandType.addItem("ACT");
+			commandType.removeItem("INIT");
+		}
+	}
+	/**
 	 * Updates the list of available actuators.
 	 *
 	 * @param packet the packet containing actuator information
@@ -1680,11 +1701,9 @@ public class IridiumUI implements IridiumListener {
 		}
 		// Manual clean
 		if (packet == null) actName.removeAllItems();
-		if (updated && actName.getItemCount() > 0) {
+		if (updated && actName.getItemCount() > 0)
 			// Add ACT to the menu (and remove INIT if still hanging around)
-			commandType.addItem("ACT");
-			commandType.removeItem("INIT");
-		}
+			updateActuatorEnable();
 		return updated;
 	}
 	/**
@@ -1700,8 +1719,10 @@ public class IridiumUI implements IridiumListener {
 		else {
 			batteryLife.setText(String.format("Battery: %d:%02d", battery / 60, battery % 60));
 			// Got a status, remove the INIT item if necessary
-			if (commandType.getItemCount() > 1)
-				commandType.removeItem("INIT");
+			synchronized (commandTypeLock) {
+				if (commandType.getItemCount() > 1)
+					commandType.removeItem("INIT");
+			}
 		}
 	}
 	/**
@@ -1712,17 +1733,19 @@ public class IridiumUI implements IridiumListener {
 	 */
 	public void updateInitComplete(boolean isWC) {
 		// Populate with useful items
-		if (isWC) {
-			commandType.removeItem("INIT");
-			commandType.addItem("CONTROL");
-			commandType.setSelectedIndex(0);
-		} else {
-			commandType.addItem("DRIVE");
-			commandType.addItem("SET");
-			commandType.addItem("GETGEO");
-			commandType.addItem("GETCONF");
-			// Might not be the first command since INIT might still be hanging around
-			commandType.setSelectedItem("DRIVE");
+		synchronized (commandTypeLock) {
+			if (isWC) {
+				commandType.removeItem("INIT");
+				commandType.addItem("CONTROL");
+				commandType.setSelectedIndex(0);
+			} else {
+				commandType.addItem("DRIVE");
+				commandType.addItem("SET");
+				commandType.addItem("GETGEO");
+				commandType.addItem("GETCONF");
+				// Might not be the first command since INIT might still be hanging around
+				commandType.setSelectedItem("DRIVE");
+			}
 		}
 	}
 	/**

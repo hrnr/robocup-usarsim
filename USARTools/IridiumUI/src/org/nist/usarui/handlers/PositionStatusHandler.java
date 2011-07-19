@@ -59,6 +59,7 @@ public class PositionStatusHandler extends AbstractStatusHandler {
 			keep = false;
 		} else if (packet.getType().equals("ASTA"))
 			keep = false;
+		if (!keep) ui.updateActuatorEnable();
 		return keep;
 	}
 }
