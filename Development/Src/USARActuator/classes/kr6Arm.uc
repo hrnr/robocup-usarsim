@@ -16,6 +16,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint1
 		Mesh=StaticMesh'KR6.KR6_1'
 		Mass=5.0
+		Offset=(X=.06,Y=.108,Z=-.256)
 	End Object
 	Body=Joint1
 	PartList.Add(Joint1)
@@ -23,7 +24,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint2
 		Mesh=StaticMesh'KR6.KR6_2'
 		Mass=1.0
-		Offset=(X=.316,Y=0,Z=-.688)
+		Offset=(X=.328,Y=.132,Z=-.764)
 	End Object
 	PartList.Add(Joint2)
 	
@@ -69,7 +70,7 @@ defaultproperties
 		MaxForce=500
 		LimitLow=-2.967
 		LimitHigh=2.967
-		Offset=(X=.008,Y=0.016,Z=-.448)
+		Offset=(X=.2,Y=.092,Z=-.256)
 		Direction=(X=0,Y=0,Z=0)
 	End Object
 	Joints.Add(Joint1_Joint2)
@@ -81,7 +82,7 @@ defaultproperties
 		MaxForce=500
 		LimitLow=-1.571
 		LimitHigh=2.793
-		Offset=(X=.52,Y=.108,Z=-.784)
+		Offset=(X=.508,Y=.408,Z=-.884)
 		Direction=(X=1.571,Y=0,Z=0)
 	End Object
 	Joints.Add(Joint2_Joint3)

@@ -187,22 +187,24 @@ static final function SetSolverExtrapolationFactor(RB_ConstraintInstance instanc
 	default.PhysXProxyInstance.SetSolverExtrapolationFactor(instance, SolverExtrapolationFactor);
 }
 
+
 // Adjusts the mass of the specified item to match reality (takes mass in UU)
 static function SetMass(DynamicSMActor act, float DesiredMass)
 {
+	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
+	/*
 	local float oldScale, oldMass;
 	local RB_BodySetup bs;
-	
 	// Change auto calculated mass to the desired mass
-	DesiredMass = class'UnitsConverter'.static.MassToUU(DesiredMass);
-	/*bs = act.StaticMeshComponent.StaticMesh.BodySetup;
+	bs = act.StaticMeshComponent.StaticMesh.BodySetup;
 	oldMass = act.StaticMeshComponent.BodyInstance.GetBodyMass();
 	oldScale = bs.MassScale;
 	if (oldMass > 0.0 && oldScale > 0.0)
 	{
 		bs.MassScale = DesiredMass / (oldMass / oldScale);
 		act.StaticMeshComponent.BodyInstance.UpdateMassProperties(bs);
-	}*/
+	}
+	*/
 	SetMass2(act.StaticMeshComponent.BodyInstance, DesiredMass);
 }
 
