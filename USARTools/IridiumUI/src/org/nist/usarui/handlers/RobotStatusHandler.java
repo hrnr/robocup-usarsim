@@ -44,11 +44,18 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 				} catch (NumberFormatException ignore) { }
 			// Joint selection list update
 			if (type != null && type.equals("LeggedVehicle")) {
-				ui.updateJoints(packet);
+				final USARPacket newPacket = new USARPacket(packet);
+				final Map<String, String> params = newPacket.getParams();
+				params.remove("Time");
+				params.remove("Type");
+				params.remove("Battery");
+				params.remove("LightIntensity");
+				params.remove("LightToggle");
+				ui.updateJoints(newPacket);
 				// Joint values update
-				for (Map.Entry<String, String> entry : packet.getParams().entrySet()) {
+				for (Map.Entry<String, String> entry : params.entrySet()) {
 					key = entry.getKey();
-					if (!key.equalsIgnoreCase("Battery") && !key.equalsIgnoreCase("Type")) {
+					try {
 						// Show value on panel, in degrees if needed
 						value = Float.parseFloat(entry.getValue());
 						if (ui.isInDegrees()) {
@@ -57,7 +64,7 @@ public class RobotStatusHandler extends AbstractStatusHandler {
 						} else
 							deg = "";
 						setInformation("Joints", key, String.format("%.2f%s", value, deg));
-					}
+					} catch (RuntimeException ignore) { }
 				}
 			}
 			// Keep world controller status messages

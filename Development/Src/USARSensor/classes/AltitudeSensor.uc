@@ -5,12 +5,12 @@
 
 class AltitudeSensor extends Sensor config (USAR);
 
-var vector initialLocation; // initial spawn location
+var vector originalLocation; // initial spawn location
 var float ASL; // above sea level (meters)
 
 simulated function AttachItem()
 {
-	initialLocation = Platform.CenterItem.Location; // in uu
+	originalLocation = Platform.CenterItem.Location; // in uu
 	super.AttachItem();
 } 
 
@@ -23,7 +23,7 @@ function String GetData()
 	
 	curLocation = Platform.CenterItem.Location; // current location in uu
 	curAltitude = curLocation.z; // current altitude in uu
-	relative_altitude = curAltitude - initialLocation.z;	
+	relative_altitude = curAltitude - originalLocation.z;	
 	absolute_altitude = class'UnitsConverter'.static.LengthToUU(ASL) + relative_altitude;
 	if (absolute_altitude < 0) absolute_altitude = 0;
 	

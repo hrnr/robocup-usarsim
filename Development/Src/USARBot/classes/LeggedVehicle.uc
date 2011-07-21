@@ -33,7 +33,6 @@ simulated function String GetStatus()
 			ji = JointItem(Parts[i]);
 			status = status $ " {" $ ji.GetJointName() $ " " $ ji.CurValue $ "}";
 		}
-	status = status $ " {Battery " $ GetBatteryLife() $ "}";
 	return status;
 }
 

@@ -195,7 +195,7 @@ simulated function vector GetPartOffset(Part pt)
 // Gets robot status sent out on each tick
 simulated function String GetStatus()
 {
-	return "STA";
+	return "STA {Time " $ WorldInfo.TimeSeconds $ "} {Battery " $ GetBatteryLife() $ "}";
 }
 
 // Transforms the return value of a joint by some gearing equation

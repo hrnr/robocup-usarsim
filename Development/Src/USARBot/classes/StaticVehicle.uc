@@ -15,7 +15,7 @@ class StaticVehicle extends USARVehicle config(USAR);
 
 simulated function String GetStatus()
 {
-	return "STA {Type StaticVehicle}";
+	return super.GetStatus() $ " {Type StaticVehicle}";
 }
 
 simulated function PostBeginPlay()

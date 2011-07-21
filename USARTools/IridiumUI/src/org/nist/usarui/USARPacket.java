@@ -72,6 +72,17 @@ public class USARPacket {
 		params = Collections.unmodifiableMap(values);
 	}
 	/**
+	 * Duplicates another USAR packet.
+	 *
+	 * @param other the packet to copy
+	 */
+	public USARPacket(USARPacket other) {
+		message = other.getMessage();
+		params = new LinkedHashMap<String, String>(other.getParams());
+		response = other.isResponse();
+		type = other.getType();
+	}
+	/**
 	 * Gets the value of a specified parameter.
 	 *
 	 * @param key the parameter to get

@@ -107,8 +107,8 @@ simulated function float GetProperty(String key)
 // Gets robot status (adds the ground vehicle type)
 simulated function String GetStatus()
 {
-	return super.GetStatus() $ " {Type GroundVehicle} {LightToggle false} " $
-		"{LightIntensity 100} {Battery " $ GetBatteryLife() $ "}";
+	return super.GetStatus() $ " {Type GroundVehicle} {LightToggle " $ HeadLights $
+		"} {LightIntensity 100}";
 }
 
 // Gets the robot's steering type

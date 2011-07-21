@@ -41,10 +41,6 @@ simulated
 function PostBeginPlay()
 {
 	local int i;
-	local JointItem ji;
-	local WheelJoint jt;
-	local String ls, rs, nm;
-	local float left, leftSpeed, right, rightSpeed;
 	super.PostBeginPlay();
 	//CenterItem.WorldInfo.WorldGravityZ=0;
 	
@@ -222,16 +218,9 @@ function Drive(ParsedMessage message)
 event Tick(float DeltaTime)
 {
 	local Rotator newrot;
-	local vector rotVelocities;
 	local vector linVelocities;
 	local Rotator curRotation;
 	local Rotator linVelTrans;
-	local int i;
-	local JointItem ji;
-	local PropellerJoint jt;
-	local String ls, rs, nm;
-	local float left, leftSpeed, right, rightSpeed;
-	local bool norm;
 	
 	Super.Tick(DeltaTime);
 	

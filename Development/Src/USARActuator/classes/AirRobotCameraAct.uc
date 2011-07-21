@@ -7,7 +7,7 @@ defaultproperties
 	Begin Object Class=Part Name=BaseItem
 		Mesh=StaticMesh'AirRobot.PackageBase'
 		Collision=false
-		Mass=0
+		Mass=0.001
 	End Object
 	Body=BaseItem
 	PartList.Add(BaseItem)
@@ -15,10 +15,10 @@ defaultproperties
 	Begin Object Class=Part Name=BottomItem
 		Mesh=StaticMesh'AirRobot.PackageBase'
 		Direction=(X=0,Y=0,Z=0)
-		Mass=0
+		Mass=0.001
 		RelativeTo=BaseItem
 	End Object
-	PartList.Add(TopItem)
+	PartList.Add(BottomItem)
 
 	Begin Object Class=RevoluteJoint Name=RotateJoint
 		Parent=BaseItem
