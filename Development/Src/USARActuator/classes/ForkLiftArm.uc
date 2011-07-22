@@ -9,8 +9,21 @@
 
 class ForkLiftArm extends Actuator placeable config (USAR);
 
+simulated function AttachItem()
+{
+	super.AttachItem();
+	GetPartByName('BaseEmptyMesh').SetHidden(true);
+}
+
 defaultproperties
 {
+	Begin Object Class=Part Name=BaseEmptyMesh
+		Mesh=StaticMesh'Basic.EmptyMesh'
+		Mass=1
+		Offset=(X=-.06,Y=0,Z=-.144)
+	End Object
+	PartList.Add(BaseEmptyMesh)
+	Body=BaseEmptyMesh
 
 	Begin Object Class=Part Name=Joint1
 		Mesh=StaticMesh'Forklift_static.joint1'
@@ -18,19 +31,11 @@ defaultproperties
 		Offset=(X=-.02,Y=0,Z=-.144)
 	End Object
 	PartList.Add(Joint1)
-	Body=Joint1
-	
-	Begin Object Class=Part Name=Joint2
-		Mesh=StaticMesh'Forklift_static.Joint2'
-		Mass=1
-		Offset=(X=.006,Y=0,Z=-.236)
-	End Object
-	PartList.Add(Joint2)
 	
 	Begin Object Class=Part Name=Joint4
 		Mesh=StaticMesh'Forklift_static.Joint4'
-		Mass=.25
-		Offset=(X=.028,Y=0,Z=-.092)
+		Mass=1
+		Offset=(X=.018,Y=0,Z=-.092)
 	End Object
 	PartList.Add(Joint4)
 	
@@ -50,27 +55,29 @@ defaultproperties
 	End Object
 	PartList.Add(Joint6)
 	
-	Begin Object Class=PrismaticJoint Name=Joint1_Joint2
+	Begin Object Class=RevoluteJoint Name=Empty_Joint1
+		Parent=BaseEmptyMesh
+		Child=Joint1
+		Damping=5
+		MaxForce=50
+		LimitLow=-.2
+		LimitHigh=.2
+		Offset=(X=-.06,Y=0,Z=-.144)
+		Direction=(X=1.571,Y=0,Z=0)
+	End Object
+	Joints.Add(Empty_Joint1)
+	
+	Begin Object Class=PrismaticJoint Name=Joint1_Joint4
 		Parent=Joint1
-		Child=Joint2
+		Child=Joint4
 		Damping=5
 		MaxForce=50
 		LimitLow=0
 		LimitHigh=.3				// Don't change this! It used to be at 1 and for some reason caused shaking. 
-		Offset=(X=-.024,Y=0,Z=-.144)
+		Offset=(X=.018,Y=0,Z=-.092)
 		Direction=(X=3.141,Y=0,Z=0)
 	End Object
-	Joints.Add(Joint1_Joint2)
-	
-	Begin Object Class=FixedJoint Name=Joint2_Joint4
-		Parent=Joint2
-		Child=Joint4
-		Damping=5
-		MaxForce=50
-		Offset=(X=.036,Y=0,Z=0)
-		Direction=(X=3.141,Y=0,Z=0)
-	End Object
-	Joints.Add(Joint2_Joint4)
+	Joints.Add(Joint1_Joint4)
 	
 	Begin Object Class=FixedJoint Name=Joint4_Joint5
 		Parent=Joint4

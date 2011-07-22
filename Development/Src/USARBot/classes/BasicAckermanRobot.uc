@@ -12,128 +12,135 @@ class BasicAckermanRobot extends AckermanSteeredVehicle config(USAR);
 simulated function PostBeginPlay()
 {
 	super.PostBeginPlay();
-	GetPartByName('FREmptyMesh').SetHidden(true);
-	GetPartByName('FLEmptyMesh').SetHidden(true);
+	GetPartByName('BREmptyMesh').SetHidden(true);
+	GetPartByName('BLEmptyMesh').SetHidden(true);
 }
 
 defaultproperties
 {
 	// Create body part
 	Begin Object Class=Part Name=BodyItem
-		Mesh=StaticMesh'AckermanExample.Body'
-		Mass=125
-		Direction=(X=0,Y=0,Z=1.571)
+		Mesh=StaticMesh'Basic.BasicBody'
+		Mass=10
 	End Object
 	Body=BodyItem
 	PartList.Add(BodyItem)
 
 	// Front Right Wheel
 	Begin Object Class=Part Name=FRWheel
-		Mesh=StaticMesh'AckermanExample.BigWheel'
-		Offset=(X=.54,Y=.204,Z=.456)
-		Direction=(X=0,Y=0,Z=1.571)
-		Mass=5
+		Mesh=StaticMesh'Basic.BasicWheel'
+		Offset=(X=.3,Y=.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
 	End Object
 	PartList.Add(FRWheel)
 
 	// Front Left Wheel
 	Begin Object Class=Part Name=FLWheel
-		Mesh=StaticMesh'AckermanExample.BigWheel'
-		Offset=(X=.54,Y=-.204,Z=.456)
-		Direction=(X=0,Y=0,Z=1.571)
-		Mass=5
+		Mesh=StaticMesh'Basic.BasicWheel'
+		Offset=(X=.3,Y=-.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
 	End Object
 	PartList.Add(FLWheel)
+	
+	// Back Right EmptyMesh
+	Begin Object Class=Part name=BREmptyMesh
+		Mesh=StaticMesh'Basic.EmptyMesh'
+		Offset=(X=-.3,Y=.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
+	End Object
+	PartList.Add(BREmptyMesh)
+	
+	// Left Right EmptyMesh
+	Begin Object Class=Part name=BLEmptyMesh
+		Mesh=StaticMesh'Basic.EmptyMesh'
+		Offset=(X=-.3,Y=-.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
+	End Object
+	PartList.Add(BLEmptyMesh)
 
 	// Back Right Wheel
 	Begin Object Class=Part Name=BRWheel
-		Mesh=StaticMesh'AckermanExample.SmallWheel'
-		Offset=(X=-.416,Y=.248,Z=.512)
-		Direction=(X=0,Y=0,Z=1.571)
-		Mass=5
+		Mesh=StaticMesh'Basic.BasicWheel'
+		Offset=(X=-.3,Y=.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
 	End Object
 	PartList.Add(BRWheel)
 
 	// Back Left Wheel
 	Begin Object Class=Part Name=BLWheel
-		Mesh=StaticMesh'AckermanExample.SmallWheel'
-		Offset=(X=-.416,Y=-.248,Z=.512)
-		Direction=(X=0,Y=0,Z=1.571)
-		Mass=5
+		Mesh=StaticMesh'Basic.BasicWheel'
+		Offset=(X=-.3,Y=-.576,Z=.064)
+		RelativeTo=BodyItem
+		Mass=1
 	End Object
 	PartList.Add(BLWheel)
-	
-	Begin Object Class=Part Name=FREmptyMesh
-		Mesh=StaticMesh'Basic.EmptyMesh'
-		Offset=(X=.54,Y=.104,Z=.456)
-		Mass=1
-	End Object
-	PartList.Add(FREmptyMesh)
-	
-	Begin Object Class=Part Name=FLEmptyMesh
-		Mesh=StaticMesh'Basic.EmptyMesh'
-		Offset=(X=.54,Y=-.104,Z=.456)
-		Mass=1
-	End Object
-	PartList.Add(FLEmptyMesh)
-	
-	Begin Object Class=RevoluteJoint Name=FRFrontSteer
-		Parent=BodyItem
-		Child=FREmptyMesh
-		Damping=50
-		Offset=(X=.54,Y=.204,Z=.456)
-		LimitLow=-0.5
-		LimitHigh=0.5
-	End Object
-	Joints.Add(FRFrontSteer)
-	
-	Begin Object Class=RevoluteJoint Name=FLFrontSteer
-		Parent=BodyItem
-		Child=FLEmptyMesh
-		Damping=50
-		Offset=(X=.54,Y=-.204,Z=.456)
-		LimitLow=-0.5
-		LimitHigh=0.5
-	End Object
-	Joints.Add(FLFrontSteer)
 
 	Begin Object Class=WheelJoint Name=FRWheelRoll
-		Parent=FREmptyMesh
+		Parent=BodyItem
 		Child=FRWheel
 		Side=SIDE_Right
-		Offset=(X=.54,Y=.204,Z=.456)
+		Offset=(X=.3,Y=.576,Z=.064)
+		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=.56
+		MaxVelocity=1.4
 	End Object
 	Joints.Add(FRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=FLWheelRoll
-		Parent=FLEmptyMesh
+		Parent=BodyItem
 		Child=FLWheel
 		Side=SIDE_Left
-		Offset=(X=.54,Y=-.204,Z=.456)
+		Offset=(X=.3,Y=-.576,Z=.064)
+		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=.56
+		MaxVelocity=1.4
 	End Object
 	Joints.Add(FLWheelRoll)
 
-	Begin Object Class=WheelJoint Name=BRWheelRoll
+	Begin Object Class=RevoluteJoint Name=BRRearSteer
 		Parent=BodyItem
+		Child=BREmptyMesh
+		RelativeTo=BodyItem
+		Offset=(X=-.3,Y=.576,Z=.064)
+		LimitLow=-.8
+		LimitHigh=.8
+	End Object
+	Joints.Add(BRRearSteer)
+	
+	Begin Object Class=RevoluteJoint Name=BLRearSteer
+		Parent=BodyItem
+		Child=BLEmptyMesh
+		RelativeTo=BodyItem
+		Offset=(X=-.3,Y=-.576,Z=.064)
+		LimitLow=-.8
+		LimitHigh=.8
+	End Object
+	Joints.Add(BLRearSteer)
+	
+	Begin Object Class=WheelJoint Name=BRWheelRoll
+		Parent=BREmptyMesh
 		Child=BRWheel
 		Side=SIDE_Right
-		Offset=(X=-.416,Y=.248,Z=.512)
+		Offset=(X=-.3,Y=.576,Z=.064)
+		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=.8
+		MaxVelocity=1.4
 	End Object
 	Joints.Add(BRWheelRoll)
 
 	Begin Object Class=WheelJoint Name=BLWheelRoll
-		Parent=BodyItem
+		Parent=BLEmptyMesh
 		Child=BLWheel
 		Side=SIDE_Left
-		Offset=(X=-.416,Y=-.248,Z=.512)
+		Offset=(X=-.3,Y=-.576,Z=.064)
+		RelativeTo=BodyItem
 		Direction=(X=1.571,Y=0,Z=0)
-		MaxVelocity=.8
+		MaxVelocity=1.4
 	End Object
 	Joints.Add(BLWheelRoll)
 

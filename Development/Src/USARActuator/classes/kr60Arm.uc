@@ -52,14 +52,14 @@ defaultproperties
 	Begin Object Class=Part Name=Joint6
 		Mesh=StaticMesh'KR60.KR60_6'
 		Mass=0.05
-		Offset=(X=1.448,Y=0,Z=-2.168)
+		Offset=(X=1.41,Y=0,Z=-2.19)
 	End Object
 	PartList.Add(Joint6)
 	
 	Begin Object Class=Part Name=Joint7
 		Mesh=StaticMesh'KR60.KR60_7'
 		Mass=0.025
-		Offset=(X=1.568,Y=0,Z=-2.172)
+		Offset=(X=1.53,Y=0,Z=-2.19)
 	End Object
 	PartList.Add(Joint7)
 	
@@ -67,7 +67,7 @@ defaultproperties
 		Parent=Joint1
 		Child=Joint2
 		Damping=100
-		MaxForce=500
+		MaxForce=600
 		LimitLow=-3.288
 		LimitHigh=3.288
 		Offset=(X=-.08,Y=0,Z=0)
@@ -77,8 +77,8 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Joint2_Joint3
 		Parent=Joint2
 		Child=Joint3
-		Damping=100
-		MaxForce=500
+		Damping=200
+		MaxForce=1500
 		LimitLow=-0.61
 		LimitHigh=2.356
 		Offset=(X=.408,Y=0,Z=-.972)
@@ -90,8 +90,8 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=Joint3_Joint4
 		Parent=Joint3
 		Child=Joint4
-		Damping=50
-		MaxForce=200
+		Damping=100
+		MaxForce=700
 		LimitLow=-2.757
 		LimitHigh=2.094
 		Offset=(X=.408,Y=0,Z=-1.98)
@@ -104,7 +104,7 @@ defaultproperties
 		Parent=Joint4
 		Child=Joint5
 		Damping=10
-		MaxForce=50
+		MaxForce=100
 		LimitLow=-6.108
 		LimitHigh=6.108
 		Offset=(X=0,Y=0,Z=-2.172)
@@ -117,8 +117,8 @@ defaultproperties
 		Parent=Joint5
 		Child=Joint6
 		Damping=5
-		MaxForce=50
-		Offset=(X=1.392,Y=0,Z=-2.172)
+		MaxForce=60
+		Offset=(X=1.35,Y=0,Z=-2.19)
 		Direction=(X=1.571,Y=0,Z=0)
 		LimitLow=-2.076
 		LimitHigh=2.076
@@ -131,7 +131,7 @@ defaultproperties
 		Child=Joint7
 		Damping=5
 		MaxForce=25
-		Offset=(X=0,Y=0,Z=-2.172)
+		Offset=(X=0,Y=0,Z=-2.19)
 		Direction=(X=0,Y=-1.571,Z=0)
 		LimitLow=-6.108
 		LimitHigh=6.108
