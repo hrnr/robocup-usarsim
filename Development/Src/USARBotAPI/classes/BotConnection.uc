@@ -59,6 +59,36 @@ function PreBeginPlay()
 		LogInternal("BotConnection: Spawned");
 }
 
+// Manipulates actuators using new "ACT" API
+function ProcessAct(ParsedMessage parsedMessage)
+{
+	local Actuator act;
+	local int i;
+	local array<String> receivedArgs;
+	local array<String> receivedVals;
+	
+	act = USARVehicle(TheBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
+	// Found actuator, update
+	if (act != None)
+	{
+		receivedArgs = parsedMessage.GetArguments();
+		receivedVals = parsedMessage.GetValues();
+		for (i = 0; i < receivedArgs.Length; i++) 
+		{
+			// Case 1: Link Value
+			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
+					receivedArgs[i + 1] == "Value")
+				act.SetLinkTarget(int(receivedVals[i++]), float(receivedVals[i++]));
+			// Case 2: Gripper
+			else if (receivedArgs[i] == "Gripper")
+				act.SetGripper(int(receivedVals[i]));
+			// Case 3: Sequence
+			else if (receivedArgs[i] == "Sequence")
+				act.RunSequence(int(receivedVals[i]));
+		}
+	}
+}
+
 function ProcessAction(ParsedMessage parsedMessage)
 {
 	local USARVehicle usarVehicle;
@@ -135,36 +165,6 @@ function ProcessDrive(ParsedMessage parsedMessage)
 		bot.SetHeadLights(value == "true");
 	// Individual vehicle drives
 	bot.Drive(parsedMessage);
-}
-
-// Manipulates actuators using new "ACT" API
-function ProcessAct(ParsedMessage parsedMessage)
-{
-	local Actuator act;
-	local int i;
-	local array<String> receivedArgs;
-	local array<String> receivedVals;
-	
-	act = USARVehicle(TheBot.Pawn).GetActuator(parsedMessage.GetArgVal("Name"));
-	// Found actuator, update
-	if (act != None)
-	{
-		receivedArgs = parsedMessage.GetArguments();
-		receivedVals = parsedMessage.GetValues();
-		for (i = 0; i < receivedArgs.Length; i++) 
-		{
-			// Case 1: Link Value
-			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
-					receivedArgs[i + 1] == "Value")
-				act.SetLinkTarget(int(receivedVals[i++]), float(receivedVals[i++]));
-			// Case 2: Gripper
-			else if (receivedArgs[i] == "Gripper")
-				act.SetGripper(int(receivedVals[i]));
-			// Case 3: Sequence
-			else if (receivedArgs[i] == "Sequence")
-				act.RunSequence(int(receivedVals[i]));
-		}
-	}
 }
 
 // Gets configuration information from the robot

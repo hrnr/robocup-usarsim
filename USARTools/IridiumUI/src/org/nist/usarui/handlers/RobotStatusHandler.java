@@ -11,7 +11,6 @@ package org.nist.usarui.handlers;
 
 import org.nist.usarui.*;
 import org.nist.usarui.ui.IridiumUI;
-
 import java.util.*;
 
 /**

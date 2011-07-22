@@ -26,17 +26,6 @@ simulated function AttachItem()
 	MessageSendDelegate = Platform.ReceiveMessageFromSensor;
 }
 
-// Sends out sensor data per tick
-simulated function ClientTimer()
-{
-	MessageSendDelegate(GetHead() @ GetData());
-}
-
-// Gets the sensor data
-function String GetData()
-{
-}
-
 // Gets the geometry data
 function String GetGeoData()
 {
@@ -68,16 +57,6 @@ simulated function String GetHead()
 	// Add sensor type
 	outstring @= "{Type " $ ItemType $ "}";
 	return outstring;
-}
-
-// Called by the vehicle timer function
-simulated function Timer()
-{
-	super.Timer();
-	
-	// Continue if battery remains alive
-	if (IsClient && IsOwner && Platform.GetBatteryLife() > 0)
-		ClientTimer();
 }
 
 defaultproperties

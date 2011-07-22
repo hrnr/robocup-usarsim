@@ -11,10 +11,10 @@
  * Vacuum - a device that can attach onto the end of an arm and pick up objects like a vacuum
  * Use the INI file to attach this actuator and parent it to the end part of the arm
  */
-class Vacuum extends Actuator placeable config (USAR);
+class Vacuum extends Gripper placeable config (USAR);
 
 // Item used for attachment (use self if no parent found)
-var Actor attachTo;
+var Actor AttachTo;
 // Constraint that causes gripping to occur
 var Hinge GripCons;
 // The physics this object used to have before grabbing
@@ -109,41 +109,33 @@ event Tick(float DT)
 }
 
 // Opens or closes the gripper as necessary
-reliable server function SetGripper(int gripper)
+function Operate(bool gripper)
 {
 	local Actor hit;
 	local vector hitLocation, hitNormal;
 	local vector rayAxis, rayEnd;
 	
-	switch (gripper)
+	if (!gripper)
+		UngripObject();
+	else if (GripCons == None && GripTarget == None)
 	{
-		case 0:
-			UngripObject();
-			break;
-		case 1:
-			if (GripCons == None && GripTarget == None)
-			{
-				// Find axis along which to trace
-				hitLocation = CenterItem.Location;
-				rayAxis = vect(0, 0, 0);
-				rayAxis.Z = suctionLength;
-				// Find where how far away the box can be
-				rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location;
-				hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location, true);
-				// Cannot grab base or self
-				if (hit == CenterItem || hit == Base)
-					LogInternal("Vacuum: Not placed or oriented properly; can only see self");
-				// Look for actors within the specified length; cannot grab a brush!
-				else if (hit != None && !hit.isA('Brush'))
-				{
-					// Cannot pick up self or base
-					LogInternal("Vacuum: Picking up " $ String(hit.Name));
-					GripObject(hit);
-					break;
-				}
-			}
-			break;
-		default:
+		// Find axis along which to trace
+		hitLocation = CenterItem.Location;
+		rayAxis = vect(0, 0, 0);
+		rayAxis.Z = suctionLength;
+		// Find where how far away the box can be
+		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location;
+		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location, true);
+		// Cannot grab base or self
+		if (hit == CenterItem || hit == Base)
+			LogInternal("Vacuum: Not placed or oriented properly; can only see self");
+		// Look for actors within the specified length; cannot grab a brush!
+		else if (hit != None && !hit.isA('Brush'))
+		{
+			// Cannot pick up self or base
+			LogInternal("Vacuum: Picking up " $ String(hit.Name));
+			GripObject(hit);
+		}
 	}
 }
 

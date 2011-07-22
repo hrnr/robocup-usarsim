@@ -99,9 +99,13 @@ function String GetGeneralConfData(String itemType, String itemName)
 	// Look for items
 	outStr = "";
 	for (i = 0; i < Parts.Length; i++)
+	{
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetConfData();
+		if (Parts[i].isA('Actuator'))
+			outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(itemType, itemName);
+	}
 	if (outStr != "")
 		outStr = "CONF {Type " $ itemType $ "}" $ outStr;
 	return outStr;
@@ -116,9 +120,13 @@ function String GetGeneralGeoData(String itemType, String itemName)
 	// Look for items
 	outStr = "";
 	for (i = 0; i < Parts.Length; i++)
+	{
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
+		if (Parts[i].isA('Actuator'))
+			outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(itemType, itemName);
+	}
 	if (outStr != "")
 		outStr = "GEO {Type " $ itemType $ "}" $ outStr;
 	return outStr;
@@ -177,7 +185,7 @@ function String GetMisPkgGeoData()
 	outStr = "GEO {Type MisPkg}";
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ " " $ Parts[i].GetGeoData();
+			outStr = outStr $ " " $ Actuator(Parts[i]).GetMisPkgGeoData();
 	return outStr;
 }
 

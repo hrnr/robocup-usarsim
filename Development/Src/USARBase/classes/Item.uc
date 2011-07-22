@@ -33,11 +33,24 @@ simulated function AttachItem()
 // Called by Timer during certain conditions - where processing should be done
 simulated function ClientTimer()
 {
+	MessageSendDelegate(GetHead() @ GetData());
 }
 
 // Convert all variables of this class read from the UTUSAR.ini from SI to UU units
 simulated function ConvertParam()
 {
+}
+
+// Gets the header from this item
+simulated function String GetHead()
+{
+	return "";
+}
+
+// Gets the data from this item
+function String GetData()
+{
+	return "";
 }
 
 // Gets the header of the configuration data
@@ -151,6 +164,13 @@ reliable client function SetClientFlag()
 reliable server function SetName(String iName)
 {
 	ItemName = iName;
+}
+
+// Call ClientTimer on each scan interval
+simulated function Timer()
+{
+	if (IsClient && IsOwner && Platform.GetBatteryLife() > 0)
+		ClientTimer();
 }
 
 defaultproperties
