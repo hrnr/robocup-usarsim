@@ -64,14 +64,6 @@ public class IridiumUI implements IridiumListener {
 	 */
 	public static final Insets NO_INSETS = new Insets(0, 0, 0, 0);
 	/**
-	 * Available options for SET when using "Camera" as type.
-	 */
-	public static final String[] OPT_CAMERA = { "FOV" };
-	/**
-	 * Available options for SET when using "Joint" as type.
-	 */
-	public static final String[] OPT_JOINTS = { "Angle", "Velocity", "Torque" };
-	/**
 	 * The distance between the main window and auxiliary windows.
 	 */
 	public static final int PAD = 5;
@@ -1425,13 +1417,31 @@ public class IridiumUI implements IridiumListener {
 		final JComponent setOptions = new JPanel(new GridBagLayout());
 		typePanel.add(setOptions, "set");
 		// Combo Box: Item Type
-		setType = Utils.createComboBox("Type of item to control", "Joint", "Camera");
+		setType = Utils.createEntryBox("Type of item to control", "Joint", "Camera",
+			"Gripper");
 		setType.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				// Update the opcode box if the type is changed
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					((OpcodeModel)setOpcode.getModel()).fireChange();
-					setOpcode.setSelectedIndex(0);
+					final String item = (String)setType.getSelectedItem();
+					boolean update = true;
+					if (item.equals("Joint")) {
+						setOpcode.removeAllItems();
+						setOpcode.addItem("Value");
+						setOpcode.addItem("Angle");
+						setOpcode.addItem("Velocity");
+						setOpcode.addItem("Torque");
+					} else if (item.equals("Camera")) {
+						setOpcode.removeAllItems();
+						setOpcode.addItem("FOV");
+					} else if (item.equals("Gripper")) {
+						setOpcode.removeAllItems();
+						setOpcode.addItem("Open");
+						setOpcode.addItem("Close");
+					} else
+						update = false;
+					if (update)
+						setOpcode.setSelectedIndex(0);
 				}
 			}
 		});
@@ -1445,10 +1455,8 @@ public class IridiumUI implements IridiumListener {
 		setName = Utils.createEntryBox("Joint or sensor to move");
 		gbc.gridy = 1;
 		setOptions.add(setName, gbc);
-		// Combo Box: Type
-		setOpcode = Utils.createComboBox("Type of manipulation to apply");
-		setOpcode.setModel(new OpcodeModel());
-		setOpcode.setSelectedIndex(0);
+		// Combo Box: Opcode
+		setOpcode = Utils.createEntryBox("Type of manipulation to apply");
 		gbc.gridx = 4;
 		gbc.gridy = 0;
 		setOptions.add(setOpcode, gbc);
@@ -1928,48 +1936,6 @@ public class IridiumUI implements IridiumListener {
 				for (JLabel label : entries.values())
 					label.setVisible(label == show);
 			}
-		}
-	}
-
-	/**
-	 * Change the available options in the joint "Opcode" dialog.
-	 */
-	private class OpcodeModel extends DefaultComboBoxModel {
-		private static final long serialVersionUID = 0L;
-
-		/**
-		 * Notifies the list that this data has changed.
-		 */
-		public void fireChange() {
-			fireContentsChanged(this, 0, getSize());
-		}
-		public Object getElementAt(int index) {
-			String element = "";
-			switch (setType.getSelectedIndex()) {
-			case 0:
-				element = OPT_JOINTS[index];
-				break;
-			case 1:
-				element = OPT_CAMERA[index];
-				break;
-			default:
-			}
-			return element;
-		}
-		public int getSize() {
-			int len = 0;
-			switch (setType.getSelectedIndex()) {
-			case 0:
-				// Angle, Velocity, Torque
-				len = OPT_JOINTS.length;
-				break;
-			case 1:
-				// FOV
-				len = OPT_CAMERA.length;
-				break;
-			default:
-			}
-			return len;
 		}
 	}
 }

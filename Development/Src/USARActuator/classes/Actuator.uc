@@ -74,8 +74,7 @@ simulated function AttachItem()
 // Send actuator status
 simulated function ClientTimer()
 {
-	// New
-	MessageSendDelegate(GetHead() @ GetData());
+	super.ClientTimer();
 	// Old
 	MessageSendDelegate(GetMisPkgHead() @ GetMisPkgData());
 }
@@ -150,6 +149,44 @@ function String GetConfData() {
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('Actuator'))
 			outStr = outStr $ " " $ Parts[i].GetConfData();
+	return outStr;
+}
+
+// Compiles configuration data from items of the given type and name
+function String GetGeneralConfData(String iType, String iName)
+{
+	local String outStr;
+	local int i;
+	
+	// Look for items
+	outStr = "";
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
+			// Filter matched, return data
+			outStr = outStr $ " " $ Parts[i].GetConfData();
+		if (Parts[i].isA('Actuator'))
+			outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(iType, iName);
+	}
+	return outStr;
+}
+
+// Compiles geometry data from items of the given type and name
+function String GetGeneralGeoData(String iType, String iName)
+{
+	local String outStr;
+	local int i;
+	
+	// Look for items
+	outStr = "";
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
+			// Filter matched, return data
+			outStr = outStr $ " " $ Parts[i].GetGeoData();
+		if (Parts[i].isA('Actuator'))
+			outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(iType, iName);
+	}
 	return outStr;
 }
 
@@ -597,13 +634,6 @@ reliable server function SetupPart(Part part)
 					String(part.Name));
 		}
 	}
-}
-
-// Call ClientTimer on each scan interval
-simulated function Timer()
-{
-	if (Platform.GetBatteryLife() > 0)
-		ClientTimer();
 }
 
 // Updates the joint angles to match the constraint pointers
