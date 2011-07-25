@@ -783,8 +783,8 @@ public class IridiumUI implements IridiumListener {
 			// Convert if needed
 			if (isInDegrees() && setOpcode.getSelectedIndex() == 0)
 				params = (float)Math.toRadians(params);
-			sendMessage("SET {Type " + setType.getSelectedItem() + "} {Name " +
-				setName.getEditor().getItem() + "} {Opcode " + setOpcode.getSelectedItem() +
+			sendMessage("SET {Type " + setType.getEditor().getItem() + "} {Name " +
+				setName.getEditor().getItem() + "} {Opcode " + setOpcode.getEditor().getItem() +
 				String.format("} {Params %.4f}", params));
 		} catch (NumberFormatException e) {
 			Utils.showWarning(mainUI, "Enter a valid numeric value for parameters.");
