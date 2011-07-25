@@ -1,0 +1,14 @@
+#Wavefront Obj material file
+#Converted from Babel3D.com
+#Geometric Limited
+#http://www.Babel3D.com
+#
+newmtl WHITE
+ka 0.117647 0.117647 0.117647 1.000000
+kd 1.000000 1.000000 1.000000 1.000000
+ks 0.376471 0.376471 0.376471 1.000000
+d 1.000000
+Ns 128.000000
+illum 2
+
+#
