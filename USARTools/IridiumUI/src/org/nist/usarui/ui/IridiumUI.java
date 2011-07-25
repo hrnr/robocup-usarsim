@@ -777,15 +777,20 @@ public class IridiumUI implements IridiumListener {
 	 * Sends a SET command with the appropriate values.
 	 */
 	private void sendCmdSet() {
-		float params;
+		float params; final String name, extra;
 		try {
 			params = Float.parseFloat(setParams.getText());
 			// Convert if needed
 			if (isInDegrees() && setOpcode.getSelectedIndex() == 0)
 				params = (float)Math.toRadians(params);
-			sendMessage("SET {Type " + setType.getEditor().getItem() + "} {Name " +
-				setName.getEditor().getItem() + "} {Opcode " + setOpcode.getEditor().getItem() +
-				String.format("} {Params %.4f}", params));
+			name = (String)setName.getEditor().getItem();
+			if (name == null || name.length() < 1)
+				extra = "";
+			else
+				extra = " {Name " + name + "}";
+			sendMessage("SET {Type " + setType.getEditor().getItem() + "}" + extra +
+				" {Opcode " + setOpcode.getEditor().getItem() + String.format(
+				"} {Params %.4f}", params));
 		} catch (NumberFormatException e) {
 			Utils.showWarning(mainUI, "Enter a valid numeric value for parameters.");
 		}

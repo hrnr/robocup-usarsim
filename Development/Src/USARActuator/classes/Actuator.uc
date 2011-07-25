@@ -455,7 +455,7 @@ function SetCommand(String type, String iName, String opcode, String value)
 	// Search local arrays
 	for (i = 0; i < Parts.Length; i++)
 	{
-		if (Parts[i].IsType(type) && Parts[i].IsName(iName))
+		if (Parts[i].IsType(type) && (iName == "" || Parts[i].IsName(iName)))
 			Parts[i].Set(opcode, value);
 		// Search actuators
 		if (Parts[i].isA('Actuator'))
