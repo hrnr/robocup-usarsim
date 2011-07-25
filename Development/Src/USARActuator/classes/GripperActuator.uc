@@ -25,14 +25,14 @@ defaultproperties
 	Begin Object Class=Part Name=RightFork
 		Mesh=StaticMesh'Gripper.GripperArm'
 		Mass=0.5
-		Offset=(X=.128,Y=.052,Z=.012)
+		Offset=(X=.14,Y=.06,Z=.012)
 	End Object
 	PartList.Add(RightFork)
 	
 	Begin Object Class=Part Name=LeftFork
 		Mesh=StaticMesh'Gripper.GripperArm'
 		Mass=0.5
-		Offset=(X=.128,Y=-.052,Z=.012)
+		Offset=(X=.14,Y=-.06,Z=.012)
 	End Object
 	PartList.Add(LeftFork)
 	
@@ -41,9 +41,9 @@ defaultproperties
 		Child=RightFork
 		LimitLow=-.5
 		LimitHigh=.5
-		MaxForce=50
-		Damping=5
-		Offset=(X=.08,Y=.052,Z=0)
+		MaxForce=1000
+		Damping=200
+		Offset=(X=.02,Y=.06,Z=0)
 	End Object
 	Joints.Add(RightForkJoint)
 	
@@ -52,9 +52,9 @@ defaultproperties
 		Child=LeftFork
 		LimitLow=-.5
 		LimitHigh=.5
-		MaxForce=50
-		Damping=5
-		Offset=(X=.08,Y=-.052,Z=0)
+		MaxForce=1000
+		Damping=200
+		Offset=(X=.02,Y=-.06,Z=0)
 	End Object
 	Joints.Add(LeftForkJoint)
 	

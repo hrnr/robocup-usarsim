@@ -17,6 +17,7 @@ simulated function AttachItem()
 
 defaultproperties
 {
+
 	Begin Object Class=Part Name=BaseEmptyMesh
 		Mesh=StaticMesh'Basic.EmptyMesh'
 		Mass=1
@@ -72,7 +73,7 @@ defaultproperties
 		Child=Joint4
 		Damping=5
 		MaxForce=50
-		LimitLow=0
+		LimitLow=-.3
 		LimitHigh=.3				// Don't change this! It used to be at 1 and for some reason caused shaking. 
 		Offset=(X=.018,Y=0,Z=-.092)
 		Direction=(X=3.141,Y=0,Z=0)
