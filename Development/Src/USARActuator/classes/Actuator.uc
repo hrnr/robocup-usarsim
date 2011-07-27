@@ -76,7 +76,7 @@ simulated function ClientTimer()
 {
 	super.ClientTimer();
 	// Old
-	MessageSendDelegate(GetMisPkgHead() @ GetMisPkgData());
+	SendMisPkg();
 }
 
 // Called when the robot is destroyed
@@ -445,6 +445,12 @@ simulated function MakeCenterItem(PhysicalItem it)
 
 reliable server function RunSequence(int Sequence)
 {
+}
+
+// Sends the legacy MISSTA message
+simulated function SendMisPkg()
+{
+	MessageSendDelegate(GetMisPkgHead() @ GetMisPkgData());
 }
 
 // Handles SET commands sent to the actuators's sensors or sub-actuators

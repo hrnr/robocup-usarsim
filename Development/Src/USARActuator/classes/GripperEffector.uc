@@ -8,10 +8,45 @@
 *****************************************************************************/
 
 /*
- * GripperActuator - Used for actuator 
+ * GripperEffector - Used for binary control of gripper, but contains functionality to control as actuator as well
  */
-class GripperActuator extends Actuator placeable config (USAR);
+class GripperEffector extends Gripper placeable config (USAR);
 
+var JointItem LFJoint;
+var JointItem RFJoint;
+
+simulated function AttachItem()
+{
+	local int i;
+	local JointItem ji;
+
+	super.AttachItem();
+	for (i = 0; i < Parts.Length; i++)
+		if (Parts[i].IsJoint())
+		{
+			ji = JointItem(Parts[i]);
+			`log(String(ji.GetJointName()));
+			if (ji.GetJointName() == 'LeftForkJoint')
+				LFJoint = ji;
+			else if (ji.GetJointName() == 'RightForkJoint')
+				RFJoint = ji;
+		}
+}
+
+// Operates the effector
+function Operate(bool on)
+{
+	if (on)
+	{
+		LFJoint.SetTarget(0.3);
+		RFJoint.SetTarget(-0.3);
+	}
+	else
+	{
+		LFJoint.SetTarget(0);
+		RFJoint.SetTarget(0);
+	}
+}
 
 defaultproperties 
 {

@@ -60,6 +60,10 @@ function Operate(bool on)
 {
 }
 
+simulated function SendMisPkg()
+{
+}
+
 defaultproperties
 {
 	IsOn=0
