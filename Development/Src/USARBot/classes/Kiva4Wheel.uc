@@ -85,6 +85,7 @@ defaultproperties
 		Parent=Chassis
 		Child=RWheel
 		Side=SIDE_Right
+		MaxVelocity=1.8
 		Offset=(X=0,Y=.324,Z=.194)
 		Direction=(X=1.571,Y=0,Z=0)
 	End Object
@@ -94,6 +95,7 @@ defaultproperties
 	Begin Object Class=WheelJoint Name=LWheelJoint
 		Parent=Chassis
 		Child=LWheel
+		MaxVelocity=1.8
 		Side=SIDE_Left
 		Offset=(X=0,Y=-.324,Z=.194)
 		Direction=(X=1.571,Y=0,Z=0)
