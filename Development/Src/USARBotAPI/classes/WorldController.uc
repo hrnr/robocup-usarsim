@@ -348,7 +348,7 @@ function String GetSTA(String objClass, String objName)
 			outStr = outStr $ " {Name " $ item.ObjectName $ "} {Size " $
 				class'UnitsConverter'.static.Str_LengthVectorFromUU(outSize) $ "} {Location " $
 				class'UnitsConverter'.static.Str_LengthVectorFromUU(item.Location) $
-				"} {Rotation " $
+				" {Memory {" $ item.Memory $ "} {Rotation " $
 				class'UnitsConverter'.static.Str_AngleVectorFromUU(item.Rotation) $ "}";
 		}
 	}
