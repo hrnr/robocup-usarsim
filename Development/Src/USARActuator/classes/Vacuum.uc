@@ -73,7 +73,7 @@ function GripObject(Actor target)
 				target.CollisionComponent, GripCons.ConstraintSetup, 1, AttachTo,
 				AttachTo.CollisionComponent, false);
 			// Set the force high but leave the restitution low so that it imitates real vacuum
-			GripCons.ConstraintInstance.SetLinearDriveParams(1.0, 0.8, VacuumForce);
+			GripCons.ConstraintInstance.SetLinearDriveParams(VacuumForce, 5, VacuumForce);
 			GripCons.ConstraintInstance.SetLinearPositionDrive(true, true, false);
 		}
 	}
@@ -104,6 +104,7 @@ event Tick(float DT)
 		{
 			LogInternal("Vacuum: Suction lost");
 			UngripObject();
+			IsOn = 0;
 		}
 	}
 }
