@@ -20,6 +20,7 @@ struct SpecItem {
 	var vector Position;
 	var vector Direction;
 	var rotator uuDirection;
+	var StaticMesh Mesh;
 };
 
 // Array storing all configured parts from the INI file

@@ -50,6 +50,13 @@ function Vector GetCMassLocalPosition( RB_BodyInstance BodyInstance )
 	return GetCMassLocalPositionInternal(WrapBodyInstance(BodyInstance));
 }
 
+
+dllimport final function SetCMassOffsetLocalPositionInternal( BodyInstancePointer bodyInst, Vector CMass );
+function SetCMassOffsetLocalPosition( RB_BodyInstance BodyInstance, Vector CMass )
+{
+	SetCMassOffsetLocalPositionInternal(WrapBodyInstance(BodyInstance), CMass);
+}
+
 dllimport final function Vector GetMassSpaceInertiaTensorInternal( BodyInstancePointer bodyInst );
 function Vector GetMassSpaceInertiaTensor( RB_BodyInstance BodyInstance )
 {

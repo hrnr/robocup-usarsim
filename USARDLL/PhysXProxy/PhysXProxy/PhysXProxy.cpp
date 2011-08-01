@@ -317,6 +317,27 @@ extern "C"
 		return &result;
 	}
 
+	PHYSXPROXYDLL_API void SetCMassOffsetLocalPositionInternal( BodyInstancePointer *pBodyInstWrapper, FVector *ucmass )
+	{
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("SetCMassOffsetLocalPositionInternal: Invalid body instance!\n");
+			return;
+		}
+
+#ifdef _WIN64
+		ucmass = (FVector *)Fix64Bit( (void *)ucmass );
+#endif // _WIN64
+
+		NxVec3 cmass;
+		cmass.x = ucmass->x;
+		cmass.y = ucmass->y;
+		cmass.z = ucmass->z;
+
+		pActor->setCMassOffsetLocalPosition( cmass );
+	}
+
 	// Set/get the iteration mass space inertia tensor of the specified actor
 	PHYSXPROXYDLL_API void SetMassSpaceInertiaTensorInternal( BodyInstancePointer *pBodyInstWrapper, FVector *utensor )
 	{

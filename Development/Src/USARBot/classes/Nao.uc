@@ -66,7 +66,7 @@ function CheckJointErrors()
 simulated function PostBeginPlay()
 {
 	//local int i, j;
-	local Vector Tensor;
+	local Vector Tensor, CMass;
 	local PhysicalItem pcopy, pdest;
 
 	local int i;
@@ -102,6 +102,12 @@ simulated function PostBeginPlay()
 		}
 	}*/
 	
+	
+	CMass.X = 0.04 * 5;
+	CMass.Y = 0.0;
+	CMass.Z = 0.0;
+	pcopy = PhysicalItem( GetPartByName('BodyItem') );
+	class'Utilities'.default.PhysXProxyInstance.SetCMassOffsetLocalPosition( pcopy.StaticMeshComponent.BodyInstance, CMass );
 
 	// Bit of an hack here. The mass inertia tensor is calculated 
 	// using the shape + mass of the part. However the Nao contains 
@@ -166,10 +172,10 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 2.5
-	`define MaxForceMotorType2 2.5
-	`define DampingMotorType1 0.005
-	`define DampingMotorType2 0.005
+	`define MaxForceMotorType1 2.25
+	`define MaxForceMotorType2 2.25
+	`define DampingMotorType1 0.00025
+	`define DampingMotorType2 0.00025
 
 	`define NaoSolverIterationCount 128
 
@@ -245,7 +251,7 @@ defaultproperties
 	Begin Object Class=Part Name=LShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=-0.098,z=-0.075)
-		Mass=0.025
+		Mass=0.015
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LShoulder)
@@ -253,7 +259,7 @@ defaultproperties
 	Begin Object Class=Part Name=RShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=0.098,z=-0.075)
-		Mass=0.025
+		Mass=0.015
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RShoulder)
@@ -319,32 +325,32 @@ defaultproperties
 	// Lower arm + elbow joint
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.11,y=-0.102,z=-0.075)
-		Mass=0.025
+		Offset=(x=0.10,y=-0.102,z=-0.075)
+		Mass=0.040
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LElbow)
 
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.11,y=0.102,z=-0.075)
-		Mass=0.025
+		Offset=(x=0.10,y=0.102,z=-0.075)
+		Mass=0.040
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RElbow)
 
 	Begin Object Class=Part Name=LLowerArm
 		Mesh=StaticMesh'Nao.naollowerarm'
-		Offset=(x=0.16,y=-0.098,z=-0.075)
-		Mass=0.200
+		Offset=(x=0.165,y=-0.098,z=-0.075)
+		Mass=0.225
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LLowerArm)
 
 	Begin Object Class=Part Name=RLowerArm
 		Mesh=StaticMesh'Nao.naorlowerarm'
-		Offset=(x=0.16,y=0.098,z=-0.075)
-		Mass=0.200
+		Offset=(x=0.165,y=0.098,z=-0.075)
+		Mass=0.225
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RLowerArm)
@@ -356,7 +362,7 @@ defaultproperties
 		Parent=LUpperArm
 		Child=LElBow
 		InverseMeasureAngle=true
-		Offset=(x=0.11,y=-0.098,z=-0.075)
+		Offset=(x=0.10,y=-0.098,z=-0.075)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
@@ -368,7 +374,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=LElbowRoll
 		Parent=LElBow
 		Child=LLowerArm
-		Offset=(x=0.11,y=-0.098,z=-0.075)
+		Offset=(x=0.10,y=-0.098,z=-0.075)
 		LimitLow=-1.56 // -89.5
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=-3.14,y=0,z=-3.14)
@@ -381,7 +387,7 @@ defaultproperties
 		Parent=RUpperArm
 		Child=RElbow
 		InverseMeasureAngle=true
-		Offset=(x=0.11,y=0.098,z=-0.075)
+		Offset=(x=0.10,y=0.098,z=-0.075)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
@@ -393,7 +399,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RElbowRoll
 		Parent=RElbow
 		Child=RLowerArm
-		Offset=(x=0.11,y=0.098,z=-0.075)
+		Offset=(x=0.10,y=0.098,z=-0.075)
 		LimitLow=-.0087 // -0.5
 		LimitHigh=1.56 // 89.5
 		Direction=(x=-3.14,y=0,z=-3.14)
@@ -406,7 +412,7 @@ defaultproperties
 	Begin Object Class=Part Name=LHip
 		RelativeTo=BodyItem
 		Mesh = StaticMesh'Nao.naoelbow'
-		Offset=(x=-0.01,Y=-0.040,Z=0.065)
+		Offset=(x=-0.02,Y=-0.040,Z=0.065)
 		Mass=0.025
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -415,7 +421,7 @@ defaultproperties
 	Begin Object Class=Part Name=RHip
 		RelativeTo=BodyItem
 		Mesh = StaticMesh'Nao.naoelbow'
-		Offset=(x=-0.01,Y=0.040,Z=0.065)
+		Offset=(x=-0.02,Y=0.040,Z=0.065)
 		Mass=0.025
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -453,7 +459,7 @@ defaultproperties
 		RelativeTo=LHip
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,Y=-0.015,Z=0.04)
-		Mass=0.025
+		Mass=0.015
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHipThigh)
@@ -462,7 +468,7 @@ defaultproperties
 		RelativeTo=RHip
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=0.015,z=0.04)
-		Mass=0.025
+		Mass=0.015
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHipThigh)
@@ -599,7 +605,7 @@ defaultproperties
 		RelativeTo=LShank
 		Mesh=StaticMesh'Nao.naolfoot'
 		Offset=(x=0.02,y=0,z=0.08)
-		Mass=0.3500
+		Mass=0.200
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LFoot)
@@ -608,7 +614,7 @@ defaultproperties
 		RelativeTo=RShank
 		Mesh=StaticMesh'Nao.naorfoot'
 		Offset=(x=0.02,y=0,z=0.08)
-		Mass=0.3500
+		Mass=0.200
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RFoot)

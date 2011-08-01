@@ -400,6 +400,9 @@ reliable server function SetupItem(SpecItem desc)
 		else
 			it.SetBase(CenterItem);
 		it.SetHardAttach(true);
+		// Override static mesh if specified
+		if (desc.Mesh != none)
+			it.SetStaticMesh(desc.Mesh);
 		// Initialize item
 		it.init(desc.ItemName, self);
 		if (bDebug)
