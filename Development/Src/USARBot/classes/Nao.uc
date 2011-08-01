@@ -172,10 +172,10 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 2.25
-	`define MaxForceMotorType2 2.25
-	`define DampingMotorType1 0.00025
-	`define DampingMotorType2 0.00025
+	`define MaxForceMotorType1 4.0
+	`define MaxForceMotorType2 3.5
+	`define DampingMotorType1 0.000025
+	`define DampingMotorType2 0.000025
 
 	`define NaoSolverIterationCount 128
 
