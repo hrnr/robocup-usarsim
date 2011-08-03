@@ -1,0 +1,1121 @@
+Begin Map
+   Begin Level Name=PersistentLevel
+      Begin Actor Class=PathNode Name=PathNode_0 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_1 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_1"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_2 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_2"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_3 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_3"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_4 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_4"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_5 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_5"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_1'
+         Components(1)=SpriteComponent'SpriteComponent_2'
+         Components(2)=SpriteComponent'SpriteComponent_3'
+         Components(3)=ArrowComponent'ArrowComponent_4'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_5'
+         CollisionComponent=CylinderComponent'CylinderComponent_1'
+         CylinderComponent=CylinderComponent'CylinderComponent_1'
+         bPathsChanged=true
+         Location=(X=-224.000,Y=224.000,Z=-420.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_hugKneesBreathe"
+         Name="PathNode_0"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_6 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_7 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_7"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_8 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_8"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_9 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_9"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_10 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_10"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_11 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_11"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_7'
+         Components(1)=SpriteComponent'SpriteComponent_8'
+         Components(2)=SpriteComponent'SpriteComponent_9'
+         Components(3)=ArrowComponent'ArrowComponent_10'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_11'
+         CollisionComponent=CylinderComponent'CylinderComponent_7'
+         CylinderComponent=CylinderComponent'CylinderComponent_7'
+         bPathsChanged=true
+         Location=(X=-224.000,Y=-224.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_jump"
+         Name="PathNode_6"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_12 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_13 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_13"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_14 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_14"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_15 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_15"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_16 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_16"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_17 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_17"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_13'
+         Components(1)=SpriteComponent'SpriteComponent_14'
+         Components(2)=SpriteComponent'SpriteComponent_15'
+         Components(3)=ArrowComponent'ArrowComponent_16'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_17'
+         CollisionComponent=CylinderComponent'CylinderComponent_13'
+         CylinderComponent=CylinderComponent'CylinderComponent_13'
+         bPathsChanged=true
+         Location=(X=224.000,Y=-224.000,Z=-410.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_layingBreathe"
+         Name="PathNode_12"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_18 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_19 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_19"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_20 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_20"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_21 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_21"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_22 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_22"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_23 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_23"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_19'
+         Components(1)=SpriteComponent'SpriteComponent_20'
+         Components(2)=SpriteComponent'SpriteComponent_21'
+         Components(3)=ArrowComponent'ArrowComponent_22'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_23'
+         CollisionComponent=CylinderComponent'CylinderComponent_19'
+         CylinderComponent=CylinderComponent'CylinderComponent_19'
+         bPathsChanged=true
+         Location=(X=224.000,Y=224.000,Z=-400.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_eyeLostLaying"
+         Name="PathNode_18"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_24 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_25 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_25"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_26 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_26"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_27 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_27"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_28 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_28"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_29 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_29"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_25'
+         Components(1)=SpriteComponent'SpriteComponent_26'
+         Components(2)=SpriteComponent'SpriteComponent_27'
+         Components(3)=ArrowComponent'ArrowComponent_28'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_29'
+         CollisionComponent=CylinderComponent'CylinderComponent_25'
+         CylinderComponent=CylinderComponent'CylinderComponent_25'
+         bPathsChanged=true
+         Location=(X=224.000,Y=448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_standingScratch"
+         Name="PathNode_24"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_30 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_31 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_31"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_32 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_32"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_33 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_33"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_34 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_34"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_35 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_35"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_31'
+         Components(1)=SpriteComponent'SpriteComponent_32'
+         Components(2)=SpriteComponent'SpriteComponent_33'
+         Components(3)=ArrowComponent'ArrowComponent_34'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_35'
+         CollisionComponent=CylinderComponent'CylinderComponent_31'
+         CylinderComponent=CylinderComponent'CylinderComponent_31'
+         bPathsChanged=true
+         Location=(X=-224.000,Y=448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_standingBreathe"
+         Name="PathNode_30"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_36 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_37 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_37"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_38 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_38"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_39 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_39"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_40 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_40"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_41 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_41"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_37'
+         Components(1)=SpriteComponent'SpriteComponent_38'
+         Components(2)=SpriteComponent'SpriteComponent_39'
+         Components(3)=ArrowComponent'ArrowComponent_40'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_41'
+         CollisionComponent=CylinderComponent'CylinderComponent_37'
+         CylinderComponent=CylinderComponent'CylinderComponent_37'
+         bPathsChanged=true
+         Location=(X=-224.000,Y=-448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_Kneel"
+         Name="PathNode_36"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_42 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_43 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_43"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_44 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_44"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_45 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_45"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_46 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_46"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_47 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_47"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_43'
+         Components(1)=SpriteComponent'SpriteComponent_44'
+         Components(2)=SpriteComponent'SpriteComponent_45'
+         Components(3)=ArrowComponent'ArrowComponent_46'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_47'
+         CollisionComponent=CylinderComponent'CylinderComponent_43'
+         CylinderComponent=CylinderComponent'CylinderComponent_43'
+         bPathsChanged=true
+         Location=(X=224.000,Y=-448.000,Z=-410.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_Dead"
+         Name="PathNode_42"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_48 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_49 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_49"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_50 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_50"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_51 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_51"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_52 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_52"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_53 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_53"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_49'
+         Components(1)=SpriteComponent'SpriteComponent_50'
+         Components(2)=SpriteComponent'SpriteComponent_51'
+         Components(3)=ArrowComponent'ArrowComponent_52'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_53'
+         CollisionComponent=CylinderComponent'CylinderComponent_49'
+         CylinderComponent=CylinderComponent'CylinderComponent_49'
+         bPathsChanged=true
+         Location=(X=-92.000,Y=224.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_Push"
+         Name="PathNode_48"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_54 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_55 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_55"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_56 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_56"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_57 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_57"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_58 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_58"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_59 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_59"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_55'
+         Components(1)=SpriteComponent'SpriteComponent_56'
+         Components(2)=SpriteComponent'SpriteComponent_57'
+         Components(3)=ArrowComponent'ArrowComponent_58'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_59'
+         CollisionComponent=CylinderComponent'CylinderComponent_55'
+         CylinderComponent=CylinderComponent'CylinderComponent_55'
+         bPathsChanged=true
+         Location=(X=-92.000,Y=-224.000,Z=-410.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_layingBreathe"
+         Name="PathNode_54"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_60 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_61 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_61"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_62 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_62"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_63 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_63"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_64 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_64"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_65 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_65"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_61'
+         Components(1)=SpriteComponent'SpriteComponent_62'
+         Components(2)=SpriteComponent'SpriteComponent_63'
+         Components(3)=ArrowComponent'ArrowComponent_64'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_65'
+         CollisionComponent=CylinderComponent'CylinderComponent_61'
+         CylinderComponent=CylinderComponent'CylinderComponent_61'
+         bPathsChanged=true
+         Location=(X=-92.000,Y=448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_twistStretch"
+         Name="PathNode_60"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_66 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_67 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_67"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_68 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_68"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_69 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_69"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_70 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_70"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_71 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_71"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_67'
+         Components(1)=SpriteComponent'SpriteComponent_68'
+         Components(2)=SpriteComponent'SpriteComponent_69'
+         Components(3)=ArrowComponent'ArrowComponent_70'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_71'
+         CollisionComponent=CylinderComponent'CylinderComponent_67'
+         CylinderComponent=CylinderComponent'CylinderComponent_67'
+         bPathsChanged=true
+         Location=(X=-92.000,Y=-448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_standingBreathe"
+         Name="PathNode_66"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_72 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_73 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_73"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_74 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_74"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_75 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_75"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_76 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_76"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_77 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_77"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_73'
+         Components(1)=SpriteComponent'SpriteComponent_74'
+         Components(2)=SpriteComponent'SpriteComponent_75'
+         Components(3)=ArrowComponent'ArrowComponent_76'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_77'
+         CollisionComponent=CylinderComponent'CylinderComponent_73'
+         CylinderComponent=CylinderComponent'CylinderComponent_73'
+         bPathsChanged=true
+         Location=(X=64.000,Y=-224.000,Z=-420.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_hugKneesBreathe"
+         Name="PathNode_72"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_78 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_79 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_79"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_80 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_80"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_81 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_81"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_82 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_82"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_83 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_83"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_79'
+         Components(1)=SpriteComponent'SpriteComponent_80'
+         Components(2)=SpriteComponent'SpriteComponent_81'
+         Components(3)=ArrowComponent'ArrowComponent_82'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_83'
+         CollisionComponent=CylinderComponent'CylinderComponent_79'
+         CylinderComponent=CylinderComponent'CylinderComponent_79'
+         bPathsChanged=true
+         Location=(X=64.000,Y=224.000,Z=-410.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_layingBreathe"
+         Name="PathNode_78"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_84 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_85 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_85"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_86 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_86"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_87 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_87"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_88 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_88"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_89 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_89"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_85'
+         Components(1)=SpriteComponent'SpriteComponent_86'
+         Components(2)=SpriteComponent'SpriteComponent_87'
+         Components(3)=ArrowComponent'ArrowComponent_88'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_89'
+         CollisionComponent=CylinderComponent'CylinderComponent_85'
+         CylinderComponent=CylinderComponent'CylinderComponent_85'
+         bPathsChanged=true
+         Location=(X=64.000,Y=448.000,Z=-410.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericFemale_AnimTree_layingBreathe"
+         Name="PathNode_84"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=PathNode Name=PathNode_90 Archetype=PathNode'Engine.Default__PathNode'
+         Begin Object Class=CylinderComponent Name=CollisionCylinder ObjName=CylinderComponent_91 Archetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+            CollisionHeight=50.000000
+            CollisionRadius=50.000000
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="CylinderComponent_91"
+            ObjectArchetype=CylinderComponent'Engine.Default__PathNode:CollisionCylinder'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_92 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+            Sprite=Texture2D'EditorResources.S_Pickup'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_92"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite2 ObjName=SpriteComponent_93 Archetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+            Sprite=Texture2D'EditorResources.Bad'
+            SpriteCategoryName="Navigation"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            HiddenEditor=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_93"
+            ObjectArchetype=SpriteComponent'Engine.Default__PathNode:Sprite2'
+         End Object
+         Begin Object Class=ArrowComponent Name=Arrow ObjName=ArrowComponent_94 Archetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+            bTreatAsASprite=true
+            ArrowColor=(B=255,G=200,R=150,A=255)
+            ArrowSize=0.500000
+            SpriteCategoryName="Navigation"
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="ArrowComponent_94"
+            ObjectArchetype=ArrowComponent'Engine.Default__PathNode:Arrow'
+         End Object
+         Begin Object Class=PathRenderingComponent Name=PathRenderer ObjName=PathRenderingComponent_95 Archetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="PathRenderingComponent_95"
+            ObjectArchetype=PathRenderingComponent'Engine.Default__PathNode:PathRenderer'
+         End Object
+         Components(0)=CylinderComponent'CylinderComponent_91'
+         Components(1)=SpriteComponent'SpriteComponent_92'
+         Components(2)=SpriteComponent'SpriteComponent_93'
+         Components(3)=ArrowComponent'ArrowComponent_94'
+         Components(4)=PathRenderingComponent'PathRenderingComponent_95'
+         CollisionComponent=CylinderComponent'CylinderComponent_91'
+         CylinderComponent=CylinderComponent'CylinderComponent_91'
+         bPathsChanged=true
+         Location=(X=64.000,Y=-448.000,Z=-460.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="VictimPackage.animation.GenericMale_AnimTree_jump"
+         Name="PathNode_90"
+         ObjectArchetype=PathNode'Engine.Default__PathNode'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_96 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_23
+            Begin PolyList
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -00375.000000,-00766.000000,-00448.000000
+                  Vertex   -00375.000000,-00766.000000,+00448.000000
+                  Vertex   -00375.000000,+00766.000000,+00448.000000
+                  Vertex   -00375.000000,+00766.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=1
+                  TextureU +00001.000000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -00375.000000,+00766.000000,-00448.000000
+                  Vertex   -00375.000000,+00766.000000,+00448.000000
+                  Vertex   +00375.000000,+00766.000000,+00448.000000
+                  Vertex   +00375.000000,+00766.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +00375.000000,+00766.000000,-00448.000000
+                  Vertex   +00375.000000,+00766.000000,+00448.000000
+                  Vertex   +00375.000000,-00766.000000,+00448.000000
+                  Vertex   +00375.000000,-00766.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=3
+                  TextureU -00001.000000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +00375.000000,-00766.000000,-00448.000000
+                  Vertex   +00375.000000,-00766.000000,+00448.000000
+                  Vertex   -00375.000000,-00766.000000,+00448.000000
+                  Vertex   -00375.000000,-00766.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00001.000000,+00000.000000
+                  Vertex   -00375.000000,+00766.000000,+00448.000000
+                  Vertex   -00375.000000,-00766.000000,+00448.000000
+                  Vertex   +00375.000000,-00766.000000,+00448.000000
+                  Vertex   +00375.000000,+00766.000000,+00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.ceiling1_Mat Flags=3584 Link=5
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00001.000000,+00000.000000
+                  Vertex   -00375.000000,-00766.000000,-00448.000000
+                  Vertex   -00375.000000,+00766.000000,-00448.000000
+                  Vertex   +00375.000000,+00766.000000,-00448.000000
+                  Vertex   +00375.000000,-00766.000000,-00448.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_97 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_23'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_97"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_97'
+         CollisionComponent=BrushComponent'BrushComponent_97'
+         BrushComponent=BrushComponent'BrushComponent_97'
+         CsgOper=CSG_Subtract
+         Brush=Model'Model_23'
+         Location=(X=0.000,Y=0.000,Z=0.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_96"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_98 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_99 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            Name="PointLightComponent_99"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_100 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_100"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_99'
+         Components(1)=SpriteComponent'SpriteComponent_100'
+         PointLightComponent=PointLightComponent'PointLightComponent_99'
+         LightComponent=PointLightComponent'PointLightComponent_99'
+         Location=(X=8.198,Y=-0.332,Z=0.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_98"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+   End Level
+Begin Surface
+End Surface
+End Map

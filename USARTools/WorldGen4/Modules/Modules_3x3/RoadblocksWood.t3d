@@ -1,0 +1,275 @@
+Begin Map
+   Begin Level Name=PersistentLevel
+      Begin Actor Class=PointLight Name=PointLight_0 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_1 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=1800.0
+            Brightness=4.000000
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            Name="PointLightComponent_1"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_2 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_2"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_1'
+         Components(1)=SpriteComponent'SpriteComponent_2'
+         PointLightComponent=PointLightComponent'PointLightComponent_1'
+         LightComponent=PointLightComponent'PointLightComponent_1'
+         Location=(X=0.000,Y=0.000,Z=246.827)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_0"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_3 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_12
+            Begin PolyList
+               Begin Polygon Texture=PKG_Nobiax_Textures_02.Materials.M_Wood_16 Flags=3584 Link=0
+                  TextureU +00000.000000,+00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -01157.000000,-01157.000000,-00448.000000
+                  Vertex   -01157.000000,-01157.000000,+00448.000000
+                  Vertex   -01157.000000,+01157.000000,+00448.000000
+                  Vertex   -01157.000000,+01157.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_02.Materials.M_Wood_16 Flags=3584 Link=1
+                  TextureU +00001.000000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -01157.000000,+01157.000000,-00448.000000
+                  Vertex   -01157.000000,+01157.000000,+00448.000000
+                  Vertex   +01157.000000,+01157.000000,+00448.000000
+                  Vertex   +01157.000000,+01157.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_02.Materials.M_Wood_16 Flags=3584 Link=2
+                  TextureU +00000.000000,-00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +01157.000000,+01157.000000,-00448.000000
+                  Vertex   +01157.000000,+01157.000000,+00448.000000
+                  Vertex   +01157.000000,-01157.000000,+00448.000000
+                  Vertex   +01157.000000,-01157.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_02.Materials.M_Wood_16 Flags=3584 Link=3
+                  TextureU -00001.000000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +01157.000000,-01157.000000,-00448.000000
+                  Vertex   +01157.000000,-01157.000000,+00448.000000
+                  Vertex   -01157.000000,-01157.000000,+00448.000000
+                  Vertex   -01157.000000,-01157.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Slate_57 Flags=3584 Link=4
+                  TextureU +00000.250000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.250000,+00000.000000
+                  Vertex   -01157.000000,+01157.000000,+00448.000000
+                  Vertex   -01157.000000,-01157.000000,+00448.000000
+                  Vertex   +01157.000000,-01157.000000,+00448.000000
+                  Vertex   +01157.000000,+01157.000000,+00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_01.Materials.MAT_Metal_12 Flags=3584 Link=5
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00001.000000,+00000.000000
+                  Vertex   -01157.000000,-01157.000000,-00448.000000
+                  Vertex   -01157.000000,+01157.000000,-00448.000000
+                  Vertex   +01157.000000,+01157.000000,-00448.000000
+                  Vertex   +01157.000000,-01157.000000,-00448.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_4 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_12'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_4"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_4'
+         CollisionComponent=BrushComponent'BrushComponent_4'
+         BrushComponent=BrushComponent'BrushComponent_4'
+         CsgOper=CSG_Subtract
+         Brush=Model'Model_12'
+         Location=(X=0.000,Y=0.000,Z=0.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_3"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_5 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_6 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Supports.SM.Mesh.S_HU_Supports_SM_Simplebeam01'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_6"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_6'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_6'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_6'
+         DrawScale3D=(X=0.576,Y=0.576,Z=0.576)
+         Location=(X=-177.000,Y=-565.000,Z=-356.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_5"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_7 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_8 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Supports.SM.Mesh.S_HU_Supports_SM_Simplebeam01'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_8"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_8'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_8'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_8'
+         DrawScale3D=(X=0.576,Y=0.576,Z=0.576)
+         Location=(X=606.000,Y=343.000,Z=-356.000)
+         Rotation=(Pitch=0,Yaw=-16384,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_7"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_9 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_10 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_Cornice_closed'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_10"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_10'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_10'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_10'
+         DrawScale3D=(X=1.752,Y=1.752,Z=1.752)
+         Location=(X=1097.000,Y=1096.000,Z=-371.000)
+         Rotation=(Pitch=0,Yaw=32768,Roll=-32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_9"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_11 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_12 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_Cornice_closed'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_12"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_12'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_12'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_12'
+         DrawScale3D=(X=1.752,Y=1.752,Z=1.752)
+         Location=(X=1097.000,Y=-1093.000,Z=-371.000)
+         Rotation=(Pitch=0,Yaw=16384,Roll=-32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_11"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_13 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_14 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_Cornice_closed'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_14"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_14'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_14'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_14'
+         DrawScale3D=(X=1.752,Y=1.752,Z=1.752)
+         Location=(X=-1097.000,Y=-1100.000,Z=-371.000)
+         Rotation=(Pitch=0,Yaw=65536,Roll=-32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_13"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_15 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_16 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_Cornice_closed'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_16"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_16'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_16'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_16'
+         DrawScale3D=(X=1.752,Y=1.752,Z=1.752)
+         Location=(X=-1090.000,Y=1094.000,Z=-371.000)
+         Rotation=(Pitch=0,Yaw=49152,Roll=-32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_15"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_17 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_18 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_LowProfile_extra03'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_18"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_18'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_18'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_18'
+         DrawScale3D=(X=11.049,Y=11.049,Z=11.049)
+         Location=(X=-181.000,Y=434.000,Z=-250.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_17"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_19 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_20 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'HU_Trim2.SM.Mesh.S_HU_Trim_SM_RailingA_Long_Straight'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_20"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_20'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_20'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_20'
+         DrawScale3D=(X=2.144,Y=2.144,Z=2.144)
+         Location=(X=-667.000,Y=566.000,Z=-447.000)
+         Rotation=(Pitch=0,Yaw=-16384,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_19"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+   End Level
+Begin Surface
+End Surface
+End Map

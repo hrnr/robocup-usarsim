@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roomList>
+  <room name="Computer Lab" src="ComputerLab.t3d" size="2, 2, 1" tag="Office" />
+  <room name="Computer Lab Destroyed" src="ComputerLabDestroyed.t3d" size="2, 2, 1" tag="Office" />
+  <room name="Room with Cages" src="ConcreteCages.t3d" size="3, 3, 1" tag="Concrete" />
+  <room name="Futuristic Reception" src="ConcreteFuturistic.t3d" size="2, 2, 1" tag="Concrete" />
+  <room name="Room with Rubble" src="ConcreteRubble.t3d" size="1, 1, 1" tag="Concrete" />
+  <room name="Cubicle" src="Cubicle.t3d" size="4, 4, 1" tag="Office" />
+  <room name="Cubicle Destroyed" src="CubicleDestroyed.t3d" size="4, 4, 1" tag="Office" />
+  <room name="Cubicle" src="CubicleWood.t3d" size="2, 2, 1" tag="Wood" />
+  <room name="Workstation Room" src="DeskChairConcrete.t3d" size="1, 1, 1" tag="Concrete" />
+  <room name="Computer Desk" src="DeskComputerWood.t3d" size="1, 1, 1" tag="Wood" />
+  <room name="Cubicle Destroyed" src="DestroyedWood.t3d" size="2, 2, 1" tag="Wood" />
+  <room name="Empty Room" src="EmptyConcrete.t3d" size="1, 1, 1" tag="Concrete" />
+  <room name="Empty Room" src="EmptyWood.t3d" size="3, 3, 1" tag="Wood" />
+  <room name="Single Office" src="OfficeLit.t3d" size="1, 1, 1" tag="Office" />
+  <room name="Single Office Destroyed" src="OfficeLitDestroyed.t3d" size="1, 1, 1" tag="Office" />
+  <room name="Pipeline Room" src="PipelineConcrete.t3d" size="2, 2, 1" tag="Concrete" />
+  <room name="Room with Roadblocks" src="RoadblocksWood.t3d" size="3, 3, 1" tag="Wood" />
+  <room name="Clean Office" src="SpaceOffice.t3d" size="2, 1, 1" tag="Office" />
+  <room name="Tight Office" src="TightOffice.t3d" size="2, 1, 1" tag="Office" />
+  <room name="Tight Office Destroyed" src="TightOfficeDestroyed.t3d" size="2, 1, 1" tag="Office" />
+  <room name="Victim Room" src="Victims.t3d" size="1, 2, 1" tag="Office" />
+</roomList>

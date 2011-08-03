@@ -1,0 +1,117 @@
+Begin Map
+   Begin Level Name=PersistentLevel
+      Begin Actor Class=PointLight Name=PointLight_0 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_1 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=768.0
+            Brightness=4.000000
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            ShadowFalloffExponent=1.5
+            Name="PointLightComponent_1"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_2 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_2"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_1'
+         Components(1)=SpriteComponent'SpriteComponent_2'
+         PointLightComponent=PointLightComponent'PointLightComponent_1'
+         LightComponent=PointLightComponent'PointLightComponent_1'
+         Location=(X=0.00000,Y=0.00000,Z=128.00000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_0"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_3 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_28
+            Begin PolyList
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Tiles_55 Flags=3584 Link=0 ShadowMapScale=128.000000
+                  TextureU +00000.000000,+00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -00391.000000,-00391.000000,-00448.000000
+                  Vertex   -00391.000000,-00391.000000,+00448.000000
+                  Vertex   -00391.000000,+00391.000000,+00448.000000
+                  Vertex   -00391.000000,+00391.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Tiles_55 Flags=3584 Link=1 ShadowMapScale=128.000000
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -00391.000000,+00391.000000,-00448.000000
+                  Vertex   -00391.000000,+00391.000000,+00448.000000
+                  Vertex   +00391.000000,+00391.000000,+00448.000000
+                  Vertex   +00391.000000,+00391.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Tiles_55 Flags=3584 Link=2 ShadowMapScale=128.000000
+                  TextureU +00000.000000,-00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +00391.000000,+00391.000000,-00448.000000
+                  Vertex   +00391.000000,+00391.000000,+00448.000000
+                  Vertex   +00391.000000,-00391.000000,+00448.000000
+                  Vertex   +00391.000000,-00391.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Tiles_55 Flags=3584 Link=3 ShadowMapScale=128.000000
+                  TextureU -00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +00391.000000,-00391.000000,-00448.000000
+                  Vertex   +00391.000000,-00391.000000,+00448.000000
+                  Vertex   -00391.000000,-00391.000000,+00448.000000
+                  Vertex   -00391.000000,-00391.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_04.Materials.M_Slate_57 Flags=3584 Link=4 ShadowMapScale=128.000000
+                  TextureU +00000.250000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.250000,+00000.000000
+                  Vertex   -00391.000000,+00391.000000,+00448.000000
+                  Vertex   -00391.000000,-00391.000000,+00448.000000
+                  Vertex   +00391.000000,-00391.000000,+00448.000000
+                  Vertex   +00391.000000,+00391.000000,+00448.000000
+               End Polygon
+               Begin Polygon Texture=PKG_Nobiax_Textures_01.Materials.MAT_Metal_12 Flags=3584 Link=5 ShadowMapScale=128.000000
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00001.000000,+00000.000000
+                  Vertex   -00391.000000,-00391.000000,-00448.000000
+                  Vertex   -00391.000000,+00391.000000,-00448.000000
+                  Vertex   +00391.000000,+00391.000000,-00448.000000
+                  Vertex   +00391.000000,-00391.000000,-00448.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_4 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_28'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_4"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_4'
+         CollisionComponent=BrushComponent'BrushComponent_4'
+         BrushComponent=BrushComponent'BrushComponent_4'
+         CsgOper=CSG_Subtract
+         Brush=Model'Model_28'
+         Location=(X=0.00000,Y=0.00000,Z=0.00000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_3"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+   End Level
+Begin Surface
+End Surface
+End Map

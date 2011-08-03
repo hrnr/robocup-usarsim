@@ -1,0 +1,2881 @@
+Begin Map
+   Begin Level Name=PersistentLevel
+      Begin Actor Class=Brush Name=Brush_0 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_62
+            Begin PolyList
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -01548.000000,-01548.000000,-00448.000000
+                  Vertex   -01548.000000,-01548.000000,+00448.000000
+                  Vertex   -01548.000000,+01548.000000,+00448.000000
+                  Vertex   -01548.000000,+01548.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=1
+                  TextureU +00001.000000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   -01548.000000,+01548.000000,-00448.000000
+                  Vertex   -01548.000000,+01548.000000,+00448.000000
+                  Vertex   +01548.000000,+01548.000000,+00448.000000
+                  Vertex   +01548.000000,+01548.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00001.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +01548.000000,+01548.000000,-00448.000000
+                  Vertex   +01548.000000,+01548.000000,+00448.000000
+                  Vertex   +01548.000000,-01548.000000,+00448.000000
+                  Vertex   +01548.000000,-01548.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.wall1_Mat Flags=3584 Link=3
+                  TextureU -00001.000000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.000000,-00001.000000
+                  Vertex   +01548.000000,-01548.000000,-00448.000000
+                  Vertex   +01548.000000,-01548.000000,+00448.000000
+                  Vertex   -01548.000000,-01548.000000,+00448.000000
+                  Vertex   -01548.000000,-01548.000000,-00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00001.000000,+00000.000000
+                  Vertex   -01548.000000,+01548.000000,+00448.000000
+                  Vertex   -01548.000000,-01548.000000,+00448.000000
+                  Vertex   +01548.000000,-01548.000000,+00448.000000
+                  Vertex   +01548.000000,+01548.000000,+00448.000000
+               End Polygon
+               Begin Polygon Texture=Office.ceiling1_Mat Flags=3584 Link=5
+                  TextureU +00001.000000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00001.000000,+00000.000000
+                  Vertex   -01548.000000,-01548.000000,-00448.000000
+                  Vertex   -01548.000000,+01548.000000,-00448.000000
+                  Vertex   +01548.000000,+01548.000000,-00448.000000
+                  Vertex   +01548.000000,-01548.000000,-00448.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_1 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_62'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_1"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_1'
+         CollisionComponent=BrushComponent'BrushComponent_1'
+         BrushComponent=BrushComponent'BrushComponent_1'
+         CsgOper=CSG_Subtract
+         Brush=Model'Model_62'
+         Location=(X=0.000,Y=0.000,Z=0.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_0"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_2 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_3 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=1500.0
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            Name="PointLightComponent_3"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_4 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_4"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_3'
+         Components(1)=SpriteComponent'SpriteComponent_4'
+         PointLightComponent=PointLightComponent'PointLightComponent_3'
+         LightComponent=PointLightComponent'PointLightComponent_3'
+         Location=(X=864.710,Y=758.677,Z=349.785)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_2"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_5 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_6 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=1500.0
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            Name="PointLightComponent_6"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_7 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_7"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_6'
+         Components(1)=SpriteComponent'SpriteComponent_7'
+         PointLightComponent=PointLightComponent'PointLightComponent_6'
+         LightComponent=PointLightComponent'PointLightComponent_6'
+         Location=(X=-905.411,Y=798.422,Z=324.543)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_5"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_8 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_9 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=1500.0
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            Name="PointLightComponent_9"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_10 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_10"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_9'
+         Components(1)=SpriteComponent'SpriteComponent_10'
+         PointLightComponent=PointLightComponent'PointLightComponent_9'
+         LightComponent=PointLightComponent'PointLightComponent_9'
+         Location=(X=-844.624,Y=-766.273,Z=349.785)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_8"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_11 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_12 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            Radius=1500.0
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            Name="PointLightComponent_12"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_13 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_13"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_12'
+         Components(1)=SpriteComponent'SpriteComponent_13'
+         PointLightComponent=PointLightComponent'PointLightComponent_12'
+         LightComponent=PointLightComponent'PointLightComponent_12'
+         Location=(X=904.653,Y=-880.833,Z=349.785)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_11"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=PointLight Name=PointLight_14 Archetype=PointLight'Engine.Default__PointLight'
+         Begin Object Class=PointLightComponent Name=PointLightComponent0 ObjName=PointLightComponent_15 Archetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+            LightAffectsClassification=LAC_STATIC_AFFECTING
+            LightmassSettings=(LightSourceRadius=32.000000)
+            bPrecomputedLightingIsValid=false
+            CastDynamicShadows=false
+            CastStaticShadows=false
+            UseDirectLightMap=true
+            ReplacementPrimitive=None
+            FalloffExponent=1.5
+            Name="PointLightComponent_15"
+            ObjectArchetype=PointLightComponent'Engine.Default__PointLight:PointLightComponent0'
+         End Object
+         Begin Object Class=SpriteComponent Name=Sprite ObjName=SpriteComponent_16 Archetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+            Sprite=Texture2D'EditorResources.LightIcons.Light_Point_Stationary_Statics'
+            SpriteCategoryName="Lighting"
+            AlwaysLoadOnClient=false
+            AlwaysLoadOnServer=false
+            Scale=0.25
+            ReplacementPrimitive=None
+            HiddenGame=true
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="SpriteComponent_16"
+            ObjectArchetype=SpriteComponent'Engine.Default__PointLight:Sprite'
+         End Object
+         Components(0)=PointLightComponent'PointLightComponent_15'
+         Components(1)=SpriteComponent'SpriteComponent_16'
+         PointLightComponent=PointLightComponent'PointLightComponent_15'
+         LightComponent=PointLightComponent'PointLightComponent_15'
+         Location=(X=-10.030,Y=-2.713,Z=393.057)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="PointLight"
+         Name="PointLight_14"
+         ObjectArchetype=PointLight'Engine.Default__PointLight'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_17 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_18 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_18"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_18'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_18'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_18'
+         Location=(X=1021.439,Y=-912.039,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_17"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_19 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_20 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_20"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_20'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_20'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_20'
+         Location=(X=1005.439,Y=-1104.039,Z=-392.000)
+         Rotation=(Pitch=8193,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_19"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_21 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_22 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_22"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_22'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_22'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_22'
+         Location=(X=1021.439,Y=-736.039,Z=-232.000)
+         Rotation=(Pitch=5120,Yaw=-16383,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_21"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_23 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_24 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_24"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_24'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_24'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_24'
+         Location=(X=621.439,Y=-960.039,Z=-360.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=17408)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_23"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_25 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_26 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_26"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_26'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_26'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_26'
+         Location=(X=509.439,Y=-720.039,Z=-424.000)
+         Rotation=(Pitch=4096,Yaw=-16383,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_25"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_27 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_28 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_28"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_28'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_28'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_28'
+         Location=(X=-2.561,Y=-912.039,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_27"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_29 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_30 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_30"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_30'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_30'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_30'
+         Location=(X=-18.561,Y=-960.039,Z=-392.000)
+         Rotation=(Pitch=5120,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_29"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_31 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_32 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_32"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_32'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_32'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_32'
+         Location=(X=173.439,Y=-816.039,Z=-232.000)
+         Rotation=(Pitch=-8192,Yaw=-65535,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_31"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_33 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_34 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_34"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_34'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_34'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_34'
+         Location=(X=-1026.561,Y=-912.039,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_33"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_35 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_36 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_36"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_36'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_36'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_36'
+         Location=(X=-1026.561,Y=-816.039,Z=-216.000)
+         Rotation=(Pitch=15360,Yaw=16384,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_35"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_37 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_38 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_38"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_38'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_38'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_38'
+         Location=(X=-1026.561,Y=447.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_37"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_39 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_40 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_40"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_40'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_40'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_40'
+         Location=(X=-1106.561,Y=399.961,Z=-392.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=-8191)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_39"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_41 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_42 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_42"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_42'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_42'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_42'
+         Location=(X=-1026.561,Y=543.961,Z=-232.000)
+         Rotation=(Pitch=16384,Yaw=-10250,Roll=6133)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_41"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_43 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_44 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_44"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_44'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_44'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_44'
+         Location=(X=-514.561,Y=447.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_43"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_45 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_46 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_46"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_46'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_46'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_46'
+         Location=(X=-514.561,Y=543.961,Z=-216.000)
+         Rotation=(Pitch=14337,Yaw=16384,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_45"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_47 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_48 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_48"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_48'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_48'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_48'
+         Location=(X=-2.561,Y=447.961,Z=-152.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=19456)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_47"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_49 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_50 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_50"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_50'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_50'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_50'
+         Location=(X=45.439,Y=399.961,Z=-392.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=-6143)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_49"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_51 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_52 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_52"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_52'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_52'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_52'
+         Location=(X=-2.561,Y=543.961,Z=-408.000)
+         Rotation=(Pitch=16384,Yaw=10251,Roll=26632)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_51"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_53 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_54 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_54"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_54'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_54'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_54'
+         Location=(X=1021.439,Y=447.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_53"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_55 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_56 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_56"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_56'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_56'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_56'
+         Location=(X=1005.439,Y=399.961,Z=-376.000)
+         Rotation=(Pitch=-7167,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_55"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_57 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_58 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_58"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_58'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_58'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_58'
+         Location=(X=1021.439,Y=543.961,Z=-232.000)
+         Rotation=(Pitch=15360,Yaw=16384,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_57"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_59 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_60 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_60"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_60'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_60'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_60'
+         Location=(X=1021.439,Y=927.961,Z=-184.000)
+         Rotation=(Pitch=-16383,Yaw=-55285,Roll=-26631)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_59"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_61 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_62 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_62"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_62'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_62'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_62'
+         Location=(X=1037.439,Y=975.960,Z=-360.000)
+         Rotation=(Pitch=16384,Yaw=-55285,Roll=26632)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_61"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_63 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_64 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_64"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_64'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_64'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_64'
+         Location=(X=1021.439,Y=831.961,Z=-408.000)
+         Rotation=(Pitch=-15360,Yaw=-81919,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_63"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_65 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_66 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_66"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_66'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_66'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_66'
+         Location=(X=509.439,Y=927.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_65"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_67 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_68 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_68"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_68'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_68'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_68'
+         Location=(X=621.439,Y=975.960,Z=-344.000)
+         Rotation=(Pitch=16384,Yaw=-75786,Roll=6133)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_67"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_69 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_70 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_70"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_70'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_70'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_70'
+         Location=(X=509.439,Y=751.961,Z=-232.000)
+         Rotation=(Pitch=7168,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_69"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_71 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_72 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_72"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_72'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_72'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_72'
+         Location=(X=333.439,Y=1407.960,Z=-376.000)
+         Rotation=(Pitch=16384,Yaw=-427,Roll=65064)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_71"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_73 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_74 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_74"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_74'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_74'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_74'
+         Location=(X=-514.561,Y=927.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_73"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_75 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_76 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_76"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_76'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_76'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_76'
+         Location=(X=-514.561,Y=831.961,Z=-216.000)
+         Rotation=(Pitch=13312,Yaw=-91135,Roll=-32767)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_75"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_77 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_78 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_78"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_78'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_78'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_78'
+         Location=(X=-1026.561,Y=927.961,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_77"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_79 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_80 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_80"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_80'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_80'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_80'
+         Location=(X=-1010.561,Y=1071.960,Z=-312.000)
+         Rotation=(Pitch=-10240,Yaw=-147455,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_79"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_81 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_82 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_82"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_82'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_82'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_82'
+         Location=(X=-1266.561,Y=991.960,Z=-360.000)
+         Rotation=(Pitch=6330,Yaw=-57067,Roll=17108)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_81"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_83 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_84 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_84"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_84'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_84'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_84'
+         Location=(X=-1218.561,Y=-432.039,Z=-152.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=-27647)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_83"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_85 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_86 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_86"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_86'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_86'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_86'
+         Location=(X=-914.561,Y=-400.039,Z=-440.000)
+         Rotation=(Pitch=6145,Yaw=-81919,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_85"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_87 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_88 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_88"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_88'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_88'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_88'
+         Location=(X=-1026.561,Y=-528.039,Z=-392.000)
+         Rotation=(Pitch=-13312,Yaw=-81919,Roll=32768)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_87"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_89 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_90 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_90"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_90'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_90'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_90'
+         Location=(X=-514.561,Y=-432.039,Z=-184.000)
+         Rotation=(Pitch=-14336,Yaw=-49152,Roll=-32767)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_89"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_91 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_92 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_92"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_92'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_92'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_92'
+         Location=(X=-354.561,Y=-208.038,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_91"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_93 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_94 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.chair'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_94"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_94'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_94'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_94'
+         Location=(X=205.439,Y=-384.039,Z=-360.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=-18432)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_93"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_95 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_96 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_96"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_96'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_96'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_96'
+         Location=(X=-2.561,Y=-528.039,Z=-408.000)
+         Rotation=(Pitch=14336,Yaw=-49151,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_95"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_97 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_98 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.table'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_98"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_98'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_98'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_98'
+         Location=(X=1021.439,Y=-432.039,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=-81919,Roll=0)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_97"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=StaticMeshActor Name=StaticMeshActor_99 Archetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+         Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0 ObjName=StaticMeshComponent_100 Archetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+            StaticMesh=StaticMesh'Office.Monitor'
+            bForceDirectLightMap=true
+            bUsePrecomputedShadows=true
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Static=True)
+            Name="StaticMeshComponent_100"
+            ObjectArchetype=StaticMeshComponent'Engine.Default__StaticMeshActor:StaticMeshComponent0'
+         End Object
+         Components(0)=StaticMeshComponent'StaticMeshComponent_100'
+         CollisionComponent=StaticMeshComponent'StaticMeshComponent_100'
+         StaticMeshComponent=StaticMeshComponent'StaticMeshComponent_100'
+         Location=(X=1021.439,Y=-384.039,Z=-424.000)
+         Rotation=(Pitch=-16383,Yaw=-75786,Roll=26636)
+         Tag="StaticMeshActor"
+         Name="StaticMeshActor_99"
+         ObjectArchetype=StaticMeshActor'Engine.Default__StaticMeshActor'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_101 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_18
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.500000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.500000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_102 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_18'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_102"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_102'
+         CollisionComponent=BrushComponent'BrushComponent_102'
+         BrushComponent=BrushComponent'BrushComponent_102'
+         CsgOper=CSG_Add
+         Brush=Model'Model_18'
+         Location=(X=-2.561,Y=-672.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_101"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_103 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_19
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV -00000.142454,+00000.000000,-00000.213197
+                  Vertex   -00145.544312,-00500.000000,-00203.422806
+                  Vertex   +00132.240814,-00500.000000,+00212.311951
+                  Vertex   +00132.240814,+00500.000000,+00212.311951
+                  Vertex   -00145.544312,+00500.000000,-00203.422806
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.415735,-00000.000000,-00000.277785
+                  TextureV -00000.142454,+00000.000000,-00000.213197
+                  Vertex   -00145.544312,+00500.000000,-00203.422806
+                  Vertex   +00132.240814,+00500.000000,+00212.311951
+                  Vertex   +00145.544312,+00500.000000,+00203.422806
+                  Vertex   -00132.240814,+00500.000000,-00212.311951
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV -00000.142454,+00000.000000,-00000.213197
+                  Vertex   -00132.240814,+00500.000000,-00212.311951
+                  Vertex   +00145.544312,+00500.000000,+00203.422806
+                  Vertex   +00145.544312,-00500.000000,+00203.422806
+                  Vertex   -00132.240814,-00500.000000,-00212.311951
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.415735,+00000.000000,+00000.277785
+                  TextureV -00000.142454,+00000.000000,-00000.213197
+                  Vertex   -00132.240814,-00500.000000,-00212.311951
+                  Vertex   +00145.544312,-00500.000000,+00203.422806
+                  Vertex   +00132.240814,-00500.000000,+00212.311951
+                  Vertex   -00145.544312,-00500.000000,-00203.422806
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.415735,-00000.000000,-00000.277785
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   +00132.240814,+00500.000000,+00212.311951
+                  Vertex   +00132.240814,-00500.000000,+00212.311951
+                  Vertex   +00145.544312,-00500.000000,+00203.422806
+                  Vertex   +00145.544312,+00500.000000,+00203.422806
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.415735,-00000.000000,-00000.277785
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00145.544312,-00500.000000,-00203.422806
+                  Vertex   -00145.544312,+00500.000000,-00203.422806
+                  Vertex   -00132.240814,+00500.000000,-00212.311951
+                  Vertex   -00132.240814,-00500.000000,-00212.311951
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_104 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_19'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_104"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_104'
+         CollisionComponent=BrushComponent'BrushComponent_104'
+         BrushComponent=BrushComponent'BrushComponent_104'
+         CsgOper=CSG_Add
+         Brush=Model'Model_19'
+         Location=(X=1405.439,Y=-672.039,Z=-232.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_103"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_105 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_20
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_106 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_20'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_106"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_106'
+         CollisionComponent=BrushComponent'BrushComponent_106'
+         BrushComponent=BrushComponent'BrushComponent_106'
+         CsgOper=CSG_Add
+         Brush=Model'Model_20'
+         Location=(X=765.439,Y=-672.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_105"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_107 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_21
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_108 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_21'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_108"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_108'
+         CollisionComponent=BrushComponent'BrushComponent_108'
+         BrushComponent=BrushComponent'BrushComponent_108'
+         CsgOper=CSG_Add
+         Brush=Model'Model_21'
+         Location=(X=253.439,Y=-672.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_107"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_109 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_22
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_110 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_22'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_110"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_110'
+         CollisionComponent=BrushComponent'BrushComponent_110'
+         BrushComponent=BrushComponent'BrushComponent_110'
+         CsgOper=CSG_Add
+         Brush=Model'Model_22'
+         Location=(X=-258.561,Y=-672.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_109"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_111 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_23
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_112 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_23'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_112"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_112'
+         CollisionComponent=BrushComponent'BrushComponent_112'
+         BrushComponent=BrushComponent'BrushComponent_112'
+         CsgOper=CSG_Add
+         Brush=Model'Model_23'
+         Location=(X=-770.561,Y=-672.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_111"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_113 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_25
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_114 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_25'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_114"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_114'
+         CollisionComponent=BrushComponent'BrushComponent_114'
+         BrushComponent=BrushComponent'BrushComponent_114'
+         CsgOper=CSG_Add
+         Brush=Model'Model_25'
+         Location=(X=-914.561,Y=-176.038,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_113"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_115 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_26
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_116 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_26'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_116"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_116'
+         CollisionComponent=BrushComponent'BrushComponent_116'
+         BrushComponent=BrushComponent'BrushComponent_116'
+         CsgOper=CSG_Add
+         Brush=Model'Model_26'
+         Location=(X=-402.561,Y=-176.038,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_115"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_117 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_28
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_118 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_28'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_118"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_118'
+         CollisionComponent=BrushComponent'BrushComponent_118'
+         BrushComponent=BrushComponent'BrushComponent_118'
+         CsgOper=CSG_Add
+         Brush=Model'Model_28'
+         Location=(X=621.439,Y=-176.038,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_117"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_119 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_31
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,-00000.000000,+00000.500000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00249.999939,-00008.000031
+                  Vertex   -00135.000000,-00249.999985,-00008.000023
+                  Vertex   -00135.000000,-00249.999939,+00008.000031
+                  Vertex   -00135.000000,+00249.999985,+00008.000023
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,+00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00249.999985,+00008.000023
+                  Vertex   -00135.000000,-00249.999939,+00008.000031
+                  Vertex   +00135.000000,-00249.999939,+00008.000031
+                  Vertex   +00135.000000,+00249.999985,+00008.000023
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,+00000.000000,-00000.500000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   +00135.000000,+00249.999985,+00008.000023
+                  Vertex   +00135.000000,-00249.999939,+00008.000031
+                  Vertex   +00135.000000,-00249.999985,-00008.000023
+                  Vertex   +00135.000000,+00249.999939,-00008.000031
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=3
+                  TextureU -00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   +00135.000000,+00249.999939,-00008.000031
+                  Vertex   +00135.000000,-00249.999985,-00008.000023
+                  Vertex   -00135.000000,-00249.999985,-00008.000023
+                  Vertex   -00135.000000,+00249.999939,-00008.000031
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,+00000.000000,-00000.000000
+                  TextureV +00000.000000,-00000.000000,+00000.256410
+                  Vertex   -00135.000000,-00249.999939,+00008.000031
+                  Vertex   -00135.000000,-00249.999985,-00008.000023
+                  Vertex   +00135.000000,-00249.999985,-00008.000023
+                  Vertex   +00135.000000,-00249.999939,+00008.000031
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00249.999939,-00008.000031
+                  Vertex   -00135.000000,+00249.999985,+00008.000023
+                  Vertex   +00135.000000,+00249.999985,+00008.000023
+                  Vertex   +00135.000000,+00249.999939,-00008.000031
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_120 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_31'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_120"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_120'
+         CollisionComponent=BrushComponent'BrushComponent_120'
+         BrushComponent=BrushComponent'BrushComponent_120'
+         CsgOper=CSG_Add
+         Brush=Model'Model_31'
+         Location=(X=621.439,Y=-1280.039,Z=-440.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_119"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_121 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_32
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_122 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_32'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_122"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_122'
+         CollisionComponent=BrushComponent'BrushComponent_122'
+         BrushComponent=BrushComponent'BrushComponent_122'
+         CsgOper=CSG_Add
+         Brush=Model'Model_32'
+         Location=(X=109.439,Y=-1168.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_121"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_123 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_33
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_124 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_33'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_124"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_124'
+         CollisionComponent=BrushComponent'BrushComponent_124'
+         BrushComponent=BrushComponent'BrushComponent_124'
+         CsgOper=CSG_Add
+         Brush=Model'Model_33'
+         Location=(X=-402.561,Y=-1168.039,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_123"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_125 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_35
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.500000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.500000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -01282.000000,+00008.000000,+00250.000000
+                  Vertex   -01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,-00008.000000,+00250.000000
+                  Vertex   +01282.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -01282.000000,-00008.000000,-00250.000000
+                  Vertex   -01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,+00008.000000,-00250.000000
+                  Vertex   +01282.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_126 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_35'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_126"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_126'
+         CollisionComponent=BrushComponent'BrushComponent_126'
+         BrushComponent=BrushComponent'BrushComponent_126'
+         CsgOper=CSG_Add
+         Brush=Model'Model_35'
+         Location=(X=-2.561,Y=687.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_125"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_127 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_36
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,-00000.000000,-00000.500000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00249.999985,+00008.000023
+                  Vertex   -00135.000000,+00249.999985,+00008.000004
+                  Vertex   -00135.000000,+00249.999985,-00008.000023
+                  Vertex   -00135.000000,-00249.999985,-00008.000004
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00249.999985,-00008.000004
+                  Vertex   -00135.000000,+00249.999985,-00008.000023
+                  Vertex   +00135.000000,+00249.999985,-00008.000023
+                  Vertex   +00135.000000,-00249.999985,-00008.000004
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,+00000.000000,+00000.500000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   +00135.000000,-00249.999985,-00008.000004
+                  Vertex   +00135.000000,+00249.999985,-00008.000023
+                  Vertex   +00135.000000,+00249.999985,+00008.000004
+                  Vertex   +00135.000000,-00249.999985,+00008.000023
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   +00135.000000,-00249.999985,+00008.000023
+                  Vertex   +00135.000000,+00249.999985,+00008.000004
+                  Vertex   -00135.000000,+00249.999985,+00008.000004
+                  Vertex   -00135.000000,-00249.999985,+00008.000023
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00249.999985,-00008.000023
+                  Vertex   -00135.000000,+00249.999985,+00008.000004
+                  Vertex   +00135.000000,+00249.999985,+00008.000004
+                  Vertex   +00135.000000,+00249.999985,-00008.000023
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,+00000.256410
+                  Vertex   -00135.000000,-00249.999985,+00008.000023
+                  Vertex   -00135.000000,-00249.999985,-00008.000004
+                  Vertex   +00135.000000,-00249.999985,-00008.000004
+                  Vertex   +00135.000000,-00249.999985,+00008.000023
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_128 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_36'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_128"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_128'
+         CollisionComponent=BrushComponent'BrushComponent_128'
+         BrushComponent=BrushComponent'BrushComponent_128'
+         CsgOper=CSG_Add
+         Brush=Model'Model_36'
+         Location=(X=-1138.561,Y=1183.961,Z=-424.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_127"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_129 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_37
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_130 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_37'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_130"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_130'
+         CollisionComponent=BrushComponent'BrushComponent_130'
+         BrushComponent=BrushComponent'BrushComponent_130'
+         CsgOper=CSG_Add
+         Brush=Model'Model_37'
+         Location=(X=-626.561,Y=1183.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_129"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_131 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_38
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.440961,-00000.235698
+                  TextureV +00000.000000,-00000.120871,-00000.226133
+                  Vertex   -00135.000000,-00124.904549,-00216.709122
+                  Vertex   -00135.000000,+00110.793808,+00224.251480
+                  Vertex   -00135.000000,+00124.904549,+00216.709122
+                  Vertex   -00135.000000,-00110.793808,-00224.251480
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.120871,-00000.226133
+                  Vertex   -00135.000000,-00110.793808,-00224.251480
+                  Vertex   -00135.000000,+00124.904549,+00216.709122
+                  Vertex   +00135.000000,+00124.904549,+00216.709122
+                  Vertex   +00135.000000,-00110.793808,-00224.251480
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.440961,+00000.235698
+                  TextureV +00000.000000,-00000.120871,-00000.226133
+                  Vertex   +00135.000000,-00110.793808,-00224.251480
+                  Vertex   +00135.000000,+00124.904549,+00216.709122
+                  Vertex   +00135.000000,+00110.793808,+00224.251480
+                  Vertex   +00135.000000,-00124.904549,-00216.709122
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,-00000.000000
+                  TextureV +00000.000000,-00000.120871,-00000.226133
+                  Vertex   +00135.000000,-00124.904549,-00216.709122
+                  Vertex   +00135.000000,+00110.793808,+00224.251480
+                  Vertex   -00135.000000,+00110.793808,+00224.251480
+                  Vertex   -00135.000000,-00124.904549,-00216.709122
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.226133,-00000.120871
+                  Vertex   -00135.000000,+00124.904549,+00216.709122
+                  Vertex   -00135.000000,+00110.793808,+00224.251480
+                  Vertex   +00135.000000,+00110.793808,+00224.251480
+                  Vertex   +00135.000000,+00124.904549,+00216.709122
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.226133,+00000.120871
+                  Vertex   -00135.000000,-00124.904549,-00216.709122
+                  Vertex   -00135.000000,-00110.793808,-00224.251480
+                  Vertex   +00135.000000,-00110.793808,-00224.251480
+                  Vertex   +00135.000000,-00124.904549,-00216.709122
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_132 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_38'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_132"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_132'
+         CollisionComponent=BrushComponent'BrushComponent_132'
+         BrushComponent=BrushComponent'BrushComponent_132'
+         CsgOper=CSG_Add
+         Brush=Model'Model_38'
+         Location=(X=-114.561,Y=1455.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_131"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_133 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_39
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_134 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_39'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_134"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_134'
+         CollisionComponent=BrushComponent'BrushComponent_134'
+         BrushComponent=BrushComponent'BrushComponent_134'
+         CsgOper=CSG_Add
+         Brush=Model'Model_39'
+         Location=(X=397.439,Y=1183.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_133"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_135 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_40
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.386505,+00000.317197
+                  TextureV +00000.000000,+00000.162665,-00000.198208
+                  Vertex   -00135.000000,+00152.414246,-00198.327744
+                  Vertex   -00135.000000,-00164.782394,+00188.177444
+                  Vertex   -00135.000000,-00152.414246,+00198.327744
+                  Vertex   -00135.000000,+00164.782394,-00188.177444
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.162665,-00000.198208
+                  Vertex   -00135.000000,+00164.782394,-00188.177444
+                  Vertex   -00135.000000,-00152.414246,+00198.327744
+                  Vertex   +00135.000000,-00152.414246,+00198.327744
+                  Vertex   +00135.000000,+00164.782394,-00188.177444
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.386505,-00000.317197
+                  TextureV +00000.000000,+00000.162665,-00000.198208
+                  Vertex   +00135.000000,+00164.782394,-00188.177444
+                  Vertex   +00135.000000,-00152.414246,+00198.327744
+                  Vertex   +00135.000000,-00164.782394,+00188.177444
+                  Vertex   +00135.000000,+00152.414246,-00198.327744
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.162665,-00000.198208
+                  Vertex   +00135.000000,+00152.414246,-00198.327744
+                  Vertex   +00135.000000,-00164.782394,+00188.177444
+                  Vertex   -00135.000000,-00164.782394,+00188.177444
+                  Vertex   -00135.000000,+00152.414246,-00198.327744
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,+00000.198208,+00000.162665
+                  Vertex   -00135.000000,-00152.414246,+00198.327744
+                  Vertex   -00135.000000,-00164.782394,+00188.177444
+                  Vertex   +00135.000000,-00164.782394,+00188.177444
+                  Vertex   +00135.000000,-00152.414246,+00198.327744
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,-00000.000000
+                  TextureV +00000.000000,-00000.198208,-00000.162665
+                  Vertex   -00135.000000,+00152.414246,-00198.327744
+                  Vertex   -00135.000000,+00164.782394,-00188.177444
+                  Vertex   +00135.000000,+00164.782394,-00188.177444
+                  Vertex   +00135.000000,+00152.414246,-00198.327744
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_136 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_40'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_136"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_136'
+         CollisionComponent=BrushComponent'BrushComponent_136'
+         BrushComponent=BrushComponent'BrushComponent_136'
+         CsgOper=CSG_Add
+         Brush=Model'Model_40'
+         Location=(X=909.439,Y=1071.961,Z=-216.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_135"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_137 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_41
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_138 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_41'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_138"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_138'
+         CollisionComponent=BrushComponent'BrushComponent_138'
+         BrushComponent=BrushComponent'BrushComponent_138'
+         CsgOper=CSG_Add
+         Brush=Model'Model_41'
+         Location=(X=909.439,Y=191.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_137"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_139 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_43
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00135.000000,+00008.000000,+00250.000000
+                  Vertex   -00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,-00008.000000,+00250.000000
+                  Vertex   +00135.000000,+00008.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00135.000000,-00008.000000,-00250.000000
+                  Vertex   -00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,+00008.000000,-00250.000000
+                  Vertex   +00135.000000,-00008.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_140 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_43'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_140"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_140'
+         CollisionComponent=BrushComponent'BrushComponent_140'
+         BrushComponent=BrushComponent'BrushComponent_140'
+         CsgOper=CSG_Add
+         Brush=Model'Model_43'
+         Location=(X=-114.561,Y=191.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_139"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_141 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_44
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.317197,-00000.386505
+                  TextureV +00000.000000,-00000.198208,-00000.162665
+                  Vertex   -00135.000000,-00198.327728,-00152.414185
+                  Vertex   -00135.000000,+00188.177444,+00164.782394
+                  Vertex   -00135.000000,+00198.327728,+00152.414185
+                  Vertex   -00135.000000,-00188.177444,-00164.782394
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.198208,-00000.162665
+                  Vertex   -00135.000000,-00188.177444,-00164.782394
+                  Vertex   -00135.000000,+00198.327728,+00152.414185
+                  Vertex   +00135.000000,+00198.327728,+00152.414185
+                  Vertex   +00135.000000,-00188.177444,-00164.782394
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.317197,+00000.386505
+                  TextureV +00000.000000,-00000.198208,-00000.162665
+                  Vertex   +00135.000000,-00188.177444,-00164.782394
+                  Vertex   +00135.000000,+00198.327728,+00152.414185
+                  Vertex   +00135.000000,+00188.177444,+00164.782394
+                  Vertex   +00135.000000,-00198.327728,-00152.414185
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,-00000.000000
+                  TextureV +00000.000000,-00000.198208,-00000.162665
+                  Vertex   +00135.000000,-00198.327728,-00152.414185
+                  Vertex   +00135.000000,+00188.177444,+00164.782394
+                  Vertex   -00135.000000,+00188.177444,+00164.782394
+                  Vertex   -00135.000000,-00198.327728,-00152.414185
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.162665,-00000.198208
+                  Vertex   -00135.000000,+00198.327728,+00152.414185
+                  Vertex   -00135.000000,+00188.177444,+00164.782394
+                  Vertex   +00135.000000,+00188.177444,+00164.782394
+                  Vertex   +00135.000000,+00198.327728,+00152.414185
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=5
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.162665,+00000.198208
+                  Vertex   -00135.000000,-00198.327728,-00152.414185
+                  Vertex   -00135.000000,-00188.177444,-00164.782394
+                  Vertex   +00135.000000,-00188.177444,-00164.782394
+                  Vertex   +00135.000000,-00198.327728,-00152.414185
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_142 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_44'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_142"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_142'
+         CollisionComponent=BrushComponent'BrushComponent_142'
+         BrushComponent=BrushComponent'BrushComponent_142'
+         CsgOper=CSG_Add
+         Brush=Model'Model_44'
+         Location=(X=-626.561,Y=335.961,Z=-264.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_141"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_143 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_47
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_144 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_47'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_144"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_144'
+         CollisionComponent=BrushComponent'BrushComponent_144'
+         BrushComponent=BrushComponent'BrushComponent_144'
+         CsgOper=CSG_Add
+         Brush=Model'Model_47'
+         Location=(X=-770.561,Y=687.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_143"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_145 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_48
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_146 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_48'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_146"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_146'
+         CollisionComponent=BrushComponent'BrushComponent_146'
+         BrushComponent=BrushComponent'BrushComponent_146'
+         CsgOper=CSG_Add
+         Brush=Model'Model_48'
+         Location=(X=-258.561,Y=687.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_145"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_147 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_49
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_148 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_49'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_148"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_148'
+         CollisionComponent=BrushComponent'BrushComponent_148'
+         BrushComponent=BrushComponent'BrushComponent_148'
+         CsgOper=CSG_Add
+         Brush=Model'Model_49'
+         Location=(X=253.439,Y=687.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_147"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+      Begin Actor Class=Brush Name=Brush_149 Archetype=Brush'Engine.Default__Brush'
+         Begin PolyList
+         End PolyList
+         Begin Brush Name=Model_50
+            Begin PolyList
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=0
+                  TextureU +00000.000000,+00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=1
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=2
+                  TextureU +00000.000000,-00000.500000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=3
+                  TextureU -00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.000000,-00000.256410
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+               End Polygon
+               Begin Polygon Texture=Office.CubicleWall_Mat Flags=3584 Link=4
+                  TextureU +00000.500000,-00000.000000,+00000.000000
+                  TextureV +00000.000000,+00000.256410,+00000.000000
+                  Vertex   -00008.000000,+00500.000000,+00250.000000
+                  Vertex   -00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,-00500.000000,+00250.000000
+                  Vertex   +00008.000000,+00500.000000,+00250.000000
+               End Polygon
+               Begin Polygon Texture=EngineMaterials.DefaultMaterial Flags=3584 Link=5
+                  TextureU +00000.500000,+00000.000000,+00000.000000
+                  TextureV +00000.000000,-00000.256410,+00000.000000
+                  Vertex   -00008.000000,-00500.000000,-00250.000000
+                  Vertex   -00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,+00500.000000,-00250.000000
+                  Vertex   +00008.000000,-00500.000000,-00250.000000
+               End Polygon
+            End PolyList
+         End Brush
+         Begin Object Class=BrushComponent Name=BrushComponent0 ObjName=BrushComponent_150 Archetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+            Brush=Model'Model_50'
+            ReplacementPrimitive=None
+            LightingChannels=(bInitialized=True,Dynamic=True)
+            Name="BrushComponent_150"
+            ObjectArchetype=BrushComponent'Engine.Default__Brush:BrushComponent0'
+         End Object
+         Components(0)=BrushComponent'BrushComponent_150'
+         CollisionComponent=BrushComponent'BrushComponent_150'
+         BrushComponent=BrushComponent'BrushComponent_150'
+         CsgOper=CSG_Add
+         Brush=Model'Model_50'
+         Location=(X=765.439,Y=687.961,Z=-200.000)
+         Rotation=(Pitch=0,Yaw=0,Roll=0)
+         Tag="Brush"
+         Name="Brush_149"
+         ObjectArchetype=Brush'Engine.Default__Brush'
+      End Actor
+   End Level
+Begin Surface
+End Surface
+End Map

@@ -33,8 +33,6 @@ This information is helpful for debugging. It can be sent to stephen.carlson@nis
 stephen.balakirsky@nist.gov for troubleshooting.
 
 Known Issues:
-- Malformed output from sensors can break the sensor panel and/or cause an "Oh No!" dialog box.
-- Air vehicles have not yet been tested.
 - Joystick support is poor on Linux or Mac. 64 bit JREs will also cause a joystick failure.
 - Underwater vehicles, world controllers, and other features not in the UI have to use the Advanced command box
   (available by clicking the "Raw" button near the Send button)
