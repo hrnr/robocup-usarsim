@@ -7,3 +7,6 @@ It is reasonably complete but not comprehensive. If a feature is missing, use Ru
 runtime!
 
 An example script to grab Kinect data can be found in 'kinect.rb'.
+
+To run the script, open the .bat file with a world open at the same time. Right click in the scripting engine and click run script, selecting
+kinect.rb. 
