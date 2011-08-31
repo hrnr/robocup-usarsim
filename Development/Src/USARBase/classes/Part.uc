@@ -10,7 +10,8 @@
 /*
  * Parents all static mesh based objects on a robot.
  */
-class Part extends Object config(USAR);
+class Part extends Component config(USAR)
+	editinlinenew;
 
 // Whether collision should be enabled on this part.
 var bool Collision;
@@ -19,7 +20,7 @@ var vector Direction;
 // The part's mass in kilograms
 var float Mass;
 // The static mesh used for rendering
-var StaticMesh Mesh;
+var() const StaticMesh Mesh;
 // The location of the object relative to its "RelativeTo" parent
 var vector Offset;
 // The object from which this part's offset is relative

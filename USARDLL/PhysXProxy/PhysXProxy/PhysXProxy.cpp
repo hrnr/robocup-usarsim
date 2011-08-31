@@ -442,6 +442,26 @@ extern "C"
 		return &result;
 	}
 
+	PHYSXPROXYDLL_API FVector* GetAngularMomentumInternal( BodyInstancePointer *pBodyInstWrapper )
+	{
+		static FVector result;	// declared static so that the struct's memory is still valid after the function returns.
+
+		NxActor *pActor = GetActor(pBodyInstWrapper);
+		if( !pActor )
+		{
+			printf("GetAngularMomentumInternal: Invalid body instance!\n");
+			result.x = result.y = result.z = 666.0f;
+			return &result;
+		}
+
+		NxVec3 angularmomentum = pActor->getAngularMomentum();
+		result.x = angularmomentum.x;
+		result.y = angularmomentum.y;
+		result.z = angularmomentum.z;
+		return &result;
+	}
+	
+
 	// For debugging/information, print joint info.
 	PHYSXPROXYDLL_API void PrintJointInfoInternal( BodyInstancePointer *pJointInstWrapper )
 	{
