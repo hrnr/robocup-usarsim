@@ -1323,7 +1323,12 @@ public class IridiumUI implements IridiumListener {
 		final JPanel geoOptions = new JPanel(new GridBagLayout());
 		typePanel.add(geoOptions, "geoconf");
 		// Combo Box: Configuration Type
-		geoType = Utils.createEntryBox("Configuration type to request", "Robot", "Actuator");
+		geoType = Utils.createEntryBox("Configuration type to request", 
+				"Accel", "AcceleroMeter", "Acoustic", "Actuator", "AltitudeSensor", 
+				"Camera", "Effector", "Encoder", "GPS", "Gripper", "GroundTruth", "IMU", 
+				"INS", "IR", "IRScanner", "LineLaser", "MageticCompas", "MissionTime", 
+				"Odometry", "PCL", "RangeImager", "RangeScanner", "Range", "Robot", 
+				"Sonar", "TouchArray", "WheelSensor");
 		Utils.armActionListener(geoType, listener, "send");
 		gbc.gridx = 1;
 		gbc.gridy = 0;
