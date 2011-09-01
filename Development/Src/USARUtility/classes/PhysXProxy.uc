@@ -95,6 +95,12 @@ function Vector GetLinearMomentum( RB_BodyInstance BodyInstance )
 	return GetLinearMomentumInternal(WrapBodyInstance(BodyInstance));
 }
 
+dllimport final function Vector GetAngularMomentumInternal( BodyInstancePointer bodyInst );
+function Vector GetAngularMomentum( RB_BodyInstance BodyInstance )
+{
+	return GetAngularMomentumInternal(WrapBodyInstance(BodyInstance));
+}
+
 dllimport final function PrintJointInfoInternal( BodyInstancePointer jointInst );
 function PrintJointInfo( RB_ConstraintInstance JointInstance )
 {

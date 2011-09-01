@@ -246,8 +246,8 @@ simulated function PostBeginPlay()
 	// Disable contacts between specified item pairs
 	for (i = 0; i < DisableContacts.Length; i++)
 		class'Utilities'.static.SetActorPairIgnore(
-			GetPartByName(DisableContacts[i].Part1.Name).StaticMeshComponent.BodyInstance,
-			GetPartByName(DisableContacts[i].Part2.Name).StaticMeshComponent.BodyInstance,
+			GetPartByName(DisableContacts[i].Part1.TemplateName).StaticMeshComponent.BodyInstance,
+			GetPartByName(DisableContacts[i].Part2.TemplateName).StaticMeshComponent.BodyInstance,
 			true
 		);
 	// Status timer
@@ -442,13 +442,13 @@ reliable server function SetupJoint(Joint jt)
 		ji.SetHardAttach(false);
 		ji.SetBase(CenterItem);
 		// Find parts for parent and child
-		ji.Parent = GetPartByName(jt.Parent.Name);
+		ji.Parent = GetPartByName(jt.Parent.TemplateName);
 		if (ji.Parent == None)
 		{
 			LogInternal("USARVehicle: Could not find parent for " $ String(jt.Name));
 			return;
 		}
-		ji.Child = GetPartByName(jt.Child.Name);
+		ji.Child = GetPartByName(jt.Child.TemplateName);
 		if (ji.Child == None)
 		{
 			LogInternal("USARVehicle: Could not find child for " $ String(jt.Name));
@@ -506,17 +506,17 @@ reliable server function SetupPart(Part part)
 			class'Utilities'.static.SetIterationSolverCount(
 				it.StaticMeshComponent.BodyInstance, part.SolverIterationCount);
 			// Initialize center item properly (for sensors and parenting reasons)
-			if (part.Name == Body.Name)
+			if (part.TemplateName == Body.TemplateName)
 			{
 				CenterItem = it;
 				if (bDebug)
-					LogInternal("USARVehicle: Found vehicle body " $ String(Body.Name));
+					LogInternal("USARVehicle: Found vehicle body " $ String(Body.TemplateName));
 			}
 			// Add item into world
 			Parts.AddItem(it);
 			if (bDebug)
 				LogInternal("USARVehicle: Created part '" $ String(it.Name) $ "' for spec " $
-					String(part.Name));
+					String(part.TemplateName));
 		}
 	}
 }

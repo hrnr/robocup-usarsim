@@ -86,15 +86,22 @@ simulated function Item GetPartByName(name partName)
 {
 	local int i;
 	local PhysicalItem p;
-	
+	local JointItem j;
+
 	// Search for part (slow!)
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('PhysicalItem'))
 		{
 			// Check spec for the name
 			p = PhysicalItem(Parts[i]);
-			if (p.Spec.Name == partName)
+			if (p.Spec.TemplateName == partName)
 				return p;
+		}
+		else if( Parts[i].IsJoint() )
+		{
+			j = JointItem(Parts[i]);
+			if (j.Spec.Name == partName)
+				return j;
 		}
 		else if (Parts[i].Name == partName)
 			// Matched spawned item (sensor, actuator)
