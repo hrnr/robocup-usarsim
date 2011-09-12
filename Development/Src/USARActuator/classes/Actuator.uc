@@ -406,7 +406,7 @@ simulated function Item GetPartByName(name partName)
 		{
 			// Check spec for the name
 			p = PhysicalItem(Parts[i]);
-			if (p.Spec.Name == partName)
+			if (p.Spec.TemplateName == partName)
 				return p;
 		}
 		else if (Parts[i].Name == partName)
