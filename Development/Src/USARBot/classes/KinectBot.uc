@@ -8,9 +8,9 @@
 *****************************************************************************/
 
 /*
- * Parent static vehicle for the Fanuc M16iB20 actuator
+ * Parent static vehicle for the Kinect
  */
-class Fanuc_M16iB20 extends StaticPlatform config(USAR);
+class KinectBot extends StaticPlatform config(USAR);
 
 defaultproperties
 {

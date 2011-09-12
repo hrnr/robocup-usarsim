@@ -10,7 +10,7 @@
 /*
  * Parent static vehicle for the GripperActuator actuator
  */
-class GripperBase extends StaticVehicle config(USAR);
+class GripperBase extends StaticPlatform config(USAR);
 
 defaultproperties
 {

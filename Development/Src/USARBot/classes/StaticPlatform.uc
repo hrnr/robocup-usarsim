@@ -8,21 +8,35 @@
 *****************************************************************************/
 
 /*
- * StaticVehicle: vehicle with no geometry or motive power; use for static actuators (subclass
+ * StaticPlatform: platform with no geometry or motive power; use for static actuators (subclass
  * and attach in the INI file)
  */
-class StaticVehicle extends USARVehicle config(USAR);
-
-simulated function String GetStatus()
-{
-	return super.GetStatus() $ " {Type StaticVehicle}";
-}
+class StaticPlatform extends USARVehicle config(USAR);
 
 simulated function PostBeginPlay()
 {
 	super.PostBeginPlay();
 	CenterItem.SetHidden(!bDebug);
 }
+
+// Returns configuration data of this robot
+function String GetConfData()
+{
+	return super.GetConfData() $ " {Type StaticPlatform} {SteeringType None} {Mass 0} ";
+}
+
+// Gets robot status (adds zero steer amounts)
+simulated function String GetStatus()
+{
+	return super.GetStatus() $ " {Type StaticPlatform}";
+}
+
+// Gets the robot's steering type
+simulated function String GetSteeringType()
+{
+	return "None";
+}
+
 
 defaultproperties
 {

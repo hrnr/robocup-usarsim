@@ -40,5 +40,6 @@ Known Issues:
   supported by the USAR UDK port.
 
 Notes:
-Some libraries used by this software were not developed at NIST.
+Some libraries used by this software were not developed at NIST. In particular, you need the joystick libraries from
+http://sourceforge.net/projects/javajoystick/files/JavaJoystick/0.7/joystick-0-7.zip/download
 For details see the included license.txt file.

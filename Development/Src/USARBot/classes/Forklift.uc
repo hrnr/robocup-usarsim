@@ -10,7 +10,7 @@
 /*
  * Parent static vehicle for the ForkliftArm actuator
  */
-class Forklift extends StaticVehicle config(USAR);
+class Forklift extends StaticPlatform config(USAR);
 
 defaultproperties
 {

@@ -10,7 +10,7 @@
 /*
  * Parent static vehicle for the KR60 actuator
  */
-class KR60 extends StaticVehicle config(USAR);
+class KR60 extends StaticPlatform config(USAR);
 
 defaultproperties
 {

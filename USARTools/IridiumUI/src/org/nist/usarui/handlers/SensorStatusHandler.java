@@ -222,7 +222,7 @@ public class SensorStatusHandler extends AbstractStatusHandler {
 			// Send whatever we got
 			if (value != null)
 				setInformation(type, name, value);
-			keep = false;
+			keep = false; // was set to false by S. Carlson, set to true to see all messages.
 		}
 		return keep;
 	}
