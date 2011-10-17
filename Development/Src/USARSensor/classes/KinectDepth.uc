@@ -11,8 +11,8 @@ class KinectDepth extends RangeSensor config (USAR);
 
 var float FovX;
 var float FovY;
-var float ResolutionX;
-var float ResolutionY;
+var int PixelsX;
+var int PixelsY;
 var int Frame;
 var int FrameCount;
 var bool bSendRangeData;
@@ -20,8 +20,6 @@ var bool bSendRangeData;
 simulated function ConvertParam()
 {
 	super.ConvertParam();
-	ResolutionX = class'UnitsConverter'.static.AngleToUU(ResolutionX);
-	ResolutionY = class'UnitsConverter'.static.AngleToUU(ResolutionY);
 	FovX = class'UnitsConverter'.static.AngleToUU(FovX);
 	FovY = class'UnitsConverter'.static.AngleToUU(FovY);
 }
@@ -38,34 +36,58 @@ simulated function PostBeginPlay()
 
 function String GetData()
 {
-	local String rangeData, point;
-	local int i, j, start;
+	local String rangeData;
+	local float range;
+	local int i, j, startY;
 	local rotator turn;
+	local float ResolutionX;
+	local float ResolutionY;
+//	local int rangeCountDebug;
+//	local int debugCounter, debugCounter2;
+	local float FovX_2;
 	
 	rangeData = "";
+//	rangeCountDebug = 0;
 	// if no scan just send status data
+	rangeData = "{Name " $ ItemName $ "} {Resolution " $ PixelsX $ "," $
+	            PixelsY $ "} {FOV " $ 
+				class'UnitsConverter'.static.Str_AngleFromUU(FovX) $ "," $ class'UnitsConverter'.static.Str_AngleFromUU(FovY) $ "}";
 	if( !bSendRangeData )
 	{
-	   rangeData = "{Name " $ ItemName $ "} {Frames 0}";
+	   rangeData = rangeData $  " {Frames 0} {Frame 0}";
 	   return rangeData;
         }
 
-
+	rangeData = rangeData $ " {Frames " $ FrameCount $ "} {Frame " $ Frame $
+	            "} {Range ";
 	// Top to bottom, left to right, venetian blinds scan
-	start = -FovY / 2 + FovY * Frame / FrameCount;
-	for (i = start; i < start + FovY / FrameCount; i += ResolutionY)
-		for (j = -FovX / 2; j <= FovX / 2; j += ResolutionX)
+	startY = -FovY / 2 + FovY * Frame / FrameCount;
+	ResolutionX = FovX/PixelsX;
+	ResolutionY = FovY/PixelsY;
+//	LogInternal("KinectDepth: FovX " $ FovX $ " ResolutionX: " $ PixelsX);
+//	debugCounter2=0;
+	FovX_2 = FovX/2.;
+	for (i = 0; i < PixelsY/FrameCount; i++)
+	  {
+//	    debugCounter = 0;
+		for (j = 0; j < PixelsX; j++)
 		{
-			turn.Pitch = i;
-			turn.Yaw = j;
+			turn.Pitch = startY + i*ResolutionY;
+			turn.Yaw = -FovX_2 + j*ResolutionX;
 			curRot = class'Utilities'.static.rTurn(Rotation, turn);
-			point = String(int(GetRange() * 100));
+			
+			range = GetRange();
+//			rangeCountDebug++;
 			if (rangeData == "")
-				rangeData = point;
+				rangeData = class'UnitsConverter'.static.FloatString(range, 2);
 			else
-				rangeData = rangeData $ "," $ point;
+				rangeData = rangeData $ "," $ class'UnitsConverter'.static.FloatString(range, 2);
+//			debugCounter++;
 		}
-	rangeData = "{Name " $ ItemName $ "} {Frame " $ Frame $ "} {Range " $ rangeData $ "}";
+//		LogInternal( "Kinect resx: " $ ResolutionX $ " line " $ debugCounter2++ $" elements/line: " $ debugCounter );
+	  }
+	rangeData = rangeData $ "}";
+//	LogInternal("KinectDepth: " $ rangeData );
 	Frame = (Frame + 1) % FrameCount;
 	if (Frame == 0)
 	{
@@ -78,8 +100,9 @@ function String GetData()
 	{
 //		`log("Kinect scan " $ Frame $ "/" $ FrameCount $ ", " $ (FrameCount - Frame) *
 //			ScanInterval $ " second(s) left", ,'Kinect');
-		LogInternal("Kinect scan " $ Frame $ "/" $ FrameCount $ ", " $ (FrameCount - Frame) *
-			ScanInterval $ " second(s) left");
+//		LogInternal("Kinect scan " $ Frame $ "/" $ FrameCount $ "(" $ rangeCountDebug $ 
+//		    " elements), " $ (FrameCount - Frame) *
+//			ScanInterval $ " second(s) left");
 	}
 	return rangeData;
 }
@@ -101,8 +124,8 @@ function String GetConfData()
 	local String outstring;
 //	LogInternal("In GetConfData from from KinectDepth");
 	outstring = super.GetConfData();
-	outstring $= " {Resolution " $ class'UnitsConverter'.static.Str_AngleFromUU(ResolutionX) $
-		"," $ class'UnitsConverter'.static.Str_AngleFromUU(ResolutionY) $ "} {Fov " $
+	outstring $= " {Resolution " $ PixelsX $
+		"," $ PixelsY $ "} {Fov " $
 		class'UnitsConverter'.static.Str_AngleFromUU(FovX) $ "," $
 		class'UnitsConverter'.static.Str_AngleFromUU(FovY) $ "}";
 	return outstring;
@@ -110,13 +133,14 @@ function String GetConfData()
 
 defaultproperties
 {
-	FovY=1
-	FovX=0.75
+	FovY=2.3561925
+	FovX=3.14159
 	Frame=0
 	FrameCount=60
-	ResolutionY=0.0015625
-	ResolutionX=0.0015625
+	PixelsY=480 // number of returns in the y-direction
+	PixelsX=640 // number of returns in the x-direction
 	ItemType="RangeImager"
+
 
 
 	BlockRigidBody=true

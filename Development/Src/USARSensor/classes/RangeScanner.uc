@@ -53,6 +53,7 @@ function String Set(String opcode, String args)
 {
 	if (Caps(opcode) == "SCAN")
 	{
+		LogInternal( "RangeScanner started timer" );
 		Timer();
 		return "OK";
 	}

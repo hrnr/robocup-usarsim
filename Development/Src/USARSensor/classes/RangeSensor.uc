@@ -49,6 +49,12 @@ function String GetData()
 // Don't call parent to avoid sending excess data if bSendRange is true
 simulated function ClientTimer()
 {
+/*
+	if( bSendRange )
+		LogInternal( "going to GetData with sendRange true" );
+	else
+		LogInternal( "going to GetData with sendRange false" );
+*/
 	curRot = Rotation;
 	if (bSendRange)
 		RangeSendDelegate(self, GetRange());
