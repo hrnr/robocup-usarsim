@@ -14,13 +14,46 @@ var TextureRenderTarget2D TextureTarget;
 var int MultiviewIndex, TextureResolutionX, TextureResolutionY;
 var float X, Y, Width, Height;
 
+var config float CameraFOV, CameraNearPlane, CameraFarPlane;
+var config float CameraMinFOV, CameraMaxFOV; // Clamps CameraFov when sending control messages
+var float CameraDefFOV;
+
 simulated function PostBeginPlay()
 {	
 	super.PostBeginPlay();  // first post initialize parent object
 	TextureTarget = class'TextureRenderTarget2D'.static.Create( TextureResolutionX, TextureResolutionY );
 	SceneCapture.SetFrameRate(15);
-	SceneCapture.SetCaptureParameters(TextureTarget, 80, 70, -1);
+	SceneCapture.SetCaptureParameters(TextureTarget, CameraFOV, CameraNearPlane, CameraFarPlane);
 	SceneCapture.bEnableFog = true; // Without this, no smoke is seen by the camera.
+}
+
+simulated function ConvertParam()
+{
+	super.ConvertParam();
+	CameraFOV = class'UnitsConverter'.static.AngleToDeg(CameraFOV);
+	CameraDefFOV = CameraFOV;
+	CameraMinFOV = class'UnitsConverter'.static.AngleToDeg(CameraMinFOV);
+	CameraMaxFOV = class'UnitsConverter'.static.AngleToDeg(CameraMaxFOV);
+}
+
+function String Set(String opcode, String args)
+{
+	local int zoom;
+	
+	if (Caps(opcode)=="ZOOM") {
+		zoom=class'UnitsConverter'.static.AngleToDeg(Float(args));
+		if (zoom == 0)
+			CameraFOV = CameraDefFOV;
+		else if (Zoom>CameraMaxFOV)
+			CameraFOV = CameraMaxFOV;
+		else if (zoom<CameraMinFOV)
+			CameraFov = CameraMinFOV;
+		else
+			CameraFOV = zoom;
+		SceneCapture.SetCaptureParameters(TextureTarget, CameraFOV, CameraNearPlane, CameraFarPlane);
+		return "OK";
+	}
+	return "Failed";
 }
 
 simulated function Tick(float DeltaTime)
@@ -39,6 +72,10 @@ function String GetConfData()
 	confData $= "{TextureOffsetY " $ int(Y) $ "}";
 	confData $= "{TextureResolutionX " $ TextureResolutionX $ "}";
 	confData $= "{TextureResolutionY " $ TextureResolutionY $ "}";
+	confData $= "{CameraDefFov " $ CameraDefFOV $ "}";
+	confData $= "{CameraMinFov " $ CameraMinFOV $ "}";
+	confData $= "{CameraMaxFov " $ CameraMaxFOV $ "}";
+	confData $= "{CameraFov " $ CameraFOV $ "}";
 	return confData;
 }
 
@@ -65,7 +102,7 @@ defaultproperties
 	bCollideWorld=false
 	
 	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'P3AT.StaticMeshDeco.P3ATDeco_BatteryPack'
+		//StaticMesh=StaticMesh'P3AT.StaticMeshDeco.P3ATDeco_BatteryPack'
 		// For new camera model: StaticMesh=StaticMesh'Camera.Mesh.Camera'
 		CollideActors=false
 		BlockActors=false
