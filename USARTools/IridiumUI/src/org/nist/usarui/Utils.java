@@ -14,7 +14,12 @@ import org.nist.usarui.ui.SelectOnFocus;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -50,6 +55,7 @@ public final class Utils {
 			field.setActionCommand(command);
 		}
 	}
+	
 	/**
 	 * Adds a SelectOnFocus listener to the specified combo box.
 	 *
@@ -361,6 +367,20 @@ public final class Utils {
 			Errors.userError("Missing file " + path);
 		return new ImageIcon(url);
 	}
+	
+	public static ImageIcon loadRobotImage(String path) throws MalformedURLException, IOException {
+		URL url=Utils.class.getResource("/" + path);
+	
+		if (url == null)
+		{
+			//BufferedReader b = new BufferedReader(new FileReader("/images/NoImage.jpg"));
+			//url=new URL(b.readLine());
+			url=Utils.class.getResource("/images/NoImage.jpg");
+		}
+		
+		return new ImageIcon(url);
+	}
+	
 	/**
 	 * Reads a 3-vector from a comma delimited string (e.g. from GetStartPoses)
 	 *
@@ -410,4 +430,12 @@ public final class Utils {
 		JOptionPane.showMessageDialog(src, asHTML(text), "Iridium",
 			JOptionPane.WARNING_MESSAGE);
 	}
+	
+	 
+	public static String extension (String fullPath) {
+		char pathSeparator='.';
+        int dot = fullPath.lastIndexOf(pathSeparator);
+        return fullPath.substring(dot + 1);
+    }
+	
 }

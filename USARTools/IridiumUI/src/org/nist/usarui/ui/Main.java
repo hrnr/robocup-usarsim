@@ -43,7 +43,7 @@ public class Main {
 		mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mainFrame.setResizable(true);
 		mainFrame.getContentPane().add(ui.getRoot(), BorderLayout.CENTER);
-		mainFrame.setSize(640, 480);
+		mainFrame.setSize(700, 480);
 		Utils.centerWindow(mainFrame);
 		mainFrame.setVisible(true);
 	}

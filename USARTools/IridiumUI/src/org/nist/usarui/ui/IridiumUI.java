@@ -18,7 +18,10 @@ import javax.swing.border.Border;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.List;
 
@@ -117,6 +120,7 @@ public class IridiumUI implements IridiumListener {
 	private JComboBox initLocation;
 	private JTextField initRotation;
 	private JLabel levelName;
+	private JLabel levelName2;
 	private EventListener listener;
 	private JComponent mainUI;
 	private JComboBox rawCommand;
@@ -135,6 +139,18 @@ public class IridiumUI implements IridiumListener {
 	private JComponent topInfo;
 	private JComponent typePanel;
 	private final List<USARPacket> usarData;
+	
+	//-- Variables associated to the MOVE command
+	private JComponent moveView;
+	private JComboBox actionType;
+	private JComboBox walkType;
+	private JComboBox waypointType;
+	private JTextField coordX;
+	private JTextField coordY;
+	private JTextField pathnodeID;
+	private static JLabel robotLabel;
+	private String imageName;
+	private String emptyString;
 
 	/**
 	 * Initializes the Iridium GUI.
@@ -672,6 +688,53 @@ public class IridiumUI implements IridiumListener {
 		} else
 			Utils.showWarning(mainUI, "Enter an object name to move.");
 	}
+	
+	/**
+	 * Sends a MOVE command to control avatars with the appropriate values.
+	 */
+	private void sendCmdMove() {
+		
+		//-- If New or Append are selected, we need to retrieve information on waypoints
+		if (actionType.getSelectedItem().equals("New")||actionType.getSelectedItem().equals("Append")) {
+
+			//-- Type of action selected
+			String selectedActionType=actionType.getSelectedItem().toString();
+			
+			//-- Type of Walk selected
+			String selectedWalkType=walkType.getSelectedItem().toString();
+			
+
+			//-- Check if Location or Pathnode is selected
+			//-- and retrieve the proper information
+			switch (waypointType.getSelectedIndex()) {
+			//-- Location
+			case 0:
+				float xLoc, yLoc;
+				try {
+					xLoc=Float.parseFloat(coordX.getText());
+					yLoc=Float.parseFloat(coordY.getText());
+				} catch (NumberFormatException e){
+					Utils.showWarning(mainUI, "Enter valid X and Y coordinates.");
+					break;
+				}
+				sendMessage(String.format("MOVE {Action %s} {Location %.2f, %.2f} {Type %s}", selectedActionType, xLoc, yLoc, selectedWalkType));
+				break;
+				
+			case 1:
+				String pathnID;
+				pathnID=pathnodeID.getSelectedText().toString();
+			
+				sendMessage(String.format("MOVE {Action %s} {Pathnode %s} {Type %s}", selectedActionType, pathnID, selectedWalkType));
+				break;
+			}
+		}
+		else if (actionType.getSelectedItem().equals("Pause")||actionType.getSelectedItem().equals("Resume")){
+			//-- Type of action selected
+			String selectedActionType=actionType.getSelectedItem().toString();
+			sendMessage(String.format("MOVE {Action %s}", selectedActionType));
+		}
+	}
+	
 	/**
 	 * Sends a DRIVE command with the appropriate values.
 	 */
@@ -868,6 +931,9 @@ public class IridiumUI implements IridiumListener {
 				else if (type.equals("DRIVE"))
 					// DRIVE
 					sendCmdDrive();
+				else if (type.equals("MOVE"))
+					// DRIVE
+					sendCmdMove();
 				else if (type.equals("SET"))
 					// SET
 					sendCmdSet();
@@ -948,8 +1014,23 @@ public class IridiumUI implements IridiumListener {
 	}
 	/**
 	 * Initializes the UI for the bottom panel (command buttons and entries)
+	 * @throws Throwable 
+	 * @throws MalformedURLException 
 	 */
-	private void setupBottomUI() {
+	private void setupBottomUI()  {
+		robotLabel = new JLabel();
+		emptyString=".";
+		try {
+			updateRobotImage("");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		robotLabel.setBorder(BorderFactory.createLineBorder(Color.black));
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		// Layout: Bottom
 		final JComponent bottomPanel = new JPanel(new BorderLayout(0, 2));
@@ -1009,7 +1090,45 @@ public class IridiumUI implements IridiumListener {
 		commandType.addActionListener(listener);
 		commandType.setActionCommand("card");
 		commandPanel.add(commandType, BorderLayout.NORTH);
+		commandPanel.add(robotLabel, BorderLayout.SOUTH);
 	}
+	
+	/**
+	 * This action listener changes the picture of the robot
+	 */
+	 ActionListener actionListener = new ActionListener() {
+	      public void actionPerformed(ActionEvent actionEvent) {
+	        ItemSelectable is = (ItemSelectable)actionEvent.getSource();
+	        imageName=Utils.extension(selectedString(is));
+	        System.out.println("ImageName: "+imageName);
+	        try {
+				updateRobotImage(imageName);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	      }
+	    };
+	    
+	    static private String selectedString(ItemSelectable is) {
+	        Object selected[] = is.getSelectedObjects();
+	        return ((selected.length == 0) ? "null" : (String)selected[0]);
+	      }  
+	    
+	    static void updateRobotImage(String robotName) throws MalformedURLException, IOException{
+	    	ImageIcon robotIcon1 ;
+			ImageIcon robotIcon2 ;
+			Image avatarImage;
+			robotIcon1 = Utils.loadRobotImage("images/"+robotName+".jpg");
+			avatarImage=robotIcon1.getImage();
+			Image robotScaledImage=avatarImage.getScaledInstance(133, 132,  java.awt.Image.SCALE_SMOOTH);  
+			robotIcon2=new ImageIcon(robotScaledImage);
+			robotLabel.setIcon(robotIcon2);
+	    }
+	
 	/**
 	 * Initializes the UI for the "CONTROL" Create option.
 	 */
@@ -1085,7 +1204,6 @@ public class IridiumUI implements IridiumListener {
 		ctrlCreate.add(Box.createHorizontalStrut(10), gbc);
 		// Label: Location
 		gbc.gridx = 3;
-		ctrlCreate.add(Utils.createFieldLabel("Location ", controlLocation), gbc);
 		// Label: Rotation
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -1268,6 +1386,91 @@ public class IridiumUI implements IridiumListener {
 		driveSkid.add(Utils.createFieldLabel("Right", driveRight));
 		driveSkid.add(driveRight);
 	}
+	
+	
+
+	/**
+	 * Initializes the UI for the "MOVE" Location option.
+	 */
+	private void setupMoveLocationUI() {
+		// Layout: Move Options Location
+		final JComponent moveLocation = Utils.createSingleRow();
+		moveView.add(moveLocation, "location");
+		// Text Box: X coordinate
+		coordX = createFloatTextField("X coordinate in m");
+		// Label: X
+		moveLocation.add(Utils.createFieldLabel("X", coordX));
+		moveLocation.add(coordX);
+		// Spacer: 5px
+		moveLocation.add(Box.createHorizontalStrut(5));
+		// Text Box: Y coordinate
+		coordY = createFloatTextField("Y coordinate in m");
+		// Label: Y
+		moveLocation.add(Utils.createFieldLabel("Y", coordY));
+		moveLocation.add(coordY);
+		
+	}
+	
+	/**
+	 * Initializes the UI for the "MOVE" Pathnode option.
+	 */
+	private void setupMovePathnodeUI() {
+		// Layout: Move Options Pathnode
+		final JComponent movePathnode = Utils.createSingleRow();
+		moveView.add(movePathnode, "pathnode");
+		// Text Box: Pathnode ID
+		pathnodeID = createFloatTextField("ID of the pathnode");
+		// Label: ID
+		movePathnode.add(Utils.createFieldLabel("ID", pathnodeID));
+		movePathnode.add(pathnodeID);	
+	}
+	
+	/**
+	 * Initializes the UI for "MOVE" options.
+	 */
+	private void setupMoveUI() {
+		// Layout: Move Options
+		final JComponent movePanel = new JPanel(new BorderLayout(0, 2));
+		typePanel.add(movePanel, "move");
+		final JComponent moveMaster = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		movePanel.add(moveMaster, BorderLayout.NORTH);
+		// Combo Box: Action
+		actionType = Utils.createComboBox("Type of MOVE command", "New", "Append",
+					"Pause", "Resume");
+		actionType.setActionCommand("move");
+		actionType.addActionListener(listener);
+		// Label: ActionType
+		moveMaster.add(Utils.createFieldLabel("Action", actionType));
+		moveMaster.add(actionType);
+		// Spacer: 5px
+		moveMaster.add(Box.createHorizontalStrut(5));
+		// Combo Box: Waypoint
+		waypointType = Utils.createComboBox("Waypoint using (x,y) coordinates or pathnodes", "Location", "Pathnode");
+		waypointType.setActionCommand("move");
+		waypointType.addActionListener(listener);
+		// Label: WaypointType
+		moveMaster.add(Utils.createFieldLabel("Waypoint", waypointType));
+		moveMaster.add(waypointType);
+		// Spacer: 5px
+		moveMaster.add(Box.createHorizontalStrut(5));
+		// Combo Box: Walk
+		walkType = Utils.createComboBox("Type of walk", "Walk_Forward", "Walk_Backward", "Run");
+		walkType.setActionCommand("move");
+		walkType.addActionListener(listener);
+		// Label: WalkType
+		moveMaster.add(Utils.createFieldLabel("Movement", walkType));
+		moveMaster.add(walkType);
+				
+		
+		
+		// Layout: Move Views
+		moveView = new JPanel(new CardLayout(0, 0));
+		movePanel.add(moveView, BorderLayout.CENTER);
+		setupMoveLocationUI();
+		setupMovePathnodeUI();
+	}
+	
+	
 	/**
 	 * Initializes the UI for "DRIVE" options.
 	 */
@@ -1364,6 +1567,9 @@ public class IridiumUI implements IridiumListener {
 		addToComboBox(initClass, "RobotType");
 		initClass.setSelectedIndex(0);
 		Utils.armActionListener(initClass, listener, "send");
+		// TODO
+		initClass.addActionListener(actionListener);
+		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -1418,6 +1624,10 @@ public class IridiumUI implements IridiumListener {
 		gbc.gridy = 2;
 		initPanel.add(Utils.createFieldLabel("Rotation ", initRotation), gbc);
 	}
+	
+
+	    
+	    
 	/**
 	 * Initializes the ui for "SET" options.
 	 */
@@ -1504,6 +1714,8 @@ public class IridiumUI implements IridiumListener {
 		// Layout: Top
 		final JComponent topPanel = new JPanel(new GridBagLayout());
 		mainUI.add(topPanel, BorderLayout.NORTH);
+
+
 		// Text Field: Server Name
 		serverName = createTextField("localhost", 16,
 			"Server name (and optionally port) to connect");
@@ -1545,8 +1757,10 @@ public class IridiumUI implements IridiumListener {
 		levelName = Utils.createInfoLabel("Name of the currently loaded world");
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.NORTH;
 		topPanel.add(levelName, gbc);
+		
+				
 		// Label: Elapsed Time
 		elapsedTime = Utils.createInfoLabel("Time in seconds since world creation");
 		gbc.gridx = 3;
@@ -1586,6 +1800,7 @@ public class IridiumUI implements IridiumListener {
 		});
 		// Repair slow-scrolling bug
 		final JScrollPane sp = new JScrollPane(responseList);
+		sp.setSize(500, 200);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 		sp.getHorizontalScrollBar().setUnitIncrement(16);
 		mainUI.add(sp, BorderLayout.CENTER);
@@ -1594,6 +1809,7 @@ public class IridiumUI implements IridiumListener {
 		setupBottomUI();
 		setupInitUI();
 		setupDriveUI();
+		setupMoveUI();
 		setupSetUI();
 		setupActUI();
 		setupGeoUI();
@@ -1650,7 +1866,38 @@ public class IridiumUI implements IridiumListener {
 			eventName = driveType.getSelectedItem().toString();
 			((CardLayout)driveView.getLayout()).show(driveView, eventName.toLowerCase());
 			Utils.focusFirstComponent(driveView);
-		} else if (eventName.equals("connect")) {
+		} else if (eventName.equals("move")) {
+			// Change waypoint type
+			eventName = waypointType.getSelectedItem().toString();
+			((CardLayout)moveView.getLayout()).show(moveView, eventName.toLowerCase());
+			Utils.focusFirstComponent(moveView);
+			
+			if (actionType.getSelectedItem().toString().equals("Pause") || actionType.getSelectedItem().toString().equals("Resume"))
+			{
+				
+				walkType.setEnabled(false);
+				waypointType.setEnabled(false);
+				coordX.setEnabled(false);
+				coordY.setEnabled(false);
+				pathnodeID.setEnabled(false);
+				moveView.repaint();
+				//Utils.showWarning(mainUI, "<b>Pause</b>");
+			}
+			else
+			{
+				walkType.setEnabled(true);
+				waypointType.setEnabled(true);
+				coordX.setEnabled(true);
+				coordY.setEnabled(true);
+				pathnodeID.setEnabled(true);
+				moveView.repaint();
+			}
+			
+				
+		} 
+		
+		
+		else if (eventName.equals("connect")) {
 			// Connect/disconnect
 			if (state.isConnected())
 				state.disconnect();
@@ -1661,7 +1908,7 @@ public class IridiumUI implements IridiumListener {
 				} catch (IOException e) {
 					// Error when connecting
 					Utils.showWarning(mainUI, "<b>Cannot connect to \"" + host +
-						"\".</b><br><br>Is Windows Firewall blocking UDK?");
+						"\".</b><br><br>1-Make sure Windows Firewall is not blocking UDK<br><br>2-Make sure a Map is already running");
 				}
 			}
 		} else if (eventName.equals("connected"))
@@ -1761,6 +2008,7 @@ public class IridiumUI implements IridiumListener {
 				commandType.addItem("SET");
 				commandType.addItem("GETGEO");
 				commandType.addItem("GETCONF");
+				commandType.addItem("MOVE");
 				// Might not be the first command since INIT might still be hanging around
 				commandType.setSelectedItem("DRIVE");
 			}
@@ -1946,6 +2194,10 @@ public class IridiumUI implements IridiumListener {
 				for (JLabel label : entries.values())
 					label.setVisible(label == show);
 			}
+		}
+		
+		private void updateRobotImage(){
+			
 		}
 	}
 }
