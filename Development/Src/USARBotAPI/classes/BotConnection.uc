@@ -143,8 +143,21 @@ function ProcessAction(ParsedMessage parsedMessage)
 			case "ACT":
 				ProcessAct(parsedMessage);
 				break;
+			case "MOVE":
+				ProcessMove(parsedMessage);
+				break;
 			default:
 			}
+	}
+	
+	if (TheBot != None && TheBot.Pawn != None && TheBot.Pawn.isA('USARAvatarCommon'))
+	{
+		switch (type)
+		{
+		case "MOVE":
+			ProcessMove(parsedMessage);
+			break;
+		}
 	}
 }
 
@@ -167,44 +180,123 @@ function ProcessDrive(ParsedMessage parsedMessage)
 	bot.Drive(parsedMessage);
 }
 
+
+//==========================================
+// Handle a MOVE command to control Avatars
+//==========================================
+function ProcessMove(ParsedMessage parsedMessage)
+{
+  local USARAvatarCommon bot;
+  local String moveType;
+  local Vector pos;          //-- Coordinates (x,y) that the avatar has to reach
+  local Vector pos2D;          //-- Coordinates (x,y) that the avatar has to reach
+  local String vPathnode;    //-- Name of the pathnode that the avatar has to reach
+  local String moveAction;      //-- Type of action that the avatar has to perform
+  local String moveLocation;
+
+  // Define the bot
+  bot = USARAvatarCommon(TheBot.Pawn);
+
+  // Retrieve the parameter Type passed to the MOVE command
+  moveType = parsedMessage.GetArgVal("Type");
+  // Retrieve the parameter Action passed to the MOVE command
+  moveAction = parsedMessage.GetArgVal("Action");
+  // Retrive the Location passed to the command
+  If (moveType == "Walk_Forward" || moveType == "Walk_Backward" || moveType == "Run")
+  {
+    if (moveAction=="New" || moveAction=="Append")   // new or append require Location or Pathnode
+    {
+      moveLocation = parsedMessage.GetArgVal("Location");
+
+      if (moveLocation != "")
+      {
+        if (bot!=none)
+        {
+          pos = class'Utilities'.static.ParseVector(parsedMessage.GetArgVal("Location"));
+          pos2D.X=pos.x;
+          pos2D.Y=pos.Z;
+          pos2D.Z=1.47;
+
+          //`log("Position: "@pos.X@pos.Y@pos.X);
+
+          /* Since the controller and the bot are in different classes
+          we need to use the controller class (USARAIController) associated
+          to perform the actions (MoveForwardToLocation in this case) */
+          USARAIController(bot.Controller).MoveForwardToLocation(moveType, pos2D, moveAction);
+        }
+      }
+      // In case Pathnode is used instead of Location
+      else if (vPathnode != "")
+      {
+        vPathnode = parsedMessage.GetArgVal("Pathnode");
+
+        if (bot!=none)
+        {
+          USARAIController(bot.Controller).MoveForwardToPathnode(vPathnode, moveAction);
+        }
+      }
+      else
+      {
+          LogInternal ("**** ERROR: Location or Pathnode is required ****");
+      }
+    }
+  }
+  else if (moveType =="")
+  {
+    // PAUSE command
+    if (moveAction=="Pause")
+    {
+      `log ("**** PAUSE ****");
+         USARAIController(bot.Controller).PauseAction();
+    }
+    // RESUME command
+    else if (moveAction=="Resume")
+         USARAIController(bot.Controller).ResumeAction();
+    else
+         `log ("**** ERROR: An action is required ****");
+  }
+}
+
 // Gets configuration information from the robot
 function ProcessGetConf(ParsedMessage parsedMessage) 
 {
-	local String Type;
-	local USARVehicle bot;
-
-	Type = parsedMessage.GetArgVal("Type");
-	bot = USARVehicle(TheBot.Pawn);
-	if (Type == "Robot")
-		SendLine(bot.GetConfData());
-	else if (Type == "MisPkg")
-		// Deprecated
-		SendLine(bot.GetMisPkgConfData());
-	else
-		SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
+  local String Type;
+  local USARVehicle bot;
+  
+  Type = parsedMessage.GetArgVal("Type");
+  bot = USARVehicle(TheBot.Pawn);
+  
+  if (Type == "Robot")
+     SendLine(bot.GetConfData());
+  else if (Type == "MisPkg")
+  // Deprecated
+     SendLine(bot.GetMisPkgConfData());
+  else
+      SendLine(bot.GetGeneralConfData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Gets geometric configuration from the robot
 function ProcessGetGeo(ParsedMessage parsedMessage)
 {
-	local String Type;
-	local USARVehicle bot;
-
-	Type = parsedMessage.GetArgVal("Type");
-	bot = USARVehicle(TheBot.Pawn);
-	if (Type == "Robot")
-		SendLine(bot.GetGeoData());
-	else if (Type == "MisPkg")
-		// Deprecated
-		SendLine(bot.GetMisPkgGeoData());
-	else
-		SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
+  local String Type;
+  local USARVehicle bot;
+  
+  Type = parsedMessage.GetArgVal("Type");
+  bot = USARVehicle(TheBot.Pawn);
+  
+  if (Type == "Robot")
+     SendLine(bot.GetGeoData());
+  else if (Type == "MisPkg")
+       // Deprecated
+       SendLine(bot.GetMisPkgGeoData());
+  else
+      SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
 }
 
 // Returns a list of valid starting positions for a robot
 function ProcessGetStartPoses(ParsedMessage parsedMessage)
 {
-	local String outstring, locations;
+  local String outstring, locations;
 	local PlayerStart start;
 	local vector l, vr;
 	local int num;
