@@ -20,6 +20,16 @@ var float Sigma;
 // Whether the sensor sends back time stamps as well
 var config bool bWithTimeStamp;
 
+simulated function PostBeginPlay()
+{
+	super.PostBeginPlay();
+
+	// For some reason the rigid body still interfers with the physics,
+	// even when Physics = PHYS_None. Disabling block rigid body fixes this.
+	if( Physics == PHYS_None )
+		StaticMeshComponent.BodyInstance.SetBlockRigidBody(false);
+}
+
 // Called when sensor is attached to a vehicle
 simulated function AttachItem()
 {
