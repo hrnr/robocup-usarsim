@@ -20,6 +20,21 @@ var config float            PhysicsResolution;
 var config int              PhysicsMaxSubsteps;
 var class<USARTruth> USARTruthClass;
 var USARTruth theUSARTruth;
+var UPISImageServer ImageServerInstance;
+
+event InitGame( string Options, out string ErrorMessage )
+{
+	super.InitGame( Options, ErrorMessage );
+
+	ImageServerInstance.Initialize();
+}
+
+event PreExit()
+{
+	super.PreExit();
+
+	ImageServerInstance.Shutdown();
+}
 
 event PostBeginPlay()
 {
@@ -156,7 +171,15 @@ function RestartPlayer(Controller aPlayer)
 	else if (aPlayer.bIsPlayer)
 	{
 		super.RestartPlayer(aPlayer);
-		aPlayer.ConsoleCommand("Ghost");
+		
+		if( PlayerController(aPlayer).CheatManager != none )
+		{
+			PlayerController(aPlayer).CheatManager.Ghost();
+		}
+		else
+		{
+			aPlayer.GotoState('Spectating'); 
+		}
 		aPlayer.SetHidden(true);
 	}
 }
@@ -204,4 +227,8 @@ defaultproperties
 	bPauseable=true
 	bDelayedStart=false
 	USARTruthClass=class'USARBotAPI.USARTruth'
+
+	Begin Object Class=UPISImageServer Name=SingletonImageServer
+	End Object
+	ImageServerInstance=SingletonImageServer
 }
