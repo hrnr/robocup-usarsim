@@ -166,6 +166,8 @@ defaultproperties
 
 	`define NaoSolverIterationCount 48
 
+	`define MassSmallParts 0.1
+
 	// Create BodyItem part
 	Begin Object Class=Part Name=BodyItem
 		Mesh=StaticMesh'Nao.MeshHi.naobody'
@@ -187,7 +189,7 @@ defaultproperties
 	Begin Object Class=Part Name=Neck
 		Mesh=StaticMesh'Nao.naohip'
 		Offset=(x=0,y=0,z=-0.09)
-		Mass=0.05930
+		Mass=`MassSmallParts //0.05930
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(Neck)
@@ -238,7 +240,7 @@ defaultproperties
 	Begin Object Class=Part Name=LShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=-0.098,z=-0.075)
-		Mass=0.025
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LShoulder)
@@ -246,7 +248,7 @@ defaultproperties
 	Begin Object Class=Part Name=RShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=0.098,z=-0.075)
-		Mass=0.025
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RShoulder)
@@ -313,7 +315,7 @@ defaultproperties
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.10,y=-0.102,z=-0.075)
-		Mass=0.040
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LElbow)
@@ -321,7 +323,7 @@ defaultproperties
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0.10,y=0.102,z=-0.075)
-		Mass=0.040
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RElbow)
@@ -400,7 +402,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh = StaticMesh'Nao.naoelbow'
 		Offset=(x=-0.01,Y=-0.040,Z=0.065)
-		Mass=0.025
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHip)
@@ -409,7 +411,7 @@ defaultproperties
 		RelativeTo=BodyItem
 		Mesh = StaticMesh'Nao.naoelbow'
 		Offset=(x=-0.01,Y=0.040,Z=0.065)
-		Mass=0.025
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHip)
@@ -446,7 +448,7 @@ defaultproperties
 		RelativeTo=LHip
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,Y=-0.015,Z=0.035)
-		Mass=0.015
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(LHipThigh)
@@ -455,7 +457,7 @@ defaultproperties
 		RelativeTo=RHip
 		Mesh=StaticMesh'Nao.naoelbow'
 		Offset=(x=0,y=0.015,z=0.035)
-		Mass=0.015
+		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
 	PartList.Add(RHipThigh)
