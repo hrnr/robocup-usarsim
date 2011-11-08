@@ -128,7 +128,7 @@ function String GetConfData() {
 	local JointItem ji;
 	local String outStr;
 	local String jointType;
-	
+
 	outStr = "{Name " $ ItemName $ "}";
 	for (i = 0; i < JointItems.Length; i++)
 	{
@@ -251,8 +251,19 @@ function String GetGeoData()
 	local vector adjustedLocation;
 	local vector adjustedRotation;
 	
+	// Name and location
+	outStr = "{Name " $ ItemName $ "} {Location " $
+		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
+	
+	// Direction
+	outStr = outStr $ "} {Orientation " $
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+	
+	// Mount point
+	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
+	
+//	outStr = "{Name " $ ItemName $ "}";
 	// Iterate through joints
-	outStr = "{Name " $ ItemName $ "}";
 	for (i = 0; i < JointItems.Length; i++)
 	{
 		ji = JointItems[i];
@@ -355,8 +366,19 @@ function String GetMisPkgGeoData()
 	local vector adjustedLocation;
 	local vector adjustedRotation;
 	
+	// Name and location
+	outStr = "{Name " $ ItemName $ "} {Location " $
+		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
+	
+	// Direction
+	outStr = outStr $ "} {Orientation " $
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+	
+	// Mount point
+	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
+	
+//	outStr = "{Name " $ ItemName $ "}";
 	// Iterate through joints
-	outStr = "{Name " $ ItemName $ "}";
 	for (i = 0; i < JointItems.Length; i++)
 	{
 		ji = JointItems[i];

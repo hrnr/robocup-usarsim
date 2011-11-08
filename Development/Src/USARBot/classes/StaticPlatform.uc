@@ -19,6 +19,13 @@ simulated function PostBeginPlay()
 	CenterItem.SetHidden(!bDebug);
 }
 
+// Returns geometric configuration data related to this robot
+function String GetGeoData()
+{
+	return "GEO {Type StaticPlatform} {Name " $ self.Class $ "}";
+//	{Dimensions " $ class'UnitsConverter'.static.VectorString(dimensions) $ "}";
+}
+
 // Returns configuration data of this robot
 function String GetConfData()
 {
