@@ -3,25 +3,31 @@ instead of being restricted to the Unreal Engine 3 functions.
 
 Additional information: http://udn.epicgames.com/Three/DLLBind.html
 
-====== Setup =======
-1. First you must download PhysX 2.8.4 SDK. You can retrieve the SDK from the following url:
+====== Required libraries =======
+-  PhysX 2.8.4 SDK. You can retrieve the SDK from the following url:
    http://supportcenteronline.com/ics/support/default.asp?deptID=1949
    You must sign up to download the SDK.
    
-2. Change the include path and additional link directories to reflect your installation:
+====== Setup and Compiling =======
+1. Change the include path and additional link directories to reflect your installation:
    Configuration Properties -> C/C++ -> General -> Additional Include Directories
    Configuration Properties -> General -> Additional Library Directories
    
    The dll only requires the location of the PhysX headers and libs.
    If you copy the PhysX sdk folder into "usarsim/ThirdParty" you don't need to change anything.
    
-3. Build the solution. The compiled dll will be copied to "Binaries/Win32/usercode".
+2. Build the solution. The compiled dll will be copied to "Binaries/Win32/usercode".
+   In case of 64 bit the dll is copied into "Binaries/Win64/usercode".
    
-4. Compile UsarSim.
+3. Compile UsarSim.
 
-===== Usage ========
-The PhysXProxy class exposes new functions that are not available in UnrealScript by default.
-Create a new instance of the PhysXProxy class and then call one of the functions to use them. 
+====== Debug =======
+To run in debug mode you must edit the debug information:
+1. Go to Configuration Properties -> Debugging
+2. Change "Command" to: "..\..\Binaries\Win32\udk.exe"
+3. Change "Command arguments" to: "EmptyRoom?game=USARBotAPI.BotDeathMatch -log"
+
+In case of 64 bit change "Win32" to "Win64".
 
 ===== Limitations ======
 64 bit is not supported according to the (outdated) UDN DLLBind page.
@@ -31,8 +37,8 @@ Pointers to structs seem to be mangled.
 Also see: http://forums.epicgames.com/showthread.php?t=771378
 
 ===== Additional details ======
-Inside the dll you can simply access everything from the Physics Dll.
-The only question is how to identify the PhysX actors to Unreal Actors. 
-PhysX actors contain a field "userdata" that can be set to anything. 
-In Unreal Engine this is set to the BodyInstance variable of the actors.
-In case of constraints userdata is set to the ConstraintInstance variable.
+Inside the dll you can access everything from the PhysX Dll.
+You can identify PhysX actors by comparing the "userdata"
+variable to the BodyInstance pointer of an Unreal Actor.
+Similar PhysX joints can be identified by comparing "userdata"
+to the ConstraintInstance variable.
