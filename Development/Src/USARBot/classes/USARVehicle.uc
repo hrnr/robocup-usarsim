@@ -396,9 +396,13 @@ reliable server function SetupItem(SpecItem desc)
 		test = GetPartByName(desc.Parent);
 		// Base on a specified part
 		if (test != None && test.isA('PhysicalItem'))
+		{
 			it.SetBase(test);
+		}
 		else
+		{
 			it.SetBase(CenterItem);
+		}
 		it.SetHardAttach(true);
 		// Override static mesh if specified
 		if (desc.Mesh != none)
@@ -413,11 +417,16 @@ reliable server function SetupItem(SpecItem desc)
 		// Set up audio sensor
 		if (it.IsType("Acoustic"))
 			SetupAudio();
-		// Add item to world
-		Parts.AddItem(it);
+		// Add item to robot or to world
+		if(desc.startAttached)
+			Parts.AddItem(it);
+		else
+		{
+			it.detachItem();
+			offParts.AddItem(it);
+		}
 	}
 }
-
 // Initializes joints and their corresponding constraints
 reliable server function SetupJoint(Joint jt)
 {
@@ -520,7 +529,6 @@ reliable server function SetupPart(Part part)
 		}
 	}
 }
-
 // Check battery; if alive, call client timer functions
 simulated function Timer()
 {
