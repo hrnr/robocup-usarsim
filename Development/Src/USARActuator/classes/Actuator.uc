@@ -77,8 +77,8 @@ simulated function AttachItem()
 simulated function ClientTimer()
 {
 	super.ClientTimer();
-	// Old
-	SendMisPkg();
+	// 
+	//SendMisPkg(); Old (deprecated)
 }
 
 // Called when the robot is destroyed
@@ -143,7 +143,7 @@ function String GetConfData() {
 		else
 			jointType = "Unknown";
 		// Create configuration string
-		outStr = outStr $ " {Link " $ i $ "} {JointType " $ jointType $
+		outStr = outStr $ " {Link " $ (i + 1) $ "} {JointType " $ jointType $
 			"} {MaxTorque " $ ji.MaxForce $ "} {MinValue " $ ji.Spec.GetMin() $
 			"} {MaxValue " $ ji.Spec.GetMax() $ "}";
 	}
@@ -178,18 +178,12 @@ function String GetGeneralConfData(String iType, String iName)
 function String GetGeneralGeoData(String iType, String iName)
 {
 	local String outStr;
-//	local int i;
 	
 	// Look for items
 	outStr = "";
-	// Temp Comment
-	/*
-	LogInternal( "Actuator:GetGeneralGeoData looking for type: " $ iType $ " Named: " $ iName
-		$ " my name is: " $ ItemName $ " my type is: " $ ItemType);	
-		*/
+
 	if (isType(iType) && (iName == "" || isName(iName)))
-			outStr = outStr $ " " $ GetGeoData();
-	LogInternal ("Actuator:Geo out: " $ outStr );
+		outStr = outStr $ " " $ GetGeoData();
 	return outStr;
 }
 
@@ -239,7 +233,7 @@ function String GetData()
 			actuatorData = actuatorData $ " ";
 		// Cannot get the current torque from the constraint, but it looks like it was never
 		// provided before either in the UT3 version
-		actuatorData = actuatorData $ "{Link " $ i $ "} {Value " $
+		actuatorData = actuatorData $ "{Link " $ (i + 1) $ "} {Value " $
 			position[i] $ "}";
 	}
 	return actuatorData;
@@ -265,7 +259,6 @@ function String GetGeoData()
 	// Mount point
 	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
 	
-//	outStr = "{Name " $ ItemName $ "}";
 	// Iterate through joints
 	for (i = 0; i < JointItems.Length; i++)
 	{
@@ -276,7 +269,7 @@ function String GetGeoData()
 			pji = JointItems[parent];
 		else
 			pji = None;
-		outStr = outStr $ " {Link " $ i $ "} {Parent " $ parent $ "} {Location ";
+		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ parent $ "} {Location ";
 		// Calculate location relative to parent
 		adjustedLocation = GetJointOffset(ji.Spec);
 		if (pji != None)
@@ -290,6 +283,7 @@ function String GetGeoData()
 	}
 	// Account for contained items
 	/*
+	aba
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('Actuator'))
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
@@ -300,7 +294,7 @@ function String GetGeoData()
 // Gets header information for this actuator
 simulated function String GetHead()
 {
-	return "ASTA {Time " $ WorldInfo.TimeSeconds $ "{Name " $ ItemName $ "}";
+	return "ASTA {Time " $ WorldInfo.TimeSeconds $ "} {Name " $ ItemName $ "}";
 }
 
 // Gets a part's offset from the robot center, taking offsets of parents into account
@@ -418,6 +412,7 @@ function String GetMisPkgGeoData()
 // Gets header information for this actuator (deprecated mission package API)
 simulated function String GetMisPkgHead()
 {
+	LogInternal( "Call to deprecated mission package API, please use Actuator API" );
 	return "MISSTA {Time " $ WorldInfo.TimeSeconds $ "} {Name " $ ItemName $ "}";
 }
 
@@ -475,7 +470,7 @@ reliable server function RunSequence(int Sequence)
 }
 
 // Sends the legacy MISSTA message
-simulated function SendMisPkg()
+simulated function SendMisPkg() // deprecated!
 {
 	MessageSendDelegate(GetMisPkgHead() @ GetMisPkgData());
 }

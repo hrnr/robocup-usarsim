@@ -101,10 +101,13 @@ function String GetGeneralConfData(String itemType, String itemName)
 	for (i = 0; i < Parts.Length; i++)
 	{
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
+		{
 			// Filter matched, return data
-			outStr = outStr $ " " $ Parts[i].GetConfData();
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(itemType, itemName);
+			if (Parts[i].isA('Actuator'))
+				outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(itemType, itemName);
+			else
+				outStr = outStr $ " " $ Parts[i].GetConfData();
+		}
 	}
 	if (outStr != "")
 		outStr = "CONF {Type " $ itemType $ "}" $ outStr;
@@ -122,18 +125,19 @@ function String GetGeneralGeoData(String itemType, String itemName)
 	for (i = 0; i < Parts.Length; i++)
 	{
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
-			// Filter matched, return data
-			outStr = outStr $ " " $ Parts[i].GetGeoData();
-		if (Parts[i].isA('Actuator'))
 		{
-			LogInternal( "GEO request from USARVehicle:GetGeneralGeoData for: " $ itemType $ ":" $ itemName $ " part named: " $
-			Parts[i].ItemName);
-			outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(itemType, itemName);
+			// Filter matched, return data
+			if (Parts[i].isA('Actuator'))
+				outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(itemType, itemName);
+			else
+				outStr = outStr $ " " $ Parts[i].GetGeoData();
+			// LogInternal( "GEO request from USARVehicle:GetGeneralGeoData for part[" $ i $ "]: " $ itemType $ ":" $ itemName $ " part named: " $
+			//Parts[i].ItemName);
 			}
 	}
 	if (outStr != "")
 		outStr = "GEO {Type " $ itemType $ "}" $ outStr;
-	LogInternal( "GEO from USARVehicle:GetGeneralGeoData: " $ outStr );
+	// LogInternal( "GEO from USARVehicle:GetGeneralGeoData: " $ outStr );
 	return outStr;
 }
 
