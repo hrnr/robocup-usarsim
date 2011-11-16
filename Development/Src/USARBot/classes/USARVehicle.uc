@@ -125,10 +125,15 @@ function String GetGeneralGeoData(String itemType, String itemName)
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
 		if (Parts[i].isA('Actuator'))
+		{
+			LogInternal( "GEO request from USARVehicle:GetGeneralGeoData for: " $ itemType $ ":" $ itemName $ " part named: " $
+			Parts[i].ItemName);
 			outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(itemType, itemName);
+			}
 	}
 	if (outStr != "")
 		outStr = "GEO {Type " $ itemType $ "}" $ outStr;
+	LogInternal( "GEO from USARVehicle:GetGeneralGeoData: " $ outStr );
 	return outStr;
 }
 
@@ -243,6 +248,11 @@ simulated function PostBeginPlay()
 	// Initialize items (sensors etc)
 	for (i = 0; i < AddParts.Length; i++)
 		SetupItem(AddParts[i]);
+    if( bDebug )
+	{
+	   for (i = 0; i < Parts.Length; i++)
+		    LogInternal( "USARVehicle has part: " $ Parts[i].ItemName );
+	}
 	// Disable contacts between specified item pairs
 	for (i = 0; i < DisableContacts.Length; i++)
 		class'Utilities'.static.SetActorPairIgnore(
@@ -410,7 +420,7 @@ reliable server function SetupItem(SpecItem desc)
 		// Initialize item
 		it.init(desc.ItemName, self);
 		if (bDebug)
-			LogInternal("USARVehicle: Created part " $ String(it.Name));
+			LogInternal("USARVehicle: Created part " $ String(it.Name) $ " named: " $ it.ItemName);
 		// Set up batteries properly (into its variable)
 		if (it.isA('Battery'))
 			VehicleBattery = Battery(it);
@@ -525,7 +535,7 @@ reliable server function SetupPart(Part part)
 			Parts.AddItem(it);
 			if (bDebug)
 				LogInternal("USARVehicle: Created part '" $ String(it.Name) $ "' for spec " $
-					String(part.TemplateName));
+					String(part.TemplateName) $ " Desired name: " $ part.Name);
 		}
 	}
 }

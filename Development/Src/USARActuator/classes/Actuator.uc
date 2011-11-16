@@ -34,6 +34,8 @@ var rotator OriginalRotation;
 var array<Part> PartList;
 // Array storing all active parts on the robot
 var array<Item> Parts;
+//Array storing all dropped parts on the robot
+var array<Item> offParts;
 
 // Pass actuator messages to the platform
 simulated function AttachItem()
@@ -128,7 +130,7 @@ function String GetConfData() {
 	local JointItem ji;
 	local String outStr;
 	local String jointType;
-
+	
 	outStr = "{Name " $ ItemName $ "}";
 	for (i = 0; i < JointItems.Length; i++)
 	{
@@ -162,6 +164,7 @@ function String GetGeneralConfData(String iType, String iName)
 	outStr = "";
 	for (i = 0; i < Parts.Length; i++)
 	{
+//		LogInternal( "Actuator: GetGeneralConfData itemName: " $ Parts[i].ItemName);
 		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetConfData();
@@ -175,18 +178,18 @@ function String GetGeneralConfData(String iType, String iName)
 function String GetGeneralGeoData(String iType, String iName)
 {
 	local String outStr;
-	local int i;
+//	local int i;
 	
 	// Look for items
 	outStr = "";
-	for (i = 0; i < Parts.Length; i++)
-	{
-		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
-			// Filter matched, return data
-			outStr = outStr $ " " $ Parts[i].GetGeoData();
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(iType, iName);
-	}
+	// Temp Comment
+	/*
+	LogInternal( "Actuator:GetGeneralGeoData looking for type: " $ iType $ " Named: " $ iName
+		$ " my name is: " $ ItemName $ " my type is: " $ ItemType);	
+		*/
+	if (isType(iType) && (iName == "" || isName(iName)))
+			outStr = outStr $ " " $ GetGeoData();
+	LogInternal ("Actuator:Geo out: " $ outStr );
 	return outStr;
 }
 
@@ -286,16 +289,18 @@ function String GetGeoData()
 		outStr = outStr $ adjustedRotation $ "}";
 	}
 	// Account for contained items
+	/*
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].isA('Actuator'))
 			outStr = outStr $ " " $ Parts[i].GetGeoData();
+			*/
 	return outStr;
 }
 
 // Gets header information for this actuator
 simulated function String GetHead()
 {
-	return "ASTA {Name " $ ItemName $ "}";
+	return "ASTA {Time " $ WorldInfo.TimeSeconds $ "{Name " $ ItemName $ "}";
 }
 
 // Gets a part's offset from the robot center, taking offsets of parents into account
@@ -548,13 +553,19 @@ reliable server function SetupItem(SpecItem desc)
 		test = GetPartByName(desc.Parent);
 		// Base on a specified part
 		if (test != None && test.isA('PhysicalItem'))
+		{
+			LogInternal("set base to "$desc.Parent);
 			it.SetBase(test);
+		}
 		else
+		{
+			LogInternal("could not find "$desc.Parent);
 			it.SetBase(self);
+		}
 		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);
-		if (bDebug)
+//		if (bDebug)
 			LogInternal("Actuator: Created part " $ String(it.Name));
 		// Add item to world
 		Parts.AddItem(it);
@@ -663,7 +674,46 @@ reliable server function SetupPart(Part part)
 		}
 	}
 }
-
+//called when the actuator is detached from its parent
+function detachItem()
+{
+	super.detachItem();
+	//turn on physics for the center item and set it as the actuator base
+	CenterItem.SetBase(None);
+	SetBase(CenterItem);
+	CenterItem.SetPhysics(PHYS_RigidBody);
+}
+//called when the actuator is reattached to a parent
+function bool reattachItem(Item baseItem)
+{
+	local bool success;
+	if(!hasParent)
+	{
+		//turns off physics and sets the actuator as the base item
+		CenterItem.SetPhysics(PHYS_None);
+		SetBase(None);
+		CenterItem.SetBase(self);
+	}
+	//turn off collision so that the teleporting actuator doesn't affect the parent velocity
+	//need to turn off collision for all actuator parts?
+	SetActuatorCollision(false);
+	success = super.reattachItem(baseItem);
+	SetActuatorCollision(true);
+	return success;
+}
+//set collision of all child parts
+function SetActuatorCollision(bool bCollision)
+{
+	local int i;
+	for(i = 0;i<Parts.length;i++)
+	{
+		Parts[i].SetCollision(bCollision, bCollision);
+		if(Parts[i].isA('Actuator'))
+		{
+			Actuator(Parts[i]).SetActuatorCollision(bCollision);
+		}
+	}
+}
 // Updates the joint angles to match the constraint pointers
 simulated function UpdateJoints()
 {

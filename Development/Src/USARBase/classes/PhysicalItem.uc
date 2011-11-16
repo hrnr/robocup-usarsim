@@ -15,6 +15,17 @@ class PhysicalItem extends Item;
 // The part which instantiated this item
 var Part Spec;
 
+function detachItem()
+{
+	super.detachItem();
+	SetPhysics(PHYS_RigidBody);
+}
+function bool reattachItem(Item baseItem)
+{
+	if(!hasParent)
+		SetPhysics(PHYS_None);
+	return super.reattachItem(baseItem);
+}
 defaultproperties
 {
 	Begin Object Name=StaticMeshComponent0

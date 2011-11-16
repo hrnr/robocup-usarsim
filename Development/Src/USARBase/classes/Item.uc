@@ -20,6 +20,8 @@ var String ItemType;
 var bool IsClient;
 // True if the item is an owner
 var bool IsOwner;
+//I don't know what isClient is used for, so I'm going back to my own flag
+var bool hasParent;
 // Robot on which the item is mounted
 var BaseVehicle Platform;
 // Interval between calls to ScanInterval()
@@ -28,6 +30,8 @@ var config float ScanInterval;
 // Called when the item is put on a vehicle (replaces the old registration functions)
 simulated function AttachItem()
 {
+	hasParent = true;
+	SetPhysics(PHYS_None);
 }
 
 // Called by Timer during certain conditions - where processing should be done
@@ -82,13 +86,13 @@ function Init(String iName, BaseVehicle veh)
 {
 	// Initialize variables
     Platform = veh;
+	hasParent = true;
 	SetName(iName);
 	
 	// Make object visible
 	SetHidden(false);
 	AttachItem();
 }
-
 // Convenience function to check whether this Item is actually a joint
 simulated function bool IsJoint()
 {
@@ -172,7 +176,31 @@ simulated function Timer()
 	if (IsClient && IsOwner && Platform.GetBatteryLife() > 0)
 		ClientTimer();
 }
-
+//remove this item from its parent robot
+function detachItem()
+{
+	if(hasParent)
+	{
+		hasParent = false;
+		SetBase(None);
+	}
+}
+//attach this item to some base, return true if successful
+function bool reattachItem(Item baseItem)
+{
+	if(!hasParent)
+	{
+		SetCollision(false);
+		SetLocation(baseItem.Location);
+		SetRotation(baseItem.Rotation);
+		SetBase(baseItem);
+		SetCollision(true);
+		hasParent = true;
+		return true;
+	}
+	else 
+		return false;
+}
 defaultproperties
 {
 	bAlwaysRelevant=true
@@ -183,6 +211,7 @@ defaultproperties
 	DrawScale=1.0
 	IsClient=false
 	IsOwner=false
+	hasParent = false;
 	ItemType="Item"
 	RemoteRole=ROLE_SimulatedProxy
 }

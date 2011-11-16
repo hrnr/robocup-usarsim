@@ -288,7 +288,8 @@ function ProcessGetGeo(ParsedMessage parsedMessage)
      SendLine(bot.GetGeoData());
   else if (Type == "MisPkg")
        // Deprecated
-       SendLine(bot.GetMisPkgGeoData());
+	   LogInternal( "GetGeo for MisPkg deprecated. Please use ACT" );
+ //      SendLine(bot.GetMisPkgGeoData());
   else
       SendLine(bot.GetGeneralGeoData(Type, parsedMessage.GetArgVal("Name")));
 }

@@ -21,6 +21,12 @@ struct SpecItem {
 	var vector Direction;
 	var rotator uuDirection;
 	var StaticMesh Mesh;
+	var bool startAttached;
+	
+	structdefaultproperties
+	{
+		startAttached = true;
+	}
 };
 
 // Array storing all configured parts from the INI file
@@ -39,6 +45,8 @@ var config float MsgTimer;
 var array<Part> PartList;
 // Array storing all active parts on the robot
 var array<Item> Parts;
+//Array storing all inactive parts on the robot (e.g. detached actuators)
+var array<Item> offParts;
 // The weight of the vehicle assigned in the INI file
 var config float Weight;
 
@@ -58,9 +66,11 @@ simulated event Destroyed()
 	local int i;
 	
 	super.Destroyed();
-	// Remove all parts
+	// Remove all active and inactive parts
 	for (i = 0; i < Parts.length; i++)
 		Parts[i].Destroy();
+	for(i = 0;i<offParts.length;i++)
+		offParts[i].Destroy();
 }
 
 // Gets the estimated life remaining in the battery; negative is a dead battery
@@ -110,7 +120,35 @@ simulated function Item GetPartByName(name partName)
 	// Not found
 	return None;
 }
-
+//returns the index of a part in the list of discarded parts. returns -1 if not found.
+simulated function int GetOffPartIndexByName(String partName)
+{
+	local int i;
+	for (i = 0; i < offParts.Length; i++)
+	{
+		if(offParts[i].isName(partName))
+		{
+			return i;
+		}
+	}
+	// Not found
+	return -1;
+}
+//returns the index of a part in the robots' part list. returns -1 if not found.
+//returns the index of a part in the list of discarded parts. returns -1 if not found.
+simulated function int GetPartIndexByName(String partName)
+{
+	local int i;
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if(Parts[i].isName(partName))
+		{
+			return i;
+		}
+	}
+	// Not found
+	return -1;
+}
 // Gets a robot-wide property to fix build-order problems (wheel radius primarily)
 simulated function float GetProperty(String key)
 {
