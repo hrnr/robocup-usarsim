@@ -163,8 +163,8 @@ function String GetGeneralConfData(String iType, String iName)
 	// Look for items
 	outStr = "";
 	for (i = 0; i < Parts.Length; i++)
-	{
-//		LogInternal( "Actuator: GetGeneralConfData itemName: " $ Parts[i].ItemName);
+	{	
+		LogInternal( "Actuator: GetGeneralConfData itemName: " $ Parts[i].name);
 		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
 			// Filter matched, return data
 			outStr = outStr $ " " $ Parts[i].GetConfData();
