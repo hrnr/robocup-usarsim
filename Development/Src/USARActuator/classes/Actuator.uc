@@ -158,19 +158,12 @@ function String GetConfData() {
 function String GetGeneralConfData(String iType, String iName)
 {
 	local String outStr;
-	local int i;
 	
 	// Look for items
 	outStr = "";
-	for (i = 0; i < Parts.Length; i++)
-	{
-//		LogInternal( "Actuator: GetGeneralConfData itemName: " $ Parts[i].ItemName);
-		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
-			// Filter matched, return data
-			outStr = outStr $ " " $ Parts[i].GetConfData();
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(iType, iName);
-	}
+	
+	if (isType(iType) && (iName == "" || isName(iName)))
+		outStr = outStr $ " " $ GetConfData();
 	return outStr;
 }
 
@@ -269,7 +262,7 @@ function String GetGeoData()
 			pji = JointItems[parent];
 		else
 			pji = None;
-		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ parent $ "} {Location ";
+		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ (parent +1 )$ "} {Location ";
 		// Calculate location relative to parent
 		adjustedLocation = GetJointOffset(ji.Spec);
 		if (pji != None)
@@ -359,54 +352,8 @@ function String GetMisPkgConfData() {
 // Gets geometry data from the actuator (deprecated mission package API)
 function String GetMisPkgGeoData()
 {
-	local String outStr;
-	local JointItem ji, pji;
-	local int i, parent;
-	local vector adjustedLocation;
-	local vector adjustedRotation;
-	
-	// Name and location
-	outStr = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
-	
-	// Direction
-	outStr = outStr $ "} {Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
-	
-	// Mount point
-	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
-	
-//	outStr = "{Name " $ ItemName $ "}";
-	// Iterate through joints
-	for (i = 0; i < JointItems.Length; i++)
-	{
-		ji = JointItems[i];
-		// Find parent link
-		parent = FindParentIndex(ji.Parent);
-		if (parent >= 0)
-		{
-			pji = JointItems[parent];
-			parent++;
-		}
-		else
-			pji = None;
-		outStr = outStr $ " {Link " $ (i + 1) $ "} {ParentLink " $ parent $ "} {Location ";
-		// Calculate location relative to parent
-		adjustedLocation = GetJointOffset(ji.Spec);
-		if (pji != None)
-			adjustedLocation -= GetJointOffset(pji.Spec);
-		outStr = outStr $ adjustedLocation $ "} {Orientation ";
-		// Calculate orientation relative to parent
-		adjustedRotation = ji.Spec.Direction;
-		if (pji != None)
-			adjustedRotation -= pji.Spec.Direction;
-		outStr = outStr $ adjustedRotation $ "}";
-	}
-	// Account for contained items
-	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ " " $ Actuator(Parts[i]).GetMisPkgGeoData();
-	return outStr;
+	LogInternal( "Call to deprecated mission package API, please use Actuator API");
+	return "GEO {Deprecated call to mission package api}";
 }
 
 // Gets header information for this actuator (deprecated mission package API)
