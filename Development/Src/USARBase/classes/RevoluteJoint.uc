@@ -26,13 +26,13 @@ var bool InverseMeasureAngle;
 // Gets the maximum value of this joint (only applies for some joint types)
 simulated function float GetMax()
 {
-	return LimitLow;
+	return LimitHigh;
 }
 
 // Gets the minimum value of this joint (only applies for some joint types)
 simulated function float GetMin()
 {
-	return LimitHigh;
+	return LimitLow;
 }
 
 // Configure the JointItem for this joint
