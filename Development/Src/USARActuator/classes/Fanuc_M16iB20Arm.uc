@@ -19,17 +19,10 @@ simulated function array<float> getRotation(array<float> pos)
 
 simulated function array<float> updateRotation(array<float> Target, int Link, float Value)
 {
-	if (1 == Link)
-	{
-		// Need to update joint 3 when joint 2 changes
-		Target[1] = Value;
-		Target[2] = CmdPos[2] + Value;
-	}
-	else if (2 == Link)
-		// Need to take 2 into account when changing 3
-		Target[2] = Value + CmdPos[1];
-	else
-		Target = super.updateRotation(Target, Link, Value);
+
+	Target = super.updateRotation(Target, Link, Value);
+	
+	Target[2] = CmdPos[1] + CmdPos[2];
 	return Target;
 }
 

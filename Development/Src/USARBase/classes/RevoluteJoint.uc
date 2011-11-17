@@ -24,13 +24,13 @@ var bool InverseMeasure;
 var bool InverseMeasureAngle;
 
 // Gets the maximum value of this joint (only applies for some joint types)
-simulated function float GetMax()
+simulated function float GetMin()
 {
 	return LimitLow;
 }
 
 // Gets the minimum value of this joint (only applies for some joint types)
-simulated function float GetMin()
+simulated function float GetMax()
 {
 	return LimitHigh;
 }

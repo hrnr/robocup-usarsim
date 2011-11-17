@@ -20,10 +20,12 @@ var String ItemType;
 var bool IsClient;
 // True if the item is an owner
 var bool IsOwner;
-//I don't know what isClient is used for, so I'm going back to my own flag
+//whether or not the item is currently mounted on a robot
 var bool hasParent;
 // Robot on which the item is mounted
 var BaseVehicle Platform;
+
+
 // Interval between calls to ScanInterval()
 var config float ScanInterval;
 
