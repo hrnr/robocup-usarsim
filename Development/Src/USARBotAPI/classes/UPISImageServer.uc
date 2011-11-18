@@ -3,23 +3,39 @@ class UPISImageServer extends Object config(USAR)
 
 var config bool             bEnableImageServer;
 var config int              ListenPort;
-var config int              ImageType;
+var config string           ImageType;
 var config int              FrameSkip;
 var config bool             LegacyMode;
 
 function Initialize( PlayerController PC = none )
 {
-	local int rc;
+	local int rc, nImageType;
 	local String FailureReason;
 
 	if( !bEnableImageServer )
 		return;
 
-	if( ListenPort != 0 ) SetListenPort( ListenPort );
-	SetImageType( ImageType );
+	// Set listen port to 5003 as default if not configured
+	if( ListenPort == 0 )
+		ListenPort = 5003;
+
+	// Parse image type option. Either specified as tag or directly as a number
+	if( ImageType == "" ) nImageType = 3;
+	else if( Caps(ImageType) == "RAW" ) nImageType = 0;
+	else if( Caps(ImageType) == "SUPER" ) nImageType = 1;
+	else if( Caps(ImageType) == "GOOD" ) nImageType = 2;
+	else if( Caps(ImageType) == "NORMAL" ) nImageType = 3;
+	else if( Caps(ImageType) == "FAIR" ) nImageType = 4;
+	else if( Caps(ImageType) == "BAD" ) nImageType = 5;
+	else nImageType = int(ImageType); // Assume specified as number
+
+	// Apply the options
+	SetListenPort( ListenPort );
+	SetImageType( nImageType );
 	SetFrameSkip( FrameSkip );
 	SetLegacyMode( int(LegacyMode) );
 
+	// Initialize the image server and show status
 	rc = InitializeImageServer();
 	if( rc < 0 )
 	{
@@ -48,7 +64,8 @@ function Initialize( PlayerController PC = none )
 	}
 	else
 	{
-		`log("Image Server Running");
+		`log("Image Server Running (ListenPort: " $ ListenPort $ ", ImageType: " $ nImageType $ 
+			 ", FrameSkip: " $ FrameSkip $ ", LegacyMode: " $ LegacyMode $ ")" );
 		if( PC != None )
 			PC.ClientMessage( "Image Server Running" );
 	}
