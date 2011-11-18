@@ -137,20 +137,20 @@ HRESULT WINAPI PresentHookDX10( IDXGISwapChain *pSwapChain, UINT SyncInterval, U
 	return rc;
 }
 
-extern "C" IMAGESERVERDLL_API void HookDirectX10()
+extern "C" IMAGESERVERDLL_API int HookDirectX10()
 {
 	uintptr_t addr = GetHookingAddress( GHA_DX10_SWAPCHAIN, 8 );
-	if( addr )
-	{
-		InstallHook( PresentHookDX10, g_pPresentDX10, PresentDX10_t, addr );
-#ifdef _DEBUG
-		printf("HookDirectX10: Hooked Present (%X)\n", addr );
-#endif // _DEBUG
-	}
-	else
+	if( addr == NULL )
 	{
 #ifdef _DEBUG
 		printf("HookDirectX10: Failed to retrieve function address\n" );
 #endif // _DEBUG
+		return 0;
 	}
+
+	InstallHook( PresentHookDX10, g_pPresentDX10, PresentDX10_t, addr );
+#ifdef _DEBUG
+	printf("HookDirectX10: Hooked Present (%X)\n", addr );
+#endif // _DEBUG
+	return 1;
 }
