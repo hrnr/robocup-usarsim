@@ -50,6 +50,7 @@ FIBITMAP *g_fiImage = NULL;
 CRITICAL_SECTION g_CriticalSection;
 
 // Global server constants
+int g_nListenPort = 5003;
 bool g_bLegacy = false;
 long g_lFrameSkip = 1;
 long g_lCurrentFrame = 0;
@@ -385,10 +386,10 @@ unsigned __stdcall ServerThreadFunction(void * parameters)
 		return 0;
 	}
 
-	// Bind to port 5003
+	// Bind to port g_nListenPort
 	memset(&socketAddress, 0, sizeof(sockaddr_in));
 	socketAddress.sin_family = AF_INET;
-	socketAddress.sin_port = htons(5003);
+	socketAddress.sin_port = htons(g_nListenPort);
 	socketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(listenSocket, (LPSOCKADDR)&socketAddress, sizeof(socketAddress)) == SOCKET_ERROR)
 	{
@@ -464,7 +465,7 @@ unsigned __stdcall ServerThreadFunction(void * parameters)
 				DWORD rs2 = WaitForSingleObject( (*it1).clientThread, 0 );
 				if( rs2 == WAIT_OBJECT_0 )
 				{
-					printf("Client exited: %lu\n", rs2);
+					printf("Client exited\n");
 					it1 = g_ClientHandleThreads.erase( it1 );
 				}
 				else
@@ -527,17 +528,20 @@ extern "C"
 	}
 #endif // _WIN64
 
-	IMAGESERVERDLL_API void InitializeImageServer()
+	IMAGESERVERDLL_API int InitializeImageServer()
 	{
 		if( g_bImageServerRunning )
-			return;
+			return -1;
 		g_bImageServerRunning = true;
 
 		unsigned threadID;
 
-		HookDirectX9();
-		HookDirectX10();
-		HookDirectX11();
+		if( !HookDirectX9() )
+			return -2;
+		if( !HookDirectX10() )
+			return -3;
+		if( !HookDirectX11() )
+			return -4;
 
 		InitializeCriticalSection(&g_CriticalSection);
 		if( g_bCaptureImageOnRequest )
@@ -551,6 +555,8 @@ extern "C"
 		LeaveCriticalSection( &g_CriticalSection );
 
 		g_hServerThread = (HANDLE)_beginthreadex( NULL, 0, &ServerThreadFunction, NULL, 0, &threadID );
+
+		return 0;
 	}
 
 	IMAGESERVERDLL_API void ShutdownImageServer()
@@ -573,6 +579,16 @@ extern "C"
 		DeleteCriticalSection(&g_CriticalSection);
 	}
 
+	IMAGESERVERDLL_API void SetListenPort( int nListenPort )
+	{
+		if( g_bImageServerRunning )
+		{
+			printf("SetListenPort: Can't change while running the image server.\n");
+			return;
+		}
+		g_nListenPort = nListenPort;
+	}
+	
 	IMAGESERVERDLL_API void SetImageType( int iImageType )
 	{
 		g_iImageType = iImageType;

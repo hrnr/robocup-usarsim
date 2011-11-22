@@ -285,7 +285,7 @@ int main( int argc, char *argv[] )
 	if( !CreateTempWindow(hInstance) )
 	{
 		printf("Failed to create window\n");
-		return 0;
+		return -1;
 	}
 
 	void* pFunction = NULL;
@@ -304,6 +304,9 @@ int main( int argc, char *argv[] )
 		printf("Unknown type %d\n", iType);
 		break;
 	}
+
+	if( !pFunction )
+		return -1;
 
 	// Write function to parent 
 	HANDLE hStdin, hStdout; 

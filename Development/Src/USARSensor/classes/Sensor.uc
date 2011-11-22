@@ -26,7 +26,7 @@ simulated function PostBeginPlay()
 
 	// For some reason the rigid body still interfers with the physics,
 	// even when Physics = PHYS_None. Disabling block rigid body fixes this.
-	if( Physics == PHYS_None )
+	if( StaticMeshComponent.BodyInstance != None && Physics == PHYS_None )
 		StaticMeshComponent.BodyInstance.SetBlockRigidBody(false);
 }
 
