@@ -4,7 +4,7 @@ PLEASE SEE NOTES BELOW!
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Installation instructions from sourceforge files area:
-1. Download and Install UDK June-2011 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
+1. Download and Install UDK October-2011 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
    In this case 'yyyy' is the year of your UDK release and 'mm' is the month.
 2. Retrieve the latest release of USARSim for UDK from the usarsim-UDK folder.
 3. Unzip all of the files from the release into the directory specified in step 1.
@@ -35,7 +35,7 @@ Known issues:
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Notes: 
-1. This version was verified with the UDK June-2011 release! 
+1. This version was verified with the UDK October-2011 release! 
 2. Due to the fact that unreal needs a build order, we had to move the base class of USARVehicle, BaseVehicle,
    into the USARBase folder so there wouldn’t be any problems. 
 3. The verified working example robots are BasicSkidRobot, CasterSkidRobot, and P3AT.
