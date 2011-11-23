@@ -267,7 +267,7 @@ function String GetGeoData()
 		adjustedLocation = GetJointOffset(ji.Spec);
 		if (pji != None)
 			adjustedLocation -= GetJointOffset(pji.Spec);
-		outStr = outStr $ adjustedLocation $ "} {Orientation ";
+		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(adjustedLocation) $ "} {Orientation ";
 		// Calculate orientation relative to parent
 		adjustedRotation = ji.Spec.Direction;
 		if (pji != None)
@@ -294,7 +294,7 @@ simulated function String GetHead()
 simulated function vector GetJointOffset(Joint jt)
 {
 	local vector pos;
-	
+
 	pos = class'UnitsConverter'.static.MeterVectorToUU(jt.Offset);
 	if (jt.RelativeTo != None)
 		pos += GetPartOffset(jt.RelativeTo);

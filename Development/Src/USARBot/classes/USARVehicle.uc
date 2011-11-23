@@ -146,6 +146,7 @@ simulated function vector GetJointOffset(Joint jt)
 {
 	local vector pos;
 	
+	LogInternal( "USARVehicle getjointoffset called" );
 	pos = class'UnitsConverter'.static.MeterVectorToUU(jt.Offset);
 	if (jt.RelativeTo != None)
 		pos += GetPartOffset(jt.RelativeTo);
