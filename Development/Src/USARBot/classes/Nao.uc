@@ -66,7 +66,6 @@ function CheckJointErrors()
 simulated function PostBeginPlay()
 {
 	local Vector Tensor, CMass;
-	local PhysicalItem pcopy, pdest;
 	local int i;
 	local JointItem ji;
 
@@ -81,7 +80,7 @@ simulated function PostBeginPlay()
 		if (!Parts[i].IsJoint())
 			continue;
 		ji = JointItem(Parts[i]);
-		class'Utilities'.static.SetSolverExtrapolationFactor( ji.Constraint.ConstraintInstance, 1.6 );
+		class'Utilities'.static.SetSolverExtrapolationFactor( ji.Constraint.ConstraintInstance, 1.75 );
 	}
 
 
@@ -89,54 +88,54 @@ simulated function PostBeginPlay()
 	// UsarSim to PhysX scale is 5 times (need constant in utils.converter?)
 	CMass.X = 0.01 * 5;
 	CMass.Y = 0.0 * 5;
-	CMass.Z = -0.07 * 5;
-	pcopy = PhysicalItem( GetPartByName('BodyItem') );
-	class'Utilities'.default.PhysXProxyInstance.SetCMassOffsetLocalPosition( pcopy.StaticMeshComponent.BodyInstance, CMass );
+	CMass.Z = -0.17 * 5;
+	class'Utilities'.default.PhysXProxyInstance.SetCMassOffsetLocalPosition( 
+		PhysicalItem( GetPartByName('BodyItem') ).StaticMeshComponent.BodyInstance, CMass 
+	);
 
 	// Bit of an hack here. The mass inertia tensor is calculated 
 	// using the shape + mass of the part. However the Nao contains 
-	// special small parts. We will copy the inertia tensor from the normal
-	// parts, otherwise these parts become too floppy in behavior.
+	// special small parts. Change the inertia to make it behave a bit better.
+	// As reference the head uses uses something like (0.02,0.02,0.02) and the main
+	// body (0.05, 0.05, 0.05).
+	Tensor = Vect( 0.03, 0.03, 0.03 );
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('Neck') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
 
-	// Copy mass inertia tensor from LThigh to LHip and LHipThigh
-	pcopy = PhysicalItem( GetPartByName('LThigh') );
-	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
-	pdest = PhysicalItem( GetPartByName('LHipThigh') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-	pdest = PhysicalItem( GetPartByName('LHip') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('LHipThigh') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('LHip') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('RHipThigh') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('RHip') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
 
-	// Copy mass inertia tensor from RThigh to RHip and RHipThigh
-	pcopy = PhysicalItem( GetPartByName('RThigh') );
-	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
-	pdest = PhysicalItem( GetPartByName('RHipThigh') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-	pdest = PhysicalItem( GetPartByName('RHip') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('LAnkle') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('RAnkle') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
 
-	// Copy mass inertia tensor from Foot to Ankle
-	pcopy = PhysicalItem( GetPartByName('LShank') );
-	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
-	pdest = PhysicalItem( GetPartByName('LAnkle') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-	pdest = PhysicalItem( GetPartByName('RAnkle') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('LShoulder') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('RShoulder') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
 
-	// Copy mass inertia tensor from upperarm to shoulder
-	pcopy = PhysicalItem( GetPartByName('LUpperArm') );
-	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
-	pdest = PhysicalItem( GetPartByName('LShoulder') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-	pdest = PhysicalItem( GetPartByName('RShoulder') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-
-	// Copy mass inertia tensor from lowerarm to elbow
-	pcopy = PhysicalItem( GetPartByName('LLowerArm') );
-	Tensor = class'Utilities'.static.GetMassSpaceInertiaTensor( pcopy.StaticMeshComponent.BodyInstance );
-	pdest = PhysicalItem( GetPartByName('LElbow') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
-	pdest = PhysicalItem( GetPartByName('RElbow') ); 
-	class'Utilities'.static.SetMassSpaceInertiaTensor( pdest.StaticMeshComponent.BodyInstance, Tensor );
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('LElbow') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
+	class'Utilities'.static.SetMassSpaceInertiaTensor( 
+		PhysicalItem( GetPartByName('RElbow') ).StaticMeshComponent.BodyInstance, Tensor 
+	);
 }
 
 function Tick( float DeltaTime )
@@ -159,12 +158,12 @@ defaultproperties
 
 	// The Nao has two different motor types
 	// Type 1 is used in the legs, type 2 in the arms and head.
-	`define MaxForceMotorType1 9.0
-	`define MaxForceMotorType2 9.0
-	`define DampingMotorType1 0.00005
-	`define DampingMotorType2 0.00005
+	`define MaxForceMotorType1 16.0
+	`define MaxForceMotorType2 8.0
+	`define DampingMotorType1 0.05
+	`define DampingMotorType2 0.05
 
-	`define NaoSolverIterationCount 48
+	`define NaoSolverIterationCount 32
 
 	`define MassSmallParts 0.1
 
@@ -203,7 +202,7 @@ defaultproperties
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=0,y=0,z=0)
-		MaxForce=`MaxForceMotorType2
+		MaxForce=1 //`MaxForceMotorType2 // TODO
 		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(HeadYaw)
@@ -215,15 +214,17 @@ defaultproperties
 		LimitLow=-.672 // -38.5
 		LimitHigh=.515 // 29.5
 		Direction=(x=1.57,y=0,z=3.14)
-		MaxForce=`MaxForceMotorType2
+		MaxForce=1 //`MaxForceMotorType2 // TODO
 		Damping=`DampingMotorType2
 	End Object
 	Joints.Add(HeadPitch)
 
 	// Create left and right shoulder
+	`define ArmZ -0.08
+
 	Begin Object Class=Part Name=LUpperArm
 		Mesh=StaticMesh'Nao.MeshHi.naolupperarm'
-		Offset=(x=0.02,y=-0.108,z=-0.075)
+		Offset=(x=0.02,y=-0.108,z=`ArmZ)
 		Mass=0.12309
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -231,7 +232,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=RUpperArm
 		Mesh=StaticMesh'Nao.MeshHi.naorupperarm'
-		Offset=(x=0.02,y=0.108,z=-0.075)
+		Offset=(x=0.02,y=0.108,z=`ArmZ)
 		Mass=0.12309
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -239,7 +240,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=LShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0,y=-0.098,z=-0.075)
+		Offset=(x=0,y=-0.098,z=`ArmZ)
 		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -247,7 +248,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=RShoulder
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0,y=0.098,z=-0.075)
+		Offset=(x=0,y=0.098,z=`ArmZ)
 		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -266,7 +267,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=LShoulderPitch
 		Parent=BodyItem
 		Child=LShoulder
-		Offset=(x=0,y=-0.090,z=-0.075)
+		Offset=(x=0,y=-0.090,z=`ArmZ)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
@@ -278,7 +279,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=LShoulderRoll
 		Parent=LShoulder 
 		Child=LUpperArm
-		Offset=(x=0.01,y=-0.098,z=-0.075)
+		Offset=(x=0.01,y=-0.098,z=`ArmZ)
 		LimitLow=.0087 // 0.5
 		LimitHigh=1.649 // 94.5
 		Direction=(x=3.14,y=0,z=1.57)
@@ -290,7 +291,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RShoulderPitch
 		Parent=BodyItem
 		Child=RShoulder
-		Offset=(x=0,y=0.098,z=-0.075) 
+		Offset=(x=0,y=0.098,z=`ArmZ) 
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=0,z=3.14)
@@ -302,7 +303,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RShoulderRoll
 		Parent=RShoulder 
 		Child=RUpperArm
-		Offset=(x=0,y=0.098,z=-0.075)
+		Offset=(x=0,y=0.098,z=`ArmZ)
 		LimitLow=-1.649 // -94.5
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=3.14,y=0,z=1.57)
@@ -314,7 +315,7 @@ defaultproperties
 	// Lower arm + elbow joint
 	Begin Object Class=Part Name=LElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.10,y=-0.102,z=-0.075)
+		Offset=(x=0.12,y=-0.102,z=`ArmZ)
 		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -322,7 +323,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=RElbow
 		Mesh=StaticMesh'Nao.naoelbow'
-		Offset=(x=0.10,y=0.102,z=-0.075)
+		Offset=(x=0.12,y=0.102,z=`ArmZ)
 		Mass=`MassSmallParts
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -330,7 +331,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=LLowerArm
 		Mesh=StaticMesh'Nao.MeshHi.naollowerarm'
-		Offset=(x=0.16,y=-0.098,z=-0.075)
+		Offset=(x=0.17,y=-0.098,z=`ArmZ)
 		Mass=0.225
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -338,7 +339,7 @@ defaultproperties
 
 	Begin Object Class=Part Name=RLowerArm
 		Mesh=StaticMesh'Nao.MeshHi.naorlowerarm'
-		Offset=(x=0.16,y=0.098,z=-0.075)
+		Offset=(x=0.17,y=0.098,z=`ArmZ)
 		Mass=0.225
 		SolverIterationCount=`NaoSolverIterationCount
 	End Object
@@ -351,7 +352,7 @@ defaultproperties
 		Parent=LUpperArm
 		Child=LElBow
 		InverseMeasureAngle=true
-		Offset=(x=0.10,y=-0.098,z=-0.075)
+		Offset=(x=0.12,y=-0.098,z=`ArmZ)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
@@ -363,7 +364,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=LElbowRoll
 		Parent=LElBow
 		Child=LLowerArm
-		Offset=(x=0.10,y=-0.098,z=-0.075)
+		Offset=(x=0.12,y=-0.098,z=`ArmZ)
 		LimitLow=-1.56 // -89.5
 		LimitHigh=-.0087 // -0.5
 		Direction=(x=-3.14,y=0,z=-3.14)
@@ -376,7 +377,7 @@ defaultproperties
 		Parent=RUpperArm
 		Child=RElbow
 		InverseMeasureAngle=true
-		Offset=(x=0.10,y=0.098,z=-0.075)
+		Offset=(x=0.12,y=0.098,z=`ArmZ)
 		LimitLow=-2.086 // -119.5
 		LimitHigh=2.086 // 119.5
 		Direction=(x=-1.57,y=-1.57,z=-1.57)
@@ -388,7 +389,7 @@ defaultproperties
 	Begin Object Class=RevoluteJoint Name=RElbowRoll
 		Parent=RElbow
 		Child=RLowerArm
-		Offset=(x=0.10,y=0.098,z=-0.075)
+		Offset=(x=0.12,y=0.098,z=`ArmZ)
 		LimitLow=-.0087 // -0.5
 		LimitHigh=1.56 // 89.5
 		Direction=(x=-3.14,y=0,z=-3.14)
