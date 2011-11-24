@@ -7,7 +7,7 @@
   maintenance, and subsequent redistribution.
 *****************************************************************************/
 
-class Multiview extends HUD config(USAR);
+class Multiview extends UDKHud config(USAR);
 
 var config int CameraTileX;
 var config int CameraTileY;
@@ -20,6 +20,8 @@ var USARCamera CameraViews[64];
 event PostRender() 
 {
 	local int i;
+
+	super.PostRender();
 	
 	for (i = 0; i < CameraTileX * CameraTileY; i++)
 		if (CameraViews[i] != None)
@@ -43,6 +45,7 @@ function Tick(float DeltaTime)
 function AddCamera(USARCamera Cam)
 {
 	local int i;
+	local UsarVehicle bot;
 
 	for (i = 0; i < CameraTileX * CameraTileY; i++)
 		if (CameraViews[i] == None)
@@ -53,6 +56,12 @@ function AddCamera(USARCamera Cam)
 			Cam.Y = (i / CameraTileY) * CameraHeight;
 			Cam.Width = CameraWidth;
 			Cam.Height = CameraHeight;
+
+			// The controller might send GETCONF before the camera is initialized here.
+			// Auto send CONF when the camera is added to fix this problem.
+			bot = UsarVehicle(Cam.Platform);
+			if( bot != none )
+				bot.MessageSendDelegate(bot.GetGeneralConfData(Cam.ItemType, Cam.ItemName));
 			return;
 		}
 }
