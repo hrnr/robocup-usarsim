@@ -82,7 +82,7 @@ defaultproperties
 		LimitLow=-0.61
 		LimitHigh=2.356
 		Offset=(X=.408,Y=0,Z=-.972)
-		Direction=(X=1.571,Y=0,Z=0)
+		Direction=(X=1.571,Y=1.571,Z=0)
 		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint2_Joint3)
