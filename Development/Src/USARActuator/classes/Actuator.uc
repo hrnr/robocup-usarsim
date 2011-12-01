@@ -239,7 +239,7 @@ function String GetGeoData()
 	local JointItem ji, pji;
 	local int i, parent;
 	local vector adjustedLocation;
-	local vector adjustedRotation;
+	local quat adjustedRotation;
 	
 	// Name and location
 	outStr = "{Name " $ ItemName $ "} {Location " $
@@ -261,18 +261,25 @@ function String GetGeoData()
 		if (parent >= 0)
 			pji = JointItems[parent];
 		else
+			{
+			LogInternal("Actuator: No parent ( " $ parent $ ") for link " $ i + 1);
 			pji = None;
+			}
 		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ (parent +1 )$ "} {Location ";
 		// Calculate location relative to parent
 		adjustedLocation = GetJointOffset(ji.Spec);
 		if (pji != None)
 			adjustedLocation -= GetJointOffset(pji.Spec);
 		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(adjustedLocation) $ "} {Orientation ";
+		
 		// Calculate orientation relative to parent
-		adjustedRotation = ji.Spec.Direction;
+		adjustedRotation = class'UnitsConverter'.static.VectorToUUQuat(ji.Spec.Direction);
 		if (pji != None)
-			adjustedRotation -= pji.Spec.Direction;
-		outStr = outStr $ adjustedRotation $ "}";
+		{
+//				LogInternal( "Link " $ i+1 $ " Rotation adjusted from " $ adjustedRotation $ " by parent " $ pji.Spec.Direction );
+			adjustedRotation = QuatProduct(QuatInvert(class'UnitsConverter'.static.VectorToUUQuat(pji.Spec.Direction)), adjustedRotation);
+		}
+		outStr = outStr $ class'UnitsConverter'.static.UUQuatToVector(adjustedRotation) $ "}";
 	}
 	// Account for contained items
 	/*

@@ -70,7 +70,9 @@ defaultproperties
 		MaxForce=600
 		LimitLow=-3.288
 		LimitHigh=3.288
-		Offset=(X=-.08,Y=0,Z=0)
+		Offset=(X=0,Y=0,Z=-.972)
+		Direction=(x=3.1415,y=0,z=0)
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint1_Joint2)
 	
@@ -82,8 +84,8 @@ defaultproperties
 		LimitLow=-0.61
 		LimitHigh=2.356
 		Offset=(X=.408,Y=0,Z=-.972)
-		Direction=(X=1.571,Y=1.571,Z=0)
-		InverseMeasureAngle=true
+		Direction=(x=-1.571,y=1.571,z=0)
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint2_Joint3)
 	
@@ -95,8 +97,8 @@ defaultproperties
 		LimitLow=-2.757
 		LimitHigh=2.094
 		Offset=(X=.408,Y=0,Z=-1.98)
-		Direction=(X=1.571,Y=0,Z=0)
-		InverseMeasureAngle=true
+		Direction=(x=-1.571,y=0,z=0)
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint3_Joint4)
 	
@@ -107,9 +109,9 @@ defaultproperties
 		MaxForce=100
 		LimitLow=-6.108
 		LimitHigh=6.108
-		Offset=(X=0,Y=0,Z=-2.172)
-		Direction=(X=0,Y=-1.571,Z=0)
-		InverseMeasureAngle=true
+		Offset=(X=1.0,Y=0,Z=-2.172)
+		Direction=(x=-1.571,y=0,z=-1.571)
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint4_Joint5)
 	
@@ -118,11 +120,11 @@ defaultproperties
 		Child=Joint6
 		Damping=5
 		MaxForce=60
-		Offset=(X=1.35,Y=0,Z=-2.19)
-		Direction=(X=1.571,Y=0,Z=0)
+		Offset=(X=1.35,Y=0,Z=-2.172)
+		Direction=(x=1.571,y=0,z=0)
 		LimitLow=-2.076
 		LimitHigh=2.076
-		InverseMeasureAngle=true
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint5_Joint6)
 	
@@ -131,11 +133,11 @@ defaultproperties
 		Child=Joint7
 		Damping=5
 		MaxForce=25
-		Offset=(X=0,Y=0,Z=-2.19)
-		Direction=(X=0,Y=-1.571,Z=0)
+		Offset=(X=1.35,Y=0,Z=-2.172)
+		Direction=(x=1.571,y=0,z=-1.571)
 		LimitLow=-6.108
 		LimitHigh=6.108
-		InverseMeasureAngle=true
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint6_Joint7)
 	
