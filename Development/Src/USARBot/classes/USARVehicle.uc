@@ -102,7 +102,6 @@ function String GetGeneralConfData(String itemType, String itemName)
 	{
 		if (Parts[i].isType(itemType) && (itemName == "" || Parts[i].isName(itemName)))
 		{
-			LogInternal("USARVehicle: GetGeneralConfData itemType: " $ Parts[i].ItemType $" itemName: " $PhysicalItem(Parts[i]).Spec.Name);
 			// Filter matched, return data
 			if (Parts[i].isA('Actuator'))
 				outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(itemType, itemName);
@@ -571,7 +570,6 @@ simulated function UpdateJoints()
 			// Update these too
 			Actuator(Parts[i]).UpdateJoints();
 }
-
 defaultproperties 
 {
 	bDebug=false

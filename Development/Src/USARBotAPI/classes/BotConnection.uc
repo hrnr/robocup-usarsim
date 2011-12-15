@@ -78,7 +78,7 @@ function ProcessAct(ParsedMessage parsedMessage)
 			// Case 1: Link Value
 			if (i + 1 < receivedArgs.Length && receivedArgs[i] == "Link" &&
 					receivedArgs[i + 1] == "Value")
-				act.SetLinkTarget(int(receivedVals[i++]), float(receivedVals[i++]));
+				act.SetLinkTarget(int(receivedVals[i++]), float(receivedVals[i]));
 			// Case 2: Gripper
 			else if (receivedArgs[i] == "Gripper")
 				act.SetGripper(int(receivedVals[i]));

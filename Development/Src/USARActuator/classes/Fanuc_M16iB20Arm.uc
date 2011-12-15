@@ -13,16 +13,14 @@ class Fanuc_M16iB20Arm extends Actuator placeable config (USAR);
 simulated function array<float> getRotation(array<float> pos)
 {
 	// Joint 3's real value must compensate for 2's position
-	pos[2] -= pos[1];
+	//pos[2] -= pos[1];
 	return pos;
 }
 
 simulated function array<float> updateRotation(array<float> Target, int Link, float Value)
 {
-
-	Target = super.updateRotation(Target, Link, Value);
-	
-	Target[2] = CmdPos[1] + CmdPos[2];
+	Target = super.UpdateRotation(Target, Link, value);
+	Target[2] = CmdPos[2] - CmdPos[1];
 	return Target;
 }
 
@@ -97,7 +95,7 @@ defaultproperties
 		LimitLow=-1.571
 		LimitHigh=2.793
 		Offset=(X=.204,Y=-.112,Z=-.384)
-		Direction=(X=1.571,Y=0,Z=0)
+		Direction=(X=-1.571,Y=1.571,Z=0)
 	End Object
 	Joints.Add(Joint1_Joint2)
 	
@@ -110,7 +108,7 @@ defaultproperties
 		LimitHigh=4.538
 		Offset=(X=.2,Y=-.112,Z=-1.156)
 		Direction=(X=-1.571,Y=0,Z=0)
-		InverseMeasureAngle=true
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint2_Joint3)
 	
@@ -122,7 +120,8 @@ defaultproperties
 		LimitLow=-3.491
 		LimitHigh=3.491
 		Offset=(X=.384,Y=0,Z=-1.256)
-		Direction=(X=0,Y=-1.571,Z=0)
+		Direction=(X=-1.571,Y=0,Z=-1.571)
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint3_Joint4)
 	
@@ -134,7 +133,9 @@ defaultproperties
 		LimitLow=-3.491
 		LimitHigh=3.491
 		Offset=(X=.944,Y=0,Z=-1.256)
-		Direction=(X=-1.571,Y=0,Z=0)
+		Direction=(X=1.571,Y=0,Z=0)
+		InverseMeasureAngle=true
+//		InverseMeasure = true
 	End Object
 	Joints.Add(Joint4_Joint5)
 	
@@ -144,9 +145,10 @@ defaultproperties
 		Damping=5
 		MaxForce=10
 		Offset=(X=1.036,Y=0,Z=-1.256)
-		Direction=(X=0,Y=1.571,Z=0)
+		Direction=(X=1.571,Y=0,Z=-1.571)
 		LimitLow=-7.854
 		LimitHigh=7.854
+//		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint5_Joint6)
 }

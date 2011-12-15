@@ -51,7 +51,7 @@ function Operate(bool on)
 defaultproperties 
 {
 	Begin Object Class=Part Name=BodyItem
-		Offset=(x=0.11,y=0,z=0)
+		Offset=(x=0.12,y=0,z=0)
 		Mesh=StaticMesh'Gripper.GripperBody'
 		Mass=1.0
 	End Object
@@ -61,14 +61,14 @@ defaultproperties
 	Begin Object Class=Part Name=RightFork
 		Mesh=StaticMesh'Gripper.GripperArm'
 		Mass=0.5
-		Offset=(X=.25,Y=.06,Z=.012)
+		Offset=(X=.26,Y=.06,Z=.012)
 	End Object
 	PartList.Add(RightFork)
 	
 	Begin Object Class=Part Name=LeftFork
 		Mesh=StaticMesh'Gripper.GripperArm'
 		Mass=0.5
-		Offset=(X=.25,Y=-.06,Z=.012)
+		Offset=(X=.26,Y=-.06,Z=.012)
 	End Object
 	PartList.Add(LeftFork)
 	
@@ -79,7 +79,7 @@ defaultproperties
 		LimitHigh=.5
 		MaxForce=1000
 		Damping=200
-		Offset=(X=.13,Y=.06,Z=0)
+		Offset=(X=.14,Y=.06,Z=0)
 	End Object
 	Joints.Add(RightForkJoint)
 	
@@ -90,7 +90,7 @@ defaultproperties
 		LimitHigh=.5
 		MaxForce=1000
 		Damping=200
-		Offset=(X=.13,Y=-.06,Z=0)
+		Offset=(X=.14,Y=-.06,Z=0)
 	End Object
 	Joints.Add(LeftForkJoint)
 	

@@ -7,13 +7,23 @@ var bool hasItem;
 var String attachName;
 //how far an effector can be from the toolchanger before the attachment fails
 var config float attachmentThreshold;
-
+//how far an item can be away from the toolchanger's rotation before the attachment fails
+var config float angleThreshold;
 
 function String Set(String opcode, String args)
 {
 	local int index;
 	local Item activeItem;
 	local float distance;
+	
+	local vector this_x;
+	local vector this_y;
+	local vector this_z;
+	local vector attach_x;
+	local vector attach_y;
+	local vector attach_z;
+	local float pointDiff;
+	local float rollDiff;
 	if(Caps(opcode) == "ATTACH" && !hasItem)
 	{
 		//pick up the item specified in 'args'
@@ -30,10 +40,18 @@ function String Set(String opcode, String args)
 				distance = VSize(self.Location - activeItem.Location);
 				distance = class'UnitsConverter'.static.LengthFromUU(distance); //convert to meters
 				
-				//does not try to match orientation yet!
+				GetAxes(self.Rotation, this_x,this_y,this_z);
+				GetAxes(activeItem.Rotation, attach_x, attach_y, attach_z);
 				
+				pointDiff = acos(this_x dot attach_x);
+				rollDiff = acos(this_y dot attach_y);
+				
+				LogInternal("pointDif: "$pointDiff);
+				LogInternal("rollDiff: "$rollDiff);
+				LogInternal("distance: "$distance);
 				//attempt to attach item if distance is within threshold
-				if(distance <= attachmentThreshold && activeItem.reattachItem(CenterItem))
+				if(pointDiff <= angleThreshold && rollDiff <= angleThreshold && 
+				distance <= attachmentThreshold && activeItem.reattachItem(CenterItem))
 				{		
 					//swap item from 'offParts' to 'Parts'
 					Platform.Parts.AddItem(activeItem);
@@ -49,7 +67,6 @@ function String Set(String opcode, String args)
 	{
 		//drop the attached item
 		index = Platform.GetPartIndexByName(attachName);
-		LogInternal("trying to drop, keep finding "$index);
 		if(index != -1)
 		{
 			activeItem = Platform.Parts[index];

@@ -192,11 +192,17 @@ function bool reattachItem(Item baseItem)
 {
 	if(!hasParent)
 	{
+		//set collision to false during move
 		SetCollision(false);
-		SetLocation(baseItem.Location);
+		StaticMeshComponent.SetBlockRigidBody(false);
+		//match item to parent
 		SetRotation(baseItem.Rotation);
+		SetLocation(baseItem.Location);
 		SetBase(baseItem);
+		//turn collision back on
 		SetCollision(true);
+		StaticMeshComponent.SetBlockRigidBody(true);
+		
 		hasParent = true;
 		return true;
 	}
