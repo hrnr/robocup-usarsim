@@ -124,11 +124,13 @@ simulated function TempRotatePart(JointItem ji, Actor p, rotator angle,
 // Updates the joint item's angle to match the physics system's angle
 simulated function Update(JointItem ji)
 {
+	
 	local RevoluteJoint jt;
 	local rotator relRot;
 	local float angle;
 	local Rotator r1, r2;
 
+	super.update(ji);
 	jt = RevoluteJoint(ji.Spec);
 	
 	// Transform rotation of the parts by the constraint rotation

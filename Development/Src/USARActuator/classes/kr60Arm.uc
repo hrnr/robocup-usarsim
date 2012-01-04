@@ -70,7 +70,7 @@ defaultproperties
 		MaxForce=600
 		LimitLow=-3.288
 		LimitHigh=3.288
-		Offset=(X=0,Y=0,Z=0)
+		Offset=(X=0,Y=0,Z=-.972)
 		Direction=(x=3.1415,y=0,z=0)
 //		InverseMeasureAngle=true
 	End Object
@@ -109,7 +109,7 @@ defaultproperties
 		MaxForce=100
 		LimitLow=-6.108
 		LimitHigh=6.108
-		Offset=(X=.408,Y=0,Z=-2.172)
+		Offset=(X=1.0,Y=0,Z=-2.172)
 		Direction=(x=-1.571,y=0,z=-1.571)
 //		InverseMeasureAngle=true
 	End Object
@@ -120,22 +120,20 @@ defaultproperties
 		Child=Joint6
 		Damping=5
 		MaxForce=60
-		//Offset=(X=1.35,Y=0,Z=-2.172)
-		Offset=(X=1.41,Y=0,Z=-2.19)
+		Offset=(X=1.35,Y=0,Z=-2.19)
 		Direction=(x=1.571,y=0,z=0)
 		LimitLow=-2.076
 		LimitHigh=2.076
 //		InverseMeasureAngle=true
 	End Object
-	Joints.Add(Joint5_Joint6)ds
+	Joints.Add(Joint5_Joint6)
 	
 	Begin Object Class=RevoluteJoint Name=Joint6_Joint7
 		Parent=Joint6
 		Child=Joint7
 		Damping=5
 		MaxForce=25
-		//Offset=(X=1.35,Y=0,Z=-2.172)
-		Offset=(X=1.53,Y=0,Z=-2.19)
+		Offset=(X=1.35,Y=0,Z=-2.19)
 		Direction=(x=1.571,y=0,z=-1.571)
 		LimitLow=-6.108
 		LimitHigh=6.108

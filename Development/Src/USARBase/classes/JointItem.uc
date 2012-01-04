@@ -95,6 +95,7 @@ simulated function SetVelocity(float target)
 
 defaultproperties
 {
+	
 	// Collision properties
 	BlockRigidBody=false
 	bBlockActors=false

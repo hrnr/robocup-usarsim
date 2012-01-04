@@ -118,6 +118,19 @@ function RB_ConstraintActor SpawnHinge(JointItem ji)
 // Updates the joint's CurValue to match its physics
 simulated function Update(JointItem ji)
 {
+	local vector x,y,z;
+	local vector jtOffset;
+	local Rotator jtRotate;
+	/*
+	//using the child rotation as a base, set the original rotation of each joint and get the transformed world axes
+		jtRotate = class'Utilities'.static.rTurn(ji.Child.Rotation, class'UnitsConverter'.static.AngleVectorToUU(Direction));
+		GetAxes(jtRotate, x, y, z);
+		jtOffset = class'UnitsConverter'.static.MeterVectorToUU(Offset - Child.Offset);
+		jtOffset = ji.Child.Location+ (jtOffset<<(-1*ji.Child.Rotation));
+		ji.DrawDebugLine(jtOffset, jtOffset + x*200, 255, 0, 0, true);
+		ji.DrawDebugLine(jtOffset, jtOffset + y*200, 0, 255, 0, true);
+		ji.DrawDebugLine(jtOffset, jtOffset + z*200, 0, 0, 255, true);
+	*/
 }
 
 defaultproperties
