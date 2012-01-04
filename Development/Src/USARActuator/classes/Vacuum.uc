@@ -137,6 +137,7 @@ function Operate(bool gripper)
 			LogInternal("Vacuum: Picking up " $ String(hit.Name));
 			GripObject(hit);
 		}
+		DrawDebugLine(CenterItem.Location, rayEnd, 255, 0, 0, true);
 	}
 }
 

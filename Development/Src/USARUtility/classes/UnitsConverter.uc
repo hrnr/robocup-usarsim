@@ -337,6 +337,41 @@ static final function rotator AngleVectorToUU(vector rpy)
 	return rot;
 }
 
+// Converts a vector to a quat
+static final function quat VectorToUUQuat(vector vec)
+{
+	local rotator rot;
+	
+	rot.Roll = AngleToUU(vec.x);
+	rot.Pitch = AngleToUU(vec.y);
+	rot.Yaw = AngleToUU(vec.z);
+	return QuatFromRotator(rot);
+}
+
+// Converts a quat to a vector 
+static final function vector UUQuatToVector(quat q)
+{
+	local rotator rot;
+	local vector vec;
+	
+	rot = QuatToRotator(q);
+	vec.x = AngleFromUU(rot.Roll);
+	vec.y = AngleFromUU(rot.Pitch);
+	vec.z = AngleFromUU(rot.Yaw);
+	return vec;
+}
+
+// Converts a radian rotator to an Unreal rotator
+static final function rotator AngleRotatorToUU(rotator rotIn)
+{
+	local rotator rotOut;
+	
+	rotOut.Roll = AngleToUU(rotIn.Roll);
+	rotOut.Pitch = AngleToUU(rotIn.Pitch);
+	rotOut.Yaw = AngleToUU(rotIn.Yaw);
+	return rotOut;
+}
+
 // Normalizes angle in radians between [0, 2pi], where positive rotation is clockwise. Works on any value.
 static final function float normRad_ZeroTo2PI(float rads)
 {
