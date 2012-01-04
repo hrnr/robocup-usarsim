@@ -75,11 +75,13 @@ function DoScan(out Actor HitObject, out Material material)
 	
 	HitObject = HitActor;
 	material = HitMaterial;
-		
-	if(range >= MaxRange)
-		DrawDebugLine(Location, HitLocation, 255, 0, 0, true);
-	else
-		DrawDebugLine(Location, HitLocation, 0, 255, 0, true);
+	if(bDebug)
+	{	
+		if(range >= MaxRange)
+			DrawDebugLine(Location, HitLocation, 255, 0, 0, true);
+		else
+			DrawDebugLine(Location, HitLocation, 0, 255, 0, true);
+	}
 }
 function String GetData()
 {	
@@ -90,7 +92,8 @@ function String GetData()
 	local String packetAppend;
 	local array<Actor> hitActors;
 	local array<Material> hitMaterials;
-	FlushPersistentDebugLines();
+	if(bDebug)
+		FlushPersistentDebugLines();
 	time = WorldInfo.TimeSeconds;
 	// from right to left
 	for (i = ScanFov / 2; i >= -ScanFov / 2; i -= Resolution)

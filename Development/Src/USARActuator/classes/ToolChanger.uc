@@ -45,10 +45,12 @@ function String Set(String opcode, String args)
 				
 				pointDiff = acos(this_x dot attach_x);
 				rollDiff = acos(this_y dot attach_y);
-				
-				LogInternal("pointDif: "$pointDiff);
-				LogInternal("rollDiff: "$rollDiff);
-				LogInternal("distance: "$distance);
+				if(bDebug)
+				{
+					LogInternal("Toolchanger direction difference: "$pointDiff);
+					LogInternal("Toolchanger roll difference: "$rollDiff);
+					LogInternal("Toolchanger distance: "$distance);
+				}
 				//attempt to attach item if distance is within threshold
 				if(pointDiff <= angleThreshold && rollDiff <= angleThreshold && 
 				distance <= attachmentThreshold && activeItem.reattachItem(CenterItem))

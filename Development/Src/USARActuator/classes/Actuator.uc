@@ -150,8 +150,6 @@ function String GetConfData() {
 	// Account for contained items
 	for (i = 0; i < Parts.Length; i++)
 	{
-		if(Parts[i].isA('PhysicalItem'))
-			LogInternal(PhysicalItem(Parts[i]).Spec.Name$": "$class'UnitsConverter'.static.AngleVectorFromUU(Parts[i].Rotation));
 		if (Parts[i].isA('Actuator'))
 			outStr = outStr $ " " $ Parts[i].GetConfData();
 	}
@@ -507,12 +505,10 @@ reliable server function SetupItem(SpecItem desc)
 		// Base on a specified part
 		if (test != None && test.isA('PhysicalItem'))
 		{
-			LogInternal("set base to "$desc.Parent);
 			it.SetBase(test);
 		}
 		else
 		{
-			LogInternal("could not find "$desc.Parent);
 			it.SetBase(self);
 		}
 		it.SetHardAttach(true);
