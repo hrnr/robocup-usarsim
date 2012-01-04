@@ -679,8 +679,6 @@ simulated function UpdateJoints()
 {
 	local int i;
 	local JointItem ji;
-	if(bDebug)
-		self.FlushPersistentDebugLines();
 	// Iterate through joints and update their positions (CurPos) to match the values
 	for (i = 0; i < Parts.Length; i++)
 		if (Parts[i].IsJoint())
