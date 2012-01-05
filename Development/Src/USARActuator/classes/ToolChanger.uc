@@ -1,7 +1,7 @@
-/* ToolChanger - Actuator used as a placeholder to swap in other 
+/* ToolChanger - Effector used as a placeholder to swap in other 
 	actuators attached to it*/
 	
-class ToolChanger extends Actuator placeable config(USAR);
+class ToolChanger extends Effector placeable config(USAR);
 
 var bool hasItem;
 var String attachName;
@@ -84,7 +84,7 @@ function String Set(String opcode, String args)
 			}
 		}
 	}
-	return "failed";
+	return "FAILED";
 }
 //hide mounting item (called after setup)
 simulated function AttachItem()

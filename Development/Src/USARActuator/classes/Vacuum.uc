@@ -123,7 +123,7 @@ function Operate(bool gripper)
 		// Find axis along which to trace
 		hitLocation = CenterItem.Location;
 		rayAxis = vect(0, 0, 0);
-		rayAxis.Z = suctionLength;
+		rayAxis.X = suctionLength;
 		// Find where how far away the box can be
 		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location;
 		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location, true);
@@ -137,7 +137,8 @@ function Operate(bool gripper)
 			LogInternal("Vacuum: Picking up " $ String(hit.Name));
 			GripObject(hit);
 		}
-		DrawDebugLine(CenterItem.Location, rayEnd, 255, 0, 0, true);
+		if(bDebug)
+			DrawDebugLine(CenterItem.Location, hitLocation, 255, 0, 0, true);
 	}
 }
 

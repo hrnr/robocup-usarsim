@@ -126,12 +126,15 @@ function String GetData()
 	packetAppend = "{Name " $ ItemName $ "}";
 	for(i = 0;i<hitActors.Length; i++)
 	{
-		packetAppend $= " {Object} {"$string(hitActors[i].Tag)$" "$string(hitActors[i].Location)$" "$string(hitActors[i].Rotation)$"}";
+		packetAppend $= " {Object} {"$string(hitActors[i].Tag)$" "$
+									string(class'UnitsConverter'.static.LengthVectorFromUU(hitActors[i].Location))$
+									" "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}";
 	}
 	for(i = 0;i<hitMaterials.Length;i++)
 	{
 		packetAppend $= " {Material "$ string(hitMaterials[i].Name) $"}";
 	}
+	LogInternal(packetAppend);
 	return packetAppend;
 }
 defaultproperties
@@ -142,7 +145,7 @@ defaultproperties
 	bProjTarget=true
 	bCollideWhenPlacing=true
 	bCollideWorld=true
-	ItemType = "WorldScan";
+	ItemType = "ObjectSensor";
 	ItemName = "ObjectSensor";
 	Begin Object Name=StaticMeshComponent0
 		StaticMesh=StaticMesh'SICKSensor.lms200.Sensor'
