@@ -461,6 +461,7 @@ reliable server function SetupJoint(Joint jt)
 		LogInternal("USARVehicle: Failed to realize joint " $ jt.Name);
 	else
 	{
+		ji.Init(String(jt.Name), self);
 		// See note in SetupItem as to why this is false
 		ji.SetHardAttach(false);
 		ji.SetBase(CenterItem);
