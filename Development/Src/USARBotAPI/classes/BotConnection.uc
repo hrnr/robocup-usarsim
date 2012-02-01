@@ -17,6 +17,13 @@ var BotController TheBot;
 var MessageParser Parser;
 var config bool bIterative;
 
+simulated function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	Parser = new class'MessageParser';
+}
+
 // Socket established, send game information
 event Accepted()
 {
@@ -629,8 +636,4 @@ auto state monitoring
 defaultproperties
 {
 	bDebug=false
-	
-	Begin Object Class=MessageParser Name=theParser
-	End Object
-	Parser=theParser
 }
