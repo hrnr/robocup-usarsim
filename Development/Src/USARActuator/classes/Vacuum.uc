@@ -11,7 +11,7 @@
  * Vacuum - a device that can attach onto the end of an arm and pick up objects like a vacuum
  * Use the INI file to attach this actuator and parent it to the end part of the arm
  */
-class Vacuum extends Gripper placeable config (USAR);
+class Vacuum extends Gripper abstract config (USAR);
 
 // Item used for attachment (use self if no parent found)
 var Actor AttachTo;
@@ -28,25 +28,28 @@ var Actor GripTarget;
 var float SuctionLength;
 // How much force the vacuum can exert
 var config float VacuumForce;
-
+//where the vacuum ray cast starts
+var vector suctionFrom;
 // Hide the black object for now
 simulated function AttachItem()
 {
 	super.AttachItem();
 	CenterItem.SetHidden(!bDebug);
-	if (Base != None)
+	//do NOT attach to parent, because this will foul up the vacuum constraint when the toolchanger is used
+	/*if (Base != None)
 	{
 		LogInternal("Vacuum: Attaching to " $ String(Base.Name) $ " for greater stability");
 		AttachTo = Base;
 	}
-	else
-		AttachTo = CenterItem;
+	else*/
+	AttachTo = CenterItem;
 }
 
 simulated function ConvertParam()
 {
 	super.ConvertParam();
 	SuctionLength = class'UnitsConverter'.static.LengthToUU(SuctionLength);
+	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(suctionFrom);
 }
 
 // Grips an object by fixing it to the end of the arm
@@ -62,19 +65,22 @@ function GripObject(Actor target)
 			// Save physics and set to rigidbody so joint works
 			GripTarget = target;
 			GripPhys = target.Physics;
-			GripPos = (target.Location - AttachTo.Location) << AttachTo.Rotation;
+			GripPos = (target.Location - (CenterItem.Location + (SuctionFrom >> CenterItem.Rotation))) << CenterItem.Rotation;
 			target.SetPhysics(PHYS_RigidBody);
 			// Allow some motion
 			GripCons.ConstraintSetup.LinearXSetup.LimitSize = SuctionLength;
 			GripCons.ConstraintSetup.LinearYSetup.LimitSize = SuctionLength;
 			GripCons.ConstraintSetup.LinearZSetup.LimitSize = 0;
+			GripCons.ConstraintSetup.bLinearBreakable = true;
+			GripCons.ConstraintSetup.LinearBreakThreshold = VacuumForce;
 			// Init again (2nd time!)
 			GripCons.ConstraintInstance.InitConstraint(AttachTo.CollisionComponent,
 				target.CollisionComponent, GripCons.ConstraintSetup, 1, AttachTo,
 				AttachTo.CollisionComponent, false);
 			// Set the force high but leave the restitution low so that it imitates real vacuum
-			GripCons.ConstraintInstance.SetLinearDriveParams(VacuumForce, 5, VacuumForce);
+			GripCons.ConstraintInstance.SetLinearDriveParams(100, 5, VacuumForce);
 			GripCons.ConstraintInstance.SetLinearPositionDrive(true, true, false);
+			LogInternal("gripcons set");
 		}
 	}
 }
@@ -99,16 +105,19 @@ event Tick(float DT)
 	if (GripTarget != None)
 	{
 		// Check for an auto drop
-		newPos = (GripTarget.Location - CenterItem.Location) << CenterItem.Rotation;
+		newPos = (GripTarget.Location - (CenterItem.Location + (SuctionFrom >> CenterItem.Rotation))) << CenterItem.Rotation;
 		if (VSize(newPos - GripPos) > abs(SuctionLength))
 		{
-			LogInternal("Vacuum: Suction lost");
-			UngripObject();
+			//LogInternal("Vacuum: Suction lost");
+			//UngripObject();
 			IsOn = 0;
 		}
 	}
 }
-
+simulated event ConstraintBrokenNotify (Actor ConOwner, RB_ConstraintSetup ConSetup, RB_ConstraintInstance ConInstance)
+{
+	LogInternal("BROKEN!");
+}
 // Opens or closes the gripper as necessary
 function Operate(bool gripper)
 {
@@ -125,8 +134,8 @@ function Operate(bool gripper)
 		rayAxis = vect(0, 0, 0);
 		rayAxis.X = suctionLength;
 		// Find where how far away the box can be
-		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location;
-		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location, true);
+		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location + (suctionFrom >> CenterItem.Rotation);
+		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location + (suctionFrom >> CenterItem.Rotation), true);
 		// Cannot grab base or self
 		if (hit == CenterItem || hit == Base)
 			LogInternal("Vacuum: Not placed or oriented properly; can only see self");
@@ -137,8 +146,8 @@ function Operate(bool gripper)
 			LogInternal("Vacuum: Picking up " $ String(hit.Name));
 			GripObject(hit);
 		}
-		if(bDebug)
-			DrawDebugLine(CenterItem.Location, hitLocation, 255, 0, 0, true);
+		//if(bDebug)
+			DrawDebugLine(CenterItem.Location + (suctionFrom>> CenterItem.Rotation), rayEnd, 255, 0, 0, true);
 	}
 }
 
@@ -149,12 +158,5 @@ defaultproperties
 	GripTarget=None
 	GripPhys=PHYS_None
 	SuctionLength=0.125
-	
-	Begin Object Class=Part Name=BodyItem
-		Mesh=StaticMesh'Basic.EmptyMesh'
-		Collision=false
-	End Object
-	PartList.Add(BodyItem)
-	
-	Body=BodyItem
+	SuctionFrom = (x=0,y=0,z=0)
 }

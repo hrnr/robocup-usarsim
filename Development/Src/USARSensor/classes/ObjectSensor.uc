@@ -134,7 +134,6 @@ function String GetData()
 	{
 		packetAppend $= " {Material "$ string(hitMaterials[i].Name) $"}";
 	}
-	LogInternal(packetAppend);
 	return packetAppend;
 }
 defaultproperties
