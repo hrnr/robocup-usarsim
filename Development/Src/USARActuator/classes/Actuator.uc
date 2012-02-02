@@ -635,26 +635,42 @@ function detachItem()
 //called when the actuator is reattached to a parent
 function bool reattachItem(Item newBase)
 {
-	local bool success;
+	local Rotator zero;
 	if(!hasParent)
 	{
 		//turns off physics and sets the actuator as the base item
 		CenterItem.SetPhysics(PHYS_None);
 		SetBase(None);
-		//realign actuator item to center item in case they somehow came apart through physics
-		SetRotation(CenterItem.Rotation);
+		zero.roll =0;
+		zero.pitch=0;
+		zero.yaw=0;
+		SetRotation(zero);
 		SetLocation(CenterItem.Location);
 		CenterItem.SetBase(self);
 		//restore original offset of center item
 		CenterItem.SetRelativeLocation(class'UnitsConverter'.static.MeterVectorToUU(Body.offset));
-		CenterItem.SetRelativeRotation(class'UnitsConverter'.static.AngleVectorToUU(Body.Direction));
+		CenterItem.SetRotation(class'UnitsConverter'.static.AngleVectorToUU(Body.Direction));
 	}
 	//turn off collision for all subparts so that the attaching actuator doesn't affect the parent
 	SetActuatorCollision(false);
-	success = super.reattachItem(newBase);
+	//success = super.reattachItem(newBase);
+	
+	//set collision to false during move
+	SetCollision(false);
+	StaticMeshComponent.SetBlockRigidBody(false);
+	//match item to parent
+	SetRotation(newBase.Rotation);
+	SetLocation(newBase.Location);
+	SetBase(newBase);
+	//turn collision back on
+	SetCollision(true);
+	StaticMeshComponent.SetBlockRigidBody(true);
+	
+	hasParent = true;
+	
 	//turn collision back on
 	SetActuatorCollision(true);
-	return success;
+	return true;
 }
 //set collision of all child parts
 function SetActuatorCollision(bool bCollision)

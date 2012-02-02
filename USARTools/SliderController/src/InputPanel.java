@@ -1,4 +1,4 @@
-//package gov.nist.sliderController;
+package gov.nist.sliders;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -86,7 +86,7 @@ public class InputPanel extends javax.swing.JPanel {
 
         jLabel1.setText("Name:");
 
-        jTextField1.setText("Fanuc_robot_and_rail");
+        jTextField1.setText("Fanuc_M16iB20");
 
         jLabel2.setText("Location:");
 

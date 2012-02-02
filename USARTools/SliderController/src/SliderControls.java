@@ -1,4 +1,4 @@
-//package gov.nist.sliderController;
+package gov.nist.sliders;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -9,6 +9,9 @@
  * @author nunnally
  */
 import javax.swing.*;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,7 +44,7 @@ public class SliderControls {
     private SliderPanel slidePanel;
     private JFrame frame;
     
-    private String configFile="SliderController.ini";
+    private String configFile="src/SliderController.ini";
 
     //Declaration of Config Variables
     private int port;

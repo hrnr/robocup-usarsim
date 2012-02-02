@@ -114,10 +114,6 @@ event Tick(float DT)
 		}
 	}
 }
-simulated event ConstraintBrokenNotify (Actor ConOwner, RB_ConstraintSetup ConSetup, RB_ConstraintInstance ConInstance)
-{
-	LogInternal("BROKEN!");
-}
 // Opens or closes the gripper as necessary
 function Operate(bool gripper)
 {
@@ -146,7 +142,7 @@ function Operate(bool gripper)
 			LogInternal("Vacuum: Picking up " $ String(hit.Name));
 			GripObject(hit);
 		}
-		//if(bDebug)
+		if(bDebug)
 			DrawDebugLine(CenterItem.Location + (suctionFrom>> CenterItem.Rotation), rayEnd, 255, 0, 0, true);
 	}
 }

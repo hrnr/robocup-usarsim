@@ -1,4 +1,4 @@
-//package gov.nist.sliderController;
+package gov.nist.sliders;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.

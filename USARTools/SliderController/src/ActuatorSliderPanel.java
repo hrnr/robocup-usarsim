@@ -1,4 +1,4 @@
-//package gov.nist.sliderController;
+package gov.nist.sliders;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -15,8 +15,10 @@
  * @author nunnally
  */
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -38,14 +42,14 @@ public class ActuatorSliderPanel extends SliderPanel {
     private ArrayList<ActuatorControl> controllers;
     private LinkSliderPanel[] boneSliders;
     private Scanner scan;
-
+    private JTextField cmd;
     /** Creates new form HumanSliderPanel */
     //This inits the arm in the UT3 level and holds an array of LinkSliderPanels
     public ActuatorSliderPanel(String botName, float x, float y, float z, float r, float p, float w, int percision, String host, int port) {
-        String str;
-        double min, max;
-        boolean rev;
+        super();
+    	String str;
         ArmDOFSlider sliders;
+        
         multiplier = (int)Math.pow(10,percision);
 
         this.setLayout(new GridBagLayout());
@@ -88,11 +92,17 @@ public class ActuatorSliderPanel extends SliderPanel {
 	                linkIndex++;
             	}
             }
+            JPanel cmdPanel = new JPanel();
+            cmdPanel.setLayout(new GridBagLayout());
+            cmd = new JTextField();
+            cmd.setPreferredSize(new Dimension(500, 20));
             JButton button = new JButton();
-            button.setText("toolchange");
+            button.setText("Send");
             button.addActionListener(new ButtonListener());
+            cmdPanel.add(cmd);
+            cmdPanel.add(button);
             c.gridy = numBones + 2;
-            this.add(button, c);
+            this.add(cmdPanel, c);
         }
         catch(UnknownHostException e){
             System.out.println("Bad host");
@@ -201,7 +211,7 @@ public class ActuatorSliderPanel extends SliderPanel {
     private class ButtonListener implements ActionListener{
     	public void actionPerformed(ActionEvent e)
     	{
-    		sendCommand("SET {Type ToolChanger} {Opcode ATTACH} {Params Gripper1}");
+    		sendCommand(cmd.getText());
     	}
     }
     /** This method is called from within the constructor to

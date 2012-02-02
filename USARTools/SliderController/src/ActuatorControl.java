@@ -1,4 +1,4 @@
-//package gov.nist.sliderController;
+package gov.nist.sliders;
 
 import java.util.ArrayList;
 
