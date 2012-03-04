@@ -40,7 +40,7 @@ function String Set(String opcode, String args)
 {
 	local int zoom;
 	
-	if (Caps(opcode)=="ZOOM") {
+	if (Caps(opcode)=="ZOOM" || Caps(opcode)=="FOV") {
 		zoom=class'UnitsConverter'.static.AngleToDeg(Float(args));
 		if (zoom == 0)
 			CameraFOV = CameraDefFOV;
