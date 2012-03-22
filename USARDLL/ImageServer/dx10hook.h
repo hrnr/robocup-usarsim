@@ -3,6 +3,6 @@
 
 #include "ImageServer.h"
 
-extern "C" IMAGESERVERDLL_API void HookDirectX10();
+extern "C" IMAGESERVERDLL_API int HookDirectX10();
 
 #endif // DX10HOOK_H
