@@ -30,6 +30,10 @@ var float SuctionLength;
 var config float VacuumForce;
 //where the vacuum ray cast starts
 var vector suctionFrom;
+//how often the vacuum checks to see if the target object is still close enough to be attached
+var config int dropCheckFrequency;
+//how many frames it's been since the last distance check was performed
+var int lastChecked;
 // Hide the black object for now
 simulated function AttachItem()
 {
@@ -101,15 +105,17 @@ function UngripObject()
 event Tick(float DT)
 {
 	local vector newPos;
-	
-	if (GripTarget != None)
+	lastChecked += 1;
+	//only check for a drop every few frames (not a constant amount of time)
+	if (GripTarget != None && lastChecked > dropCheckFrequency)
 	{
+		lastChecked = 0;
 		// Check for an auto drop
 		newPos = (GripTarget.Location - (CenterItem.Location + (SuctionFrom >> CenterItem.Rotation))) << CenterItem.Rotation;
 		if (VSize(newPos - GripPos) > abs(SuctionLength))
 		{
-			//LogInternal("Vacuum: Suction lost");
-			//UngripObject();
+			LogInternal("Vacuum: Suction lost");
+			UngripObject();
 			IsOn = 0;
 		}
 	}
