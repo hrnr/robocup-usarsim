@@ -32,7 +32,14 @@ void DX9_GetBackBuffer( LPDIRECT3DDEVICE9 pDevice )
 	hResult = pDevice->CreateOffscreenPlainSurface(surfaceDescription.Width, surfaceDescription.Height, surfaceDescription.Format, D3DPOOL_SYSTEMMEM, &g_pBackBufferCopy9, NULL);
 	if(FAILED(hResult)) MessageBox(NULL, L"CreateOffscreenPlainSurface failed", L"USARSim Image Server", MB_OK);
 	hResult = pDevice->GetRenderTargetData(pBackBuffer, g_pBackBufferCopy9);
-	if(FAILED(hResult)) MessageBox(NULL, L"GetRenderTargetData failed", L"USARSim Image Server", MB_OK);
+	if ( FAILED(hResult) ) 
+	{
+		// This fails if you run in fullscreen mode and alt tab to your desktop. The message is rather annoying, so disabled it.
+		//MessageBox(NULL, L"GetRenderTargetData failed", L"USARSim Image Server", MB_OK);
+		pBackBuffer->Release();
+		g_pBackBufferCopy9->Release();
+		return;
+	}
 	pBackBuffer->Release();
 
 	// Lock the back buffer copy
@@ -169,20 +176,20 @@ void InstallCreateDeviceHook()
 }
 
 // Main function for hooking dx9
-extern "C" IMAGESERVERDLL_API void HookDirectX9()
+extern "C" IMAGESERVERDLL_API int HookDirectX9()
 {
 	uintptr_t addr = GetHookingAddress( GHA_DX9_DEVICE, 17 );
-	if( addr )
-	{
-		InstallHook( PresentHook, g_pPresent, Present_t, addr );
-#ifdef _DEBUG
-		printf("HookDirectX9: Hooked Present (%X)\n", addr );
-#endif // _DEBUG
-	}
-	else
+	if( addr == NULL )
 	{
 #ifdef _DEBUG
-		printf("HookDirectX9: Failed to retrieve function address\n" );
+		printf("HookDirectX9: Failed to retrieve function address (%X)\n", addr );
 #endif // _DEBUG
+		return 0;
 	}
+
+	InstallHook( PresentHook, g_pPresent, Present_t, addr );
+#ifdef _DEBUG
+	printf("HookDirectX9: Hooked Present (%X)\n", addr );
+#endif // _DEBUG
+	return 1;
 }

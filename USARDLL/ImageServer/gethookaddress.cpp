@@ -86,7 +86,7 @@ bool DX9_Init3d()
 	d3dpp.BackBufferFormat = d3ddm.Format;
 
 	// Create the Direct3D device. 
-	if( FAILED( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_hWnd,
+	if( FAILED( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_NULLREF, g_hWnd,
 									  D3DCREATE_SOFTWARE_VERTEXPROCESSING ,
 									  &d3dpp, &g_pd3dDevice ) ) )
 	{
@@ -285,7 +285,7 @@ int main( int argc, char *argv[] )
 	if( !CreateTempWindow(hInstance) )
 	{
 		printf("Failed to create window\n");
-		return 0;
+		return -1;
 	}
 
 	void* pFunction = NULL;
@@ -304,6 +304,9 @@ int main( int argc, char *argv[] )
 		printf("Unknown type %d\n", iType);
 		break;
 	}
+
+	if( !pFunction )
+		return -1;
 
 	// Write function to parent 
 	HANDLE hStdin, hStdout; 
