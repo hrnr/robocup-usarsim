@@ -150,7 +150,7 @@ HANDLE g_hChildStd_IN_Wr = NULL;
 HANDLE g_hChildStd_OUT_Rd = NULL;
 HANDLE g_hChildStd_OUT_Wr = NULL;
 
-// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+// Based on example from msdn: http://msdn.microsoft.com/en-us/library/windows/desktop/ms682499(v=vs.85).aspx
 bool CreateChildProcess( int iType, int iFunction )
 { 
 	wchar_t szCmdline[MAX_PATH];
@@ -159,11 +159,8 @@ bool CreateChildProcess( int iType, int iFunction )
 	STARTUPINFO siStartInfo;
 	BOOL bSuccess = FALSE; 
  
-	// Set up members of the PROCESS_INFORMATION structure. 
 	ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
- 
-	// Set up members of the STARTUPINFO structure. 
-	// This structure specifies the STDIN and STDOUT handles for redirection.
+
 	ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
 	siStartInfo.cb = sizeof(STARTUPINFO); 
 	siStartInfo.hStdError = g_hChildStd_OUT_Wr;
@@ -171,7 +168,6 @@ bool CreateChildProcess( int iType, int iFunction )
 	siStartInfo.hStdInput = g_hChildStd_IN_Rd;
 	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
  
-	// Create the child process. 
 	bSuccess = CreateProcess(NULL, 
 		szCmdline,     // command line 
 		NULL,          // process security attributes 
@@ -183,14 +179,10 @@ bool CreateChildProcess( int iType, int iFunction )
 		&siStartInfo,  // STARTUPINFO pointer 
 		&piProcInfo);  // receives PROCESS_INFORMATION 
    
-	// If an error occurs, exit the application. 
 	if ( ! bSuccess ) 
 		return false;
 	else 
 	{
-		// Close handles to the child process and its primary thread.
-		// Some applications might keep these handles to monitor the status
-		// of the child process, for example. 
 		CloseHandle(piProcInfo.hProcess);
 		CloseHandle(piProcInfo.hThread);
 	}
@@ -200,38 +192,57 @@ bool CreateChildProcess( int iType, int iFunction )
 uintptr_t GetHookingAddress( int iType, int iFunction )
 {
 	SECURITY_ATTRIBUTES saAttr; 
- 
-	// Set the bInheritHandle flag so pipe handles are inherited. 
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES); 
 	saAttr.bInheritHandle = TRUE; 
 	saAttr.lpSecurityDescriptor = NULL; 
 
-	// Create a pipe for the child process's STDOUT. 
-	if( !CreatePipe(&g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &saAttr, 0) ) 
-		return -1;
-
-	// Ensure the read handle to the pipe for STDOUT is not inherited.
+	if( !CreatePipe(&g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &saAttr, 0) )
+	{
+#ifdef _DEBUG
+		printf("Failed to create pipe 1 (error: %d)\n", GetLastError());
+#endif // _DEBUG
+		return NULL;
+	}
+	
 	if( !SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0) )
-		return -1;
+	{
+#ifdef _DEBUG
+		printf("Failed to set handle information 1\n");
+#endif // _DEBUG
+		return NULL;
+	}
 
-	// Create a pipe for the child process's STDIN. 
 	if( !CreatePipe(&g_hChildStd_IN_Rd, &g_hChildStd_IN_Wr, &saAttr, 0) ) 
-		return -1;
+	{
+#ifdef _DEBUG
+		printf("Failed to create pipe 2 (error: %d)\n", GetLastError());
+#endif // _DEBUG
+		return NULL;
+	}
 
-	// Ensure the write handle to the pipe for STDIN is not inherited. 
 	if( !SetHandleInformation(g_hChildStd_IN_Wr, HANDLE_FLAG_INHERIT, 0) )
-		return -1;
+	{
+#ifdef _DEBUG
+		printf("Failed to set handle information 2\n");
+#endif // _DEBUG
+		return NULL;
+	}
 
 	if( !CreateChildProcess( iType, iFunction ) )
 	{
 #ifdef _DEBUG
 		printf("Failed to create hook process\n");
 #endif // _DEBUG
-		return -1;
+		return NULL;
 	}
 
 	if( !CloseHandle(g_hChildStd_OUT_Wr) ) 
-		return -1;
+	{
+#ifdef _DEBUG
+		printf("Failed to close pipe\n");
+#endif // _DEBUG
+		return NULL;
+	}
 
 	DWORD dwRead;
 	uintptr_t addr = 0;
