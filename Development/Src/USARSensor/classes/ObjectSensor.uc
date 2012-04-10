@@ -138,6 +138,7 @@ function String GetData()
 }
 defaultproperties
 {
+	bDebug=true
 	BlockRigidBody=true
 	bCollideActors=true
 	bBlockActors=false
