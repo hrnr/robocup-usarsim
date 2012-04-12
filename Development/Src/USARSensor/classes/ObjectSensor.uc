@@ -8,6 +8,7 @@
 *****************************************************************************/
 
 class ObjectSensor extends RangeScanner config (USAR);
+
 // Define behavior inside smoke
 function float GetRangeRecursive(Actor PrevHitActor, vector StartLocation,
 	float maxRangeRemaining, float curRange, float penetrationPower, out vector FinalHitLocation, out Actor FinalHitActor, 
@@ -126,9 +127,9 @@ function String GetData()
 	packetAppend = "{Name " $ ItemName $ "}";
 	for(i = 0;i<hitActors.Length; i++)
 	{
-		packetAppend $= " {Object} {"$string(hitActors[i].Tag)$" "$
-									string(class'UnitsConverter'.static.LengthVectorFromUU(hitActors[i].Location))$
-									" "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}";
+		packetAppend $= " {Object "$string(hitActors[i].Tag)$"}"$
+									"{Location "$string(class'UnitsConverter'.static.LengthVectorFromUU(hitActors[i].Location))$"}"$
+									"{Orientation "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}";
 	}
 	for(i = 0;i<hitMaterials.Length;i++)
 	{
