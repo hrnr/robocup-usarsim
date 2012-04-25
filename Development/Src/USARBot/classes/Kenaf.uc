@@ -25,7 +25,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		RelativeTo=`{FlipperName}Part\n \
 		Mesh=StaticMesh'Kenaf_static.SmallTire'\n \
 		Offset=(X=0,Y=0,Z=0)\n \
-		Mass=1\n \
+		Mass=0.35\n \
 	End Object\n \
 	PartList.Add(`{FlipperName}Wheel)\n \
 	\
@@ -36,6 +36,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		Side=`{Side}\n \
 		Offset=(X=0,Y=0,Z=0)\n \
 		Direction=`{WheelJointDirection}\n \
+		MaxForce=`{WheelMaxForce}\n \
 	End Object\n \
 	Joints.Add(`{FlipperName}WheelJoint)\n \
 	\
@@ -47,7 +48,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 `else \
 		Offset=(X=0.145,Y=0,Z=0)\n \
 `endif \
-		Mass=0.1\n \
+		Mass=0.65\n \
 	End Object\n \
 	PartList.Add(`{FlipperName}LargeWheel)\n \
 	\
@@ -62,6 +63,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		Offset=(X=0.14,Y=0,Z=0)\n \
 `endif \
 		Direction=`{WheelJointDirection}\n \
+		MaxForce=`{WheelMaxForce}\n \
 	End Object\n \
 	Joints.Add(`{FlipperName}LargeWheelJoint)\n \
 
@@ -80,6 +82,7 @@ class Kenaf extends SkidSteeredVehicle config(USAR);
 		Side=`Side\n \
 		Offset=(X=`PosX,Y=`PosY,Z=0.0)\n \
 		Direction=(X=1.571,Y=0,Z=0)\n \
+		MaxForce=`{WheelMaxForce}\n \
 	End Object\n \
 	Joints.Add(`{WheelName}Roll)\n \
 
@@ -96,7 +99,8 @@ defaultproperties
 	`define WheelRightY 0.11
 	`define FlipperFrontX 0.225
 	`define FlipperRightY 0.23
-	`define FlipperMaxForce 5
+	`define FlipperMaxForce 7
+	`define WheelMaxForce 0.15
 
 	// Create body part
 	Begin Object Class=Part Name=ChassisMiddle
