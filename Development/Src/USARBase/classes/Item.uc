@@ -140,6 +140,17 @@ simulated function PostBeginPlay()
 		SetTimer(ScanInterval, true);
 }
 
+// Called when the item is destroyed
+simulated event Destroyed()
+{
+	super.Destroyed();
+
+	if( self.Platform != none )
+	{
+		self.Platform.OnItemRemoved( self );
+	}
+}
+
 replication
 {
 	if (bNetOwner && bNetDirty && Role == ROLE_Authority) 

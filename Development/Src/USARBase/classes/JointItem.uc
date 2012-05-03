@@ -42,6 +42,12 @@ simulated event Destroyed()
 	Constraint.Destroy();
 }
 
+// Verfies this joint item is valid; Using the contraint actor while the PhysicalItems are deleted results in an UDK crash (march 2012).
+simulated function Bool IsValid()
+{
+	return (Child != none && !Child.bPendingDelete && Parent != none && !Parent.bPendingDelete);
+}
+
 // Gets the name of the parent joint
 simulated function name GetJointName()
 {

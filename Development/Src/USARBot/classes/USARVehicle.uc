@@ -407,11 +407,20 @@ reliable server function SetupItem(SpecItem desc)
 		LogInternal("USARVehicle: Failed to spawn attachment: " $ desc.ItemName);
 	else
 	{
-		test = GetPartByName(desc.Parent);
-		// Base on a specified part
-		if (test != None && test.isA('PhysicalItem'))
+		if( desc.Parent != '' )
 		{
-			it.SetBase(test);
+			test = GetPartByName(desc.Parent);
+			
+			// Base on a specified part
+			if (test != None && test.isA('PhysicalItem'))
+			{
+				it.SetBase(test);
+			}
+			else
+			{
+				it.SetBase(CenterItem);
+				`Log("USARVehicle: Failed to attach item " $ desc.ItemName $ " to parent item " $ desc.Parent );
+			}
 		}
 		else
 		{
@@ -511,6 +520,7 @@ reliable server function SetupPart(Part part)
 	else
 	{
 		// Initialize fields
+		it.Init(String(part.TemplateName), self);
 		it.Spec = part;
 		if (part.Mesh == None)
 			LogInternal("USARVehicle: Static mesh for '" $ part.Name $ "' not found");

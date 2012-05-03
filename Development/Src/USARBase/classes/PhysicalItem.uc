@@ -15,6 +15,11 @@ class PhysicalItem extends Item;
 // The part which instantiated this item
 var Part Spec;
 
+simulated function AttachItem()
+{
+	hasParent = true;
+}
+
 function detachItem()
 {
 	super.detachItem();

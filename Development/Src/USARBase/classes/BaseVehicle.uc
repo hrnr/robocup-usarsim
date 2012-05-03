@@ -67,10 +67,39 @@ simulated event Destroyed()
 	
 	super.Destroyed();
 	// Remove all active and inactive parts
-	for (i = 0; i < Parts.length; i++)
+	for (i = Parts.length-1; i >= 0; i-- )
 		Parts[i].Destroy();
-	for(i = 0;i<offParts.length;i++)
+	for (i = offParts.length-1; i >= 0; i-- )
 		offParts[i].Destroy();
+}
+
+// Called when an item is destroyed
+simulated function OnItemRemoved( Item ii )
+{
+	local int i;
+	local JointItem ji;
+
+	self.Parts.RemoveItem( ii );
+	self.offParts.RemoveItem( ii );
+
+	// Bug; The next time JointItem is used (SetVelocity, SetTarget, etc), UDK crashes...
+	// Seems UDK does not check if initialized contraints are still valid after a rigid body is destroyed
+	for (i = Parts.length-1; i >= 0; i-- )
+	{
+		ji = JointItem(Parts[i]);
+		if( ji != none && (ji.Child == ii || ji.Parent == ii) )
+		{
+			ji.Destroy();
+		}
+	}
+	for (i = offParts.length-1; i >= 0; i-- )
+	{
+		ji = JointItem(offParts[i]);
+		if( ji != none && (ji.Child == ii || ji.Parent == ii) )
+		{
+			ji.Destroy();
+		}
+	}
 }
 
 // Gets the estimated life remaining in the battery; negative is a dead battery
