@@ -138,6 +138,7 @@ public class IridiumUI implements IridiumListener {
 	private JButton swapButton;
 	private JComponent topInfo;
 	private JComponent typePanel;
+	private JCheckBox keepSensors;
 	private final List<USARPacket> usarData;
 	
 	//-- Variables associated to the MOVE command
@@ -467,6 +468,14 @@ public class IridiumUI implements IridiumListener {
 	 */
 	public boolean isInDegrees() {
 		return rotDegrees.isSelected();
+	}
+	/**
+	 * Gets whether sensor output messages should be logged
+	 *
+	 * @return whether sensor output should be logged to the raw window
+	 */
+	public boolean keepSensors() {
+		return keepSensors.isSelected();
 	}
 	/**
 	 * Loads the data handlers from the ActiveStatusHandlers.properties file.
@@ -1740,12 +1749,19 @@ public class IridiumUI implements IridiumListener {
 		// Check Box: Degree mode
 		rotDegrees = Utils.createCheckBox("Degree Mode", Utils.asHTML(
 			"Enter angles in degree mode; does <b>not</b> apply to raw commands"));
+		// Check box: keep sensors
+		keepSensors = Utils.createCheckBox("Log sensors", Utils.asHTML(
+				"Log all sensor messages to raw window"));
 		rotDegrees.setMnemonic('D');
 		// Default value from config
 		if (state.getConfig().getProperty("Degrees", "false").equalsIgnoreCase("true"))
 			rotDegrees.setSelected(true);
 		gbc.gridx = 5;
 		topPanel.add(rotDegrees, gbc);
+		gbc.gridx = 6;
+		topPanel.add(Box.createHorizontalStrut(10), gbc);
+		gbc.gridx = 7;
+		topPanel.add(keepSensors, gbc);
 		// Label: Connect To
 		final JLabel lConnect = Utils.createFieldLabel("Connect To: ", serverName);
 		lConnect.setDisplayedMnemonic('C');
