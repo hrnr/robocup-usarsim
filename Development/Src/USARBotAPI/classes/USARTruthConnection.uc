@@ -23,6 +23,7 @@ event ReceivedText(String Text)
 	local Actor theActor;
 	local Pawn thePawn;
 	local WCObject theWCObject;
+	local USARVehicle usarVehicle;
 
 	if (bDebug)
 		LogInternal("USARTruthConnection: Received " $ Text);
@@ -30,11 +31,24 @@ event ReceivedText(String Text)
 	{
 		foreach AllActors(class'Actor', theActor)
 		{
+			//If a USARVehicle then we have deal with it differentely.
+			if(thePawn.isA('USARVehicle'))
+			{
+			usarVehicle = USARVehicle(theActor);
+			SendText("{Name " $ theActor.Name $ "} {Class " $ theActor.Class $ "} {Time " $
+				WorldInfo.TimeSeconds $ "} {Location " $
+				class'UnitsConverter'.static.LengthVectorFromUU(usarVehicle.CenterItem.Location) $
+				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(usarVehicle.CenterItem.Rotation) $
+				"}" $ Chr(13) $ Chr(10));
+			}
+			else
+			{
 			SendText("{Name " $ theActor.Name $ "} {Class " $ theActor.Class $ "} {Time " $
 				WorldInfo.TimeSeconds $ "} {Location " $
 				class'UnitsConverter'.static.LengthVectorFromUU(theActor.Location) $
 				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(theActor.Rotation) $
 				"}" $ Chr(13) $ Chr(10));
+			}
 		}
 	}
 	else if (Mid(Text, 0, 10) == "{WCObject}")
@@ -52,11 +66,24 @@ event ReceivedText(String Text)
 	{
 		foreach AllActors(class'Pawn', thePawn)
 		{
+			if(thePawn.isA('USARVehicle'))
+			{
+			//If a USARVehicle then we have deal with it differentely.
+			usarVehicle = USARVehicle(thePawn);
 			SendText("{Name " $ thePawn.Name $ "} {Class " $ thePawn.Class $ "} {Time " $
+				WorldInfo.TimeSeconds $ "} {Location " $
+				class'UnitsConverter'.static.LengthVectorFromUU(usarVehicle.CenterItem.Location) $
+				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(usarVehicle.CenterItem.Rotation) $
+				"}" $ Chr(13) $ Chr(10));
+			}
+			else
+			{
+				SendText("{Name " $ thePawn.Name $ "} {Class " $ thePawn.Class $ "} {Time " $
 				WorldInfo.TimeSeconds $ "} {Location " $
 				class'UnitsConverter'.static.LengthVectorFromUU(thePawn.Location) $
 				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(thePawn.Rotation) $
 				"}" $ Chr(13) $ Chr(10));
+			}				
 		}
 	}
 	SendText("{End}" $ Chr(13) $ Chr(10));
