@@ -15,7 +15,7 @@ class WCCrateGreen extends WCObject placeable;
 defaultproperties
 {
 	Mesh=StaticMesh'WCObjectPkg.Crates.CrateGreen'
-	
+	Mass = 5.0
 	Name="WCCrateGreen"
 }
 
