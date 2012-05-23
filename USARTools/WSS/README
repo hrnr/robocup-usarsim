@@ -1,0 +1,21 @@
+This is the new Wireless Simulation Server (WSS) developed by Max Pfingsthorn.
+
+You need Trolltech's Qt Windowing Toolkit Version 4.3.4 or later to compile.
+
+Simply run
+
+	qmake
+	
+to generate a Makefile or build project for your platform. On Mac, it might be useful
+to use the macx-g++ build system if you don't use XCode much.
+
+	qmake -spec macx-g++
+	
+If you want to generate a Visual C++ Project, use
+
+	qmake -t vcapp
+	
+This also works for the latest Visual C++ Express Edition (2008 at the time of this writing).
+
+Build the application with your compiler. In Windows, use nmake for command line builds.
+

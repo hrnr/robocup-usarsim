@@ -147,10 +147,10 @@ function String getPosAll()
 	outString = "POSITIONS {Robots " $ len $ "}";
 	for (i = 0; i < len; i++)
 	{
+		vehicle = USARVehicle(UsarGame.botList[i].Pawn);
 		outString @= "{Name " $ UsarGame.botList[i].PlayerReplicationInfo.PlayerName;
 		outString @= "Location " $
-			class'UnitsConverter'.static.Str_LengthVectorFromUU(UsarGame.botList[i].Pawn.Location);
-		vehicle = USARVehicle(UsarGame.botList[i].Pawn);
+			class'UnitsConverter'.static.Str_LengthVectorFromUU(vehicle.CenterItem.Location);
 		if (vehicle.GetBatteryLife() > 0)
 			outString @= "BatteryEmpty False}";
 		else

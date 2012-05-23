@@ -1,0 +1,225 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>614</width>
+    <height>573</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="spacing" >
+    <number>0</number>
+   </property>
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" native="1" name="widget" >
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Listen on port:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>portEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="portEdit" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QCheckBox" name="loggingCheck" >
+        <property name="text" >
+         <string>Enable Logging</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QPushButton" name="startStopButton" >
+        <property name="text" >
+         <string>Start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>Propagation Model:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>chooseModelBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QComboBox" name="chooseModelBox" />
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="configureModelButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Configure</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" native="1" name="widget_2" >
+     <layout class="QGridLayout" >
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="filterIncomingEdit" />
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>Connected Robots</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Ports for incoming connections</string>
+        </property>
+        <property name="buddy" >
+         <cstring>filterIncomingEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="clearFilterIncomingButton" >
+        <property name="text" >
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3" >
+       <widget class="QTextEdit" name="logWindow" >
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <widget class="QTableView" name="incomingView" />
+      </item>
+      <item row="5" column="1" colspan="2" >
+       <widget class="QTableView" name="establishedView" />
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLineEdit" name="filterEstablishedEdit" />
+      </item>
+      <item row="4" column="2" >
+       <widget class="QPushButton" name="clearFilterEstablishedButton" >
+        <property name="text" >
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Established connections</string>
+        </property>
+        <property name="buddy" >
+         <cstring>filterEstablishedEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="5" row="1" column="0" >
+       <widget class="QListView" name="connectedView" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="baseSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>portEdit</tabstop>
+  <tabstop>chooseModelBox</tabstop>
+  <tabstop>startStopButton</tabstop>
+  <tabstop>configureModelButton</tabstop>
+  <tabstop>filterIncomingEdit</tabstop>
+  <tabstop>clearFilterIncomingButton</tabstop>
+  <tabstop>filterEstablishedEdit</tabstop>
+  <tabstop>clearFilterEstablishedButton</tabstop>
+  <tabstop>incomingView</tabstop>
+  <tabstop>establishedView</tabstop>
+  <tabstop>logWindow</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>clearFilterEstablishedButton</sender>
+   <signal>clicked()</signal>
+   <receiver>filterEstablishedEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>543</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>475</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clearFilterIncomingButton</sender>
+   <signal>clicked()</signal>
+   <receiver>filterIncomingEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>543</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>473</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
