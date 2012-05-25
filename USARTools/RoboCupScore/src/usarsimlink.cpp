@@ -2,7 +2,7 @@
 #include <QTimer>
 
 usarsimlink::usarsimlink(QString IP,int port,QObject *parent) :
-        QObject(parent)
+    QObject(parent)
 {
     tcpSocket=new QTcpSocket(this);
     tcpSocket->connectToHost(IP,port);

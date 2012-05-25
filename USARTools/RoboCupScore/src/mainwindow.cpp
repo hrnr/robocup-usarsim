@@ -6,8 +6,8 @@
 #include <QString>
 #include <QFile>
 MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow),time(0)
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),time(0)
 {
 
     ui->setupUi(this);
@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this,SIGNAL(updateScore()),this,SLOT(updateScore_slot()));
     connect(this,SIGNAL(changeState(RunMode)),this,SLOT(on_changeState(RunMode)));
     emit changeState(MainWindow::STOP);
+    this->threshold=ui->txtThreshold->text().toInt();
     QIcon ZInico(":/zoom_in.png");
     ui->btnZoom->setIcon(ZInico);
     QIcon ZOutico(":/zoom_out.png");
@@ -91,6 +92,7 @@ void MainWindow::updateditems(QVector<UsarItem *> items)
         if (typeid(**iter).name()==typeid(victim).name())
         {
             victim* v=dynamic_cast<victim*>(*iter);
+            v->setAcceptanceThreshold(this->threshold);
             QMap<QString,victim*>::iterator Olditer=victims.find(v->name);
             if(Olditer==victims.end())
             {

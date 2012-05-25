@@ -1,7 +1,7 @@
 #include "robot.h"
 
 Robot::Robot(QString Name,double x,double y,double z,double ox,double oy,double oz,QGraphicsItem* parent) :
-        UsarItem(Name,x,y,z,ox,oy,oz,parent),robot(":/robot.png")
+    UsarItem(Name,x,y,z,ox,oy,oz,parent),robot(":/robot.png")
 {
 
 

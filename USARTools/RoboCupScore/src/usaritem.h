@@ -29,7 +29,7 @@ public slots:
 protected:
     void paint(QPainter* painter,const QStyleOptionGraphicsItem* options,QWidget* widget);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
+    int scale;
 };
 
 #endif // USARITEM_H
