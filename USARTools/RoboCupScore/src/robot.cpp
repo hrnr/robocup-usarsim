@@ -3,7 +3,7 @@
 Robot::Robot(QString Name,double x,double y,double z,double ox,double oy,double oz,QGraphicsItem* parent) :
     UsarItem(Name,x,y,z,ox,oy,oz,parent),robot(":/robot.png")
 {
-
+    log=new logger(Name,this);
 
 }
 
@@ -29,9 +29,17 @@ Robot::~Robot()
 
 double Robot::Score(const victim& victim)
 {
-    return measureDistance(victim);
+    if(abs((z-victim.x)*(z-victim.z))<Z_HEIGHT)
+        return measureDistance(victim);
+    else
+        return std::numeric_limits<double>::max();
 }
+void Robot::RecordVictim(const victim& victim)
+{
+    log->write(victim.name);
+}
+
 double Robot::measureDistance(const UsarItem& item)
 {
-    return sqrt((x-item.x)*(x-item.x)+(y-item.y)*(y-item.y)/*+(z-item.x)*(z-item.z)*/);
+    return sqrt((x-item.x)*(x-item.x)+(y-item.y)*(y-item.y));
 }

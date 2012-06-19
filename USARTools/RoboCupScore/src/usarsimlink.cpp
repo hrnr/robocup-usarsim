@@ -49,7 +49,7 @@ void usarsimlink::pendingDataToRead()
                 t=new Robot(paramlst.at(1),paramlst.at(3).toDouble(),paramlst.at(4).toDouble(),paramlst.at(5).toDouble(),paramlst.at(6).toDouble(),paramlst.at(7).toDouble(),paramlst.at(8).toDouble());
                 items.push_back(t);
             }
-            else if(paramlst.at(2).contains("KAsset",Qt::CaseInsensitive)||paramlst.at(2).contains("FemaleVictim",Qt::CaseInsensitive))
+            else if(paramlst.at(2).contains("KAsset",Qt::CaseInsensitive)||paramlst.at(2).contains("FemaleVictim",Qt::CaseInsensitive)||paramlst.at(2).contains("MaleVictim",Qt::CaseInsensitive))
             {
 
                 t=new victim(paramlst.at(1),paramlst.at(3).toDouble(),paramlst.at(4).toDouble(),paramlst.at(5).toDouble(),paramlst.at(6).toDouble(),paramlst.at(7).toDouble(),paramlst.at(8).toDouble());

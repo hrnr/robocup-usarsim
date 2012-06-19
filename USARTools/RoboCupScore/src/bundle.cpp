@@ -69,5 +69,9 @@ QRectF bundle::boundingRect() const
 }
 void bundle::setCompleted(bool res)
 {
-    vict->setRescued(res);
+    if(res==true)
+    {
+        vict->setRescued(res);
+        robot->RecordVictim(*vict);
+    }
 }

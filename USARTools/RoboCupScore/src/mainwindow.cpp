@@ -137,7 +137,7 @@ void MainWindow::updateditems(QVector<UsarItem *> items)
 #ifdef DEBUG
                 std::cout<<"INFO: Score between "<<(*rIter)->name.toStdString()<<" and "<<(*vIter)->name.toStdString()<<" is "<<nScore<<std::endl;
 #endif
-                if(nScore<score)
+                if(nScore<=score)
                 {
                     score=nScore;
                     nRobot=rIter.value();
