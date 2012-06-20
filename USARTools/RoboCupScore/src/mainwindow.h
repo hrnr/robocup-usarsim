@@ -11,7 +11,7 @@
 #include <QTimer>
 #include <QMap>
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow
