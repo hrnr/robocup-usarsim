@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network plugin
 
 TARGET = Score
 TEMPLATE = app
@@ -16,14 +16,16 @@ SOURCES += main.cpp\
     robot.cpp \
     usaritem.cpp \
     victim.cpp \
-    bundle.cpp
+    bundle.cpp \
+    logger.cpp
 
 HEADERS  += mainwindow.h \
     usarsimlink.h \
     robot.h \
     usaritem.h \
     victim.h \
-    bundle.h
+    bundle.h \
+    logger.h
 
 FORMS    += mainwindow.ui
 

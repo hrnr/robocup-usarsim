@@ -1,7 +1,7 @@
 #include "usaritem.h"
 #include <QToolTip>
 UsarItem::UsarItem(QString Name,double x,double y,double z,double ox,double oy,double oz,QGraphicsItem* parent) :
-        QGraphicsItem(parent),x(x),y(y),z(z),ox(ox),oy(oy),oz(oz),name(Name),binded(false)
+    QGraphicsItem(parent),x(x),y(y),z(z),ox(ox),oy(oy),oz(oz),name(Name),binded(false),scale(50)
 {
 
 }
@@ -29,7 +29,7 @@ void UsarItem::clearFlag()
 
 void UsarItem::paint(QPainter* painter,const QStyleOptionGraphicsItem* options,QWidget* widget)
 {
-    this->setPos(this->x*20,this->y*20);
+    this->setPos(this->x*scale-boundingRect().width()/2,this->y*scale-boundingRect().height()/2);
 }
 void UsarItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
