@@ -5,7 +5,7 @@ class ToolChanger extends Effector placeable config(USAR);
 
 var bool hasItem;
 var int attachIndex;
-var Item attachedItem;
+var Effector attachedEffector;
 //how far an effector can be from the toolchanger before the attachment fails
 var config float positionTolerance;
 //how far an item can be away from the toolchanger's rotation before the attachment fails
@@ -34,18 +34,19 @@ function String Set(String opcode, String args)
 		self.Location + 2 * class'UnitsConverter'.static.LengthToUU(positionTolerance) * vector(self.Rotation), 
 		self.Location, true);
 		activeEffector = None;
-		if(traceActor != None && traceActor.isA('Effector')) // make sure the trace hasn't hit a brush
+		if(traceActor != None && traceActor.isA('PhysicalItem')) // make sure the trace hasn't hit a brush
 		{
 			if(bDebug)
 				DrawDebugLine(self.Location, HitLocation, 0, 255, 0, true);
-			activeEffector = Effector(traceActor);
 		}
 		else if(bDebug)
 		{
 			DrawDebugLine(self.Location, self.Location + 2 * class'UnitsConverter'.static.LengthToUU(positionTolerance) * 
 			vector(self.Rotation), 255, 0, 0, true);
 		}
-		if(activeEffector != None) 
+		//since the trace will hit a physical item, go through the actors based on it to find the actual effector item
+		//if an effector has no parent, but is based on a physical item, then it will attach
+		foreach traceActor.BasedActors(class 'Effector', activeEffector)
 		{
 			//find distance from toolchanger
 			distance = VSize(self.Location - activeEffector.Location);
@@ -73,7 +74,7 @@ function String Set(String opcode, String args)
 					Platform.Parts.AddItem(activeEffector);
 					
 					hasItem = true;
-					attachedItem = activeEffector;
+					attachedEffector = activeEffector;
 					return "OK";
 				}
 			}
@@ -81,10 +82,10 @@ function String Set(String opcode, String args)
 	} else if(Caps(opcode) == "OPEN" && hasItem)
 	{
 		//drop the attached item
-		if(attachedItem != None)
+		if(attachedEffector != None)
 		{
 			//remove item from list of parts
-			attachedItem.detachItem();
+			attachedEffector.detachItem();
 			Platform.Parts.Remove(attachIndex, 1);
 			
 			hasItem = false;
