@@ -44,7 +44,7 @@ public class SliderControls {
     private SliderPanel slidePanel;
     private JFrame frame;
     
-    private String configFile="src/SliderController.ini";
+    private String configFile="SliderController.ini";
 
     //Declaration of Config Variables
     private int port;
@@ -59,11 +59,8 @@ public class SliderControls {
         frame = new JFrame("Slider Controls");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new ClosingOperation());
-        panel = new InputPanel();
-        frame.getContentPane().add(panel);
-        panel.getButton().addActionListener(new SendPressed());
-        frame.pack();
-        frame.show();
+        resetInput();
+        frame.setVisible(true);
     }
 
     private class ClosingOperation implements WindowListener{
@@ -89,13 +86,28 @@ public class SliderControls {
             // Set the variables from the configuration file
             configure();
             slidePanel = new ActuatorSliderPanel(panel.getClassName(),panel.getLocX(),panel.getLocY(),panel.getLocZ(),panel.getRotR(),panel.getRotP(),panel.getRotW(),precision,host,port);
+            ((ActuatorSliderPanel)slidePanel).getResetButton().addActionListener( new ActionListener()
+            		{
+						public void actionPerformed(ActionEvent e) {
+							slidePanel.closeSocket();
+							frame.getContentPane().removeAll();
+							resetInput();
+						}
+            		});
             frame.getContentPane().removeAll();
             frame.getContentPane().add(slidePanel);
             frame.pack();
-            frame.show();
+            frame.setVisible(true);
         }
     }
-    
+    private void resetInput()
+    {
+    	panel = new InputPanel();
+        frame.getContentPane().add(panel);
+        panel.getButton().addActionListener(new SendPressed());
+        
+        frame.pack();
+    }
     // Method to set all of the configuration variables based on the SoundServer.ini file
     private void configure(){
         try{
