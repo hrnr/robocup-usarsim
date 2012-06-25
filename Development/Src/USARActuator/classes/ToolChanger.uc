@@ -100,6 +100,16 @@ simulated function AttachItem()
 	super.AttachItem();
 	CenterItem.SetHidden(!bDebug);
 }
+
+// Gets data from this gripper
+function String GetData()
+{
+	if (!hasItem)
+		return "{Open}";
+	else
+		return "{Closed}";
+}
+
 defaultproperties
 {
 	//phantom 'body' item to attach an actuator to
