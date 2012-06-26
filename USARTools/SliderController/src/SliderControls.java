@@ -94,11 +94,26 @@ public class SliderControls {
 							resetInput();
 						}
             		});
+            Thread t = new Thread(new DisconnectThread(slidePanel, new Disconnector()),
+            		"USARSim message thread");
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.setDaemon(true);
+            t.start();
+            
             frame.getContentPane().removeAll();
             frame.getContentPane().add(slidePanel);
             frame.pack();
             frame.setVisible(true);
         }
+    }
+    private class Disconnector implements DisconnectListener
+    {
+		public void onDisconnect() {
+			slidePanel.closeSocket();
+			frame.getContentPane().removeAll();
+			resetInput();
+		}
+    	
     }
     private void resetInput()
     {

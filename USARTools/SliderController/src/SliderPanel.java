@@ -30,4 +30,20 @@ public class SliderPanel extends JPanel {
             System.out.println("IOException thrown in SliderPanel: " + e.getMessage());
         }
     }
+    //attempt to read a line coming in over the socket (and ignores it).
+    //returns true if the line is not null.
+    public boolean readInputLine()
+    {
+    	String result = null;
+    	try
+    	{
+    		result = in.readLine();
+    	}catch(IOException e)
+    	{
+    		return false;
+    	}
+    	if(result == null)
+    		return false;
+    	return true;
+    }
 }
