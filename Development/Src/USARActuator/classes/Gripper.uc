@@ -18,16 +18,16 @@ function String GetConfData()
 	local String outStr;
 	
 	outStr = super.GetConfData();
-	return outStr $ " {Opcode Grip} {MaxVal 1} {MinVal 0}";
+	return outStr $ " {Opcode Grip} {MaxVal 1} {MinVal 0} {Opcode Close} {Opcode Open}";
 }
 
 // Gets data from this gripper
 function String GetData()
 {
 	if (IsOn == 0)
-		return "{Open}";
+		return "{Status OPEN}";
 	else
-		return "{Closed}";
+		return "{Status CLOSED}";
 }
 
 // Sets a client parameter of this Item

@@ -147,12 +147,7 @@ function String GetConfData() {
 			"} {MaxTorque " $ ji.MaxForce $ "} {MinValue " $ ji.Spec.GetMin() $
 			"} {MaxValue " $ ji.Spec.GetMax() $ "}";
 	}
-	// Account for contained items
-	for (i = 0; i < Parts.Length; i++)
-	{
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ " " $ Parts[i].GetConfData();
-	}
+	
 	return outStr;
 }
 
@@ -160,12 +155,17 @@ function String GetConfData() {
 function String GetGeneralConfData(String iType, String iName)
 {
 	local String outStr;
-	
-	// Look for items
-	outStr = "";
-	
-	if (isType(iType) && (iName == "" || isName(iName)))
-		outStr = outStr $ " " $ GetConfData();
+	local int i;
+	// Account for contained items
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
+		{
+			outStr = outStr $ " " $ Parts[i].GetConfData();
+		}
+		if (Parts[i].isA('Actuator'))
+				outStr = outStr $ Actuator(Parts[i]).GetGeneralConfData(iType, iName);
+	}
 	return outStr;
 }
 
@@ -173,12 +173,17 @@ function String GetGeneralConfData(String iType, String iName)
 function String GetGeneralGeoData(String iType, String iName)
 {
 	local String outStr;
-	
-	// Look for items
-	outStr = "";
-
-	if (isType(iType) && (iName == "" || isName(iName)))
-		outStr = outStr $ " " $ GetGeoData();
+	local int i;
+	// Account for contained items
+	for (i = 0; i < Parts.Length; i++)
+	{
+		if (Parts[i].isType(iType) && (iName == "" || Parts[i].isName(iName)))
+		{
+			outStr = outStr $ " " $ Parts[i].GetGeoData();
+		}
+		if (Parts[i].isA('Actuator'))
+				outStr = outStr $ Actuator(Parts[i]).GetGeneralGeoData(iType, iName);
+	}
 	return outStr;
 }
 
@@ -283,13 +288,6 @@ function String GetGeoData()
 		}
 		outStr = outStr $ class'UnitsConverter'.static.UUQuatToVector(adjustedRotation) $ "}";
 	}
-	// Account for contained items
-	/*
-	aba
-	for (i = 0; i < Parts.Length; i++)
-		if (Parts[i].isA('Actuator'))
-			outStr = outStr $ " " $ Parts[i].GetGeoData();
-			*/
 	return outStr;
 }
 
@@ -463,7 +461,6 @@ reliable server function SetLinkTarget(int link, float value)
 {
 	local array<float> target;
 	local int i, len;
-	
 	// Check that link is within range (move reference to adapt)
 	len = JointItems.Length;
 	if (link >= 0 && link < len)

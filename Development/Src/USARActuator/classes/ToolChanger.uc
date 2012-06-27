@@ -100,14 +100,23 @@ simulated function AttachItem()
 	super.AttachItem();
 	CenterItem.SetHidden(!bDebug);
 }
-
+// Gets configuration data from the gripper
+function String GetConfData()
+{
+	local String outStr;
+	
+	outStr = super.GetConfData();
+	return outStr $ "{PositionTolerance "$ positionTolerance $"} {AngleTolerance " $ angleTolerance $" {Opcode Close} {Opcode Open}";
+}
 // Gets data from this gripper
 function String GetData()
 {
 	if (!hasItem)
-		return "{Open}";
+		return "{Status OPEN}";
 	else
-		return "{Closed}";
+	{
+		return "{Status CLOSED}" $ "{Tool " $ attachedEffector.ItemType $"}";
+	}
 }
 
 defaultproperties
