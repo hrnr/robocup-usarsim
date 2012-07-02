@@ -38,6 +38,7 @@ import javax.swing.event.ChangeListener;
 
 public class ActuatorSliderPanel extends SliderPanel {
 
+	private JButton resetButton;
     private int numBones, multiplier;
     private ArrayList<ActuatorControl> controllers;
     private LinkSliderPanel[] boneSliders;
@@ -103,6 +104,11 @@ public class ActuatorSliderPanel extends SliderPanel {
             cmdPanel.add(button);
             c.gridy = numBones + 2;
             this.add(cmdPanel, c);
+            
+            resetButton = new JButton();
+            resetButton.setText("Disconnect");
+            c.gridy = numBones + 3;
+            this.add(resetButton, c);
         }
         catch(UnknownHostException e){
             System.out.println("Bad host");
@@ -114,7 +120,10 @@ public class ActuatorSliderPanel extends SliderPanel {
         }
 
     }
-
+    public JButton getResetButton()
+    {
+    	return resetButton;
+    }
     // Sends a message to get the configuration data of the arm
     private String getConf(){
         String result="";

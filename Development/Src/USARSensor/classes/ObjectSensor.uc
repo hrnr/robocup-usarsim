@@ -108,20 +108,27 @@ function String GetData()
 		if(hit != None && hitActors.Find(hit) == INDEX_NONE)
 		{
 			hitActors.AddItem(hit);
-			if(StaticMeshActor(hit) != None)
+			if(mat == None && StaticMeshActor(hit) != None)
 			{
 				for(c = 0;c<StaticMeshActor(hit).StaticMeshComponent.GetNumElements();c++)
 				{
 					mat = Material(StaticMeshActor(hit).StaticMeshComponent.GetMaterial(c));
 					if(mat != None && hitMaterials.Find(mat) == INDEX_NONE)
+					{
+						//just use the first material found
 						hitMaterials.AddItem(mat);
+						break;
+					}
 				}
+			}else
+			{
+				hitMaterials.AddItem(mat);
 			}
-		} else if(hit != None)
+		}/* else if(hit != None)
 		{
 			if(mat != None && hitMaterials.Find(mat) == INDEX_NONE)
 				hitMaterials.AddItem(mat);
-		}
+		}*/ //ignore objects with multiple materials (for now)
 		
 	}
 	packetAppend = "{Name " $ ItemName $ "}";
@@ -130,11 +137,15 @@ function String GetData()
 		packetAppend $= " {Object "$string(hitActors[i].Tag)$"}"$
 									"{Location "$string(class'UnitsConverter'.static.LengthVectorFromUU(hitActors[i].Location))$"}"$
 									"{Orientation "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}";
+		if(hitMaterials[i] != None)
+			packetAppend $= "{Material "$hitMaterials[i].Name$"}";
+		else
+			packetAppend $= "{Material None}";
 	}
-	for(i = 0;i<hitMaterials.Length;i++)
+	/*for(i = 0;i<hitMaterials.Length;i++)
 	{
 		packetAppend $= " {Material "$ string(hitMaterials[i].Name) $"}";
-	}
+	}*/
 	return packetAppend;
 }
 defaultproperties

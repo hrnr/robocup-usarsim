@@ -63,7 +63,12 @@ function Operate(bool on)
 simulated function SendMisPkg()
 {
 }
-
+simulated function ClientTimer()
+{
+	// if the effector isn't attached to the robot, then don't report any data
+	if(hasParent)
+		super.ClientTimer();
+}
 defaultproperties
 {
 	IsOn=0
