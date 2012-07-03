@@ -34,8 +34,6 @@ var rotator OriginalRotation;
 var array<Part> PartList;
 // Array storing all active parts on the robot
 var array<Item> Parts;
-//Array storing all dropped parts on the robot
-var array<Item> offParts;
 
 // Pass actuator messages to the platform
 simulated function AttachItem()
@@ -508,6 +506,10 @@ reliable server function SetupItem(SpecItem desc)
 		{
 			it.SetBase(self);
 		}
+		if(it.isA('Effector'))
+		{
+			Effector(it).parentActuator = self;
+		}
 		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);
@@ -577,7 +579,6 @@ reliable server function SetupPart(Part part)
 	local PhysicalItem it;
 	local vector spawnLocation;
 	local rotator spawnRotation;
-	
 	// Determine start location
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;

@@ -71,6 +71,7 @@ function String Set(String opcode, String args)
 				{
 					//add item to list of robot parts
 					attachIndex = Platform.Parts.Length;
+					activeEffector.parentActuator = self;
 					Platform.Parts.AddItem(activeEffector);
 					
 					hasItem = true;
@@ -106,7 +107,7 @@ function String GetConfData()
 	local String outStr;
 	
 	outStr = super.GetConfData();
-	return outStr $ "{PositionTolerance "$ positionTolerance $"} {AngleTolerance " $ angleTolerance $" {Opcode Close} {Opcode Open}";
+	return outStr $ "{PositionTolerance "$ positionTolerance $"} {AngleTolerance " $ angleTolerance $"} {Opcode Close} {Opcode Open}";
 }
 // Gets data from this gripper
 function String GetData()
