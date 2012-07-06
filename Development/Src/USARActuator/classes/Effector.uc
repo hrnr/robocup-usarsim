@@ -38,7 +38,7 @@ function String GetGeoData()
 		linkIndex = parentActuator.FindParentIndex(Item(Base));
 		if(linkIndex != -1)
 		{
-			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - parentActuator.Parts[linkIndex].Location);
+			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - parentActuator.JointItems[linkIndex].Child.Location);
 			mountString = mountString $ "{Link "$(linkIndex+1)$"}";
 		}else
 			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - parentActuator.CenterItem.Location);

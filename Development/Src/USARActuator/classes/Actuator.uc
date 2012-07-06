@@ -34,6 +34,8 @@ var rotator OriginalRotation;
 var array<Part> PartList;
 // Array storing all active parts on the robot
 var array<Item> Parts;
+//The offset for the tooltip of this actuator
+var config vector TipOffset;
 
 // Pass actuator messages to the platform
 simulated function AttachItem()
@@ -256,7 +258,7 @@ function String GetGeoData()
 	
 	// Mount point
 	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
-	
+	ji = None;
 	// Iterate through joints
 	for (i = 0; i < JointItems.Length; i++)
 	{
@@ -266,10 +268,10 @@ function String GetGeoData()
 		if (parent >= 0)
 			pji = JointItems[parent];
 		else
-			{
+		{
 			LogInternal("Actuator: No parent ( " $ parent $ ") for link " $ i + 1);
 			pji = None;
-			}
+		}
 		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ (parent +1 )$ "} {Location ";
 		// Calculate location relative to parent
 		adjustedLocation = GetJointOffset(ji.Spec);
@@ -286,6 +288,8 @@ function String GetGeoData()
 		}
 		outStr = outStr $ class'UnitsConverter'.static.UUQuatToVector(adjustedRotation) $ "}";
 	}
+	if(ji != None)
+		outStr = outStr $ "{Tip " $ TipOffset $ "}";
 	return outStr;
 }
 
