@@ -2,7 +2,7 @@ class WCBoxLarge extends WCObject placeable;
 
 defaultproperties
 {
-	Mesh=StaticMesh'WCObjectPkg.HeavyBox'
-	Mass = 5.0
-	Name="WCLargeBox"
+	Mesh=StaticMesh'WCObjectPkg.BoxLarge'
+	Mass = 1.0
+	Name="WCBoxLarge"
 }

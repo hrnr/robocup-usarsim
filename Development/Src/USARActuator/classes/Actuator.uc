@@ -510,10 +510,7 @@ reliable server function SetupItem(SpecItem desc)
 		{
 			it.SetBase(self);
 		}
-		if(it.isA('Effector'))
-		{
-			Effector(it).parentActuator = self;
-		}
+		it.directParent = self;
 		it.SetHardAttach(true);
 		// Initialize item
 		it.init(desc.ItemName, Platform);

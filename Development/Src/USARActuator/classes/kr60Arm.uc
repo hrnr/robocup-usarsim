@@ -68,8 +68,8 @@ defaultproperties
 		Child=Joint2
 		Damping=100
 		MaxForce=600
-		LimitLow=-3.288
-		LimitHigh=3.288
+		LimitLow=-3.14//-3.288
+		LimitHigh=3.14//3.288
 		Offset=(X=0,Y=0,Z=-.972)
 		Direction=(x=3.1415,y=0,z=0)
 //		InverseMeasureAngle=true
@@ -107,8 +107,8 @@ defaultproperties
 		Child=Joint5
 		Damping=10
 		MaxForce=100
-		LimitLow=-6.108
-		LimitHigh=6.108
+		LimitLow=-3.14//-6.108
+		LimitHigh=3.14//6.108
 		Offset=(X=1.0,Y=0,Z=-2.172)
 		Direction=(x=-1.571,y=0,z=-1.571)
 		InverseMeasureAngle=true
@@ -135,8 +135,8 @@ defaultproperties
 		MaxForce=25
 		Offset=(X=1.35,Y=0,Z=-2.19)
 		Direction=(x=1.571,y=0,z=-1.571)
-		LimitLow=-6.108
-		LimitHigh=6.108
+		LimitLow=-3.14//-6.108
+		LimitHigh=3.14//6.108
 		InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint6_Joint7)

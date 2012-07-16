@@ -150,7 +150,7 @@ function String GetData()
 }
 defaultproperties
 {
-	bDebug=true
+	bDebug=false
 	BlockRigidBody=true
 	bCollideActors=true
 	bBlockActors=false
@@ -159,12 +159,4 @@ defaultproperties
 	bCollideWorld=true
 	ItemType = "ObjectSensor";
 	ItemName = "ObjectSensor";
-	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'SICKSensor.lms200.Sensor'
-		CollideActors=true
-		BlockActors=false
-		BlockRigidBody=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-	End Object
 }

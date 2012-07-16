@@ -71,7 +71,7 @@ function String Set(String opcode, String args)
 				{
 					//add item to list of robot parts
 					attachIndex = Platform.Parts.Length;
-					activeEffector.parentActuator = self;
+					activeEffector.directParent = self;
 					Platform.Parts.AddItem(activeEffector);
 					
 					hasItem = true;

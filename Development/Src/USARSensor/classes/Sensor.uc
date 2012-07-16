@@ -40,18 +40,31 @@ simulated function AttachItem()
 function String GetGeoData()
 {
 	local String outstring;
-	
+	local int linkIndex;
+	local String mountstring;
 	// Name and location
-	outstring = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
-	
+	outstring = "{Name " $ ItemName $ "} {Location ";
+	if(directParent != None && directParent.isA('Actuator'))
+	{
+		mountString = "{Mount "$ directParent.ItemName $ "}";
+		linkIndex = Actuator(directParent).FindParentIndex(Item(Base));
+		if(linkIndex != -1)
+		{
+			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Child.Location);
+			mountString = mountString $ "{Link "$(linkIndex+1)$"}";
+		}else
+			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
+	}
+	else
+	{
+		outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location); 
+		mountString = "{Mount " $ String(Platform.Class) $ "}";
+	}
 	// Direction
 	outstring = outstring $ "} {Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation) $ "}";
 	
-	// Mount point
-	outstring = outstring $ "} {Mount " $ String(Platform.Class) $ "}";
-	return outstring;
+	return outstring $ mountString;
 }
 
 // Gets the header of the sensor data

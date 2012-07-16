@@ -2,7 +2,7 @@ class WCBoxSmall extends WCObject placeable;
 
 defaultproperties
 {
-	Mesh=StaticMesh'WCObjectPkg.LightBox'
+	Mesh=StaticMesh'WCObjectPkg.BoxSmall'
 	Mass = 0.5
-	Name="WCSmallBox"
+	Name="WCBoxSmall"
 }
