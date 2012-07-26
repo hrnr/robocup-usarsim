@@ -35,7 +35,7 @@ var array<Part> PartList;
 // Array storing all active parts on the robot
 var array<Item> Parts;
 //The offset for the tooltip of this actuator
-var config vector TipOffset;
+var vector TipOffset;
 
 // Pass actuator messages to the platform
 simulated function AttachItem()

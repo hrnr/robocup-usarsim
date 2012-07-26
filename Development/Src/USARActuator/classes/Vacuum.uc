@@ -53,7 +53,7 @@ simulated function ConvertParam()
 {
 	super.ConvertParam();
 	SuctionLength = class'UnitsConverter'.static.LengthToUU(SuctionLength);
-	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(suctionFrom);
+	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
 }
 
 // Grips an object by fixing it to the end of the arm
@@ -134,7 +134,7 @@ function Operate(bool gripper)
 		// Find axis along which to trace
 		hitLocation = CenterItem.Location;
 		rayAxis = vect(0, 0, 0);
-		rayAxis.X = suctionLength;
+		rayAxis.Z = suctionLength;
 		// Find where how far away the box can be
 		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location + (suctionFrom >> CenterItem.Rotation);
 		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location + (suctionFrom >> CenterItem.Rotation), true);
@@ -160,5 +160,4 @@ defaultproperties
 	GripTarget=None
 	GripPhys=PHYS_None
 	SuctionLength=0.125
-	SuctionFrom = (x=0,y=0,z=0)
 }

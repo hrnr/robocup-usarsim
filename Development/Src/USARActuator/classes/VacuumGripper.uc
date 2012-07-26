@@ -15,5 +15,5 @@ defaultproperties
 	PartList.Add(BodyItem)
 	Body=BodyItem
 	
-	SuctionFrom = (x=.2,y=0,z=0)
+	TipOffset = (x=0,y=0,z=0.2)
 }
