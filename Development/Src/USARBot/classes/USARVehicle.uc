@@ -391,14 +391,16 @@ reliable server function SetupItem(SpecItem desc)
 	local Item it, test;
 	local vector pos;
 	local rotator dir;
+	local Quat resultQuat;
 	
 	// Creates a new item of the specified class
 	pos = class'UnitsConverter'.static.LengthVectorToUU(desc.Position);
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
 	pos = pos >> OriginalRotation;
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(dir));
 	// Create item actor
 	it = Item(Spawn(desc.ItemClass, self, name(desc.ItemName), OriginalLocation + pos,
-		OriginalRotation + dir));
+		QuatToRotator(resultQuat)));
 	if (it == None)
 		LogInternal("USARVehicle: Failed to spawn attachment: " $ desc.ItemName);
 	else
@@ -452,6 +454,7 @@ reliable server function SetupJoint(Joint jt)
 	local JointItem ji;
 	local vector spawnLocation;
 	local rotator spawnRotation;
+	local Quat resultQuat;
 	
 	// Create instance to store actual joint parameters
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Direction);
@@ -459,9 +462,10 @@ reliable server function SetupJoint(Joint jt)
 	// that states that the Z axis (in this case the SAE z axis pointing down) is the axis
 	// of revolution
 	spawnRotation = class'Utilities'.static.rTurn(spawnRotation, rot(16384, 0, 0));
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(SpawnRotation));
 	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
-	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
-		spawnRotation);
+	
+	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, QuatToRotator(resultQuat));
 	if (ji == None)
 		LogInternal("USARVehicle: Failed to realize joint " $ jt.Name);
 	else
@@ -504,12 +508,13 @@ reliable server function SetupPart(Part part)
 	local PhysicalItem it;
 	local vector spawnLocation;
 	local rotator spawnRotation;
-	
+	local Quat resultQuat;
 	// Determine start location
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(SpawnRotation));
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;
 	it = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
-		OriginalRotation + spawnRotation);
+		QuatToRotator(resultQuat));
 	if (it == None)
 		// Error when creating
 		LogInternal("USARVehicle: Failed to realize part: " $ part.Name);

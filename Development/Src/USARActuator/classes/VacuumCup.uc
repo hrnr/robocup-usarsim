@@ -19,5 +19,5 @@ defaultproperties
 	PartList.Add(BodyItem)
 	Body=BodyItem
 	
-	TipOffset = (x=0, y=0,z=0.09)
+	TipOffset = (x=0, y=0,z=0.04)
 }

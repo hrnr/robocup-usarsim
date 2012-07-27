@@ -111,13 +111,14 @@ simulated function TempRotatePart(JointItem ji, Actor p, rotator angle,
 	out vector savedPosition, out rotator savedRotation)
 {
 	local vector pos;
-	
+	local Quat result;
 	// Save old position and location
 	savedPosition = p.Location;
 	savedRotation = p.Rotation;
 	// Transform position and direction temporarily
 	pos = TransformVectorByRotation(angle, p.Location - ji.Location);
-	p.SetRotation(p.Rotation + angle);
+	result = QuatProduct(QuatFromRotator(angle), QuatFromRotator(p.Rotation));
+	p.SetRotation(QuatToRotator(result));
 	p.SetLocation(pos + ji.Location);
 }
 
