@@ -60,7 +60,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint7
 		Mesh=StaticMesh'KR60.KR60_7'
 		Mass=0.025
-		Offset=(X=1.642,Y=.016,Z=-2.01)
+		Offset=(X=1.642,Y=.01,Z=-2.01)
 	End Object
 	PartList.Add(Joint7)
 	
@@ -134,8 +134,8 @@ defaultproperties
 		Child=Joint7
 		Damping=5
 		MaxForce=25
-		Offset=(X=1.612,Y=0.016,Z=-2.01)
-		Direction=(x=1.683,y=0,z=-1.391)
+		Offset=(X=1.462,Y=0.01,Z=-2.01)
+		Direction=(x=1.571,y=0,z=-1.571)
 		LimitLow=-3.14//-6.108
 		LimitHigh=3.14//6.108
 		InverseMeasureAngle=true
