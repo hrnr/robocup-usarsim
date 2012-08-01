@@ -247,17 +247,33 @@ function String GetGeoData()
 	local int i, parent;
 	local vector adjustedLocation;
 	local quat adjustedRotation;
+	local String mountString;
+	local int linkIndex;
 	
 	// Name and location
-	outStr = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
-	
+	outStr= "{Name " $ ItemName $ "} {Location ";
+	if(directParent != None && directParent.isA('Actuator'))
+	{
+		mountString = "{Mount "$ directParent.ItemName $ "}";
+		linkIndex = Actuator(directParent).FindParentIndex(Item(Base));
+		if(linkIndex != -1)
+		{
+			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location);
+			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
+		}else
+			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
+	}
+	else
+	{
+		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location); 
+		mountString = "{Mount " $ String(Platform.Class) $ "}";
+	}
 	// Direction
 	outStr = outStr $ "} {Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation) $ "}";
 	
-	// Mount point
-	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
+	outStr = outStr $ mountString;
+	
 	ji = None;
 	// Iterate through joints
 	for (i = 0; i < JointItems.Length; i++)
@@ -288,8 +304,7 @@ function String GetGeoData()
 		}
 		outStr = outStr $ class'UnitsConverter'.static.UUQuatToVector(adjustedRotation) $ "}";
 	}
-	if(ji != None)
-		outStr = outStr $ "{Tip " $ TipOffset $ "}";
+	outStr = outStr $ "{Tip " $ (TipOffset) $"}";
 	return outStr;
 }
 
