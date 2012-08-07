@@ -247,17 +247,33 @@ function String GetGeoData()
 	local int i, parent;
 	local vector adjustedLocation;
 	local quat adjustedRotation;
+	local String mountString;
+	local int linkIndex;
 	
 	// Name and location
-	outStr = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
-	
+	outStr= "{Name " $ ItemName $ "} {Location ";
+	if(directParent != None && directParent.isA('Actuator'))
+	{
+		mountString = "{Mount "$ directParent.ItemName $ "}";
+		linkIndex = Actuator(directParent).FindParentIndex(Item(Base));
+		if(linkIndex != -1)
+		{
+			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location);
+			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
+		}else
+			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
+	}
+	else
+	{
+		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location); 
+		mountString = "{Mount " $ String(Platform.Class) $ "}";
+	}
 	// Direction
 	outStr = outStr $ "} {Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation) $ "}";
 	
-	// Mount point
-	outStr = outStr $ "} {Mount " $ String(Platform.Class) $ "}";
+	outStr = outStr $ mountString;
+	
 	ji = None;
 	// Iterate through joints
 	for (i = 0; i < JointItems.Length; i++)
@@ -288,8 +304,7 @@ function String GetGeoData()
 		}
 		outStr = outStr $ class'UnitsConverter'.static.UUQuatToVector(adjustedRotation) $ "}";
 	}
-	if(ji != None)
-		outStr = outStr $ "{Tip " $ TipOffset $ "}";
+	outStr = outStr $ "{Tip " $ (TipOffset) $"}";
 	return outStr;
 }
 
@@ -488,14 +503,16 @@ reliable server function SetupItem(SpecItem desc)
 	local Item it, test;
 	local vector pos;
 	local rotator dir;
+	local Quat resultQuat;
 	
 	// Creates a new item of the specified class
 	pos = class'UnitsConverter'.static.LengthVectorToUU(desc.Position);
 	dir = class'UnitsConverter'.static.AngleVectorToUU(desc.Direction);
 	pos = pos >> OriginalRotation;
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(dir));
 	// Create item actor
 	it = Item(Spawn(desc.ItemClass, self, name(desc.ItemName), OriginalLocation + pos,
-		OriginalRotation + dir));
+		QuatToRotator(resultQuat)));
 	if (it == None)
 		LogInternal("Actuator: Failed to spawn attachment: " $ desc.ItemName);
 	else
@@ -527,6 +544,7 @@ reliable server function JointItem SetupJoint(Joint jt)
 	local JointItem ji;
 	local vector spawnLocation;
 	local rotator spawnRotation;
+	local Quat resultQuat;
 	
 	// Create instance to store actual joint parameters
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(jt.Direction);
@@ -534,9 +552,10 @@ reliable server function JointItem SetupJoint(Joint jt)
 	// that states that the Z axis (in this case the SAE z axis pointing down) is the axis
 	// of revolution
 	spawnRotation = class'Utilities'.static.rTurn(spawnRotation, rot(16384, 0, 0));
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(SpawnRotation));
 	spawnLocation = GetJointOffset(jt) >> OriginalRotation;
-	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, OriginalRotation +
-		spawnRotation);
+	
+	ji = Spawn(class'JointItem', self, '', OriginalLocation + spawnLocation, QuatToRotator(resultQuat));
 	// Find errors early
 	if (ji == None)
 		LogInternal("Actuator: Failed to realize joint " $ jt.Name);
@@ -580,11 +599,13 @@ reliable server function SetupPart(Part part)
 	local PhysicalItem it;
 	local vector spawnLocation;
 	local rotator spawnRotation;
+	local Quat resultQuat;
 	// Determine start location
 	spawnRotation = class'UnitsConverter'.static.AngleVectorToUU(part.Direction);
+	resultQuat = QuatProduct(QuatFromRotator(OriginalRotation), QuatFromRotator(SpawnRotation));
 	spawnLocation = GetPartOffset(part) >> OriginalRotation;
 	it = Spawn(class'PhysicalItem', self, '', OriginalLocation + spawnLocation,
-		OriginalRotation + spawnRotation);
+		QuatToRotator(resultQuat));
 	if (it == None)
 		// Error when creating
 		LogInternal("Actuator: Failed to realize part: " $ part.Name);
@@ -721,4 +742,6 @@ defaultproperties
 	bCollideWorld=false
 	Physics=PHYS_None
 	ItemType="Actuator"
+	
+	TipOffset=(x=0,y=0,z=0)
 }

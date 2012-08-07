@@ -28,7 +28,6 @@ function String GetGeoData()
 	local String outstring;
 	local int linkIndex;
 	local String mountString;
-	local vector rotatedTipOffset;
 	// Name and location
 	outstring = "{Name " $ ItemName $ "} {Location ";
 	if(directParent != None && directParent.isA('Actuator'))
@@ -38,7 +37,7 @@ function String GetGeoData()
 		if(linkIndex != -1)
 		{
 			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location);
-			mountString = mountString $ "{Link "$(linkIndex+1)$"}";
+			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
 		}else
 			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
 	}
@@ -50,8 +49,7 @@ function String GetGeoData()
 	// Direction
 	outstring = outstring $ "} {Orientation " $
 		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation) $ "}";
-	rotatedTipOffset = class'UnitsConverter'.static.LengthVectorFromUU(class'UnitsConverter'.static.LengthVectorToUU(TipOffset) >> Rotation);
-	outstring = outstring $ mountString $ "{Tip " $ (rotatedTipOffset) $"}";
+	outstring = outstring $ mountString $ "{Tip " $ (TipOffset) $"}";
 	
 	return outstring;
 }

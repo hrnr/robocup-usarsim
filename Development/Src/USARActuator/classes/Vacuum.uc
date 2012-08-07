@@ -134,7 +134,8 @@ function Operate(bool gripper)
 		// Find axis along which to trace
 		hitLocation = CenterItem.Location;
 		rayAxis = vect(0, 0, 0);
-		rayAxis.Z = suctionLength;
+		rayAxis.Z = class'UnitsConverter'.static.LengthFromUU(suctionLength);
+		rayAxis = class'UnitsConverter'.static.MeterVectorToUU(rayAxis);
 		// Find where how far away the box can be
 		rayEnd = (rayAxis >> CenterItem.Rotation) + CenterItem.Location + (suctionFrom >> CenterItem.Rotation);
 		hit = Trace(hitLocation, hitNormal, rayEnd, CenterItem.Location + (suctionFrom >> CenterItem.Rotation), true);
@@ -149,7 +150,11 @@ function Operate(bool gripper)
 			GripObject(hit);
 		}
 		if(bDebug)
+		{
+			FlushPersistentDebugLines();
+			DrawDebugLine(CenterItem.Location, CenterItem.Location + (suctionFrom>> CenterItem.Rotation), 0, 255, 0, True);
 			DrawDebugLine(CenterItem.Location + (suctionFrom>> CenterItem.Rotation), rayEnd, 255, 0, 0, true);
+		}
 	}
 }
 

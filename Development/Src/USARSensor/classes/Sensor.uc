@@ -51,7 +51,7 @@ function String GetGeoData()
 		if(linkIndex != -1)
 		{
 			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Child.Location);
-			mountString = mountString $ "{Link "$(linkIndex+1)$"}";
+			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
 		}else
 			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
 	}
