@@ -16,7 +16,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint1
 		Mesh=StaticMesh'KUKA_LWR.Arm_Base'
 		Mass=0.025
-		Offset=(X=0,Y=0,Z=0.007)
+		Offset=(X=0,Y=0,Z=0.000)
 	End Object
 	Body=Joint1
 	PartList.Add(Joint1)
@@ -24,49 +24,49 @@ defaultproperties
 	Begin Object Class=Part Name=Joint2
 		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow'
 		Mass=0.025
-		Offset=(X=0.02,Y=-0.085,Z=-0.29)
+		Offset=(X=0.0,Y=0.00,Z=0.0)
 	End Object
 	PartList.Add(Joint2)
 	
 	Begin Object Class=Part Name=Joint3
 		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow2'
 		Mass=0.025
-		Offset=(X=0.02,Y=-0.085,Z=-1.31)
+		Offset=(X=0.0,Y=0.0,Z=0)
 	End Object
 	PartList.Add(Joint3)
 	
 	Begin Object Class=Part Name=Joint4
-		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow'
+		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow3'
 		Mass=0.025
-		Offset=(X=0.02,Y=-0.085,Z=-1.305)
+		Offset=(X=0.00,Y=0,Z=0)
 	End Object
 	PartList.Add(Joint4)
 	
 	Begin Object Class=Part Name=Joint5
-		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow2'
+		Mesh=StaticMesh'KUKA_LWR.Arm_Elbow4'
 		Mass=0.025
-		Offset=(X=0.02,Y=-0.085,Z=-2.325)
+		Offset=(X=0.0,Y=0.0,Z=0)
 	End Object
 	PartList.Add(Joint5)
 	
 	Begin Object Class=Part Name=Joint6
 		Mesh=StaticMesh'KUKA_LWR.Arm_TopElbow'
 		Mass=0.025
-		Offset=(X=0.00,Y=0,Z=0.005)
+		Offset=(X=0.00,Y=0,Z=0.00)
 	End Object
 	PartList.Add(Joint6)
 	
 	Begin Object Class=Part Name=Joint7
 		Mesh=StaticMesh'KUKA_LWR.Arm_Head'
 		Mass=0.025
-		Offset=(X=0.001,Y=0.001,Z=0.003)
+		Offset=(X=0.0,Y=0.00,Z=0.00)
 	End Object
 	PartList.Add(Joint7)
 	
 	Begin Object Class=Part Name=Joint8
 		Mesh=StaticMesh'KUKA_LWR.Arm_Effector'
 		Mass=0.025
-		Offset=(X=0,Y=0.005,Z=0.002)
+		Offset=(X=0,Y=0.00,Z=0.00)
 	End Object
 	PartList.Add(Joint8)
 	
@@ -77,7 +77,7 @@ defaultproperties
 		MaxForce=700
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
-		Offset=(X=0.02,Y=-0.085,Z=-0.29)
+		Offset=(X=0.0,Y=0.0,Z=-0.12)
 		Direction=(x=3.1415,y=0,z=0)
 //		InverseMeasureAngle=true
 	End Object
@@ -90,7 +90,7 @@ defaultproperties
 		MaxForce=700
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
-		Offset=(X=0.02,Y=-0.085,Z=-0.8)
+		Offset=(X=0.0,Y=0.0,Z=-0.31)
 		Direction=(x=0,y=-1.5708,z=0)
 		//InverseMeasureAngle=true
 	End Object
@@ -103,7 +103,7 @@ defaultproperties
 		MaxForce=700
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
-		Offset=(X=0.02,Y=-0.085,Z=-1.305)
+		Offset=(X=0.0,Y=0.0,Z=-0.52)
 		Direction=(x=0.0,y=0,z=3.1415)
 //		InverseMeasureAngle=true
 	End Object
@@ -116,9 +116,9 @@ defaultproperties
 		MaxForce=700
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
-		Offset=(X=0.02,Y=-0.085,Z=-1.815)
+		Offset=(X=0.0,Y=0,Z=-0.71)
 		Direction=(x=0,y=-1.5708,z=0)
-		InverseMeasureAngle=true
+		//InverseMeasureAngle=true
 	End Object
 	Joints.Add(Joint4_Joint5)
 	
@@ -127,7 +127,7 @@ defaultproperties
 		Child=Joint6
 		Damping=100
 		MaxForce=700
-		Offset=(X=0.02,Y=-0.085,Z=-2.3)
+		Offset=(X=0.00,Y=0.0,Z=-0.92)
 		Direction=(x=0.00,y=3.1415,z=0)
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
@@ -140,7 +140,7 @@ defaultproperties
 		Child=Joint7
 		Damping=100
 		MaxForce=700
-		Offset=(X=-0.1,Y=-0.082, Z=-2.805)
+		Offset=(X=-0.045,Y=0.0, Z=-1.1)
 		Direction=(x=0.00,y=-1.5708,z=0)
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
@@ -153,7 +153,7 @@ defaultproperties
 		Child=Joint8
 		Damping=100
 		MaxForce=700
-		Offset=(X=0.02,Y=-0.082,Z=-2.96)
+		Offset=(X=0.00,Y=0.0,Z=-1.155)
 		Direction=(x=3.1415,y=0,z=0)
 		LimitLow=-3.14159265
 		LimitHigh=3.14159265
