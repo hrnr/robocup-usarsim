@@ -16,6 +16,7 @@ var int PixelsY;
 var int Frame;
 var int FrameCount;
 var bool bSendRangeData;
+var vector HitLoc,HitNor;
 
 simulated function ConvertParam()
 {
@@ -37,14 +38,20 @@ simulated function PostBeginPlay()
 function String GetData()
 {
 	local String rangeData;
+	//local String RJoin;
 	local float range;
 	local int i, j, startY;
 	local rotator turn;
 	local float ResolutionX;
 	local float ResolutionY;
+	//local array<string> RStr;
+	local String ranFS;
+	local String ranIS;
 //	local int rangeCountDebug;
 //	local int debugCounter, debugCounter2;
 	local float FovX_2;
+	local float YCount;
+
 	
 	rangeData = "";
 //	rangeCountDebug = 0;
@@ -52,41 +59,64 @@ function String GetData()
 	rangeData = "{Name " $ ItemName $ "} {Resolution " $ PixelsX $ "," $
 	            PixelsY $ "} {FOV " $ 
 				class'UnitsConverter'.static.Str_AngleFromUU(FovX) $ "," $ class'UnitsConverter'.static.Str_AngleFromUU(FovY) $ "}";
-	if( !bSendRangeData )
-	{
-	   rangeData = rangeData $  " {Frames 0} {Frame 0}";
+    if( !bSendRangeData )
+		{
+	   rangeData $= " {Frames 0} {Frame 0}";
 	   return rangeData;
         }
-
-	rangeData = rangeData $ " {Frames " $ FrameCount $ "} {Frame " $ Frame $
+//    `log("FrameStart");
+	rangeData $= " {Frames " $ FrameCount $ "} {Frame " $ Frame $
 	            "} {Range ";
 	// Top to bottom, left to right, venetian blinds scan
-	startY = -FovY / 2 + FovY * Frame / FrameCount;
+	startY = -FovY / 2 + FovY * (FrameCount - Frame) / FrameCount;
 	ResolutionX = FovX/PixelsX;
 	ResolutionY = FovY/PixelsY;
 //	LogInternal("KinectDepth: FovX " $ FovX $ " ResolutionX: " $ PixelsX);
 //	debugCounter2=0;
 	FovX_2 = FovX/2.;
-	for (i = 0; i < PixelsY/FrameCount; i++)
+    YCount = PixelsY/FrameCount;
+	turn.Pitch = startY + ResolutionY;
+	turn.Yaw = -FovX_2 - ResolutionX;
+	for (i = 0; i < YCount; i++)
 	  {
+	  turn.Pitch -= ResolutionY;
+	  turn.Yaw = -FovX_2 - ResolutionX;
+	  //`log("Val: " $ startY + i*ResolutionY $ "Cos: " $ cos(startY + i*ResolutionY));
+	  //turn.Pitch = startY + i*ResolutionY;
 //	    debugCounter = 0;
 		for (j = 0; j < PixelsX; j++)
 		{
-			turn.Pitch = startY + i*ResolutionY;
-			turn.Yaw = -FovX_2 + j*ResolutionX;
-			curRot = class'Utilities'.static.rTurn(Rotation, turn);
+		turn.Yaw += ResolutionX;
+		//turn.Yaw = -FovX_2 + j*ResolutionX;
+		curRot = class'Utilities'.static.rTurn(Rotation, turn);
 			
-			range = GetRange();
-//			rangeCountDebug++;
-			if (rangeData == "")
-				rangeData = class'UnitsConverter'.static.FloatString(range, 2);
-			else
-				rangeData = rangeData $ "," $ class'UnitsConverter'.static.FloatString(range, 2);
-//			debugCounter++;
+		
+		//range = GetRange();
+		if (Trace(HitLoc, HitNor, Location + MaxRange * vector(curRot), Location, true) == None)
+			range = class'UnitsConverter'.static.LengthFromUU(MaxRange);
+	    else
+	    {
+			range = VSize(HitLoc - Location); // Range in UU 
+			range = class'UnitsConverter'.static.LengthFromUU(range); // Convert to meters
+			range = range*cos(class'UnitsConverter'.static.AngleFromUU(Turn.Yaw))*cos(class'UnitsConverter'.static.AngleFromUU(Turn.Pitch)); //Convert Range to Depth
+		}
+		if(((Frame == 0) && (i == 0) && ((j == 0) || (j == PixelsX-1))) || ((Frame == FrameCount-1) && (i == YCount - 1) && ((j == 0) || (j == PixelsX-1))))
+		{drawDebugLine(Location,HitLoc,0,255,0,true);}
+//			////////rangeCountDebug++;
+			    //////RStr[(i*(PixelsY/FrameCount-1))+j] = class'UnitsConverter'.static.FloatString(range, 2);
+				ranIS = String(int(range));
+				ranFS = String(int((range - int(range)) * 100));
+			    //RStr[(i*(PixelsX))+j] = ranIS $ "." $ ranFS;
+				rangeData $= ranIS $ "." $ ranFS $ ",";
+				////////rangeData $= "," $ class'UnitsConverter'.static.FloatString(range, 2);
+//			///////debugCounter++;
 		}
 //		LogInternal( "Kinect resx: " $ ResolutionX $ " line " $ debugCounter2++ $" elements/line: " $ debugCounter );
 	  }
-	rangeData = rangeData $ "}";
+	//JoinArray(RStr, RJoin,",", true);
+	//`log("Num of Ranges: " $ RStr.length);
+	//rangeData $= RJoin $ "}";
+	rangeData $= "}";
 //	LogInternal("KinectDepth: " $ rangeData );
 	Frame = (Frame + 1) % FrameCount;
 	if (Frame == 0)
@@ -104,6 +134,7 @@ function String GetData()
 //		    " elements), " $ (FrameCount - Frame) *
 //			ScanInterval $ " second(s) left");
 	}
+//	`log("FrameEnd");
 	return rangeData;
 }
 
@@ -113,6 +144,7 @@ function String Set(String opcode, String args)
 	{
 //		SetTimer(ScanInterval, true);
 	        bSendRangeData = true;
+		flushPersistentDebugLines();
 		`log("Starting Kinect scan", ,'Kinect');
 		return "OK";
 	}
@@ -133,12 +165,12 @@ function String GetConfData()
 
 defaultproperties
 {
-	FovY=2.3561925
-	FovX=3.14159
+	FovY=0.7854//2.3561925
+	FovX=1.01226//3.14159
 	Frame=0
-	FrameCount=60
-	PixelsY=480 // number of returns in the y-direction
-	PixelsX=640 // number of returns in the x-direction
+	FrameCount=20
+	PixelsY=240 // number of returns in the y-direction480
+	PixelsX=320 // number of returns in the x-direction640
 	ItemType="RangeImager"
 
 
@@ -149,14 +181,4 @@ defaultproperties
 	bProjTarget=true
 	bCollideWhenPlacing=true
 	bCollideWorld=true
-	
-	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'SICKSensor.lms200.Sensor'
-		CollideActors=true
-		BlockActors=false
-		BlockRigidBody=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-	End Object
-
 }

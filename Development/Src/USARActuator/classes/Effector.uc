@@ -26,17 +26,31 @@ function String GetConfData()
 function String GetGeoData()
 {
 	local String outstring;
-	
+	local int linkIndex;
+	local String mountString;
 	// Name and location
-	outstring = "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location);
-	
+	outstring = "{Name " $ ItemName $ "} {Location ";
+	if(directParent != None && directParent.isA('Actuator'))
+	{
+		mountString = "{Mount "$ directParent.ItemName $ "}";
+		linkIndex = Actuator(directParent).FindParentIndex(Item(Base));
+		if(linkIndex != -1)
+		{
+			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location);
+			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
+		}else
+			outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
+	}
+	else
+	{
+		outstring = outstring $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location); 
+		mountString = "{Mount " $ String(Platform.Class) $ "}";
+	}
 	// Direction
 	outstring = outstring $ "} {Orientation " $
-		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation);
+		class'UnitsConverter'.static.AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation) $ "}";
+	outstring = outstring $ mountString $ "{Tip " $ (TipOffset) $"}";
 	
-	// Mount point
-	outstring = outstring $ "} {Mount " $ String(Platform.Class) $ "}";
 	return outstring;
 }
 

@@ -66,7 +66,7 @@ function float GetRange()
 		DrawDebugLine(Location, HitLocation, 0, 255, 0, true);
 	return range;
 }
-function DoScan(out Actor HitObject, out Material material)
+function DoScan(out Actor HitObject, out Material material, out vector HitLocationOut)
 {
 	local vector HitLocation;
 	local Actor HitActor;
@@ -74,6 +74,7 @@ function DoScan(out Actor HitObject, out Material material)
 	local float range;
 	range = GetRangeRecursive(self, Location, MaxRange, 0.0, 0.00575, HitLocation, HitActor, HitMaterial);
 	
+	HitLocationOut = HitLocation;
 	HitObject = HitActor;
 	material = HitMaterial;
 	if(bDebug)
@@ -88,11 +89,13 @@ function String GetData()
 {	
 	local int i, c;
 	local Actor hit;
+	local vector hitLocation;
 	local rotator turn;
 	local Material mat;
 	local String packetAppend;
 	local array<Actor> hitActors;
 	local array<Material> hitMaterials;
+	local array<vector> hitLocations;
 	if(bDebug)
 		FlushPersistentDebugLines();
 	time = WorldInfo.TimeSeconds;
@@ -104,10 +107,11 @@ function String GetData()
 		if (bPitch)
 			turn.Pitch = i;
 		curRot = class'Utilities'.static.rTurn(Rotation, turn);
-		DoScan(hit, mat);
+		DoScan(hit, mat, hitLocation);
 		if(hit != None && hitActors.Find(hit) == INDEX_NONE)
 		{
 			hitActors.AddItem(hit);
+			hitLocations.AddItem(hitLocation);
 			if(mat == None && StaticMeshActor(hit) != None)
 			{
 				for(c = 0;c<StaticMeshActor(hit).StaticMeshComponent.GetNumElements();c++)
@@ -136,7 +140,8 @@ function String GetData()
 	{
 		packetAppend $= " {Object "$string(hitActors[i].Tag)$"}"$
 									"{Location "$string(class'UnitsConverter'.static.LengthVectorFromUU(hitActors[i].Location))$"}"$
-									"{Orientation "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}";
+									"{Orientation "$string(class'UnitsConverter'.static.AngleVectorFromUU(hitActors[i].Rotation))$"}"$
+									"{HitLoc "$string(class'UnitsConverter'.static.LengthVectorFromUU(hitLocations[i]))$"}";
 		if(hitMaterials[i] != None)
 			packetAppend $= "{Material "$hitMaterials[i].Name$"}";
 		else
@@ -150,7 +155,7 @@ function String GetData()
 }
 defaultproperties
 {
-	bDebug=true
+	bDebug=false
 	BlockRigidBody=true
 	bCollideActors=true
 	bBlockActors=false
@@ -159,12 +164,4 @@ defaultproperties
 	bCollideWorld=true
 	ItemType = "ObjectSensor";
 	ItemName = "ObjectSensor";
-	Begin Object Name=StaticMeshComponent0
-		StaticMesh=StaticMesh'SICKSensor.lms200.Sensor'
-		CollideActors=true
-		BlockActors=false
-		BlockRigidBody=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-	End Object
 }

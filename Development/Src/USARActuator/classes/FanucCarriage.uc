@@ -40,7 +40,7 @@ defaultproperties
 		MaxForce=30
 		LimitLow=-1.5
 		LimitHigh=1.5
-		Offset=(x=0,y=0,z=-1)
+		Offset=(x=0,y=0,z=0)
 		Direction=(x=0,y=1.5707,z=0)
 	End Object
 	Joints.Add(Body_Carriage)

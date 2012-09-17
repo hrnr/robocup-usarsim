@@ -24,7 +24,8 @@ var bool IsOwner;
 var bool hasParent;
 // Robot on which the item is mounted
 var BaseVehicle Platform;
-
+//direct parent of the item (may be None if it is the robot itself)
+var Item directParent;
 
 // Interval between calls to ScanInterval()
 var config float ScanInterval;
@@ -232,5 +233,6 @@ defaultproperties
 	IsOwner=false
 	hasParent = false;
 	ItemType="Item"
+	directParent = None
 	RemoteRole=ROLE_SimulatedProxy
 }
