@@ -56,7 +56,7 @@ function float getNumObsBetweenUULocations(vector v1, vector v2, Actor r1, Actor
 	local bool endReached;
 	
 	if (bDebug)
-		LogInternal("ComServer: Calculating number of obstacles between UU locations");
+	LogInternal("ComServer: Calculating number of obstacles between UU locations");
 	// Start trace through world counting colliding objects
 	ctr = 0;
 	stepSize = 50;
@@ -65,13 +65,17 @@ function float getNumObsBetweenUULocations(vector v1, vector v2, Actor r1, Actor
 	endReached = false;
 	v = v1;
 	prevIt = None;
+
 	while (!endReached)
 	{
 		// Find first collision from v point to end point v2
+
 		it = Trace(hitLoc, hitNorm, v2, v, true);
+
 		if (it == None)
-			break;
-		// If 'it' is different from previous value or distance from start point to collision
+		break;
+
+			// If 'it' is different from previous value or distance from start point to collision
 		// is larger than stepSize, then we found a new collision object
 		if (it != prevIt || VSize(hitLoc - v) > stepSize)
 		{
@@ -79,7 +83,7 @@ function float getNumObsBetweenUULocations(vector v1, vector v2, Actor r1, Actor
 			if (it != r1 && it != r2 && (it.class == class'Brush' ||
 				it.class == class'StaticMeshActor' || it.class == class'BlockingVolume' ||
 				it.class == class'WorldInfo'))
-				ctr++;
+			ctr++;
 		}
 		v = hitLoc + step;
 		if (VSize(v - v1) > maxLength)
@@ -96,7 +100,7 @@ function float getNumObsBetweenUULocations(vector v1, vector v2, Actor r1, Actor
 function float getNumObsBetweenLocations(vector v1, vector v2)
 {
 	if (bDebug)
-		LogInternal("ComServer: calculating number of obstacles between locations");
+	LogInternal("ComServer: calculating number of obstacles between locations");
 	// Convert to UU
 	v1 = class'UnitsConverter'.static.LengthVectorToUU(v1);
 	v2 = class'UnitsConverter'.static.LengthVectorToUU(v2);
@@ -111,23 +115,24 @@ function float getNumObs(String r1, String r2)
 	local float numObs;
 	
 	if (bDebug)
-		LogInternal("ComServer: calculating number of obstacles between robots");
+	LogInternal("ComServer: calculating number of obstacles between robots");
 	UsarGame = BotDeathMatch(WorldInfo.Game);
 	bot1 = UsarGame.GetRobot(r1);
 	if (bot1 == None)
 	{
 		if (bDebug)
-			LogInternal("ComServer: Robot '" $ r1 $ "' not found");
+		LogInternal("ComServer: Robot '" $ r1 $ "' not found");
 		return -1;
 	}
 	bot2 = UsarGame.GetRobot(r2);
 	if (bot2 == None)
 	{
-	    if (bDebug) LogInternal("ComServer: Robot '" $ r2 $ "' not found");
+		if (bDebug) LogInternal("ComServer: Robot '" $ r2 $ "' not found");
 		return -1;
 	}
 	
-	numObs = getNumObsBetweenUULocations(bot1.Pawn.Location, bot2.Pawn.Location,
+	//numObs = getNumObsBetweenLocations(ConvertActorToVector(bot1.Pawn),ConvertActorToVector(bot2.Pawn));
+	numObs = getNumObsBetweenUULocations(ConvertActorToVector(bot1.Pawn), ConvertActorToVector(bot2.Pawn),
 		bot1.Pawn, bot2.Pawn);
 	return numObs;
 }
@@ -141,42 +146,48 @@ function String getPosAll()
 	local String outString;
 	
 	if (bDebug)
-		LogInternal("ComServer: Get position of all bots");
-    UsarGame = BotDeathMatch(WorldInfo.Game);
+	LogInternal("ComServer: Get position of all bots");
+	UsarGame = BotDeathMatch(WorldInfo.Game);
 	len = UsarGame.botList.length;
 	outString = "POSITIONS {Robots " $ len $ "}";
 	for (i = 0; i < len; i++)
 	{
 		vehicle = USARVehicle(UsarGame.botList[i].Pawn);
-		outString @= "{Name " $ UsarGame.botList[i].PlayerReplicationInfo.PlayerName;
+		outString @= "{Name " $ UsarGame.botList[i].BotName;
 		outString @= "Location " $
-			class'UnitsConverter'.static.Str_LengthVectorFromUU(vehicle.CenterItem.Location);
+		class'UnitsConverter'.static.Str_LengthVectorFromUU(vehicle.CenterItem.Location);
 		if (vehicle.GetBatteryLife() > 0)
-			outString @= "BatteryEmpty False}";
+		outString @= "BatteryEmpty False}";
 		else
-			outString @= "BatteryEmpty True}";
+		outString @= "BatteryEmpty True}";
 	}
 	return outString;
 }
 
+function vector ConvertActorToVector(Actor actor)
+{
+	local USARVehicle vehicle;
+	vehicle = USARVehicle(actor);
+	return vehicle.CenterItem.Location;
+}
 // Listens for connections
 function PostBeginPlay()
 {
 	super.PostBeginPlay();
 	LinkMode = MODE_Text;
-    if (!bBound)
-    {
+	if (!bBound)
+	{
 		BindPort(iListenPort);
 		if (bDebug)
-    		LogInternal("ComServerInterface: Listening on port " $ iListenPort);
+		LogInternal("ComServerInterface: Listening on port " $ iListenPort);
 		if (Listen())
-			bBound = true;
+		bBound = true;
 		else
 		{
 			if (bDebug)
-				LogInternal("ComServer: Cannot listen");
+			LogInternal("ComServer: Cannot listen");
 		}
-    }
+	}
 }
 
 // Logs events to the specified file
@@ -194,24 +205,24 @@ function fWCSLogInternal(String x)
 			ComLog.Logf(x);
 		}
 		else
-			LogInternal(x);
+		LogInternal(x);
 	}
 	else
-		ComLog.Logf(x);
+	ComLog.Logf(x);
 }
 
 // Called when a binary message is received
 event ReceivedBinary(int count, byte B[255])
 {
 	if (bDebug)
-		LogInternal("ComServer: Binary message recieved");
+	LogInternal("ComServer: Binary message recieved");
 }
 
 // Logs when a connection is accepted
 event Accepted()
 {
 	if (bDebug)
-		LogInternal("ComServer: Connected to " $ IpAddrToString(RemoteAddr));
+	LogInternal("ComServer: Connected to " $ IpAddrToString(RemoteAddr));
 }
 
 // Cleans up when a connection is closed
@@ -238,7 +249,7 @@ event GainedChild(Actor C)
 	con = ComServerNewCon(C);
 	con.MessageHandler = self;
 	if (bDebug)
-		LogInternal("ComServer: Accepted connection");
+	LogInternal("ComServer: Accepted connection");
 }
 
 // Called when a connection is closed
@@ -248,7 +259,7 @@ event LostChild(Actor C)
 	con = ComServerCon(C);
 	con.MessageHandler = None;
 	if (bDebug)
-		LogInternal("ComServer: Closed connection");
+	LogInternal("ComServer: Closed connection");
 }
 
 defaultproperties

@@ -203,7 +203,7 @@ function BotController GetRobot(String botname)
 	len = botList.length;
 	for (i = 0; i < len; i++)
 	{
-		if (Caps(botname) == Caps(botList[i].PlayerReplicationInfo.PlayerName))
+		if (Caps(botname) == Caps(botList[i].BotName))
 			return botList[i];
 	}
 	return None;
