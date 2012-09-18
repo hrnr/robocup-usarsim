@@ -1,0 +1,178 @@
+<html>
+<head>
+  <title>The lcm-usarsim-proxy</title>
+</head>
+
+
+<h1>The LCM USARSim Proxy</h1>
+<h3>Arnoud Visser, Universiteit van Amsterdam, NL</h3>
+<h3>September 18, 2012</h3>
+
+<h2>Description</h2>
+
+The program <tt>lcm_usarsim_proxy</tt> makes a connection to the simulation environment USARSim, spawns a robot and publishes the sensor-messages to a number of lcm-channels. 
+At the same time the program subscribes to the lcm-channel GAMEPAD, which allow you to drive the robot through the environment.
+
+USARSim is a simulation environment based on the Unreal Engine, which opens a number of tcp-ports to spawn different robot-models as GameBots.
+The program <tt>lcm_usarsim_proxy</tt> makes a connection to both the GamePort 3000 and the ImageServer port 5003. It polls both connections to check if data is available,
+and publishes this data on the lcm-channels POSE, LASER, CAMERA. This lcm-channel are broadcasted in the local subnetwork via the udpm-protocol on port 7667.
+This schema is illustrated in Figure 1.
+<p>
+<img src=CommunicationSchema.png width=400><br>
+<i>Fig. 1: An overview of the communication between the components. </i>
+
+<p>
+Both the lcm-library as the April toolkit contain several modules to record, monitor, inspect and process the information on the lcm-channelss, as for instance t
+he LCM Spy (see <a href=usage>Usage</a>).
+
+
+<h2>Usage</h2>
+<a name=usage>
+
+The <tt>lcm_usarsim_proxy.exe</tt> assumes that on the local machine USARSim is running. USARSim can be started by selecting one of the scripts in <tt>UDK-Release\USARRunMaps</tt>. The program <tt>lcm_usarsim_proxy.exe</tt> can be called without any arguments. In that case a number of default choices are made. The most sensitive argument is <tt>-l</tt>; the start location.
+The default choice is a start position for the script <tt>Robocup2012-Tryout.bat</tt>. Possible start positions differ for every map. A list of positions can be displayed with the following command: <tt>telnet 127.0.0.1:3000</tt> followed by command <tt>getstartposes</tt>. Note that the telnet-client is no longer a default part of Windows7, you should first activate this feature 
+via <tt>Control Panel->Programs and Features->Turn Windows features on or off->telnet-client</tt>.
+
+<p>
+
+This is the list of expected arguments:
+<p>
+<tt>
+-h 127.0.0.1 : host - ip-adress of host where USARSim is running<br>
+-t P3AT : type - the type of this robot<br>
+-n Robot1 : name - the name of this robot<br>
+-l -5.4734,27.8247,1.4720 : location - the location where the robot is spawned<br>
+-r 0.0000,0.0000,-3.4361 : rotation - the rotation of the robot when spawned<br>
+-v 1 : viewport - the tile of the robots' camera in multiview (upperleft=1,2=totheright)<br>
+-w 0 : 2nd viewport - the tile of the robots' 2nd camera in multiview (none=0,upperleft=1,2=totheright)<br>
+-x 2 : CameraTileX - the number of columns of multiview (typically 1,2,3)<br>
+</tt>
+  
+<p>
+  
+When succesfully connected, the console shows the following three lines:
+<p>
+<tt>
+Connected to USARSim at machine 127.0.0.1:3000<br>
+LCM: TTL set to 1.<br>
+Connected to ImageServer at machine 127.0.0.1:5003<br>
+</tt>
+
+If you have installed the rest of the lcm-library, you can inspect the data published on the channels with the command: <tt>java -ea -server lcm.spy.Spy -l udpm://239.255.76.67:7667?ttl=1</tt>. 
+This illustrated in Figure 2:
+<p>
+<img src=LcmSpyP3AT.png height=200>&nbsp;<img src=LcmSpyKenafFishEye.png height=200>&nbsp;<img src=LcmSpyAirRobot.png height=200><br>
+<i>Fig. 2: A screenshots of LcmSpy for a P3AT, Kenaf and AirRobot gamebot. </i>
+
+<h2>Dependencies</h2>
+
+The program is made based on Microsoft's .Net Framework. It references System components from both .Net Framework v2.0 and v3.5.
+ If missing you can find redistributables and SDKs at Microsoft's website. 
+ 
+ <ul>
+<li> <a href=http://www.microsoft.com/en-us/download/details.aspx?id=19988>Microsoft .NET Framework 2.0 Software Development Kit (SDK) (x86)</a>
+<li> <a href=http://www.microsoft.com/en-us/download/details.aspx?id=15354>Microsoft .NET Framework 2.0 Software Development Kit (SDK) (x64)</a>
+<li> <a href=http://www.microsoft.com/en-us/download/details.aspx?id=25150>Microsoft .NET Framework Version 3.5 Service Pack 1 Package (including Version 2 Service Pack 2)</a>
+ </ul>
+ 
+ <h2>Known issues</h2>
+ 
+ <ul>
+ <li>The program <tt>lcm_usarsim_proxy.exe</tt> is a proof of concept. It is a rapid prototype, not optimized for effiency or robustness. See the <a href=#disclaimer>disclaimer</a>.
+ <li>The packaging of larger messages results in a Magic Error. Seems that this is a byte-order issue (big / little endian)
+ inside the lcm-library. Temporary solution is to use the ImageServer with ImageType > 1. So for the moment, don't use ImageType=0 (raw) or ImageType=1 (jpeg - super quality).
+ <li>The GAMEPAD-channel is only tested with <tt>java -ea -server april.util.KeyboardGamepad</tt>. 
+ The keystrokes are quite binary (on / off), but the gamepad_t format is contineous. Currently, the continues values are clipped again with a threshold; the robots are driven with a fixed speed.
+This should be tested with a real gamepad (under Linux). Anyway, controlling with keyboard works fine.
+ <li>The LASER-channel contains no information about the type of laserscanner or the value it uses as max_range. The <tt>LaserPlugin</tt> used by the LcmSpy assumes a fixed value of 75m, which is inappropriate for the Hokuyo laserscanner mounted on the Kenaf (see Fig. 2).
+ <li>The program <tt>lcm_usarsim_proxy.exe</tt> is tested with three mobile robots used inside the RoboCup Rescue Simulation League; P3AT, Kenaf, AirRobot. The UDK-version of USARSim has currently no implementation (yet) of the interface to control the Pan-Tilt of the AirRobot and the flippers of the Kenaf. 
+The program is not (yet) tested for other robots, such as the robot arms (used in the Virtual Manufacturing competition) and the humanoid Nao (used in RoboCup Soccer).
+ <li>This program is made in the .Net languages C# and Visual Basic. It could also have been implemented in one of the other languages provided by the lcm: C, C++, Python, Java. The major reason that it was implemented in C# was the presence of a tested networking module which took care of the connection to USARSim.
+ Also the convertion of image streams is a known asset of .Net. Yet, feel free to reimplement this proxy in another language.
+ </ul>
+ 
+<h2>Documentation</h2>
+
+ <ul>
+ <li><a href=http://sourceforge.net/apps/mediawiki/usarsim/index.php?title=Manual>USARSim Environment</a>
+ <li><a href=http://lcm.googlecode.com/>Lightweight Communications and Marshalling</a>
+ <li><a href=http://april.eecs.umich.edu/wiki/index.php/Main_Page>April Toolkit</a>
+ </ul>
+ 
+ <h2>Installation instructions</h2>
+ 
+ <ul>
+ <li><a href=http://sourceforge.net/apps/mediawiki/usarsim/index.php?title=Installation>USARSim Environment</a>
+ <li><a href=https://code.google.com/p/lcm/wiki/BuildInstructions>Lightweight Communications and Marshalling</a>
+ <li><a href=http://april.eecs.umich.edu/wiki/index.php/Download_and_Installation>April Toolbox</a>.
+ </ul>
+ 
+ To build <tt>lcm_usarsim_proxy.exe</tt>, open <tt>lcm-usarsim-proxy.sln</tt> and build the solution.
+ 
+<h2>Authors</h2>
+
+<ul>
+<li>USARSim: <a href=http://sourceforge.net/apps/mediawiki/usarsim/index.php?title=Contributors>Many contributors</a>
+<li>lcm-dotnet: <a href=http://lcm.googlecode.com/svn/trunk/AUTHORS>C# / .NET port by Jan Hrbácek</a>
+<li>usarsim-dotnet: Bayu Slamet, <a href=http://www.science.uva.nl/~arnoud/>Arnoud Visser</a>, Julian de Hoog
+<li>April: <a href=http://april.eecs.umich.edu/people/ebolson/>Edwin Olson</a>, Ryan D. Morton.
+</ul>
+
+<h2>Origins</h2>
+
+<ul>
+<li>lcm-dotnet: <http://lcm.googlecode.com/svn/trunk/lcm-dotnet/lcm>Rev. 485, July 2010</a>.
+<li>April lcmtypes: <tt>git clone git://april.eecs.umich.edu/home/git/april.git lcmtypes</tt>, June 2011.
+<li>usarsim-dotnet: <a href=svn://u013154.science.uva.nl/Roboresc/2011/competition/Tools>Rev. 2271, April 2012</a>.
+</ul>
+
+<h2>Licences</h2>
+
+<ul>
+<li>USARSim: <a href=http://sourceforge.net/projects/usarsim/>GNU General Public License version 2.0 (GPLv2)</a>
+<li>lcm-dotnet: <a href=http://lcm.googlecode.com/svn/trunk/COPYING>GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999</a>
+<li>usarsim-dotnet <a href=svn://u013154.science.uva.nl/Roboresc/2011/competition/Licence.txt</a>"This product includes software developed by the Amsterdam Oxford
+   Joint Rescue Force (<a href=http://www.jointrescueforce.eu>http://www.jointrescueforce.eu</a>)."</a>
+<li>April:  <tt>git clone git://april.eecs.umich.edu/home/git/april.git doc/LICENSE</tt>: GPLv2 or its successors, February 2010</a>
+</ul>
+
+<h2>Reference</h2>
+
+In papers of research that has become possible thanks to (parts)
+   of this software, appropriate reference should be given. 
+   In case of doubt, use the bibtex as provided here:
+   <p>
+ <tt>  
+   @TechReport{Visser2012lcm,<br>
+	author 		= {Arnoud Visser},<br>
+	institution = {Universiteit van Amsterdam},<br>
+	title  		= {A survey of the architecture of the communication library LCM for the monitoring and control of autonomous mobile robots},<br>
+	month		= {September},<br>
+	year 		= {2012},<br>
+	howpublished = {Online: \url{<a href=http://www.science.uva.nl/~arnoud/publications/LcmArchitectureSurvey.pdf>http://www.science.uva.nl/~arnoud/publications/LcmArchitectureSurvey.pdf</a>}},<br>
+	}
+	
+	</tt>
+
+	<h2>Acknowledgement</h2>
+	
+Part of the research is funded by the Dutch
+IIP Cooperation Challenge ’Sensor Intelligence for Mobility
+Systems’.
+	
+	<h2>Disclaimer</h2>
+	<a name=disclaimer>
+	
+THIS SOFTWARE IS PROVIDED BY THE author ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE author WILL BE LIABLE FOR ANY 
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+</html>
