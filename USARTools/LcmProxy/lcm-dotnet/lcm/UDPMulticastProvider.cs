@@ -62,21 +62,8 @@ namespace LCM.LCM
 			this.lcm = lcm;
 			
 			string[] addrport = up.Get("network", DEFAULT_NETWORK).Split(':');
-
-#if IPv4
-            inetAddr = Dns.GetHostEntry(addrport[0]).AddressList[0];
-#else
-            IPHostEntry host = Dns.GetHostEntry(addrport[0]);
 			
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.IsIPv6LinkLocal == false)
-                {
-                    inetAddr = ip;
-                    break;
-                }
-            }
-#endif
+			inetAddr = Dns.GetHostEntry(addrport[0]).AddressList[0];
 			inetPort = Int32.Parse(addrport[1]);
             inetEP = new IPEndPoint(inetAddr, inetPort);
 
@@ -189,8 +176,9 @@ namespace LCM.LCM
 				
 				outs.Write(MAGIC_SHORT);
 				outs.Write(this.msgSeqNumber);
-				
-				outs.WriteStringZ(channel);
+
+                outs.Write(channelBytes, 0, channelBytes.Length);
+                outs.Write((byte) 0);
 				
 				outs.Write(data, offset, length);
 
@@ -207,10 +195,9 @@ namespace LCM.LCM
 					Console.Error.WriteLine("LC error: too much data for a single message");
 					return;
 				}
-				
-				// first fragment is special.  insert channel before data
-				System.IO.MemoryStream bouts = new System.IO.MemoryStream(10 + FRAGMENTATION_THRESHOLD);
-				System.IO.BinaryWriter outs = new System.IO.BinaryWriter(bouts);
+
+                // first fragment is special.  insert channel before data
+                LCMDataOutputStream outs = new LCMDataOutputStream(10 + FRAGMENTATION_THRESHOLD);
 				
 				int fragmentOffset = 0;
 				int fragNo = 0;
@@ -228,25 +215,24 @@ namespace LCM.LCM
 				
 				outs.Write(data, offset, firstfragDatasize);
 
-                sock.Send(bouts.ToArray(), (int) bouts.Length, inetEP);
+                sock.Send(outs.Buffer, outs.Length, inetEP);
 				
 				fragmentOffset += firstfragDatasize;
 				
 				for (fragNo = 1; fragNo < nfragments; fragNo++)
 				{
-					bouts = new System.IO.MemoryStream(10 + FRAGMENTATION_THRESHOLD);
-					outs = new System.IO.BinaryWriter(bouts);
+                    outs = new LCMDataOutputStream(10 + FRAGMENTATION_THRESHOLD);
 					
 					outs.Write(MAGIC_LONG);
 					outs.Write(this.msgSeqNumber);
 					outs.Write(length);
 					outs.Write(fragmentOffset);
-					outs.Write((System.Int16) fragNo);
-					outs.Write((System.Int16) nfragments);
+					outs.Write((short) fragNo);
+					outs.Write((short) nfragments);
 					int fragLen = System.Math.Min(FRAGMENTATION_THRESHOLD, length - fragmentOffset);
 					outs.Write(data, offset + fragmentOffset, fragLen);
 
-                    sock.Send(bouts.ToArray(), (int) bouts.Length, inetEP);
+                    sock.Send(outs.Buffer, outs.Length, inetEP);
 					
 					fragmentOffset += fragLen;
 				}
@@ -387,8 +373,7 @@ namespace LCM.LCM
 			{
 				HandleShortMessage(packetData, from, ins);
 			}
-            //else if (magic == UDPMulticastProvider.MAGIC_LONG || magic == IPAddress.NetworkToHostOrder(UDPMulticastProvider.MAGIC_LONG)) // all bytes are in this case in wrong order
-            else if (magic == UDPMulticastProvider.MAGIC_LONG) 
+            else if (magic == UDPMulticastProvider.MAGIC_LONG)
 			{
 				HandleFragment(packetData, from, ins);
 			}

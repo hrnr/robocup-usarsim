@@ -6,7 +6,7 @@
 
 <h1>The LCM USARSim Proxy</h1>
 <h3>Arnoud Visser, Universiteit van Amsterdam, NL</h3>
-<h3>September 18, 2012</h3>
+<h3>October 2, 2012</h3>
 
 <h2>Description</h2>
 
@@ -79,8 +79,7 @@ The program is made based on Microsoft's .Net Framework. It references System co
  
  <ul>
  <li>The program <tt>lcm_usarsim_proxy.exe</tt> is a proof of concept. It is a rapid prototype, not optimized for effiency or robustness. See the <a href=#disclaimer>disclaimer</a>.
- <li>The packaging of larger messages results in a Magic Error. Seems that this is a byte-order issue (big / little endian)
- inside the lcm-library. Temporary solution is to use the ImageServer with ImageType > 1. So for the moment, don't use ImageType=0 (raw) or ImageType=1 (jpeg - super quality).
+ <li>The jpg-images are correctly interpreted by the LcmSpy, the raw images not (LcmSpy can only interpret a limited number of fourcc formats; raw and simple rgb doesn't seem to be the correct match). So for the moment, don't use ImageType=0 (raw).
  <li>The GAMEPAD-channel is only tested with <tt>java -ea -server april.util.KeyboardGamepad</tt>. 
  The keystrokes are quite binary (on / off), but the gamepad_t format is contineous. Currently, the continues values are clipped again with a threshold; the robots are driven with a fixed speed.
 This should be tested with a real gamepad (under Linux). Anyway, controlling with keyboard works fine.
@@ -90,6 +89,11 @@ The program is not (yet) tested for other robots, such as the robot arms (used i
  <li>This program is made in the .Net languages C# and Visual Basic. It could also have been implemented in one of the other languages provided by the lcm: C, C++, Python, Java. The major reason that it was implemented in C# was the presence of a tested networking module which took care of the connection to USARSim.
  Also the convertion of image streams is a known asset of .Net. Yet, feel free to reimplement this proxy in another language.
  </ul>
+ 
+ <h2>Solved issues</h2>
+ <li>The packaging of larger messages results in a Magic Error. Seems that this is a byte-order issue (big / little endian)
+ inside the lcm-library. This is solved with rev. 685 of the lcm-library by Jan Hrbacek.
+ 
  
 <h2>Documentation</h2>
 
@@ -147,7 +151,7 @@ In papers of research that has become possible thanks to (parts)
 	author 		= {Arnoud Visser},<br>
 	institution = {Universiteit van Amsterdam},<br>
 	title  		= {A survey of the architecture of the communication library LCM for the monitoring and control of autonomous mobile robots},<br>
-	month		= {September},<br>
+	month		= {October},<br>
 	year 		= {2012},<br>
 	howpublished = {Online: \url{<a href=http://www.science.uva.nl/~arnoud/publications/LcmArchitectureSurvey.pdf>http://www.science.uva.nl/~arnoud/publications/LcmArchitectureSurvey.pdf</a>}},<br>
 	}
