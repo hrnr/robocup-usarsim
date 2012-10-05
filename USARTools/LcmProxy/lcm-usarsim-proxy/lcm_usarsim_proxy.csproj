@@ -72,6 +72,7 @@
     <Compile Include="laser_t.cs" />
     <Compile Include="lcm_usarsim_proxy.cs" />
     <Compile Include="pose_t.cs" />
+    <Compile Include="sonar_t.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

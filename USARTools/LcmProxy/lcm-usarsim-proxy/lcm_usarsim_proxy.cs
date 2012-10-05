@@ -218,6 +218,10 @@ namespace LCM.Proxy
                                             {
                                                 myLCM.Publish("FISHEYE", secondimage);
                                             }
+                                            if (secondimage != null && RobotType == "Nao")
+                                            {
+                                                myLCM.Publish("CameraBottom", secondimage);
+                                            }
                                                                                                                        
                                     }
                                 }
@@ -383,7 +387,7 @@ namespace LCM.Proxy
 
                         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                        if (msg.Contains("{Type INS}") || msg.Contains("{Type IMU}"))
+                        if (msg.Contains("{Type INS}") || msg.Contains("{Type IMU}") || msg.Contains("{Type AcceleroMeter}"))
                         {
                             // 'SEN {Type INS} {Name InsTest} {Location -5.47,27.82,1.27} {Orientation 0.00,0.00,2.85}
                             long measuredTime = DateTime.Now.Ticks / 10; // No Time for INS!
@@ -449,7 +453,7 @@ namespace LCM.Proxy
                                         }
                                     }
 
-                                    if (part.Contains("XYZAcceleration") && !part.Contains("-2147483648")) // IMU and not NAN
+                                    if ((part.Contains("ProperAcceleration") || part.Contains("XYZAcceleration")) && !part.Contains("-2147483648")) // IMU and not NAN
                                     {
                                         int v = part.IndexOf(" ");
                                         int w = part.IndexOf(",", v);
@@ -569,6 +573,73 @@ namespace LCM.Proxy
                                 Console.Error.WriteLine("Ex: " + ex);
                             }
                         } // end if (msg.StartsWith("SEN {Type INS}")
+
+                     
+                        if (msg.Contains("{Type Sonar}"))
+                        {
+                            // 'SEN {Time 45.14} {Type Sonar} {Name F1}  {Range 4.4690} OR {Name F2 Range 1.9387} 
+
+
+                            long measuredTime = DateTime.Now.Ticks / 10; // this are the variables we have to extract
+
+                            float beamAngle = 0.349F; // (rad): From default SonarSensor in USARUDK.ini
+                            float beam = 0.0F;
+
+                            //then extract all curly-braced parts
+                            int j = msg.IndexOf(" ");
+                            int i = msg.IndexOf("{", j);
+                            while (i >= 0)
+                            {
+                                j = msg.IndexOf("}", i);
+                                if (j >= 0)
+                                {
+                                    String part = msg.Substring(i + 1, j - i - 1);
+
+                                    if (part.Contains("Time"))
+                                    {
+                                        int v = part.IndexOf(" ");
+                                        double seconds = double.Parse(part.Substring(v + 1, part.Length - v - 1));
+                                        measuredTime = (long)(seconds * 1000000); // lcm expects measuredtime in microseconds
+                                    }
+
+                                    if (part.Contains("Range")) // {Name F1 Range 4.4690} {Name F2 Range 1.9387} 
+
+                                    {
+                                        int v = part.IndexOf(" ");
+                                        beam = float.Parse(part.Substring(v + 1, part.Length - v - 1));   
+                                    }
+
+
+                                    i = msg.IndexOf("{", j);
+                                }
+                                else
+                                {
+                                    // done
+                                    break;
+                                } // End If
+                            } // End While
+
+                            try
+                            {
+                                sonar_t temp = new sonar_t();
+                                temp.utime = measuredTime;
+                                temp.range = beam;
+                                temp.direction = 0.0F; // for Nao, all straight
+                                temp.width = beamAngle;
+                                
+                                // missing is location
+                                // 
+                                
+
+                                myLCM.Publish("SONAR", temp); // channel according to intel.conf
+
+                                System.Threading.Thread.Sleep(200);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.Error.WriteLine("Ex: " + ex);
+                            }
+                        } // end if (msg.StartsWith("SEN {Type Sonar}")
                     } // end foreach
                 
         }

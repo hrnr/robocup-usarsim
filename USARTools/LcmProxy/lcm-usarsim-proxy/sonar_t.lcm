@@ -1,0 +1,13 @@
+struct sonar_t
+{
+	//should multiple sonar beams be combined here, they arrive one by one?
+	int64_t  utime;
+
+	// range data (meters)
+	float    range;
+	// direction (rad)
+	float    direction;
+
+	// the opening angle (rad)
+	float    width;
+}

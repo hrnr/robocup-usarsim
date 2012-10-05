@@ -61,8 +61,8 @@ Connected to ImageServer at machine 127.0.0.1:5003<br>
 If you have installed the rest of the lcm-library, you can inspect the data published on the channels with the command: <tt>java -ea -server lcm.spy.Spy -l udpm://239.255.76.67:7667?ttl=1</tt>. 
 This illustrated in Figure 2:
 <p>
-<img src=LcmSpyP3AT.png height=200>&nbsp;<img src=LcmSpyKenafFishEye.png height=200>&nbsp;<img src=LcmSpyAirRobot.png height=200><br>
-<i>Fig. 2: A screenshots of LcmSpy for a P3AT, Kenaf and AirRobot gamebot. </i>
+<img src=LcmSpyP3AT.png height=200>&nbsp;<img src=LcmSpyKenafFishEye.png height=200>&nbsp;<img src=LcmSpyAirRobot.png height=200>&nbsp;<img src=LcmSpyNao.png height=200><br>
+<i>Fig. 2: A screenshots of LcmSpy for a P3AT, Kenaf, AirRobot and Nao robot. </i>
 
 <h2>Dependencies</h2>
 
@@ -84,7 +84,7 @@ The program is made based on Microsoft's .Net Framework. It references System co
  The keystrokes are quite binary (on / off), but the gamepad_t format is contineous. Currently, the continues values are clipped again with a threshold; the robots are driven with a fixed speed.
 This should be tested with a real gamepad (under Linux). Anyway, controlling with keyboard works fine.
  <li>The LASER-channel contains no information about the type of laserscanner or the value it uses as max_range. The <tt>LaserPlugin</tt> used by the LcmSpy assumes a fixed value of 75m, which is inappropriate for the Hokuyo laserscanner mounted on the Kenaf (see Fig. 2).
- <li>The program <tt>lcm_usarsim_proxy.exe</tt> is tested with three mobile robots used inside the RoboCup Rescue Simulation League; P3AT, Kenaf, AirRobot. The UDK-version of USARSim has currently no implementation (yet) of the interface to control the Pan-Tilt of the AirRobot and the flippers of the Kenaf. 
+ <li>The program <tt>lcm_usarsim_proxy.exe</tt> is tested with three mobile robots used inside the RoboCup Rescue Simulation League; P3AT, Kenaf, AirRobot and Nao. The UDK-version of USARSim has currently no implementation (yet) of the interface to control the Pan-Tilt of the AirRobot and the flippers of the Kenaf. 
 The program is not (yet) tested for other robots, such as the robot arms (used in the Virtual Manufacturing competition) and the humanoid Nao (used in RoboCup Soccer).
  <li>This program is made in the .Net languages C# and Visual Basic. It could also have been implemented in one of the other languages provided by the lcm: C, C++, Python, Java. The major reason that it was implemented in C# was the presence of a tested networking module which took care of the connection to USARSim.
  Also the convertion of image streams is a known asset of .Net. Yet, feel free to reimplement this proxy in another language.
