@@ -28,7 +28,7 @@ event PostRender()
 		{
 			Canvas.SetPos(CameraViews[i].X, CameraViews[i].Y);
 			Canvas.SetDrawColor(255, 255, 255, 255);
-			Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
+			// Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
 		}	  
 }
 
