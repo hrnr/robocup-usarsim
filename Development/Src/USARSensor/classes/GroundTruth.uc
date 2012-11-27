@@ -17,16 +17,27 @@
   */
 
 class GroundTruth extends Sensor config (USAR);
+var config bool FixedToPlatform;
 
 // Returns data from the ground truth sensor
 function String GetData()
 {
 	local vector rotTrue;
-	
-	rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Platform.CenterItem.Rotation);
-	return "{Name " $ ItemName $ "} {Location " $
-		class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location) $
-		"} {Orientation " $ rotTrue $ "}";
+
+	if( FixedToPlatform )
+	{
+		rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Platform.CenterItem.Rotation);
+		return "{Name " $ ItemName $ "} {Location " $
+			class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location) $
+			"} {Orientation " $ rotTrue $ "}";
+	}
+	else
+	{
+		rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Rotation);
+		return "{Name " $ ItemName $ "} {Location " $
+			class'UnitsConverter'.static.LengthVectorFromUU(Location) $
+			"} {Orientation " $ rotTrue $ "}";
+	}
 }
 
 function String GetConfData()
@@ -40,4 +51,5 @@ function String GetConfData()
 defaultproperties
 {
 	ItemType="GroundTruth"
+//	FixedToPlatform = true;
 }
