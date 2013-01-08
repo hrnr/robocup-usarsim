@@ -66,7 +66,7 @@ function String GetData()
 // Gets header information for this effector
 simulated function String GetHead()
 {
-	return "EFF {Type " $ ItemType $ "} {Name " $ ItemName $ "}";
+	return "EFF {Time " $ WorldInfo.TimeSeconds $ "} {Type " $ ItemType $ "} {Name " $ ItemName $ "}";
 }
 
 // Turns the effector on or off
