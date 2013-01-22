@@ -13,7 +13,7 @@ class kr60Arm extends Actuator placeable config (USAR);
 
 defaultproperties
 {
-	TipOffset=(X=0.06,Y=0,Z=0)
+	TipOffset=(X=0.18,Y=0,Z=0) // x=0.18 works for arm alone
 	
 	Begin Object Class=Part Name=Joint1
 		Mesh=StaticMesh'KR60.KR60_1'
