@@ -259,12 +259,15 @@ function String GetGeoData()
 		if(linkIndex != -1)
 		{
 			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location);
+			LogInternal("Geo Name:" $ ItemName $ " Link: " $ linkIndex $ " Parent Location:" $ Actuator(directParent).JointItems[linkIndex].Location $ " Location: " $ Location);
 			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
 		}else
+			LogInternal("Geo Name:" $ ItemName $ " Link: -1  Parent Location:" $ Actuator(directParent).CenterItem.Location $ " Location: " $ Location);
 			outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location);
 	}
 	else
 	{
+		LogInternal("Geo Name:" $ ItemName $ " Center Location:" $ Platform.CenterItem.Location $ " Location: " $ Location);
 		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(Location - Platform.CenterItem.Location); 
 		mountString = "{Mount " $ String(Platform.Class) $ "}";
 	}
@@ -289,10 +292,12 @@ function String GetGeoData()
 			pji = None;
 		}
 		outStr = outStr $ " {Link " $ (i + 1) $ "} {Parent " $ (parent +1 )$ "} {Location ";
+		LogInternal( "Link Location:" $ (i+1) $ " " $ GetJointOffset(ji.Spec) $ " meters:" $ class'UnitsConverter'.static.LengthVectorFromUU(GetJointOffset(ji.Spec)));
 		// Calculate location relative to parent
 		adjustedLocation = GetJointOffset(ji.Spec);
 		if (pji != None)
 			adjustedLocation -= GetJointOffset(pji.Spec);
+		LogInternal( "Link adjusted to: " $ adjustedLocation $ " meters:" $  class'UnitsConverter'.static.LengthVectorFromUU(adjustedLocation));
 		outStr = outStr $ class'UnitsConverter'.static.LengthVectorFromUU(adjustedLocation) $ "} {Orientation ";
 		
 		// Calculate orientation relative to parent
