@@ -52,8 +52,10 @@ simulated function AttachItem()
 simulated function ConvertParam()
 {
 	super.ConvertParam();
-	SuctionLength = class'UnitsConverter'.static.LengthToUU(SuctionLength);
-	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
+	// the following negative signs are necessary due to changes in the UDK since July 2012.
+	// they seem to have changed the direction of the z-axis. Not exactly sure what is going on here.
+	SuctionLength = -class'UnitsConverter'.static.LengthToUU(SuctionLength);
+	SuctionFrom = -class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
 }
 
 // Grips an object by fixing it to the end of the arm
@@ -133,7 +135,7 @@ function Operate(bool gripper)
 	{
 		// Find axis along which to trace
 		hitLocation = CenterItem.Location;
-		rayAxis = vect(0, 0, 0);
+		rayAxis = vect(0, 0, 0); 
 		rayAxis.Z = class'UnitsConverter'.static.LengthFromUU(suctionLength);
 		rayAxis = class'UnitsConverter'.static.MeterVectorToUU(rayAxis);
 		// Find where how far away the box can be
@@ -160,7 +162,7 @@ function Operate(bool gripper)
 
 defaultproperties
 {
-	bDebug=false
+	bDebug=true
 	GripCons=None
 	GripTarget=None
 	GripPhys=PHYS_None
