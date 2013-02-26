@@ -117,6 +117,9 @@ function ProcessAction(ParsedMessage parsedMessage)
 	case "CONTROL":
 		ProcessWorldController(parsedMessage);
 		break;
+    case "GETPATHNODES":
+		ProcessGetPathNodes(parsedMessage);
+		break;
 	default:
 	}
 	
@@ -163,6 +166,16 @@ function ProcessAction(ParsedMessage parsedMessage)
 		{
 		case "MOVE":
 			ProcessMove(parsedMessage);
+			break;
+		}
+	}
+
+	if (TheBot != None && TheBot.Pawn != None && TheBot.Pawn.isA('USARAvatarNewCommon'))
+	{
+		switch (type)
+		{
+		case "GOTO":
+			ProcessGoTo(parsedMessage);
 			break;
 		}
 	}
@@ -308,22 +321,68 @@ function ProcessGetStartPoses(ParsedMessage parsedMessage)
 	local PlayerStart start;
 	local vector l, vr;
 	local int num;
+	local Name nodeName;
+
+	num=0;
 
 	foreach AllActors(class 'PlayerStart', start)
 	{
 		l = class'UnitsConverter'.static.LengthVectorFromUU(start.Location);
 		vr = class'UnitsConverter'.static.AngleVectorFromUU(start.Rotation);
+
+	    nodeName = start.Tag;
+		if(nodeName=='PlayerStart')
+			nodeName = start.Name;
+
 		if (num > 0)
-			locations = locations $ " " $ start.Tag $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
+			locations = locations $ " " $ nodeName $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
 				vr.X $ "," $ vr.Y $ "," $vr.Z;
 		else
-			locations = start.Tag $ " " $ l.X $ "," $ l.Y $ "," $ l.Z $ " " $ vr.X $ "," $
+			locations = nodeName $ " " $ l.X $ "," $ l.Y $ "," $ l.Z $ " " $ vr.X $ "," $
 				vr.Y $ "," $ vr.Z;
 		num++;
 	}
 	outstring = "NFO {StartPoses " $ num $ "}";
 	if (num > 0)
 		outstring = outstring $ " {" $ locations $ "}";
+	//`Log(outstring);
+	SendLine(outstring);
+}
+
+// Returns a list of valid path nodes for an avatar to travel to
+function ProcessGetPathNodes(ParsedMessage parsedMessage)
+{
+    local String outstring, locations;
+	local PathNode pathNode;
+	local vector l, vr;
+	local int num;
+	local Name nodeName;
+
+	num=0;
+
+	// Get all the path nodes
+	foreach AllActors(class 'PathNode', pathNode)
+	{
+		l = class'UnitsConverter'.static.LengthVectorFromUU(pathNode.Location);
+		vr = class'UnitsConverter'.static.AngleVectorFromUU(pathNode.Rotation);
+
+		nodeName = pathNode.Tag;
+		if(nodeName=='PathNode')
+			nodeName = pathNode.Name;
+
+		if (num > 0)
+			locations = locations $ " " $ nodeName $ " " $ l.X $ "," $ l.Y $"," $ l.Z $ " " $
+				vr.X $ "," $ vr.Y $ "," $vr.Z;
+		else
+			locations = nodeName $ " " $ l.X $ "," $ l.Y $ "," $ l.Z $ " " $ vr.X $ "," $
+				vr.Y $ "," $ vr.Z;
+		num++;
+	}
+
+	outstring = "NFO {PathNodes " $ num $ "}";
+	if (num > 0)
+		outstring = outstring $ " {" $ locations $ "}";
+	//`Log(outstring);
 	SendLine(outstring);
 }
 
@@ -345,15 +404,26 @@ function ProcessInit(ParsedMessage parsedMessage)
 	if (startName != "")
 	{
 		foreach AllActors(class 'PlayerStart', start)
+		{
 			if (Caps(String(start.Tag)) == startName)
 			{
 				newLocation = start.Location; // stays in UU
 				newRotation = start.Rotation;
 				break;
 			}
+			else if (Caps(String(start.Name)) == startName)
+			{
+				newLocation = start.Location; // stays in UU
+				newRotation = start.Rotation;
+				break;
+			}
+		}
 	}
 	else
+	{
 		GetPose(parsedMessage, newLocation, newRotation);
+	}
+
 	// Add robot
 	LogInternal("Adding robot at location: " $ newLocation $ ", rotation: " $ newRotation);
 	Parent.Parent.AddBotController(self, parsedMessage.GetArgVal("Name"), newLocation,
@@ -542,6 +612,46 @@ function ProcessWorldController(ParsedMessage parsedMessage)
 		LogInternal("BotConnection: Unsupported world controller command " $ type);
 }
 
+// Returns a list of valid path nodes for an avatar to travel to
+function ProcessGoTo(ParsedMessage parsedMessage)
+{
+    local String nodeToGoTo;
+	local name nodeName;
+	local bool foundNode;
+	local USARAvatarNewCommon bot;
+	local PathNode pathNode;
+	//local vector l, vr;
+	
+	bot = USARAvatarNewCommon(TheBot.Pawn);
+	nodeToGoTo = parsedMessage.GetArgVal("Name");
+	foundNode = false;
+
+	// Find the path node in the world 
+	foreach AllActors(class 'PathNode', pathNode)
+	{
+		nodeName = pathNode.Tag;
+		if(nodeName=='PathNode')
+			nodeName = pathNode.Name;
+
+		if(nodeName==name(nodeToGoTo))
+		{
+			//l = class'UnitsConverter'.static.LengthVectorFromUU(pathNode.Location);
+			//vr = class'UnitsConverter'.static.AngleVectorFromUU(pathNode.Rotation);
+
+			USARAvatarNewController(bot.Controller).GoToLocation(pathNode.Location, pathNode.Rotation);
+
+			foundNode=true;
+			break;
+		}
+	}
+
+	// If we were asked to go to a node that does not exist, send an error message
+	if(!foundNode)
+	{
+
+	}
+}
+
 // Parse input message into lines and call ReceivedLine
 event ReceivedText(String Text)
 {
@@ -582,7 +692,10 @@ function SendGameInfo()
 		levelName = Left(levelName, i);
 	SendLine("NFO {Gametype " $ gameInfoClass $ "} {Level " $ levelName $ "} {TimeLimit " $
 		timeLimitStr $ "}");
+    `Log("NFO {Gametype " $ gameInfoClass $ "} {Level " $ levelName $ "} {TimeLimit " $
+		timeLimitStr $ "}");
 }
+
 
 // Sends a line of text to the client
 function SendLine(String text, optional bool bNoCRLF)
