@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------------
 PLEASE SEE NOTES BELOW!
 
-Please use GIT repository. SVN is no longer supported!
+Please use GIT repository (see below for instructions). SVN is no longer supported!
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
