@@ -717,7 +717,8 @@ function SendLine(String text, optional bool bNoCRLF)
 event SetController(BotController bc)
 {
 	local USARVehicle usarVehicle;
-	
+	local USARAvatarNewCommon usarAvatar;
+
 	if (bDebug)
 		LogInternal("BotConnection: SetController");
 	TheBot = bc;
@@ -727,6 +728,12 @@ event SetController(BotController bc)
 		usarVehicle = USARVehicle(TheBot.Pawn);
 		if (usarVehicle != None)
 			usarVehicle.MessageSendDelegate = ReceiveMessage;
+	}
+	else if (TheBot != None && TheBot.Pawn.isA('USARAvatarNewCommon'))
+	{
+		usarAvatar = USARAvatarNewCommon(TheBot.Pawn);
+		if (usarAvatar != None)
+			usarAvatar.MessageSendDelegate = ReceiveMessage;
 	}
 	gotoState('monitoring', 'Running');
 }

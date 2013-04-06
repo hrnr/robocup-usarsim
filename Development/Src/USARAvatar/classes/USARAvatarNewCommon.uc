@@ -32,6 +32,18 @@ function SpawnDefaultController()
 	Super.SpawnDefaultController();
 }
 
+function Tick(float DeltaTime)
+{
+	super.Tick(DeltaTime);
+
+    MessageSendDelegate("Hello World");
+}
+
+// Callback mechanism which uses a delegate to send messages
+simulated delegate MessageSendDelegate(String msg)
+{
+	// Function is delegated to BotConnection's ReceiveMessage function, so it is empty here
+}
 
 DefaultProperties
 {
