@@ -33,5 +33,48 @@ defaultproperties
 		AnimTreeTemplate=AnimTree'UsarAvatar_NewMale.animation.AT_CH_Human'
 		AnimSets(0)=AnimSet'UsarAvatar_NewMale.animation.GenericMale_AnimSet'
 		Translation=(Z=-60.0)
+
+         /*bUsePrecomputedShadows=FALSE
+         BlockActors=TRUE
+         BlockZeroExtent=TRUE 
+         BlockNonZeroExtent=TRUE 
+         BlockRigidBody=TRUE 
+         HiddenGame=TRUE*/
+         
+		 //bNotifyRigidBodyCollision=true 
+         //ScriptRigidBodyCollisionThreshold=0.001
+         
+/*
+		MinDistFactorForKinematicUpdate=0
+		bHasPhysicsAssetInstance=true
+                HiddenGame=FALSE
+                HiddenEditor=FALSE
+                LightEnvironment=MyLightEnvironment
+                bUpdateKinematicBonesFromAnimation=true
+		bUpdateJointsFromAnimation=true
+		PhysicsWeight=1.0
+		BlockRigidBody=true
+		CollideActors=true
+		BlockActors=false
+		BlockZeroExtent=true
+		BlockNonZeroExtent=false
+		RBChannel=RBCC_Pawn
+		RBCollideWithChannels=(Default=true,BlockingVolume=TRUE,EffectPhysics=true,GameplayPhysics=true)
+		*/
 	End Object
+
+	//CollisionComponent=WPawnSkeletalMeshComponent
+
+	//Physics=PHYS_Interpolating
+/*
+   BounceForce=3500
+   BlockRigidBody=TRUE 
+   bCollideActors=TRUE 
+   bBlockActors=TRUE 
+   bWorldGeometry=FALSE 
+   bCollideWorld=TRUE 
+   bNoEncroachCheck=FALSE 
+   bProjTarget=TRUE 
+   bUpdateSimulatedPosition=FALSE 
+   bStasis=FALSE*/
 }

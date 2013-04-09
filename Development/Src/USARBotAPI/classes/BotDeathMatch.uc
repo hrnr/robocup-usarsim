@@ -145,6 +145,7 @@ function SpawnPlayer(BotController newBot, optional vector startLocation, option
 	}
 	FindPlayerStart(NewBot);
 	NewBot.Pawn = Spawn(NewBot.PawnClass, NewBot, , startLocation, startRotation);
+	NewBot.Pawn.Tag = Name(NewBot.BotName);
 	if (NewBot.Pawn == None)
 	{
 		LogInternal("Failed to spawn player of type " $ NewBot.PawnClass);

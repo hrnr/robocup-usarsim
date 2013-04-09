@@ -1,5 +1,11 @@
 //USARAvatarNewCommon: Superclass handling functions for avatars
-class USARAvatarNewCommon extends UTPawn;
+class USARAvatarNewCommon extends UTPawn config(USAR) abstract;
+
+// Timer used for sending out pawn STA message, in seconds
+var config float msgTimerSTA;
+
+// Boolean variable that indicates whether the avatar is moving or not (set by the controller)
+var bool isMoving; 
 
 //==========================================
 // Set the physics here
@@ -10,11 +16,37 @@ simulated event PostBeginPlay()
 	SpawnDefaultController();
   
 	SetPhysics(PHYS_Walking); // wake the physics up
-	
+
+	//SetPhysics(PHYS_RigidBody);
+	//SetCollision(true, false);
+	//CollisionComponent.BodyInstance.EnableCollisionResponse(false);
+
 	// set up collision detection based on mesh's PhysicsAsset
 	CylinderComponent.SetActorCollision(false, false); // disable cylinder collision
 	Mesh.SetActorCollision(true, true); // enable PhysicsAsset collision
 	Mesh.SetTraceBlocking(true, true); // block traces (i.e. anything touching mesh)
+
+	// Set up timer that will deliver messages
+	SetTimer(msgTimerSTA, true, 'TimerSTA');
+}
+
+// Called by the system timer function
+function TimerSTA()
+{
+	local String outStr;
+
+    outStr = "STA"; // Header
+    outStr = outStr $ " {Time " $ WorldInfo.TimeSeconds $ "}"; // Time
+	outStr = outStr $ " {Type " $ self.Class $ "}"; // Class Type
+	if(self.Tag == 'None')
+		outStr = outStr $ " {Name " $ self.Name $ "}"; // Name of avatar
+	else
+		outStr = outStr $ " {Name " $ self.Tag $ "}"; // Name of avatar
+	outStr = outStr $ " {Location " $ class'UnitsConverter'.static.LengthVectorFromUU(Location) $ "}"; // Location
+	outStr = outStr $ " {Orientation " $ class'UnitsConverter'.static.AngleVectorFromUU(Rotation) $ "}"; // Class Type
+    outStr = outStr $ " {Walking " $ isMoving $ "}"; // Class Type
+
+	MessageSendDelegate(outStr);
 }
 
 // Override global, family-based assignment of character model.
@@ -22,7 +54,6 @@ simulated function SetCharacterClassFromInfo(class<UTFamilyInfo> Info)
 {
 	return;
 }
-
 
 function SpawnDefaultController()
 {  
@@ -32,19 +63,18 @@ function SpawnDefaultController()
 	Super.SpawnDefaultController();
 }
 
-function Tick(float DeltaTime)
-{
-	super.Tick(DeltaTime);
-
-    MessageSendDelegate("Hello World");
-}
-
 // Callback mechanism which uses a delegate to send messages
 simulated delegate MessageSendDelegate(String msg)
 {
 	// Function is delegated to BotConnection's ReceiveMessage function, so it is empty here
 }
-
+/*
+simulated event RigidBodyCollision (PrimitiveComponent HitComponent, PrimitiveComponent OtherComponent, const out CollisionImpactData RigidCollisionData, int ContactIndex)
+{
+	`Log("RigidBodyCollision is colliding...");
+	Super.RigidBodyCollision(HitComponent, OtherComponent, RigidCollisionData, ContactIndex);
+}
+*/
 DefaultProperties
 {
 	ControllerClass=class'USARAvatar.USARAvatarNewController'
@@ -81,7 +111,9 @@ DefaultProperties
 		AmbientShadowColor=(R=0.15,G=0.15,B=0.15)
 		bSynthesizeSHLight=TRUE
 	End Object
-  
 	Components.Add(AvatarLightEnvironment);
+
+	//msgTimerSTA=0.05
+	isMoving=false
 }
 
