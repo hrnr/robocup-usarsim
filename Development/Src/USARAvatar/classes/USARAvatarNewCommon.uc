@@ -1,5 +1,5 @@
 //USARAvatarNewCommon: Superclass handling functions for avatars
-class USARAvatarNewCommon extends UTPawn config(USAR) abstract;
+class USARAvatarNewCommon extends UTPawn config(USAR);
 
 // Timer used for sending out pawn STA message, in seconds
 var config float msgTimerSTA;
@@ -48,6 +48,22 @@ function TimerSTA()
 
 	MessageSendDelegate(outStr);
 }
+
+/*
+simulated function Tick(Float Delta)
+{
+	local vector boneRotation;
+
+		super.Tick(Delta);
+
+	boneRotation = class'UnitsConverter'.static.UUQuatToVector(mesh.GetBoneQuaternion('Bip02-R-UpperArm'));
+    `Log("Bip02-R-UpperArm Bone Rotation: " @ boneRotation.X @ boneRotation.Y @ boneRotation.Z);
+
+	// Potentially interesting functions:
+	//native final function GetBoneNames(out array<name> BoneNames);
+
+}
+*/
 
 // Override global, family-based assignment of character model.
 simulated function SetCharacterClassFromInfo(class<UTFamilyInfo> Info)
