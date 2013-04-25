@@ -4,6 +4,8 @@ class USARAvatarNewCommon extends UTPawn config(USAR);
 // Timer used for sending out pawn STA message, in seconds
 var config float msgTimerSTA;
 
+//Test comment for GIT CHECK
+
 // Boolean variable that indicates whether the avatar is moving or not (set by the controller)
 var bool isMoving; 
 
