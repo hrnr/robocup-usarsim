@@ -35,6 +35,13 @@ simulated event PostBeginPlay()
 // Called by the system timer function
 function TimerSTA()
 {
+	sta_msg();
+	joint_vals();
+}
+
+//This function sends status messages for the avatar.
+simulated function sta_msg()
+{
 	local String outStr;
 
     outStr = "STA"; // Header
@@ -48,24 +55,47 @@ function TimerSTA()
 	outStr = outStr $ " {Orientation " $ class'UnitsConverter'.static.AngleVectorFromUU(Rotation) $ "}"; // Class Type
     outStr = outStr $ " {Walking " $ isMoving $ "}"; // Class Type
 
+
 	MessageSendDelegate(outStr);
 }
 
-/*
-simulated function Tick(Float Delta)
+// This function reads joint values of the avatar and returns the output string
+simulated function joint_vals()
 {
+	local String outStr;
 	local vector boneRotation;
+	local name bone_names[4];
+	local int index;
+    local name bone_name;
+    
+    outStr = "BSTA"; // Header
+    outStr = outStr $ " {Time " $ WorldInfo.TimeSeconds $ "}"; // Time
+	if(self.Tag == 'None')
+		outStr = outStr $ " {Name " $ self.Name $ "}"; // Name of avatar
+	else
+		outStr = outStr $ " {Name " $ self.Tag $ "}"; // Name of avatar
 
-		super.Tick(Delta);
+	bone_names[0] = 'Bip02-R-UpperArm';
+	bone_names[1] = 'Bip02-R-Forearm';
+	bone_names[2] = 'Bip02-L-UpperArm';
+	bone_names[3] = 'Bip02-L-Forearm';
+	for (index = 0; index < ArrayCount(bone_names); ++index) {
+	    bone_name = bone_names[index];
+		boneRotation = class'UnitsConverter'.static.UUQuatToVector(mesh.GetBoneQuaternion(bone_name));
+		outStr = outStr $ " {Bone " $ bone_name $ "}" ;
+		outStr = outStr $ " {Rotation " $ boneRotation $   "}"; // Class Type
+	}
 
-	boneRotation = class'UnitsConverter'.static.UUQuatToVector(mesh.GetBoneQuaternion('Bip02-R-UpperArm'));
-    `Log("Bip02-R-UpperArm Bone Rotation: " @ boneRotation.X @ boneRotation.Y @ boneRotation.Z);
+
+	MessageSendDelegate(outStr);
+    
+    //`Log("Bip02-R-Forearm Bone Rotation: " @ boneRotation.X @ boneRotation.Y @ boneRotation.Z);
 
 	// Potentially interesting functions:
 	//native final function GetBoneNames(out array<name> BoneNames);
 
 }
-*/
+
 
 // Override global, family-based assignment of character model.
 simulated function SetCharacterClassFromInfo(class<UTFamilyInfo> Info)
