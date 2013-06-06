@@ -88,8 +88,10 @@ defaultproperties
 		Child=Joint3
 		Damping=200
 		MaxForce=1500
-		LimitLow=-0.61
-		LimitHigh=2.356
+		LimitLow=-2.356
+		LimitHigh=0.61
+	//	LimitLow=-0.61
+	//	LimitHigh=2.356
 		Offset=(X=.520,Y=.016,Z=-.792)
 		Direction=(x=-1.571,y=1.571,z=0)
 //		InverseMeasureAngle=true
@@ -101,8 +103,10 @@ defaultproperties
 		Child=Joint4
 		Damping=100
 		MaxForce=700
-		LimitLow=-2.757
-		LimitHigh=2.094
+		LimitLow=-2.094
+		LimitHigh=2.757
+	//	LimitLow=-2.757
+	//	LimitHigh=2.094
 		Offset=(X=.520,Y=0.016,Z=-1.8)
 		Direction=(x=-1.571,y=0,z=0)
 //		InverseMeasureAngle=true
