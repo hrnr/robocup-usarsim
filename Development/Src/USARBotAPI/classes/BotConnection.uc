@@ -120,6 +120,9 @@ function ProcessAction(ParsedMessage parsedMessage)
     case "GETPATHNODES":
 		ProcessGetPathNodes(parsedMessage);
 		break;
+	case "GETCLOSESTPATHNODE":
+		ProcessGetClosestPN(parsedMessage);
+		break;
 	default:
 	}
 	
@@ -385,6 +388,51 @@ function ProcessGetPathNodes(ParsedMessage parsedMessage)
 	//`Log(outstring);
 	SendLine(outstring);
 }
+
+
+// Returns the closest path point to the given point, Z value is ignored for now
+function ProcessGetClosestPN(ParsedMessage parsedMessage)
+{
+   	
+	local string loc, outstring;  
+    local vector pos;
+	local PathNode pathNode;
+	local vector node;
+    local Name closestNodeID;
+    local float closestDistance, distance, cpn_x, cpn_y, cpn_z;
+
+	closestDistance = 2147483647;//Integer Max value
+    loc = parsedMessage.GetArgVal("Location");
+
+    if (loc != "")
+		{
+			pos = class'Utilities'.static.ParseVector(loc);
+            `Log("Pos " $ pos.x $ "  " $ pos.y $ " ");
+			foreach AllActors(class 'PathNode', pathNode)
+			{
+				node = class'UnitsConverter'.static.LengthVectorFromUU(pathNode.Location);
+				distance = (pos.x - node.X) * (pos.x - node.X) + (pos.y - node.Y) * (pos.y - node.Y);
+                if (distance < closestDistance) 
+					{
+						//LogInternal("Dist " $ pathNode.Name $ " " $ distance $ " " $ node.X $ " " $ node.Y $ " ");
+						closestDistance = distance;
+						if(pathNode.Name =='PathNode')
+							closestNodeID	= pathNode.Name;
+						else
+							closestNodeID	= pathNode.Tag;
+						cpn_x = node.X;
+						cpn_y = node.Y;
+						cpn_z = node.Z;
+					}
+			}
+
+		    outstring = "NFO {Pathnode "$ closestNodeID $"} {Location "$ cpn_x $ "," $ cpn_y $ "," $ cpn_z $"}";
+			SendLine(outstring);
+		}    
+}
+
+
+
 
 // Event occuring when initialization string is first received from
 // the client socket.  At this point, the bot itself *hasn't been created*.
@@ -717,7 +765,8 @@ function SendLine(String text, optional bool bNoCRLF)
 event SetController(BotController bc)
 {
 	local USARVehicle usarVehicle;
-	
+	local USARAvatarNewCommon usarAvatar;
+
 	if (bDebug)
 		LogInternal("BotConnection: SetController");
 	TheBot = bc;
@@ -727,6 +776,12 @@ event SetController(BotController bc)
 		usarVehicle = USARVehicle(TheBot.Pawn);
 		if (usarVehicle != None)
 			usarVehicle.MessageSendDelegate = ReceiveMessage;
+	}
+	else if (TheBot != None && TheBot.Pawn.isA('USARAvatarNewCommon'))
+	{
+		usarAvatar = USARAvatarNewCommon(TheBot.Pawn);
+		if (usarAvatar != None)
+			usarAvatar.MessageSendDelegate = ReceiveMessage;
 	}
 	gotoState('monitoring', 'Running');
 }
