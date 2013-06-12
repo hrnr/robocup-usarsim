@@ -10,7 +10,6 @@
 // TODO Has no model
 class kr60Arm extends Actuator placeable config (USAR);
 
-
 defaultproperties
 {
 	TipOffset=(X=0.048,Y=0,Z=0) // x=? works for arm alone
@@ -25,31 +24,28 @@ defaultproperties
 	Begin Object Class=Part Name=Joint2
 		Mesh=StaticMesh'KR60.KR60_2'
 		Mass=1
-		Offset=(X=.324,Y=-.008,Z=-.688) 
-		// in UU absolute editor coordinates x=81, y=2, z=172
+		Offset=(X=.311,Y=-0.01,Z=-.692)
 	End Object
 	PartList.Add(Joint2)
 	
 	Begin Object Class=Part Name=Joint3
 		Mesh=StaticMesh'KR60.KR60_3'
 		Mass=.5
-		Offset=(X=.512,Y=.252,Z=-1.384) 
-		// in UU absolute editor coordinates x=128, y=63, z=346
+		Offset=(X=.489,Y=.265,Z=-1.37) 
 	End Object
 	PartList.Add(Joint3)
 	
 	Begin Object Class=Part Name=Joint4
 		Mesh=StaticMesh'KR60.KR60_4'
 		Mass=0.2
-		Offset=(X=.608,Y=.036,Z=-1.908) 
-		// in UU absolute editor coordinates x=152, y=9, z=477
+		Offset=(X=.500,Y=.041,Z=-1.89)
 	End Object
 	PartList.Add(Joint4)
 	
 	Begin Object Class=Part Name=Joint5
 		Mesh=StaticMesh'KR60.KR60_5'
 		Mass=0.1
-		Offset=(X=1.312,Y=.02,Z=-2.00) 
+		Offset=(X=1.250,Y=-.009,Z=-1.97) 
 		// in UU absolute editor coordinates x=328, y=5, z=500
 	End Object
 	PartList.Add(Joint5)
@@ -57,7 +53,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint6
 		Mesh=StaticMesh'KR60.KR60_6'
 		Mass=0.05
-		Offset=(X=1.522,Y=.016,Z=-2.01) 
+		Offset=(X=1.532,Y=.025,Z=-1.97)
 		// in UU absolute editor coordinates x=380.5, y=4, z=502.5
 	End Object
 	PartList.Add(Joint6)
@@ -65,7 +61,7 @@ defaultproperties
 	Begin Object Class=Part Name=Joint7
 		Mesh=StaticMesh'KR60.KR60_7'
 		Mass=0.025
-		Offset=(X=1.642,Y=.01,Z=-2.01) 
+		Offset=(X=1.654,Y=.02,Z=-1.97) 
 		// in UU absolute editor coordinates x=410.5, y=2.5, z=502.5
 	End Object
 	PartList.Add(Joint7)
@@ -77,7 +73,7 @@ defaultproperties
 		MaxForce=600
 		LimitLow=-3.14//-3.288
 		LimitHigh=3.14//3.288
-		Offset=(X=.112,Y=0.016,Z=-.792) // in UU x=, y=, z=
+		Offset=(X=.070,Y=0.01,Z=-.413) // in UU x=, y=, z=
 		Direction=(x=3.1415,y=0,z=0)
 //		InverseMeasureAngle=true
 	End Object
@@ -90,7 +86,7 @@ defaultproperties
 		MaxForce=1500
 		LimitLow=-0.61
 		LimitHigh=2.356
-		Offset=(X=.520,Y=.016,Z=-.792)
+		Offset=(X=.494,Y=-.2,Z=-.796)
 		Direction=(x=-1.571,y=1.571,z=0)
 //		InverseMeasureAngle=true
 	End Object
@@ -103,7 +99,7 @@ defaultproperties
 		MaxForce=700
 		LimitLow=-2.757
 		LimitHigh=2.094
-		Offset=(X=.520,Y=0.016,Z=-1.8)
+		Offset=(X=.490,Y=-0.14,Z=-1.801)
 		Direction=(x=-1.571,y=0,z=0)
 //		InverseMeasureAngle=true
 	End Object
@@ -116,7 +112,7 @@ defaultproperties
 		MaxForce=100
 		LimitLow=-3.14//-6.108
 		LimitHigh=3.14//6.108
-		Offset=(X=1.112,Y=0.016,Z=-1.992)
+		Offset=(X=0.981,Y=0.022,Z=-1.97)
 		Direction=(x=-1.571,y=0,z=-1.571)
 		InverseMeasureAngle=true
 	End Object
@@ -127,7 +123,7 @@ defaultproperties
 		Child=Joint6
 		Damping=5
 		MaxForce=60
-		Offset=(X=1.462,Y=0.016,Z=-2.01)
+		Offset=(X=1.473,Y=0.09,Z=-1.97)
 		Direction=(x=1.571,y=0,z=0)
 		LimitLow=-2.076
 		LimitHigh=2.076
@@ -140,7 +136,7 @@ defaultproperties
 		Child=Joint7
 		Damping=5
 		MaxForce=25
-		Offset=(X=1.462,Y=0.01,Z=-2.01)
+		Offset=(X=1.625,Y=0.02,Z=-1.97)
 		Direction=(x=1.571,y=0,z=-1.571)
 		LimitLow=-3.14//-6.108
 		LimitHigh=3.14//6.108
