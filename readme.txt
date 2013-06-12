@@ -1,10 +1,12 @@
 ------------------------------------------------------------------------------------------
 PLEASE SEE NOTES BELOW!
 
+Please use GIT repository (see below for instructions). SVN is no longer supported!
+
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Installation instructions from sourceforge files area:
-1. Download and Install UDK Dec-2011 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
+1. Download and Install UDK February-2013 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
    In this case 'yyyy' is the year of your UDK release and 'mm' is the month.
 2. Retrieve the latest release of USARSim for UDK from the usarsim-UDK folder.
 3. Unzip all of the files from the release into the directory specified in step 1.
@@ -13,11 +15,11 @@ Installation instructions from sourceforge files area:
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Installation instructions from Git respository:
-1. Download and Install UDK Dec-2011 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
+1. Download and Install UDK February-2013 (http://www.udk.com/). Install this to a directory named UDK\UDK-yyyy-mm. 
    In this case 'yyyy' is the year of your UDK release and 'mm' is the month.
 2. Using a client such as Git Gui, open a bash window in the same directory that you specified in step 1 (UDK-yyyy-mm) and type:
-      git clone ssh://yourUserName@usarsim.git.sourceforge.net/gitroot/usarsim/usarsim
-3. Move all of the files (including the .git folder) from the usarsim folder into the directory specified in step 1.
+      git clone ssh://yourUserName@git.code.sf.net/p/usarsim/code
+3. Move all of the files (including the .git folder) from the code folder into the directory specified in step 1.
 4. Run "make" in the UDK-yyyy-mm folder.
 
 ------------------------------------------------------------------------------------------
@@ -35,7 +37,7 @@ Known issues:
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Notes: 
-1. This version was verified with the UDK Dec-2011 release! 
+1. This version was verified with the UDK February-2013 release! 
 2. Due to the fact that unreal needs a build order, we had to move the base class of USARVehicle, BaseVehicle,
    into the USARBase folder so there wouldn’t be any problems. 
 3. The verified working example robots are BasicSkidRobot, CasterSkidRobot, and P3AT.

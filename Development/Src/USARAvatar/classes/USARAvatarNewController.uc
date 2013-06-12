@@ -64,6 +64,7 @@ function ExecutePathFindMove()
 state PathFind
 {
 	local Name nodeName;
+	local USARAvatarNewCommon usarAvatar;
 Begin:
 	if( RouteCache.Length > 0 )
 	{
@@ -75,6 +76,10 @@ Begin:
 			ScriptedMoveTarget = RouteCache[ScriptedRouteIndex];
 			if (ScriptedMoveTarget != None)
 			{
+				// Tell USARAvatar that we are moving
+				usarAvatar = USARAvatarNewCommon(Pawn);
+				usarAvatar.isMoving=true;
+
 				nodeName = RouteCache[ScriptedRouteIndex].Tag;
 				if(nodeName=='PathNode')
 					nodeName = RouteCache[ScriptedRouteIndex].Name;
@@ -87,9 +92,21 @@ Begin:
 				`Log("ScriptedMoveTarget is invalid for index:"@ScriptedRouteIndex);
 			}
 			ScriptedRouteIndex++;
+
+			//`Log("ScriptedRoute is at index:"@ScriptedRouteIndex@"| RouteCache.Length is"@RouteCache.Length);
+			if (ScriptedRouteIndex==RouteCache.Length && Pawn != None)
+			{
+				// Tell USARAvatar that we are not moving
+				usarAvatar = USARAvatarNewCommon(Pawn);
+				usarAvatar.isMoving=false;
+
+				`Log("Done with move");
+			}
+
 		}
 		PopState();
-	}	
+	}
+
 }
 
 //-----------------------------------------------------------------
