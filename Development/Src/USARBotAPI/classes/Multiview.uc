@@ -28,7 +28,7 @@ event PostRender()
 		{
 			Canvas.SetPos(CameraViews[i].X, CameraViews[i].Y);
 			Canvas.SetDrawColor(255, 255, 255, 255);
-			// Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
+			Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
 		}	  
 }
 
@@ -56,6 +56,9 @@ function AddCamera(USARCamera Cam)
 			Cam.Y = (i / CameraTileY) * CameraHeight;
 			Cam.Width = CameraWidth;
 			Cam.Height = CameraHeight;
+			Cam.TextureResolutionX = CameraWidth;
+			Cam.TextureResolutionY = CameraHeight;
+			Cam.PostBeginPlay();
 
 			// The controller might send GETCONF before the camera is initialized here.
 			// Auto send CONF when the camera is added to fix this problem.
