@@ -16,6 +16,7 @@ function String Set(String opcode, String args)
 	local Effector activeEffector;
 	local float distance;
 	
+	local vector rayAxis;
 	local vector this_x;
 	local vector this_y;
 	local vector this_z;
@@ -29,9 +30,13 @@ function String Set(String opcode, String args)
 	local Actor traceActor;
 	if(Caps(opcode) == "CLOSE" && !hasItem)
 	{
-		//cast out a ray to see if there's something we can attach to
+		//cast out a ray along local z to see if there's something we can attach to
+		rayAxis = vect(0, 0, 0); 
+		rayAxis.Z = 2 * positionTolerance;
+		rayAxis = class'UnitsConverter'.static.MeterVectorToUU(rayAxis);
+		
 		traceActor = self.Trace(HitLocation, HitNormal, 
-		self.Location + 2 * class'UnitsConverter'.static.LengthToUU(positionTolerance) * vector(self.Rotation), 
+		self.Location + rayAxis >> self.Rotation, 
 		self.Location, true);
 		activeEffector = None;
 		if(traceActor != None && traceActor.isA('PhysicalItem')) // make sure the trace hasn't hit a brush
@@ -41,8 +46,7 @@ function String Set(String opcode, String args)
 		}
 		else if(bDebug)
 		{
-			DrawDebugLine(self.Location, self.Location + 2 * class'UnitsConverter'.static.LengthToUU(positionTolerance) * 
-			vector(self.Rotation), 255, 0, 0, true);
+			DrawDebugLine(self.Location, self.Location + rayAxis >> self.Rotation, 255, 0, 0, true);
 		}
 		//since the trace will hit a physical item, go through the actors based on it to find the actual effector item
 		//if an effector has no parent, but is based on a physical item, then it will attach

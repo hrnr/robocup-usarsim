@@ -12,7 +12,7 @@ defaultproperties
 {
 	
 	Begin Object Class=Part Name=BodyItem
-		Mesh = StaticMesh'SuctionCup.VacuumCupFeb2013'
+		Mesh = StaticMesh'SuctionCup.VacuumCup'
 		Mass = 0.5
 	End Object
 	

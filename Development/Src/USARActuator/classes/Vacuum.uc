@@ -54,8 +54,8 @@ simulated function ConvertParam()
 	super.ConvertParam();
 	// the following negative signs are necessary due to changes in the UDK since July 2012.
 	// they seem to have changed the direction of the z-axis. Not exactly sure what is going on here.
-	SuctionLength = -class'UnitsConverter'.static.LengthToUU(SuctionLength);
-	SuctionFrom = -class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
+	SuctionLength = class'UnitsConverter'.static.LengthToUU(SuctionLength);
+	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
 }
 
 // Grips an object by fixing it to the end of the arm
