@@ -120,7 +120,7 @@ function String GetData()
 		return "{Status OPEN}";
 	else
 	{
-		return "{Status CLOSED}" $ "{Tool " $ attachedEffector.ItemType $"}";
+		return "{Status CLOSED}" $ "{ToolType " $ attachedEffector.ItemType $"} {Tool " $ attachedEffector.ItemName $ "}";
 	}
 }
 
