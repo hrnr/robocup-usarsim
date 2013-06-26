@@ -10,6 +10,9 @@
 /*
  * Vacuum - a device that can attach onto the end of an arm and pick up objects like a vacuum
  * Use the INI file to attach this actuator and parent it to the end part of the arm
+ * For UDK-2013-02:
+ * Make sure that this part (and its subclasses) are NOT mounted on the arm at an orientation of (0, 1.5708, 0): due to
+ * a UDK bug, the vacuum will not rotate properly if the pitch is too close to exactly pi/2
  */
 class Vacuum extends Gripper abstract config (USAR);
 
@@ -54,8 +57,8 @@ simulated function ConvertParam()
 	super.ConvertParam();
 	// the following negative signs are necessary due to changes in the UDK since July 2012.
 	// they seem to have changed the direction of the z-axis. Not exactly sure what is going on here.
-	SuctionLength = -class'UnitsConverter'.static.LengthToUU(SuctionLength);
-	SuctionFrom = -class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
+	SuctionLength = class'UnitsConverter'.static.LengthToUU(SuctionLength);
+	SuctionFrom = class'UnitsConverter'.static.MeterVectorToUU(TipOffset);
 }
 
 // Grips an object by fixing it to the end of the arm
