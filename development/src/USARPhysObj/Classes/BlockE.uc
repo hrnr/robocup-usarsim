@@ -1,4 +1,4 @@
-class PartE extends WCObject placeable;
+class BlockE extends WCObject placeable;
 
 //dimensions, color, descriptive name
 //33x52x19, Yellow, Part E (largest block)
@@ -7,5 +7,5 @@ defaultproperties
 {
 	Mesh=StaticMesh'kitTrays.blocks.BlockE'
 	Mass = 1.0
-	Name="PartE"
+	Name="BlockE"
 }
