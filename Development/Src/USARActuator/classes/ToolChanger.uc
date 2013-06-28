@@ -11,6 +11,10 @@ var config float positionTolerance;
 //how far an item can be away from the toolchanger's rotation before the attachment fails
 var config float angleTolerance;
 
+//the name of the item to start attached to the toolchanger, if it has one. This will ONLY work properly if the item to be attached 
+//is listed before the toolchanger (or its parent) in the .ini file.
+var config String defaultItem;
+
 function String Set(String opcode, String args)
 {
 	local Effector activeEffector;
@@ -102,8 +106,27 @@ function String Set(String opcode, String args)
 //hide mounting item (called after setup)
 simulated function AttachItem()
 {
+	local int partIndex;
+	local Effector activeEffector;
+	
 	super.AttachItem();
 	CenterItem.SetHidden(!bDebug);
+	
+	partIndex = Platform.getOffPartIndexByName(defaultItem);
+	if(partIndex != -1)
+	{
+		activeEffector = Effector(Platform.offParts[partIndex]);
+		if(activeEffector.reattachItem(CenterItem))
+		{	
+			//attach the item
+			attachIndex = Platform.Parts.Length;
+			activeEffector.directParent = self;
+			Platform.Parts.AddItem(activeEffector);
+			
+			hasItem = true;
+			attachedEffector = activeEffector;
+		}
+	}
 }
 // Gets configuration data from the gripper
 function String GetConfData()
