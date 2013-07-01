@@ -6,6 +6,7 @@
 :: Robot Tags: Robot1,Robot2,Robot3,Robot4
 :: Comstation Tag: ComStation
 :: Robot Type: P3AT, AirRobot
+:: WSS Mode: Obstacle Mode --> CutOff Distance:28m, Attenuation:0.01 (It will work as a Distance mode)
 @echo off
 
 ..\Binaries\Win32\UDK Robocup2013-Preliminary2?game=USARBotAPI.BotDeathMatch -log 

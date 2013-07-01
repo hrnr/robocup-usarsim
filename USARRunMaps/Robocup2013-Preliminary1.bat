@@ -7,6 +7,7 @@
 :: Robot Tags: Robot1,Robot2,Robot3,Robot4
 :: Comstation Tag: ComStation
 :: Robot Type: P3AT
+:: WSS Mode: Noop Propagation
 @echo off
 
 ..\Binaries\Win32\UDK Robocup2013-Preliminary1?game=USARBotAPI.BotDeathMatch -log 
