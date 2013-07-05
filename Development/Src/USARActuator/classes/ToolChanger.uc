@@ -40,7 +40,7 @@ function String Set(String opcode, String args)
 		rayAxis = class'UnitsConverter'.static.MeterVectorToUU(rayAxis);
 		
 		traceActor = self.Trace(HitLocation, HitNormal, 
-		self.Location + rayAxis >> self.Rotation, 
+		self.Location + (rayAxis >> self.Rotation), 
 		self.Location, true);
 		activeEffector = None;
 		if(traceActor != None && traceActor.isA('PhysicalItem')) // make sure the trace hasn't hit a brush
@@ -50,7 +50,7 @@ function String Set(String opcode, String args)
 		}
 		else if(bDebug)
 		{
-			DrawDebugLine(self.Location, self.Location + rayAxis >> self.Rotation, 255, 0, 0, true);
+			DrawDebugLine(self.Location, self.Location + (rayAxis >> self.Rotation), 255, 0, 0, true);
 		}
 		//since the trace will hit a physical item, go through the actors based on it to find the actual effector item
 		//if an effector has no parent, but is based on a physical item, then it will attach
@@ -156,7 +156,6 @@ defaultproperties
 	End Object
 	PartList.Add(BodyItem)
 	Body=BodyItem
-	
 	hasItem = false
 	ItemType="ToolChanger"
 	
