@@ -17,9 +17,16 @@ var config int CameraHeight;
 var int CamerasIndex;
 var USARCamera CameraViews[64];
 
+
 event PostRender() 
 {
 	local int i;
+	
+	//fixes for May/November 2012 compatibility (see note below)
+	local Texture Tex;
+	local float Scale;
+	local EBlendMode Blend;
+	local LinearColor DrawColorLinear;
 
 	super.PostRender();
 	
@@ -28,7 +35,19 @@ event PostRender()
 		{
 			Canvas.SetPos(CameraViews[i].X, CameraViews[i].Y);
 			Canvas.SetDrawColor(255, 255, 255, 255);
-			Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
+			//Canvas.DrawTextureBlended(CameraViews[i].TextureTarget, 1.0, BLEND_Opaque);
+			
+			//to make this compatible with both UDK-2012-05 and UDK-2012-11
+			//copied from UDK-2012-05/Development/Src/Engine/Classes/Canvas.uc
+			Tex = CameraViews[i].TextureTarget;
+			Blend = BLEND_Opaque;
+			Scale = 1.0;
+			
+			DrawColorLinear = Canvas.ColorToLinearColor(Canvas.DrawColor);
+			if (Tex != None)
+			{
+				Canvas.DrawTile(Tex, Tex.GetSurfaceWidth()*Scale, Tex.GetSurfaceHeight()*Scale, 0, 0, Tex.GetSurfaceWidth(), Tex.GetSurfaceHeight(),DrawColorLinear,,Blend);
+			}
 		}	  
 }
 
