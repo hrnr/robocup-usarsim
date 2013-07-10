@@ -25,6 +25,6 @@ defaultproperties
 	
 	
 //	TipOffset = (x=0,y=0,z=.0)
-	TipOffset = (x=0, y=0,z=0.04)
+	TipOffset = (x=0, y=0,z=0.035)
 	SuctionLength = 0.02
 }

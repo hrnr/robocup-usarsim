@@ -11,6 +11,10 @@ var config float positionTolerance;
 //how far an item can be away from the toolchanger's rotation before the attachment fails
 var config float angleTolerance;
 
+//the name of the item to start attached to the toolchanger, if it has one. This will ONLY work properly if the item to be attached 
+//is listed before the toolchanger (or its parent) in the .ini file.
+var config String defaultItem;
+
 function String Set(String opcode, String args)
 {
 	local Effector activeEffector;
@@ -36,7 +40,7 @@ function String Set(String opcode, String args)
 		rayAxis = class'UnitsConverter'.static.MeterVectorToUU(rayAxis);
 		
 		traceActor = self.Trace(HitLocation, HitNormal, 
-		self.Location + rayAxis >> self.Rotation, 
+		self.Location + (rayAxis >> self.Rotation), 
 		self.Location, true);
 		activeEffector = None;
 		if(traceActor != None && traceActor.isA('PhysicalItem')) // make sure the trace hasn't hit a brush
@@ -46,7 +50,7 @@ function String Set(String opcode, String args)
 		}
 		else if(bDebug)
 		{
-			DrawDebugLine(self.Location, self.Location + rayAxis >> self.Rotation, 255, 0, 0, true);
+			DrawDebugLine(self.Location, self.Location + (rayAxis >> self.Rotation), 255, 0, 0, true);
 		}
 		//since the trace will hit a physical item, go through the actors based on it to find the actual effector item
 		//if an effector has no parent, but is based on a physical item, then it will attach
@@ -102,8 +106,27 @@ function String Set(String opcode, String args)
 //hide mounting item (called after setup)
 simulated function AttachItem()
 {
+	local int partIndex;
+	local Effector activeEffector;
+	
 	super.AttachItem();
 	CenterItem.SetHidden(!bDebug);
+	
+	partIndex = Platform.getOffPartIndexByName(defaultItem);
+	if(partIndex != -1)
+	{
+		activeEffector = Effector(Platform.offParts[partIndex]);
+		if(activeEffector.reattachItem(CenterItem))
+		{	
+			//attach the item
+			attachIndex = Platform.Parts.Length;
+			activeEffector.directParent = self;
+			Platform.Parts.AddItem(activeEffector);
+			
+			hasItem = true;
+			attachedEffector = activeEffector;
+		}
+	}
 }
 // Gets configuration data from the gripper
 function String GetConfData()
@@ -133,7 +156,6 @@ defaultproperties
 	End Object
 	PartList.Add(BodyItem)
 	Body=BodyItem
-	
 	hasItem = false
 	ItemType="ToolChanger"
 	
