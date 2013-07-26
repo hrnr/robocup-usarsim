@@ -22,20 +22,20 @@ var config bool FixedToPlatform;
 // Returns data from the ground truth sensor
 function String GetData()
 {
-	local vector rotTrue;
+	local String rotTrue;
 
 	if( FixedToPlatform )
 	{
-		rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Platform.CenterItem.Rotation);
+		rotTrue = class'UnitsConverter'.static.Str_AngleVectorFromUU(Platform.CenterItem.Rotation, 3);
 		return "{Name " $ ItemName $ "} {Location " $
-			class'UnitsConverter'.static.LengthVectorFromUU(Platform.CenterItem.Location) $
+			class'UnitsConverter'.static.Str_LengthVectorFromUU(Platform.CenterItem.Location, 3) $
 			"} {Orientation " $ rotTrue $ "}";
 	}
 	else
 	{
-		rotTrue = class'UnitsConverter'.static.AngleVectorFromUU(Rotation);
+		rotTrue = class'UnitsConverter'.static.Str_AngleVectorFromUU(Rotation, 3);
 		return "{Name " $ ItemName $ "} {Location " $
-			class'UnitsConverter'.static.LengthVectorFromUU(Location) $
+			class'UnitsConverter'.static.Str_LengthVectorFromUU(Location, 3) $
 			"} {Orientation " $ rotTrue $ "}";
 	}
 }
