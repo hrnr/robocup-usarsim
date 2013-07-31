@@ -254,26 +254,28 @@ function String GetGeoData()
 	outStr= "{Name " $ ItemName $ "} {Location ";
 	if(directParent != None && directParent.isA('Actuator'))
 	{
-		mountString = "{Mount "$ directParent.ItemName $ "}";
+		mountString = " {Mount "$ directParent.ItemName $ "}";
 		linkIndex = Actuator(directParent).FindParentIndex(Item(Base));
 		if(linkIndex != -1)
 		{
-			outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU(Location - Actuator(directParent).JointItems[linkIndex].Location, 3);
+			outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU((Location - Actuator(directParent).JointItems[linkIndex].Location), 3);
 			LogInternal("Geo Name:" $ ItemName $ " Link: " $ linkIndex $ " Parent Location:" $ Actuator(directParent).JointItems[linkIndex].Location $ " Location: " $ Location);
-			mountString = mountString $ "{MountLink "$(linkIndex+1)$"}";
-		}else
+			mountString = mountString $ " {MountLink "$(linkIndex+1)$"}";
+		}else {
 			LogInternal("Geo Name:" $ ItemName $ " Link: -1  Parent Location:" $ Actuator(directParent).CenterItem.Location $ " Location: " $ Location);
-			outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU(Location - Actuator(directParent).CenterItem.Location, 3);
+			outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU((Location - Actuator(directParent).CenterItem.Location), 3);
+		}
 	}
 	else
 	{
 		LogInternal("Geo Name:" $ ItemName $ " Center Location:" $ Platform.CenterItem.Location $ " Location: " $ Location);
-		outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU(Location - Platform.CenterItem.Location, 3); 
+		outStr = outStr $ class'UnitsConverter'.static.Str_LengthVectorFromUU((Location - Platform.CenterItem.Location), 3); 
 		mountString = "{Mount " $ String(Platform.Class) $ "}";
 	}
 	// Direction
+	//FIXME: convert to quaternion for better rotation mount handling
 	outStr = outStr $ "} {Orientation " $
-		class'UnitsConverter'.static.Str_AngleVectorFromUU(Rotation - Platform.CenterItem.Rotation, 3) $ "}";
+		class'UnitsConverter'.static.Str_AngleVectorFromUU((Rotation - Platform.CenterItem.Rotation), 3) $ "}";
 	
 	outStr = outStr $ mountString;
 	
