@@ -12,78 +12,89 @@
  */
 class USARTruthConnection extends TcpLink config(USAR);
 
+var MessageParser parser;
+
 event Accepted()
 {
 	if (bDebug)
 		LogInternal("USARTruthConnection: Accepted " $ self);
 }
 
+simulated function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	parser = new class'MessageParser';
+}
+
 event ReceivedText(String Text)
 {
 	local Actor theActor;
-	local Pawn thePawn;
-	local WCObject theWCObject;
-	local USARVehicle usarVehicle;
-
+	local ParsedMessage parsedMessage;
+	local class<Actor> searchClass;
+	local String searchName;
+	local String className;
+	local String actorName;
+	local Vector actorLocation;
+	local Rotator actorRotation;
+	
 	if (bDebug)
 		LogInternal("USARTruthConnection: Received " $ Text);
-	if (Mid(Text, 0, 7) == "{Actor}")
+	
+	parser.ReceiveText(Text);
+	parsedMessage = parser.getNextMessage();
+	className = parsedMessage.getArgVal("class");
+	searchName = parsedMessage.getArgVal("name");
+	if(className != "")
 	{
-		foreach AllActors(class'Actor', theActor)
+		searchClass = class<Actor>(DynamicLoadObject(className, class'Class'));
+		if(searchClass == None)
 		{
-			//If a USARVehicle then we have deal with it differentely.
-			if(thePawn.isA('USARVehicle'))
-			{
-			usarVehicle = USARVehicle(theActor);
-			SendText("{Name " $ theActor.Name $ "} {Class " $ theActor.Class $ "} {Time " $
-				WorldInfo.TimeSeconds $ "} {Location " $
-				class'UnitsConverter'.static.LengthVectorFromUU(usarVehicle.CenterItem.Location) $
-				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(usarVehicle.CenterItem.Rotation) $
-				"}" $ Chr(13) $ Chr(10));
-			}
-			else
-			{
-			SendText("{Name " $ theActor.Name $ "} {Class " $ theActor.Class $ "} {Time " $
-				WorldInfo.TimeSeconds $ "} {Location " $
-				class'UnitsConverter'.static.LengthVectorFromUU(theActor.Location) $
-				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(theActor.Rotation) $
-				"}" $ Chr(13) $ Chr(10));
-			}
-		}
-	}
-	else if (Mid(Text, 0, 10) == "{WCObject}")
-	{
-		foreach AllActors(class'WCObject', theWCObject)
-		{
-			SendText("{Name " $ theWCObject.Name $ "} {Class " $ theWCObject.Class $ "} {Time " $
-				WorldInfo.TimeSeconds $ "} {Location " $
-				class'UnitsConverter'.static.LengthVectorFromUU(theWCObject.Location) $
-				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(theWCObject.Rotation) $
-				"}" $ Chr(13) $ Chr(10));
+			LogInternal("Did not find class " $ className $ ", guessing USARPhysObj." $ className);
+			className = "USARPhysObj." $ className;
+			searchClass = class<Actor>(DynamicLoadObject(className, class'Class'));
 		}
 	}
 	else
 	{
-		foreach AllActors(class'Pawn', thePawn)
+		searchClass = class'Pawn';
+	}
+	if(searchClass != None)
+	{
+		foreach AllActors(searchClass, theActor)
 		{
-			if(thePawn.isA('USARVehicle'))
+			//custom actor name behavior
+			if(theActor.isA('WCObject'))
 			{
-			//If a USARVehicle then we have deal with it differentely.
-			usarVehicle = USARVehicle(thePawn);
-			SendText("{Name " $ thePawn.Name $ "} {Class " $ thePawn.Class $ "} {Time " $
-				WorldInfo.TimeSeconds $ "} {Location " $
-				class'UnitsConverter'.static.LengthVectorFromUU(usarVehicle.CenterItem.Location) $
-				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(usarVehicle.CenterItem.Rotation) $
-				"}" $ Chr(13) $ Chr(10));
+				actorName = WCObject(theActor).ObjectName;
+			}
+			else if(theActor.isA('Item'))
+			{
+				actorName = Item(theActor).ItemName;
 			}
 			else
 			{
-				SendText("{Name " $ thePawn.Name $ "} {Class " $ thePawn.Class $ "} {Time " $
-				WorldInfo.TimeSeconds $ "} {Location " $
-				class'UnitsConverter'.static.LengthVectorFromUU(thePawn.Location) $
-				"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(thePawn.Rotation) $
-				"}" $ Chr(13) $ Chr(10));
-			}				
+				actorName = String(theActor.Name);
+			}
+			//custom actor position behavior
+			if(theActor.isA('USARVehicle'))
+			{
+				actorLocation = USARVehicle(theActor).CenterItem.Location;
+				actorRotation = USARVehicle(theActor).CenterItem.Rotation;
+			}
+			else
+			{
+				actorLocation = theActor.Location;
+				actorRotation = theActor.Rotation;
+			}
+			if(searchName == "" || searchName == actorName)
+			{
+				SendText("{Name " $ actorName $ "} {Class " $ theActor.Class $ "} {Time " $
+					WorldInfo.TimeSeconds $ "} {Location " $
+					class'UnitsConverter'.static.LengthVectorFromUU(actorLocation) $
+					"} {Rotation " $ class'UnitsConverter'.static.AngleVectorFromUU(actorRotation) $
+					"}" $ Chr(13) $ Chr(10));
+			}
 		}
 	}
 	SendText("{End}" $ Chr(13) $ Chr(10));
