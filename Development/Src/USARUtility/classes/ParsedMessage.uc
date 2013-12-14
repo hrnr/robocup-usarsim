@@ -95,5 +95,5 @@ function printParsedMessage()
   {
 	  message@="{"$arg$" "$GetArgVal(arg)$"}";
   }
-  LogInternal("ParsedMessage: '"$message$"'");
+  if (bDebug) LogInternal("ParsedMessage: '"$message$"'");
 }

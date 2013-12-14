@@ -45,13 +45,15 @@ event ReceivedText(String Text)
 	parsedMessage = parser.getNextMessage();
 	className = parsedMessage.getArgVal("class");
 	searchName = parsedMessage.getArgVal("name");
-	LogInternal("USARTruth looking for class " $ className $ " and name " $searchName);
+	if (bDebug)
+		LogInternal("USARTruth looking for class " $ className $ " and name " $searchName);
 	if(className != "")
 	{
 		searchClass = class<Actor>(DynamicLoadObject(className, class'Class'));
 		if(searchClass == None)
 		{
-			LogInternal("Did not find class " $ className $ ", guessing USARPhysObj." $ className);
+			if (bDebug)
+				LogInternal("Did not find class " $ className $ ", guessing USARPhysObj." $ className);
 			className = "USARPhysObj." $ className;
 			searchClass = class<Actor>(DynamicLoadObject(className, class'Class'));
 		}
