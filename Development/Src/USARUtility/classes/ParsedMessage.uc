@@ -11,7 +11,7 @@ defaultproperties
 {
   cmdType="";
   attrNum=0;
-  bDebug=false;
+  bDebug=true;
 }
 
 // parses a 'message' to its command type, arguments and the argument values

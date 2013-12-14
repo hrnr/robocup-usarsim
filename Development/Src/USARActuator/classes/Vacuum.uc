@@ -165,7 +165,7 @@ function Operate(bool gripper)
 
 defaultproperties
 {
-	bDebug=true
+	bDebug=false
 	GripCons=None
 	GripTarget=None
 	GripPhys=PHYS_None
